@@ -2,7 +2,6 @@
 >
 
 ✍🏼 상세(More)
-- 
 
 ### PR Desciption
 
