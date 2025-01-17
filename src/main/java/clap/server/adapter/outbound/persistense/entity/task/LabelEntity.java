@@ -2,7 +2,7 @@ package clap.server.adapter.outbound.persistense.entity.task;
 
 import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
-import clap.server.adapter.outbound.persistense.entity.task.constant.LabelStatus;
+import clap.server.adapter.outbound.persistense.entity.task.constant.LabelType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,5 +29,8 @@ public class LabelEntity extends BaseTimeEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private LabelStatus labelStatus;
+    private LabelType labelType;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 }

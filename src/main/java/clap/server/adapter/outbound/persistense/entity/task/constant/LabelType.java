@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum LabelStatus {
-    ACTIVE("활성"),
-    INACTIVE("비활성");
+public enum LabelType {
+    EMERGENCY("긴급"),
+    NORMAL("일반"),
+    REGULAR("정기");
 
     private final String description;
 }
