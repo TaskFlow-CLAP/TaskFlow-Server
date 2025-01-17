@@ -2,7 +2,6 @@ package clap.server.adapter.outbound.persistense.entity.task;
 
 import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
-import clap.server.adapter.outbound.persistense.entity.task.constant.CategoryStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,7 +33,9 @@ public class CategoryEntity extends BaseTimeEntity {
     @JoinColumn(name = "main_category_id")
     private CategoryEntity mainCategory;
 
+    @Column
+    private String descriptionExample;
+
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CategoryStatus categoryStatus;
+    private boolean isDeleted;
 }
