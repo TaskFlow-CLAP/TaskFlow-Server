@@ -8,10 +8,9 @@ import lombok.RequiredArgsConstructor;
 public enum TaskStatus {
     REQUESTED("요청"),
     IN_PROGRESS("진행 중"),
-    PENDING_COMPLETED("완료 대기"),
+    PENDING_COMPLETED("검토중"),
     COMPLETED("완료"),
-    FAILED("실패");
-
+    TERMINATED("종료");
 
     private final String description;
 }
