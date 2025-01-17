@@ -2,7 +2,7 @@ package clap.server.adapter.outbound.persistense.entity.notification;
 
 import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
-import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationPublisherType;
+import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,7 +27,8 @@ public class NotificationEntity extends BaseTimeEntity {
     private TaskEntity task;
 
     @Column(nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
@@ -36,9 +37,8 @@ public class NotificationEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String message;
 
-    @Column(name = "publisher_type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private NotificationPublisherType publisherType;
+    @Column
+    private String taskTitle;
 
     @Column(nullable = false)
     private boolean isRead;
