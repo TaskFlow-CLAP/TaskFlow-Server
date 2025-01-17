@@ -26,7 +26,7 @@ public class TaskEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -53,10 +53,14 @@ public class TaskEntity extends BaseTimeEntity {
     @JoinColumn(name = "processor_id")
     private MemberEntity processor;
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "label_id")
+    private LabelEntity label;
+
+    @Column
     private LocalDateTime dueDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime completedAt;
 
 }
