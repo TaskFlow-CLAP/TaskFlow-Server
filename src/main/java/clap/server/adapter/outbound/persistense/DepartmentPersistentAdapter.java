@@ -18,7 +18,7 @@ public class DepartmentPersistentAdapter implements LoadDepartmentPort, CommandD
     private final DepartmentPersistenceMapper departmentPersistenceMapper;
 
     @Override
-    public Optional<Department> findById(Long id) {
+    public Optional<Department> findById(final Long id) {
         Optional<DepartmentEntity> departmentEntity = departmentRepository.findById(id);
         return departmentEntity.map(departmentPersistenceMapper::toDomain);
     }
