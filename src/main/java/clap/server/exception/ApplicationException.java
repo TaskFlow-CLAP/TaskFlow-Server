@@ -1,6 +1,6 @@
-package clap.server.common.exception;
+package clap.server.exception;
 
-import clap.server.common.response.code.BaseErrorCode;
+import clap.server.exception.code.BaseErrorCode;
 import lombok.Getter;
 
 @Getter

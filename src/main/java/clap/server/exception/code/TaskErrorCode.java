@@ -1,6 +1,5 @@
-package clap.server.exception;
+package clap.server.exception.code;
 
-import clap.server.common.response.code.BaseErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
-package clap.server.common.exception;
+package clap.server.exception;
 
-import clap.server.common.response.code.BaseErrorCode;
-import clap.server.common.response.code.CommonErrorCode;
+import clap.server.exception.code.BaseErrorCode;
+import clap.server.exception.code.CommonErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

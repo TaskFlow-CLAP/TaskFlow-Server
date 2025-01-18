@@ -1,4 +1,4 @@
-package clap.server.common.response.code;
+package clap.server.exception.code;
 
 import org.springframework.http.HttpStatus;
 

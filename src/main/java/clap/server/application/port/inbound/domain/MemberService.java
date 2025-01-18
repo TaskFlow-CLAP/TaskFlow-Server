@@ -1,9 +1,9 @@
 package clap.server.application.port.inbound.domain;
 
 import clap.server.application.port.outbound.member.LoadMemberPort;
-import clap.server.common.exception.ApplicationException;
+import clap.server.exception.ApplicationException;
 import clap.server.domain.model.member.Member;
-import clap.server.exception.MemberErrorCode;
+import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

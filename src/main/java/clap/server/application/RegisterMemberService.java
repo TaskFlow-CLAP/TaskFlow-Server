@@ -6,13 +6,12 @@ import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.management.RegisterMemberUsecase;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadDepartmentPort;
-import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.common.exception.ApplicationException;
+import clap.server.exception.ApplicationException;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
-import clap.server.exception.DepartmentErrorCode;
+import clap.server.exception.code.DepartmentErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
