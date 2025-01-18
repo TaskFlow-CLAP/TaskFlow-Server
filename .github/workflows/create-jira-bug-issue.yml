@@ -60,7 +60,7 @@ jobs:
         id: create
         uses: atlassian/gajira-create@v3
         with:
-          project: clap
+          project: CLAP
           issuetype: 버그
           summary: "[BE] ${{ github.event.issue.title }}"
           description: "${{ steps.md2jira.outputs.output-text }}"
