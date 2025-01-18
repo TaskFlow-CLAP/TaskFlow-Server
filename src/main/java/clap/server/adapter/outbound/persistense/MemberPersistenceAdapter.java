@@ -1,6 +1,7 @@
 package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.adapter.outbound.persistense.mapper.MemberPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.member.MemberRepository;
 import clap.server.application.port.outbound.member.LoadMemberPort;
@@ -20,6 +21,12 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     @Override
     public Optional<Member> findById(final Long id) {
         Optional<MemberEntity> memberEntity = memberRepository.findById(id);
+        return memberEntity.map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Member> findActiveMemberById(Long id) {
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberStatusAndMemberId(MemberStatus.ACTIVE, id);
         return memberEntity.map(memberPersistenceMapper::toDomain);
     }
 
