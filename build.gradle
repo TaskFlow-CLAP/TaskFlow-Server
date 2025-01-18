@@ -26,10 +26,6 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
     // validator
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.4.1'
 
@@ -60,9 +56,13 @@ dependencies {
     //implementation 'org.springframework.boot:spring-boot-starter-security'
     // testImplementation 'org.springframework.security:spring-security-test'
 
-    // MapStruct
+    // Mapstruct
+    implementation "org.projectlombok:lombok"
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+    annotationProcessor "org.projectlombok:lombok"
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.5.3.Final"
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
     // Junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
