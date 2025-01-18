@@ -25,7 +25,7 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
-    public Optional<Member> findActiveMemberById(Long id) {
+    public Optional<Member> findActiveMemberById(final Long id) {
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberStatusAndMemberId(MemberStatus.ACTIVE, id);
         return memberEntity.map(memberPersistenceMapper::toDomain);
     }
