@@ -1,4 +1,4 @@
-package clap.server.global.config.aop;
+package clap.server.config.aop;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;

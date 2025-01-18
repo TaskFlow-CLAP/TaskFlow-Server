@@ -1,4 +1,4 @@
-package clap.server.global.config.querydsl;
+package clap.server.config.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
