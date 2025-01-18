@@ -1,0 +1,40 @@
+name: Close Jira Issue
+
+on:
+  issues:
+    types:
+      - closed
+
+jobs:
+  close-jira-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Jira
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+
+      - name: Extract Jira issue key from GitHub issue title
+        id: extract-key
+        run: |
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          JIRA_KEY=$(echo $ISSUE_TITLE | grep -oP '^CLAP-\d+')
+          if [ -n "$JIRA_KEY" ]; then
+            echo "jira_key=$JIRA_KEY" >> $GITHUB_OUTPUT
+          else
+            echo "No Jira key found in the issue title"
+            exit 0
+          fi
+
+      - name: Transition Jira Issue
+        if: steps.extract-key.outputs.jira_key
+        uses: atlassian/gajira-transition@v3
+        with:
+          issue: ${{ steps.extract-key.outputs.jira_key }}
+          transition: "완료"
+
+      - name: Log Jira issue update
+        if: steps.extract-key.outputs.jira_key
+        run: echo "Jira Issue ${{ steps.extract-key.outputs.jira_key }} has been transitioned to Done"
