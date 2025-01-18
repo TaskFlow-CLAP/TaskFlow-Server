@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/managements")
 public class RegisterMemberController {
