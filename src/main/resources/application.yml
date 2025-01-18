@@ -1,3 +1,5 @@
+spring.profiles.active: local
+
 spring:
   config:
     import:
@@ -5,7 +7,9 @@ spring:
       - swagger.yml
       - redis.yml
       - optional:classpath:env.properties
+  application:
     name: taskflow
+
 web.resources.add-mappings: false
 
 server:
@@ -16,14 +20,27 @@ server:
       max: 600
       min-spare: 100
 
+logging:
+  level:
+    root: INFO
+    org:
+      springframework: DEBUG
+    taskflow.clap.server: DEBUG
+
 ---
 spring.config.activate.on-profile: local
-
+logging:
+  level:
+    root: INFO
 
 ---
 spring.config.activate.on-profile: dev
-
-
+logging:
+  level:
+    root: INFO
 
 ---
 spring.config.activate.on-profile: prod
+logging:
+  level:
+    root: INFO

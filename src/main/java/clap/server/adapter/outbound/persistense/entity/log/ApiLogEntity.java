@@ -1,5 +1,6 @@
 package clap.server.adapter.outbound.persistense.entity.log;
 
+import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.log.constant.ApiHttpMethod;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DTYPE")
-public class ApiLogEntity {
+public class ApiLogEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long logId;
