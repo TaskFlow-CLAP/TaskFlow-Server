@@ -14,7 +14,7 @@ springdoc:
     disable-swagger-default-url: true
   show-actuator: true
   api-docs:
-    path: /swaggeer/v3/api-docs
+    path: /swagger/v3/api-docs
 
 ---
 spring.config.activate.on-profile: "dev"

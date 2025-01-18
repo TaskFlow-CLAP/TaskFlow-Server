@@ -1,6 +1,5 @@
 package clap.server.domain.model.member;
 
-import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
 import lombok.*;
@@ -13,45 +12,26 @@ import lombok.experimental.SuperBuilder;
 public class Member extends BaseTime {
     private Long memberId;
     private MemberInfo memberInfo;
+    private Member admin;
     private Boolean notificationEnabled;
     private String imageUrl;
+    private MemberStatus memberStatus;
+    private String password;
 
     @Builder
-    public Member(MemberInfo memberInfo, Boolean notificationEnabled, String imageUrl) {
+    public Member(MemberInfo memberInfo, Boolean notificationEnabled, String imageUrl,
+                  MemberStatus memberStatus, String password) {
         this.memberInfo = memberInfo;
         this.notificationEnabled = notificationEnabled;
         this.imageUrl = imageUrl;
+        this.memberStatus = memberStatus;
+        this.password = password;
     }
 
-
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class MemberInfo {
-        private String name;
-        private String email;
-        private String nickname;
-        private boolean isReviewer;
-        private Department department;
-        private MemberRole role;
-        private String departmentRole;
-        private Member admin;
-        private MemberStatus memberStatus;
-        private String password;
-
-        @Builder
-        public MemberInfo(String name, String email, String nickname, boolean isReviewer,
-                        Department department, MemberRole role, String departmentRole,
-                        Member admin, MemberStatus memberStatus, String password) {
-            this.name = name;
-            this.email = email;
-            this.nickname = nickname;
-            this.isReviewer = isReviewer;
-            this.department = department;
-            this.role = role;
-            this.departmentRole = departmentRole;
-            this.admin = admin;
-            this.memberStatus = memberStatus;
-            this.password = password;
-        }
+    public void register(Member Admin){
+        this.notificationEnabled=null;
+        this.imageUrl=null;
+        this.memberStatus=MemberStatus.PENDING;
+        this.password="";
     }
 }
