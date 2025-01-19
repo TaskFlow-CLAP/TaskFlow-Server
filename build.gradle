@@ -73,7 +73,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.11.0'
 
     // Swagger
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 
     // Email Sender
     implementation 'org.springframework.boot:spring-boot-starter-mail'
