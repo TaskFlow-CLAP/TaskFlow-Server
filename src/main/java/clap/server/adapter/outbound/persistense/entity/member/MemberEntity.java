@@ -32,14 +32,13 @@ public class MemberEntity extends BaseTimeEntity {
     private boolean isReviewer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = false)
+    @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    @Column(nullable = false)
     private String departmentRole;
 
     @Enumerated(EnumType.STRING)
@@ -57,6 +56,6 @@ public class MemberEntity extends BaseTimeEntity {
     private Boolean notificationEnabled;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id", nullable = false)
+    @JoinColumn(name = "admin_id")
     private MemberEntity admin;
 }
