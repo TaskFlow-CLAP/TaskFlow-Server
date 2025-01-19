@@ -28,10 +28,11 @@ public class Member extends BaseTime {
         this.password = password;
     }
 
-    public void register(Member Admin){
-        this.notificationEnabled=null;
-        this.imageUrl=null;
-        this.memberStatus=MemberStatus.PENDING;
-        this.password="";
+    public void register(Member admin) {
+        this.admin = admin;
+        this.notificationEnabled = null;
+        this.imageUrl = null;
+        this.memberStatus = MemberStatus.PENDING;
+        this.password = "";
     }
 }
