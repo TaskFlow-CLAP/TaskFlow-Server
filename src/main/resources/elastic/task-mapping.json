@@ -1,0 +1,22 @@
+{
+  "properties": {
+    "task_code": {
+      "type": "keyword"
+    },
+    "main_category": {
+      "type": "keyword"
+    },
+    "sub_category": {
+      "type": "keyword"
+    },
+    "status": {
+      "type": "keyword"
+    },
+    "processor": {
+      "type": "keyword"
+    },
+    "created_at": {
+      "type": "date"
+    }
+  }
+}

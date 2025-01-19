@@ -25,6 +25,8 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    //ElasticSearch
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
     // validator

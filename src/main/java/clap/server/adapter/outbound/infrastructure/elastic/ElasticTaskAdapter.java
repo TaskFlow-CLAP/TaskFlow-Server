@@ -1,7 +1,8 @@
-package clap.server.adapter.outbound.infrastructure.elastic.repository;
+package clap.server.adapter.outbound.infrastructure.elastic;
 
-import clap.server.adapter.outbound.infrastructure.elastic.document.ElasticTask;
-import clap.server.application.port.outbound.ElasticTaskPort;
+import clap.server.adapter.outbound.infrastructure.elastic.entity.ElasticTask;
+import clap.server.adapter.outbound.infrastructure.elastic.repository.TaskElasticRepository;
+import clap.server.application.port.outbound.task.ElasticTaskPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
