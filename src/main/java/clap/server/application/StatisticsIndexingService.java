@@ -3,13 +3,13 @@ package clap.server.application;
 import clap.server.adapter.outbound.infrastructure.elastic.entity.ElasticTask;
 import clap.server.application.port.outbound.task.ElasticTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
+import clap.server.common.annotation.architecture.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class StatisticsIndexingService {
     private final LoadTaskPort loadTaskPort;

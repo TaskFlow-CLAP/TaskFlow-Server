@@ -1,10 +1,11 @@
 package clap.server.application;
 
+import clap.server.application.port.outbound.task.ElasticTaskPort;
+import clap.server.common.annotation.architecture.ApplicationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class StatisticsService {
-
+    private final ElasticTaskPort elasticTaskPort;
 }

@@ -3,15 +3,15 @@ package clap.server.adapter.outbound.persistense;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.repository.task.TaskRepository;
 import clap.server.application.port.outbound.task.LoadTaskPort;
+import clap.server.common.annotation.architecture.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.stream.Task;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@PersistenceAdapter
 @RequiredArgsConstructor
 public class TaskPersistentAdapter implements LoadTaskPort {
     private final TaskRepository taskRepository;
