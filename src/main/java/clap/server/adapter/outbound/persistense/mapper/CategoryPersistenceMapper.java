@@ -1,9 +1,10 @@
 package clap.server.adapter.outbound.persistense.mapper;
 
-import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
+
 import clap.server.adapter.outbound.persistense.entity.task.CategoryEntity;
+
 import clap.server.adapter.outbound.persistense.mapper.common.PersistenceMapper;
-import clap.server.domain.model.member.Member;
+
 import clap.server.domain.model.task.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,11 +13,11 @@ import org.mapstruct.Mapping;
 public interface CategoryPersistenceMapper extends PersistenceMapper<CategoryEntity, Category> {
 
 
-    default boolean mapIsDeleted(Category category) {
-        return category.isDeleted();
-    }
+    @Override
+    @Mapping(source = "deleted", target = "isDeleted")
+    Category toDomain(final CategoryEntity entity);
 
-    default boolean mapIsDeleted(CategoryEntity categoryEntity) {
-        return categoryEntity.isDeleted();
-    }
+    @Override
+    @Mapping(source = "deleted", target = "isDeleted")
+    CategoryEntity toEntity(final Category domain);
 }
