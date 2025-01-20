@@ -57,6 +57,6 @@ public class MemberEntity extends BaseTimeEntity {
     private Boolean notificationEnabled;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id", nullable = false)
+    @JoinColumn(name = "admin_id")
     private MemberEntity admin;
 }
