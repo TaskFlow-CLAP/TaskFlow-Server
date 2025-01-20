@@ -13,7 +13,7 @@ public class Attachment extends BaseTime {
     private Long attachmentId;
     private Task task;
     private Comment comment;
-    private String fileName;
+    private String originalName;
     private String fileUrl;
     private String fileSize;
 }
