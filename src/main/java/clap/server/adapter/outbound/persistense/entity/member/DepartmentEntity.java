@@ -21,7 +21,7 @@ public class DepartmentEntity extends BaseTimeEntity {
     private Long departmentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id", nullable = false)
+    @JoinColumn(name = "admin_id")
     private MemberEntity admin;
 
     @Column(nullable = false)
