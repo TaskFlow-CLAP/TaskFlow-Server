@@ -7,6 +7,5 @@ import clap.server.domain.model.member.Member;
 public class Label extends LabelEntity {
     private Long labelId;
     private Member admin;
-    private String name;
     private LabelType labelType;
 }

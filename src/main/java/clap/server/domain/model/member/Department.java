@@ -15,6 +15,5 @@ public class Department extends BaseTime {
     private Long adminId;
     private String code;
     private String name;
-    private DepartmentStatus departmentStatus;
-
+    private DepartmentStatus status;
 }
