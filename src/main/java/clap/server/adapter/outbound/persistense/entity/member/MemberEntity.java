@@ -44,7 +44,7 @@ public class MemberEntity extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MemberStatus memberStatus;
+    private MemberStatus status;
 
     // TODO: spring security 적용 예정
     @Column(nullable = false)
