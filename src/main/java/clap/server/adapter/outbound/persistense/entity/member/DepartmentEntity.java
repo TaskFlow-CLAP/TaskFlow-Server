@@ -32,5 +32,5 @@ public class DepartmentEntity extends BaseTimeEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private DepartmentStatus departmentStatus;
+    private DepartmentStatus status;
 }
