@@ -72,6 +72,7 @@ Coming Soon...
 - adapter의 outbound로 가는 포트의 엳할을 합니다
 - Port 인터페이스를 통해 영속성 계층과 의존성 역전을 통해서 데이터를 저장, 조회, 목록조회 등 역할을 수행합니다.
 </aside>
+
 ---
 
 ### 🔵 Adapter
@@ -99,6 +100,8 @@ Coming Soon...
     - 데이터베이스, 외부 API, 파일 시스템 등 외부 세계와의 연결을 처리
     - 다른 레이어에 대해 의존하지 않습니다.
 </aside>
+
+
 
 ## 🗂️ Package
 
@@ -175,4 +178,4 @@ Coming Soon...
 <Jira_Issue_Number>
 
 ### Commit Message
-<Jira_Issue_Number> [<Prefix>] : <Description>
+<Jira_Issue_Number> [Prefix] : <Description>
