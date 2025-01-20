@@ -3,6 +3,7 @@ package clap.server.adapter.outbound.persistense.entity.task;
 import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.StatusFlag;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,7 +26,8 @@ public class StatusEntity extends BaseTimeEntity {
     private MemberEntity admin;
 
     @Column(nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus statusName;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
