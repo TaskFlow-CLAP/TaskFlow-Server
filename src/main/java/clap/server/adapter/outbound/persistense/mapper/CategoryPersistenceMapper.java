@@ -15,9 +15,11 @@ public interface CategoryPersistenceMapper extends PersistenceMapper<CategoryEnt
 
     @Override
     @Mapping(source = "deleted", target = "isDeleted")
+    @Mapping(source = "mainCategory.deleted", target = "mainCategory.isDeleted")
     Category toDomain(final CategoryEntity entity);
 
     @Override
     @Mapping(source = "deleted", target = "isDeleted")
+    @Mapping(source = "mainCategory.deleted", target = "mainCategory.isDeleted")
     CategoryEntity toEntity(final Category domain);
 }
