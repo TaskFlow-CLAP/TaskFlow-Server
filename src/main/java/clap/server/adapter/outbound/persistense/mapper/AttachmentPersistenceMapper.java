@@ -5,6 +5,6 @@ import clap.server.adapter.outbound.persistense.mapper.common.PersistenceMapper;
 import clap.server.domain.model.task.Attachment;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {TaskPersistenceMapper.class, CommentPersistenceMapper.class})
 public interface AttachmentPersistenceMapper  extends PersistenceMapper<AttachmentEntity, Attachment> {
 }

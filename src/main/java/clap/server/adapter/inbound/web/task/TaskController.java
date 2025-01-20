@@ -21,7 +21,7 @@ public class TaskController {
     public ResponseEntity<?> createTask(
             @RequestBody @Valid CreateTaskRequest createTaskRequest){
 
-            final Long memberId = 1L;
+            final Long memberId = 4L;
             return ResponseEntity.ok(taskUsecase.createTask(memberId, createTaskRequest));
     }
 }

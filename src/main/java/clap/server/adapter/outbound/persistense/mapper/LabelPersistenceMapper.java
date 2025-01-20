@@ -5,13 +5,13 @@ import clap.server.adapter.outbound.persistense.mapper.common.PersistenceMapper;
 import clap.server.domain.model.task.Label;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {MemberPersistenceMapper.class})
 public interface LabelPersistenceMapper extends PersistenceMapper<LabelEntity, Label> {
-    default boolean mapIsDeleted(Label label) {
+    default boolean isDeleted(Label label) {
         return label.isDeleted();
     }
 
-    default boolean mapIsDeleted(LabelEntity entity) {
+    default boolean isDeleted(LabelEntity entity) {
         return entity.isDeleted();
     }
 }
