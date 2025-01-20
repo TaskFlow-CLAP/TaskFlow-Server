@@ -13,7 +13,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class StatisticsFindController {
     private final PeriodTaskRequestUsecase periodTaskRequestUsecase;
-//    private final PeriodTaskProcessUsecase periodTaskProcessUsecase;
+    private final PeriodTaskProcessUsecase periodTaskProcessUsecase;
 //    private final CategoryTaskRequestUsecase categoryTaskRequestUsecase;
 //    private final SubCategoryTaskRequestUsecase subCategoryTaskRequestUsecase;
 //    private final ManagerTaskProcessUsecase managerTaskProcessUsecase;
@@ -23,8 +23,10 @@ public class StatisticsFindController {
         return periodTaskRequestUsecase.periodTaskRequestAggregate(period);
     }
 
-//    @GetMapping("/task/statistics/task-processed-by-period")
-//
+    @GetMapping("/task/statistics/task-processed-by-period")
+    public Map<String, Long> aggregatePeriodTaskProcess(@RequestParam String period) {
+        return periodTaskProcessUsecase.periodTaskProcessAggregate(period);
+    }
 //    @GetMapping("/task/statistics/task-requests-by-category")
 //
 //    @GetMapping("/task/statistics/task-requests-by-subcategory")

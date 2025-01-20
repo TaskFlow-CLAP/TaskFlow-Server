@@ -9,4 +9,6 @@ public interface ElasticTaskPort {
     void saveStatistics(List<ElasticTask> statistics);
 
     Map<String, Long> findPeriodTaskRequestByPeriod(String period);
+
+    Map<String, Long> findPeriodTaskProcessByPeriod(String period);
 }

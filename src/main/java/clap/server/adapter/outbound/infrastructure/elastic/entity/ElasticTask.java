@@ -33,7 +33,7 @@ public class ElasticTask {
         this.taskCode = taskEntity.getTaskCode();
         this.mainCategory = taskEntity.getCategory().getMainCategory().getName();
         this.subCategory = taskEntity.getCategory().getName();
-        this.status = taskEntity.getStatus().getName();
+        this.status = taskEntity.getStatus().getStatusName().name().toLowerCase();
         this.processor = taskEntity.getProcessor().getNickname();
         this.createdAt = taskEntity.getCreatedAt().toLocalDate();
     }

@@ -34,7 +34,16 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
     public Map<String, Long> findPeriodTaskRequestByPeriod(String period) {
         PeriodConfig periodConfig = getPeriodConfig(period);
 
-        NativeQuery query = buildQuery(periodConfig);
+        NativeQuery query = buildPeriodTaskRequestQuery(periodConfig);
+        ElasticsearchAggregations result = executeQuery(query);
+        return processResults(result, periodConfig);
+    }
+
+    @Override
+    public Map<String, Long> findPeriodTaskProcessByPeriod(String period) {
+        PeriodConfig periodConfig = getPeriodConfig(period);
+
+        NativeQuery query = buildPeriodTaskProcessQuery(periodConfig);
         ElasticsearchAggregations result = executeQuery(query);
         return processResults(result, periodConfig);
     }
@@ -46,14 +55,40 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
         return new PeriodConfig(1, CalendarInterval.Hour, 11, 19);
     }
 
-    private NativeQuery buildQuery(PeriodConfig config) {
+    private NativeQuery buildPeriodTaskRequestQuery(PeriodConfig config) {
         return NativeQuery.builder()
                 .withQuery(q -> q
                         .range(r -> r
                                 .date(d -> d
                                         .field("created_at")
                                         .gte(String.valueOf(LocalDate.now().minusDays(config.daysToSubtract()))))))
-                .withAggregation("period_task_request", AggregationBuilders.dateHistogram()
+                .withAggregation("period_task", AggregationBuilders.dateHistogram()
+                        .field("created_at")
+                        .calendarInterval(config.calendarInterval())
+                        .build()._toAggregation())
+                .withMaxResults(0)
+                .build();
+    }
+
+    private NativeQuery buildPeriodTaskProcessQuery(PeriodConfig config) {
+        NativeQuery rangeQuery = NativeQuery.builder()
+                .withQuery(q -> q
+                        .range(r -> r
+                                .date(d -> d
+                                        .field("created_at")
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.daysToSubtract())))))).build();
+        NativeQuery statusQuery = NativeQuery.builder()
+                .withQuery(q -> q
+                        .term(v -> v
+                                .field("status")
+                                .value("completed"))).build();
+
+        return NativeQuery.builder()
+                .withQuery(q -> q
+                        .bool(b -> b
+                                .must(rangeQuery.getQuery(), statusQuery.getQuery()))
+                        )
+                .withAggregation("period_task", AggregationBuilders.dateHistogram()
                         .field("created_at")
                         .calendarInterval(config.calendarInterval())
                         .build()._toAggregation())
@@ -69,7 +104,7 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
 
     private Map<String, Long> processResults(ElasticsearchAggregations aggregations, PeriodConfig config) {
         return new TreeMap<>(
-                aggregations.get("period_task_request")
+                aggregations.get("period_task")
                         .aggregation()
                         .getAggregate()
                         .dateHistogram()
