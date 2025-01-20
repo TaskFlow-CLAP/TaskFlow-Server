@@ -12,7 +12,7 @@
 ## 💁‍♂️ Team Member 
 | 서주원 (PL)  |   나은비(BE)    | 박재학(BE) | 양시훈(BE) | 이규동(BE) | 최효성(BE & INFRA) |
 |:---------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-| <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/joowojr.JPG" width="150px" >  | <img src="https://github.com/user-attachments/assets/5c59f742-8f2b-4472-bff4-d8dff350481b" width="150px"> | <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/jaehak.JPG" width="150px" >  |  <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/Sihun23.jpeg" width="150px" >  | ![](사진)  | <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/hyoseong.jpg" width="150px" > |
+| <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/joowojr.JPG" width="150px" >  | <img src="https://github.com/user-attachments/assets/5c59f742-8f2b-4472-bff4-d8dff350481b" width="150px"> | <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/jaehak.jpg.JPG" width="150px" >  |  <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/Sihun23.jpeg" width="150px" >  | ![](사진)  | <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/hyoseong.jpg" width="150px" > |
 | [Github](https://github.com/joowojr) | [Github](https://github.com/nano-mm) | [Github](https://github.com/parkjaehak) | [Github](https://github.com/Sihun23) | [Github](https://github.com/starboxxxx) | [Github](https://github.com/hyoseong-Choi) |
 
 ## ⚒️ Stack
