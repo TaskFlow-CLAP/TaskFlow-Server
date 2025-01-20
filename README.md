@@ -12,7 +12,7 @@
 ## 💁‍♂️ Team Member 
 | 서주원 (PL)  |   나은비(BE)    | 박재학(BE) | 양시훈(BE) | 이규동(BE) | 최효성(INFRA & BE) |
 |:---------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-|  ![서주원](/.github/image/joowojr.JPG)  | ![](사진)  | ![](사진)  | ![](사진)  | ![](사진)  | ![](사진)  |
+| <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/joowojr.JPG" width="150px" >  | ![](사진)  | ![](사진)  | ![](사진)  | ![](사진)  | ![](사진)  |
 | [Github](https://github.com/joowojr) | [Github](https://github.com/nano-mm) | [Github](https://github.com/parkjaehak) | [Github](https://github.com/Sihun23) | [Github](https://github.com/starboxxxx) | [Github](https://github.com/hyoseong-Choi) |
 
 ## ⚒️ Stack
