@@ -4,14 +4,15 @@ import clap.server.adapter.outbound.persistense.entity.task.LabelEntity;
 import clap.server.adapter.outbound.persistense.mapper.common.PersistenceMapper;
 import clap.server.domain.model.task.Label;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {MemberPersistenceMapper.class})
 public interface LabelPersistenceMapper extends PersistenceMapper<LabelEntity, Label> {
-    default boolean isDeleted(Label label) {
-        return label.isDeleted();
-    }
+    @Override
+    @Mapping(source = "deleted", target = "isDeleted") // entity -> domain에서 isDeleted를 매핑
+    Label toDomain(final LabelEntity entity);
 
-    default boolean isDeleted(LabelEntity entity) {
-        return entity.isDeleted();
-    }
+    @Override
+    @Mapping(source = "deleted", target = "isDeleted") // domain -> entity에서 isDeleted를 매핑
+    LabelEntity toEntity(final Label domain);
 }
