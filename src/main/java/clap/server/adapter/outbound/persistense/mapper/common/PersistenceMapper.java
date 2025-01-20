@@ -7,4 +7,6 @@ import org.mapstruct.InheritInverseConfiguration;
 public interface PersistenceMapper<ENTITY extends BaseTimeEntity, DOMAIN extends BaseTime> {
     @InheritInverseConfiguration
     DOMAIN toDomain(final ENTITY entity);
+
+    ENTITY toEntity(final DOMAIN domain);
 }
