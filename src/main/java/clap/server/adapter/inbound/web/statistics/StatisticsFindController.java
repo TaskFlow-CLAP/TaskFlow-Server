@@ -1,5 +1,6 @@
 package clap.server.adapter.inbound.web.statistics;
 
+import clap.server.application.port.inbound.statistics.PeriodTaskProcessUsecase;
 import clap.server.application.port.inbound.statistics.PeriodTaskRequestUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class StatisticsFindController {
 
     @GetMapping(value = "/task/statistics/task-requests-by-period")
     public Map<String, Long> aggregatePeriodTaskRequest(@RequestParam String period) {
-        return periodTaskRequestUsecase.periodTaskAggregate(period);
+        return periodTaskRequestUsecase.periodTaskRequestAggregate(period);
     }
 
 //    @GetMapping("/task/statistics/task-processed-by-period")

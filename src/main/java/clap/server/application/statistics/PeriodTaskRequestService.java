@@ -13,7 +13,7 @@ public class PeriodTaskRequestService implements PeriodTaskRequestUsecase {
     private final ElasticTaskPort elasticTaskPort;
 
     @Override
-    public Map<String, Long> periodTaskAggregate(String period) {
+    public Map<String, Long> periodTaskRequestAggregate(String period) {
         return elasticTaskPort.findPeriodTaskRequestByPeriod(period);
     }
 }
