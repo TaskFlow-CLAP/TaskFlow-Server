@@ -20,7 +20,7 @@ public class Task extends BaseTime {
     private Category category;
     private Member requester;
     private Status status;
-    private int processorOrder;
+    private int processorOrder; //칸반보드 상태에 따른 순서
     private Member processor;
     private Label label;
     private Member reviewer;
