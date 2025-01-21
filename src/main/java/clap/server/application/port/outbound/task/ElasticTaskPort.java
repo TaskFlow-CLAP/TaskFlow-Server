@@ -13,4 +13,6 @@ public interface ElasticTaskPort {
     Map<String, Long> findPeriodTaskProcessByPeriod(String period);
 
     Map<String, Long> findCategoryTaskRequestByPeriod(String period);
+
+    Map<String, Long> findSubCategoryTaskRequestByPeriod(String period, String mainCategory);
 }

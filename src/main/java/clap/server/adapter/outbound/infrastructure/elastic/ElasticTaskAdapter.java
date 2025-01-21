@@ -52,6 +52,14 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
         return getCategoryTaskResults(executeQuery(query));
     }
 
+    @Override
+    public Map<String, Long> findSubCategoryTaskRequestByPeriod(String period, String mainCategory) {
+        PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
+
+        NativeQuery query = buildSubCategoryTaskRequestQuery(periodConfig, mainCategory);
+        return getCategoryTaskResults(executeQuery(query));
+    }
+
     private NativeQuery buildPeriodTaskRequestQuery(PeriodConfig config) {
         return NativeQuery.builder()
                 .withQuery(q -> q
@@ -102,6 +110,31 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
                                         .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract()))))))
                 .withAggregation("category_task", AggregationBuilders.terms()
                         .field("main_category")
+                        .build()._toAggregation())
+                .withMaxResults(0)
+                .build();
+    }
+
+    private NativeQuery buildSubCategoryTaskRequestQuery(PeriodConfig config, String mainCategory) {
+        NativeQuery rangeQuery = NativeQuery.builder()
+                .withQuery(q -> q
+                        .range(r -> r
+                                .date(d -> d
+                                        .field("created_at")
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))))).build();
+        NativeQuery categoryQuery = NativeQuery.builder()
+                .withQuery(q -> q
+                        .term(v -> v
+                                .field("main_category")
+                                .value(mainCategory))).build();
+
+        return NativeQuery.builder()
+                .withQuery(q -> q
+                        .bool(b -> b
+                                .must(rangeQuery.getQuery(), categoryQuery.getQuery()))
+                )
+                .withAggregation("category_task", AggregationBuilders.terms()
+                        .field("sub_category")
                         .build()._toAggregation())
                 .withMaxResults(0)
                 .build();
