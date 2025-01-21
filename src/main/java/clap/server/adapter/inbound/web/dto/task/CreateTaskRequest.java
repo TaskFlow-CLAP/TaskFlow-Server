@@ -3,6 +3,8 @@ package clap.server.adapter.inbound.web.dto.task;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 public record CreateTaskRequest(
         @NotNull
         Long categoryId,
@@ -11,7 +13,6 @@ public record CreateTaskRequest(
         @NotBlank
         String title,
         String description,
-        @NotBlank
-        String fileUrl
+        List<@NotBlank String> fileUrls
 ) {
 }
