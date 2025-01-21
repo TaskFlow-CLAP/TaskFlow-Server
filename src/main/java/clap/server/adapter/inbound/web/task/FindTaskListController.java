@@ -1,7 +1,7 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
-import clap.server.application.port.inbound.task.TaskListUsecase;
+import clap.server.application.port.inbound.task.FindTaskListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks")
-public class TaskListController {
-    private final TaskListUsecase taskListUsecase;
+public class FindTaskListController {
+    private final FindTaskListUsecase taskListUsecase;
     private static final Long memberId = 4L;
 
 

@@ -1,14 +1,10 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
-import clap.server.application.port.inbound.task.TaskCreateUsecase;
-import clap.server.application.port.inbound.task.TaskListUsecase;
+import clap.server.application.port.inbound.task.CreateTaskUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks")
-public class TaskCreateController {
+public class CreateTaskController {
 
-    private final TaskCreateUsecase taskCreateUsecase;
+    private final CreateTaskUsecase taskCreateUsecase;
     private static final Long memberId = 4L;
 
     @PostMapping

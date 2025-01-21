@@ -6,7 +6,7 @@ import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
-import clap.server.application.port.inbound.task.TaskCreateUsecase;
+import clap.server.application.port.inbound.task.CreateTaskUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 
@@ -27,7 +27,7 @@ import static clap.server.application.mapper.TaskMapper.toTask;
 @ApplicationService
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class TaskCreateService implements TaskCreateUsecase {
+public class CreateTaskService implements CreateTaskUsecase {
 
     private final MemberService memberService;
     private final CategoryService categoryService;
