@@ -1,12 +1,10 @@
 package clap.server.adapter.outbound.infrastructure.elastic;
 
-import clap.server.adapter.outbound.infrastructure.elastic.dto.PeriodConfig;
 import clap.server.adapter.outbound.infrastructure.elastic.entity.ElasticTask;
 import clap.server.adapter.outbound.infrastructure.elastic.repository.TaskElasticRepository;
 import clap.server.application.port.outbound.task.ElasticTaskPort;
 import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import co.elastic.clients.elasticsearch._types.aggregations.AggregationBuilders;
-import co.elastic.clients.elasticsearch._types.aggregations.CalendarInterval;
 import co.elastic.clients.elasticsearch._types.aggregations.MultiBucketBase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
@@ -32,27 +30,26 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
 
     @Override
     public Map<String, Long> findPeriodTaskRequestByPeriod(String period) {
-        PeriodConfig periodConfig = getPeriodConfig(period);
+        PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
 
         NativeQuery query = buildPeriodTaskRequestQuery(periodConfig);
-        ElasticsearchAggregations result = executeQuery(query);
-        return processResults(result, periodConfig);
+        return getPeriodTaskResults(executeQuery(query), periodConfig);
     }
 
     @Override
     public Map<String, Long> findPeriodTaskProcessByPeriod(String period) {
-        PeriodConfig periodConfig = getPeriodConfig(period);
+        PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
 
         NativeQuery query = buildPeriodTaskProcessQuery(periodConfig);
-        ElasticsearchAggregations result = executeQuery(query);
-        return processResults(result, periodConfig);
+        return getPeriodTaskResults(executeQuery(query), periodConfig);
     }
 
-    private PeriodConfig getPeriodConfig(String period) {
-        if (period.equals("week")) {
-            return new PeriodConfig(14, CalendarInterval.Day, 0, 10);
-        }
-        return new PeriodConfig(1, CalendarInterval.Hour, 11, 19);
+    @Override
+    public Map<String, Long> findCategoryTaskRequestByPeriod(String period) {
+        PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
+
+        NativeQuery query = buildCategoryTaskRequestQuery(periodConfig);
+        return getCategoryTaskResults(executeQuery(query));
     }
 
     private NativeQuery buildPeriodTaskRequestQuery(PeriodConfig config) {
@@ -61,10 +58,10 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
                         .range(r -> r
                                 .date(d -> d
                                         .field("created_at")
-                                        .gte(String.valueOf(LocalDate.now().minusDays(config.daysToSubtract()))))))
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract()))))))
                 .withAggregation("period_task", AggregationBuilders.dateHistogram()
                         .field("created_at")
-                        .calendarInterval(config.calendarInterval())
+                        .calendarInterval(config.getCalendarInterval())
                         .build()._toAggregation())
                 .withMaxResults(0)
                 .build();
@@ -76,7 +73,7 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
                         .range(r -> r
                                 .date(d -> d
                                         .field("created_at")
-                                        .gte(String.valueOf(LocalDate.now().minusDays(config.daysToSubtract())))))).build();
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))))).build();
         NativeQuery statusQuery = NativeQuery.builder()
                 .withQuery(q -> q
                         .term(v -> v
@@ -87,10 +84,24 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
                 .withQuery(q -> q
                         .bool(b -> b
                                 .must(rangeQuery.getQuery(), statusQuery.getQuery()))
-                        )
+                )
                 .withAggregation("period_task", AggregationBuilders.dateHistogram()
                         .field("created_at")
-                        .calendarInterval(config.calendarInterval())
+                        .calendarInterval(config.getCalendarInterval())
+                        .build()._toAggregation())
+                .withMaxResults(0)
+                .build();
+    }
+
+    private NativeQuery buildCategoryTaskRequestQuery(PeriodConfig config) {
+        return NativeQuery.builder()
+                .withQuery(q -> q
+                        .range(r -> r
+                                .date(d -> d
+                                        .field("created_at")
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract()))))))
+                .withAggregation("category_task", AggregationBuilders.terms()
+                        .field("main_category")
                         .build()._toAggregation())
                 .withMaxResults(0)
                 .build();
@@ -102,7 +113,7 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
                 .getAggregations();
     }
 
-    private Map<String, Long> processResults(ElasticsearchAggregations aggregations, PeriodConfig config) {
+    private Map<String, Long> getPeriodTaskResults(ElasticsearchAggregations aggregations, PeriodConfig config) {
         return new TreeMap<>(
                 aggregations.get("period_task")
                         .aggregation()
@@ -113,9 +124,25 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
                         .stream()
                         .collect(Collectors.toMap(
                                 bucket -> bucket.keyAsString().substring(
-                                        config.substringStart(),
-                                        config.substringEnd()
+                                        config.getSubstringStart(),
+                                        config.getSubstringEnd()
                                 ),
+                                MultiBucketBase::docCount
+                        ))
+        );
+    }
+
+    private Map<String, Long> getCategoryTaskResults(ElasticsearchAggregations aggregations) {
+        return new TreeMap<>(
+                aggregations.get("category_task")
+                        .aggregation()
+                        .getAggregate()
+                        .sterms()
+                        .buckets()
+                        .array()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                bucket -> bucket.key().stringValue(),
                                 MultiBucketBase::docCount
                         ))
         );

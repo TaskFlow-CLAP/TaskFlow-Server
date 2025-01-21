@@ -1,5 +1,6 @@
 package clap.server.adapter.inbound.web.statistics;
 
+import clap.server.application.port.inbound.statistics.CategoryTaskRequestUsecase;
 import clap.server.application.port.inbound.statistics.PeriodTaskProcessUsecase;
 import clap.server.application.port.inbound.statistics.PeriodTaskRequestUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class StatisticsFindController {
     private final PeriodTaskRequestUsecase periodTaskRequestUsecase;
     private final PeriodTaskProcessUsecase periodTaskProcessUsecase;
-//    private final CategoryTaskRequestUsecase categoryTaskRequestUsecase;
+    private final CategoryTaskRequestUsecase categoryTaskRequestUsecase;
 //    private final SubCategoryTaskRequestUsecase subCategoryTaskRequestUsecase;
 //    private final ManagerTaskProcessUsecase managerTaskProcessUsecase;
 
@@ -27,8 +28,11 @@ public class StatisticsFindController {
     public Map<String, Long> aggregatePeriodTaskProcess(@RequestParam String period) {
         return periodTaskProcessUsecase.periodTaskProcessAggregate(period);
     }
-//    @GetMapping("/task/statistics/task-requests-by-category")
-//
+    @GetMapping("/task/statistics/task-requests-by-category")
+    public Map<String, Long> aggregateCategoryTaskRequest(@RequestParam String period) {
+        return categoryTaskRequestUsecase.categoryTaskRequestAggregate(period);
+    }
+
 //    @GetMapping("/task/statistics/task-requests-by-subcategory")
 //
 //    @GetMapping("/task/statistics/tasks-processed-by-manager")
