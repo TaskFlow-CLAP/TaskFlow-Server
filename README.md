@@ -7,7 +7,7 @@
 </div>
 
 ## 🔎 TaskFlow
-
+Coming Soon...
 
 ## 💁‍♂️ Team Member 
 | 서주원 (PL)  |   나은비(BE)    | 박재학(BE) | 양시훈(BE) | 이규동(BE) | 최효성(BE & INFRA) |
