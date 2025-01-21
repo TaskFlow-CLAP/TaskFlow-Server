@@ -2,6 +2,7 @@ package clap.server.adapter.outbound.persistense.entity.task;
 
 import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,10 +38,9 @@ public class TaskEntity extends BaseTimeEntity {
     @JoinColumn(name = "requester_id", nullable = false)
     private MemberEntity requester;
 
-    // 즉시 로딩
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "status_id", nullable = false)
-    private StatusEntity status;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TaskStatus taskStatus;
 
     @Column(nullable = false)
     private int processorOrder;

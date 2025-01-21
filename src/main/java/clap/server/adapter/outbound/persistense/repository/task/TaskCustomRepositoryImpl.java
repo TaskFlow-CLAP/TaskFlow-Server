@@ -3,6 +3,7 @@ package clap.server.adapter.outbound.persistense.repository.task;
 import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
 import clap.server.adapter.outbound.persistense.entity.task.QTaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         Long mainCategoryId = findTaskListRequest.mainCategoryId();
         String title = findTaskListRequest.title();
         String nickName = findTaskListRequest.nickName();
-        Long statusId = findTaskListRequest.statusId();
+        TaskStatus taskStatus = findTaskListRequest.taskStatus();
         Integer term = findTaskListRequest.term();
 
         if (term != null) {
@@ -49,8 +50,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         if (nickName != null) {
             whereClause.and(task.processor.nickname.eq(nickName));
         }
-        if (statusId != null) {
-            whereClause.and(task.status.statusId.eq(statusId));
+        if (taskStatus != null) {
+            whereClause.and(task.taskStatus.eq(taskStatus));
         }
 
         List<TaskEntity> result = queryFactory

@@ -2,26 +2,21 @@ package clap.server.application;
 
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
-import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.FindTaskListResponse;
-import clap.server.adapter.outbound.persistense.entity.task.StatusEntity;
-import clap.server.adapter.outbound.persistense.mapper.StatusPersistenceMapper;
-import clap.server.adapter.outbound.persistense.repository.task.StatusRepository;
+
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
-import clap.server.application.port.inbound.task.TaskUsecase;
+import clap.server.application.port.inbound.task.TaskCreateUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
-import clap.server.application.port.outbound.task.LoadTaskPort;
+
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -32,15 +27,12 @@ import static clap.server.application.mapper.TaskMapper.toTask;
 @ApplicationService
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class TaskService implements TaskUsecase {
+public class TaskCreateService implements TaskCreateUsecase {
 
     private final MemberService memberService;
     private final CategoryService categoryService;
     private final CommandTaskPort commandTaskPort;
     private final CommandAttachmentPort commandAttachmentPort;
-    private final StatusRepository statusRepository; //TODO: 계층화
-    private final StatusPersistenceMapper statusPersistenceMapper;
-    private final LoadTaskPort loadTaskPort;
 
     @Override
     @Transactional
@@ -48,21 +40,12 @@ public class TaskService implements TaskUsecase {
         Member member = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(createTaskRequest.categoryId());
 
-        StatusEntity statusEntity = statusRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("Status not found")); //TODO: 계층화
-        
-        Task task = toTask(member, category, createTaskRequest.title(), createTaskRequest.description(), statusPersistenceMapper.toDomain(statusEntity));
+        Task task = toTask(member, category, createTaskRequest.title(), createTaskRequest.description());
         Task savedTask = commandTaskPort.save(task);
 
         List<Attachment> attachments = AttachmentMapper.toAttachments(savedTask, createTaskRequest.fileUrls());
         commandAttachmentPort.saveAll(attachments);
 
         return toCreateTaskResponse(savedTask);
-    }
-
-
-    @Override
-    public Page<FindTaskListResponse> findRequestedTaskList(Long requesterId, Pageable pageable, FindTaskListRequest findTaskListRequest) {
-        Member requester = memberService.findActiveMember(requesterId);
-        return loadTaskPort.findAllByRequesterId(requester.getMemberId(), pageable, findTaskListRequest);
     }
 }
