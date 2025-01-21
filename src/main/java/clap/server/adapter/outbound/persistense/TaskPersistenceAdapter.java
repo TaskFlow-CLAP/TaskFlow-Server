@@ -5,6 +5,7 @@ import clap.server.adapter.inbound.web.dto.task.FindTaskListResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.task.TaskRepository;
+import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
@@ -37,21 +38,8 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
 
     @Override
     public Page<FindTaskListResponse> findAllByRequesterId(Long requesterId, Pageable pageable, FindTaskListRequest findTaskListRequest) {
-        Page<TaskEntity> taskList = taskRepository.findRequestedTaskList(requesterId, pageable, findTaskListRequest);
-        return taskList.map(this::convertToFindTaskListResponse);
-    }
-
-    private FindTaskListResponse convertToFindTaskListResponse(TaskEntity taskEntity) {
-        return new FindTaskListResponse(
-                taskEntity.getTaskId(),
-                taskEntity.getTaskCode(),
-                taskEntity.getCreatedAt(),
-                taskEntity.getCategory().getMainCategory().getName(),
-                taskEntity.getCategory().getName(),
-                taskEntity.getTitle(),
-                taskEntity.getProcessor() != null ? taskEntity.getProcessor().getName() : null,
-                taskEntity.getStatus().getStatusName(),
-                taskEntity.getCompletedAt()
-        );
+        Page<Task> taskList = taskRepository.findRequestedTaskList(requesterId, pageable, findTaskListRequest)
+                .map(taskPersistenceMapper::toDomain);
+        return taskList.map(TaskMapper::toFindTaskListResponse);
     }
 }
