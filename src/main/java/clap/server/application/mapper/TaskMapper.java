@@ -1,6 +1,7 @@
 package clap.server.application.mapper;
 
 
+import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Status;
@@ -20,5 +21,9 @@ public class TaskMapper {
                 .status(status)
                 .taskCode("1234") //TODO: 하드코딩 제거, reviewer_id 명시 필요
                 .build();
+    }
+
+    public static CreateTaskResponse toCreateTaskResponse(Task task) {
+        return new CreateTaskResponse(task.getTaskId(), task.getCategory().getCategoryId(), task.getTitle());
     }
 }

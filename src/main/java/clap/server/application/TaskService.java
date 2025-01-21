@@ -5,6 +5,7 @@ import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.StatusEntity;
 import clap.server.adapter.outbound.persistense.mapper.StatusPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.task.StatusRepository;
+import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.TaskUsecase;
@@ -14,12 +15,13 @@ import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
-import clap.server.domain.model.task.Status;
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import static clap.server.application.mapper.AttachmentMapper.toAttachment;
+import java.util.List;
+
+import static clap.server.application.mapper.TaskMapper.toCreateTaskResponse;
 import static clap.server.application.mapper.TaskMapper.toTask;
 
 @ApplicationService
@@ -45,9 +47,9 @@ public class TaskService implements TaskUsecase {
         Task task = toTask(member, category, createTaskRequest.title(), createTaskRequest.description(), statusPersistenceMapper.toDomain(statusEntity));
         Task savedTask = commandTaskPort.save(task);
 
-        Attachment attachment = toAttachment(savedTask, createTaskRequest.fileUrl());
-        commandAttachmentPort.save(attachment);
+        List<Attachment> attachments = AttachmentMapper.toAttachments(savedTask, createTaskRequest.fileUrls());
+        commandAttachmentPort.saveAll(attachments);
 
-        return new CreateTaskResponse(savedTask.getTaskId(), savedTask.getCategory().getCategoryId(), savedTask.getTitle());
+        return toCreateTaskResponse(savedTask);
     }
 }
