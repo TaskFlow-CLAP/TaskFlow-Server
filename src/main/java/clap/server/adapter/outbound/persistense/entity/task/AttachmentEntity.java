@@ -28,7 +28,7 @@ public class AttachmentEntity extends BaseTimeEntity {
     @JoinColumn(name = "task_id")
     private TaskEntity task;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private CommentEntity comment;
 
