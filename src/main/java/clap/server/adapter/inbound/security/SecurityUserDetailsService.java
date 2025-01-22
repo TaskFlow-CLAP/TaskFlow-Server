@@ -1,7 +1,7 @@
 package clap.server.adapter.inbound.security;
 
 import clap.server.adapter.outbound.persistense.repository.member.MemberRepository;
-import clap.server.exception.ApplicationException;
+import clap.server.exception.AuthException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +18,6 @@ public class SecurityUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return loadMemberPort.findById(Long.parseLong(username))
                 .map(SecurityUserDetails::from)
-                .orElseThrow(() -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new AuthException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 }

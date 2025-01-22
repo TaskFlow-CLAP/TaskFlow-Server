@@ -36,9 +36,9 @@ public class JwtErrorCodeUtil {
     public static JwtException determineAuthErrorException(Exception exception) {
         return findAuthErrorException(exception).orElseGet(
                 () -> {
-                    BaseErrorCode errorStatus = determineErrorCode(exception, CommonErrorCode.INTERNAL_SERVER_ERROR);
+                    BaseErrorCode errorCode = determineErrorCode(exception, CommonErrorCode.INTERNAL_SERVER_ERROR);
                     log.debug(exception.getMessage(), exception);
-                    return new JwtException(errorStatus);
+                    return new JwtException(errorCode);
                 }
         );
     }

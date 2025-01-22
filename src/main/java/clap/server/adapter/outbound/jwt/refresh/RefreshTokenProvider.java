@@ -4,6 +4,8 @@ import clap.server.adapter.outbound.jwt.JwtClaims;
 import clap.server.application.port.outbound.auth.JwtProvider;
 import clap.server.common.annotation.jwt.RefreshTokenStrategy;
 import clap.server.common.utils.DateUtil;
+import clap.server.exception.JwtException;
+import clap.server.exception.code.AuthErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -66,7 +68,7 @@ public class RefreshTokenProvider implements JwtProvider {
             return claims.getExpiration().before(new Date());
         } catch (Exception e) {
             log.error("Token is expired: {}", e.getMessage());
-            throw e;
+            throw new JwtException(AuthErrorCode.EMPTY_ACCESS_KEY);
         }
     }
 
@@ -80,7 +82,7 @@ public class RefreshTokenProvider implements JwtProvider {
                     .getBody();
         } catch (Exception e) {
             log.error("Token parsing error: {}", e.getMessage());
-            throw e;
+            throw new JwtException(AuthErrorCode.INVALID_TOKEN);
         }
     }
 
