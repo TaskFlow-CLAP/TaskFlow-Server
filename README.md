@@ -7,12 +7,12 @@
 </div>
 
 ## 🔎 TaskFlow
-
+Coming Soon...
 
 ## 💁‍♂️ Team Member 
 | 서주원 (PL)  |   나은비(BE)    | 박재학(BE) | 양시훈(BE) | 이규동(BE) | 최효성(BE & INFRA) |
 |:---------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-| <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/joowojr.JPG" width="150px" >  | <img src="https://github.com/user-attachments/assets/5c59f742-8f2b-4472-bff4-d8dff350481b" width="150px"> | <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/jaehak.jpg" width="150px" >  |  <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/Sihun23.jpeg" width="150px" >  | ![](사진)  | <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/hyoseong.jpg" width="150px" > |
+| <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/joowojr.JPG" width="150px" >  | <img src="https://github.com/user-attachments/assets/5c59f742-8f2b-4472-bff4-d8dff350481b" width="150px"> | <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/jaehak.jpg" width="150px" >  |  <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/Sihun23.jpeg" width="150px" >  | <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/gyudong.jpg" width="150px" >  | <img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/hyoseong.jpg" width="150px" > |
 | [Github](https://github.com/joowojr) | [Github](https://github.com/nano-mm) | [Github](https://github.com/parkjaehak) | [Github](https://github.com/Sihun23) | [Github](https://github.com/starboxxxx) | [Github](https://github.com/hyoseong-Choi) |
 
 ## ⚒️ Stack
@@ -22,13 +22,9 @@
 <img src="https://img.shields.io/badge/Framework-555555?style=for-the-badge">![SpringBoot](https://img.shields.io/badge/springboot-%236DB33F.svg?style=for-the-badge&logo=springboot&logoColor=white)![spring_data_JPA](https://img.shields.io/badge/spring_data_JPA-%236DB33F?style=for-the-badge&logo=databricks&logoColor=white)![spring_security](https://img.shields.io/badge/spring_security-%236DB33F.svg?style=for-the-badge&logo=springsecurity&logoColor=white)
 
 <img src="https://img.shields.io/badge/build-555555?style=for-the-badge">![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
-
 <img src="https://img.shields.io/badge/Test-555555?style=for-the-badge">![junit5](https://img.shields.io/badge/junit5-25A162?style=for-the-badge&logo=junit5&logoColor=white)
 
 <img src="https://img.shields.io/badge/Security-555555?style=for-the-badge">![JWT](https://img.shields.io/badge/json%20web%20tokens-323330?style=for-the-badge&logo=json-web-tokens&logoColor=pink)
-
-
-### DB
 <img src="https://img.shields.io/badge/DB Migration-555555?style=for-the-badge">![Flyway](https://img.shields.io/badge/Flyway-F7B500?style=for-the-badge&logo=flyway&logoColor=white)
 
 ### Infra

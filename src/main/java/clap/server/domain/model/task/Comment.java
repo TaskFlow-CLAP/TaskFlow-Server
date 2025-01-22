@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 public class Comment extends BaseTime {
     private Long commentId;
     private Member member;
-    private Member task;
+    private Task task;
     private String content;
     private boolean isModified;
 

@@ -17,6 +17,7 @@ public interface MemberPersistenceMapper {
     @Mapping(source = "admin", target = "admin")
     Member toDomain(final MemberEntity entity);
 
+
     @Mapping(source = "memberInfo.name", target = "name")
     @Mapping(source = "memberInfo.email", target = "email")
     @Mapping(source = "memberInfo.nickname", target = "nickname")
