@@ -1,8 +1,5 @@
 package clap.server.application.port.outbound.task;
 
-import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
-import org.springframework.data.redis.stream.Task;
-
 import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.FindTaskListResponse;
 import clap.server.domain.model.task.Task;
@@ -16,7 +13,7 @@ import java.util.Optional;
 public interface LoadTaskPort {
     Optional<Task> findById(Long id);
 
-    List<TaskEntity> findYesterdayTaskByDate(LocalDateTime now);
+    List<Task> findYesterdayTaskByDate(LocalDateTime now);
 
     Page<FindTaskListResponse> findAllByRequesterId(Long requesterId, Pageable pageable, FindTaskListRequest findTaskListRequest);
 

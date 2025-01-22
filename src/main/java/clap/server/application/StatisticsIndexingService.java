@@ -1,6 +1,5 @@
 package clap.server.application;
 
-import clap.server.adapter.outbound.infrastructure.elastic.document.TaskDocument;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.application.port.outbound.task.TaskDocumentPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -19,7 +18,6 @@ public class StatisticsIndexingService {
     public void IndexStatistics() {
         taskDocumentPort.saveStatistics(
                 loadTaskPort.findYesterdayTaskByDate(LocalDateTime.now().withNano(0))
-                        .stream().map(TaskDocument::new).toList()
         );
     }
 }

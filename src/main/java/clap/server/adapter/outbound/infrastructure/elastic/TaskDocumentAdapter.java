@@ -4,6 +4,7 @@ import clap.server.adapter.outbound.infrastructure.elastic.document.TaskDocument
 import clap.server.adapter.outbound.infrastructure.elastic.repository.TaskElasticRepository;
 import clap.server.application.port.outbound.task.TaskDocumentPort;
 import clap.server.common.annotation.architecture.InfrastructureAdapter;
+import clap.server.domain.model.task.Task;
 import co.elastic.clients.elasticsearch._types.aggregations.AggregationBuilders;
 import co.elastic.clients.elasticsearch._types.aggregations.MultiBucketBase;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,8 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
-    public void saveStatistics(List<TaskDocument> statistics) {
-        taskElasticRepository.saveAll(statistics);
+    public void saveStatistics(List<Task> statistics) {
+        taskElasticRepository.saveAll(statistics.stream().map(TaskDocument::new).toList());
     }
 
     @Override

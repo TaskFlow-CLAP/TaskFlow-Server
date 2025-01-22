@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.infrastructure.elastic.document;
 
-import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
+import clap.server.domain.model.task.Task;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -28,13 +28,13 @@ public class TaskDocument {
     @Field(name="created_at")
     private LocalDate createdAt;
 
-    public TaskDocument(TaskEntity taskEntity) {
+    public TaskDocument(Task taskEntity) {
         this.id = taskEntity.getTaskId();
         this.taskCode = taskEntity.getTaskCode();
         this.mainCategory = taskEntity.getCategory().getMainCategory().getName();
         this.subCategory = taskEntity.getCategory().getName();
         this.status = taskEntity.getTaskStatus().name().toLowerCase();
-        this.processor = taskEntity.getProcessor().getNickname();
+        this.processor = taskEntity.getProcessor().getMemberInfo().getNickname();
         this.createdAt = taskEntity.getCreatedAt().toLocalDate();
     }
 }
