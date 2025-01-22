@@ -1,5 +1,7 @@
 package clap.server.adapter.outbound.persistense.entity.task.constant;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -13,4 +15,18 @@ public enum TaskStatus {
     TERMINATED("종료");
 
     private final String description;
+
+    @JsonValue
+    public String getDescription() {
+        return description;
+    }
+    @JsonCreator
+    public static TaskStatus fromDescription(String description) {
+        for (TaskStatus status : TaskStatus.values()) {
+            if (status.getDescription().equals(description)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Unknown description: " + description);
+    }
 }
