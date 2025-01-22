@@ -13,6 +13,6 @@ public record FindTaskListResponse(
         String title,
         String processorName,
         TaskStatus taskStatus,
-        LocalDateTime completedAt
+        LocalDateTime finishedAt
 ) {
 }
