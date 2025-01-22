@@ -19,10 +19,11 @@ public class Member extends BaseTime {
     private String password;
 
     @Builder
-    public Member(MemberInfo memberInfo, Boolean notificationEnabled, String imageUrl,
+    public Member(MemberInfo memberInfo, Boolean notificationEnabled, Member admin, String imageUrl,
                   MemberStatus status, String password) {
         this.memberInfo = memberInfo;
         this.notificationEnabled = notificationEnabled;
+        this.admin = admin;
         this.imageUrl = imageUrl;
         this.status = status;
         this.password = password;
@@ -33,6 +34,6 @@ public class Member extends BaseTime {
         this.notificationEnabled = null;
         this.imageUrl = null;
         this.status = MemberStatus.PENDING;
-        this.password = "";
+        this.password = null;
     }
 }
