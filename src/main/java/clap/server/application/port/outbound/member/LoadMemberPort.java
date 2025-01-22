@@ -8,4 +8,6 @@ public interface LoadMemberPort {
     Optional<Member> findById(Long id);
 
     Optional<Member> findActiveMemberById(Long id);
+
+    Optional<Member> findByNickname(String nickname);
 }
