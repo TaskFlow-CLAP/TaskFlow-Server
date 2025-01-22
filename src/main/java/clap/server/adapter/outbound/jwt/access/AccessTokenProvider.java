@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.jwt.access;
 
 import clap.server.adapter.outbound.jwt.JwtClaims;
-import clap.server.application.port.outbound.jwt.JwtProvider;
+import clap.server.application.port.outbound.auth.JwtProvider;
 import clap.server.exception.JwtException;
 import clap.server.common.annotation.jwt.AccessTokenStrategy;
 import clap.server.common.utils.DateUtil;

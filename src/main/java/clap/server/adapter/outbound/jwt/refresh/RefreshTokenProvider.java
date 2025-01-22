@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.jwt.refresh;
 
 import clap.server.adapter.outbound.jwt.JwtClaims;
-import clap.server.application.port.outbound.jwt.JwtProvider;
+import clap.server.application.port.outbound.auth.JwtProvider;
 import clap.server.common.annotation.jwt.RefreshTokenStrategy;
 import clap.server.common.utils.DateUtil;
 import io.jsonwebtoken.Claims;
