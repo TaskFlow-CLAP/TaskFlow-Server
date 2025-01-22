@@ -1,6 +1,7 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import jakarta.validation.Valid;
@@ -19,7 +20,7 @@ public class CreateTaskController {
     private static final Long memberId = 4L;
 
     @PostMapping
-    public ResponseEntity<?> createTask(
+    public ResponseEntity<CreateTaskResponse> createTask(
             @RequestBody @Valid CreateTaskRequest createTaskRequest){
             return ResponseEntity.ok(taskCreateUsecase.createTask(memberId, createTaskRequest));
     }

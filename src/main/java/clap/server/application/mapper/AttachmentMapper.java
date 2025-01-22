@@ -1,5 +1,7 @@
 package clap.server.application.mapper;
 
+import clap.server.adapter.inbound.web.dto.task.AttachmentResponse;
+import clap.server.adapter.inbound.web.dto.task.FindTaskDetailsResponse;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Task;
 

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public record FindTaskListResponse(
         Long taskId,
         String taskCode,
-        LocalDateTime createdAt,
+        LocalDateTime requestedAt,
         String mainCategoryName,
         String categoryName,
         String title,

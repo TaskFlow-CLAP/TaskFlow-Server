@@ -4,7 +4,7 @@ package clap.server.adapter.inbound.web.dto.task;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 
 public record FindTaskListRequest(
-        Integer term,  //조회기간
+        Integer term,  //조회기간: 1주일, 1개월, 3개월
         Long categoryId,
         Long mainCategoryId,
         String title,

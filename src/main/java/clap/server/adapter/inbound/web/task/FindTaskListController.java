@@ -1,9 +1,11 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.FindTaskListResponse;
 import clap.server.application.port.inbound.task.FindTaskListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ public class FindTaskListController {
 
 
     @GetMapping("/requests")
-    public ResponseEntity<?> getRequestedTaskList(
+    public ResponseEntity<Page<FindTaskListResponse>> getRequestedTaskList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestBody FindTaskListRequest findTaskListRequest){
