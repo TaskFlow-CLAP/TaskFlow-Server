@@ -1,8 +1,8 @@
 package clap.server.adapter.outbound.infrastructure.elastic;
 
-import clap.server.adapter.outbound.infrastructure.elastic.entity.ElasticTask;
+import clap.server.adapter.outbound.infrastructure.elastic.document.TaskDocument;
 import clap.server.adapter.outbound.infrastructure.elastic.repository.TaskElasticRepository;
-import clap.server.application.port.outbound.task.ElasticTaskPort;
+import clap.server.application.port.outbound.task.TaskDocumentPort;
 import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import co.elastic.clients.elasticsearch._types.aggregations.AggregationBuilders;
 import co.elastic.clients.elasticsearch._types.aggregations.MultiBucketBase;
@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 
 @InfrastructureAdapter
 @RequiredArgsConstructor
-public class ElasticTaskAdapter implements ElasticTaskPort {
+public class TaskDocumentAdapter implements TaskDocumentPort {
     private final TaskElasticRepository taskElasticRepository;
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
-    public void saveStatistics(List<ElasticTask> statistics) {
+    public void saveStatistics(List<TaskDocument> statistics) {
         taskElasticRepository.saveAll(statistics);
     }
 
@@ -142,7 +142,7 @@ public class ElasticTaskAdapter implements ElasticTaskPort {
 
     private ElasticsearchAggregations executeQuery(NativeQuery query) {
         return (ElasticsearchAggregations) elasticsearchOperations
-                .search(query, ElasticTask.class)
+                .search(query, TaskDocument.class)
                 .getAggregations();
     }
 

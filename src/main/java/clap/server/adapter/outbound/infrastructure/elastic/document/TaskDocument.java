@@ -1,4 +1,4 @@
-package clap.server.adapter.outbound.infrastructure.elastic.entity;
+package clap.server.adapter.outbound.infrastructure.elastic.document;
 
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import jakarta.persistence.Id;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Document(indexName = "task")
 @Mapping(mappingPath = "elastic/task-mapping.json")
 @Getter
-public class ElasticTask {
+public class TaskDocument {
     @Id
     private Long id;
     @Field(name="task_code")
@@ -28,12 +28,12 @@ public class ElasticTask {
     @Field(name="created_at")
     private LocalDate createdAt;
 
-    public ElasticTask(TaskEntity taskEntity) {
+    public TaskDocument(TaskEntity taskEntity) {
         this.id = taskEntity.getTaskId();
         this.taskCode = taskEntity.getTaskCode();
         this.mainCategory = taskEntity.getCategory().getMainCategory().getName();
         this.subCategory = taskEntity.getCategory().getName();
-        this.status = taskEntity.getStatus().getStatusName().name().toLowerCase();
+        this.status = taskEntity.getTaskStatus().name().toLowerCase();
         this.processor = taskEntity.getProcessor().getNickname();
         this.createdAt = taskEntity.getCreatedAt().toLocalDate();
     }

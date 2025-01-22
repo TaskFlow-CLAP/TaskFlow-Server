@@ -1,12 +1,12 @@
 package clap.server.application.port.outbound.task;
 
-import clap.server.adapter.outbound.infrastructure.elastic.entity.ElasticTask;
+import clap.server.adapter.outbound.infrastructure.elastic.document.TaskDocument;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ElasticTaskPort {
-    void saveStatistics(List<ElasticTask> statistics);
+public interface TaskDocumentPort {
+    void saveStatistics(List<TaskDocument> statistics);
 
     Map<String, Long> findPeriodTaskRequestByPeriod(String period);
 

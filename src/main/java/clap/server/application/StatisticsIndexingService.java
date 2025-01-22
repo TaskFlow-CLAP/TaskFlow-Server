@@ -1,8 +1,8 @@
 package clap.server.application;
 
-import clap.server.adapter.outbound.infrastructure.elastic.entity.ElasticTask;
-import clap.server.application.port.outbound.task.ElasticTaskPort;
+import clap.server.adapter.outbound.infrastructure.elastic.document.TaskDocument;
 import clap.server.application.port.outbound.task.LoadTaskPort;
+import clap.server.application.port.outbound.task.TaskDocumentPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class StatisticsIndexingService {
     private final LoadTaskPort loadTaskPort;
-    private final ElasticTaskPort elasticTaskPort;
+    private final TaskDocumentPort taskDocumentPort;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void IndexStatistics() {
-        elasticTaskPort.saveStatistics(
+        taskDocumentPort.saveStatistics(
                 loadTaskPort.findYesterdayTaskByDate(LocalDateTime.now().withNano(0))
-                        .stream().map(ElasticTask::new).toList()
+                        .stream().map(TaskDocument::new).toList()
         );
     }
 }
