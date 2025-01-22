@@ -14,12 +14,12 @@ public class TaskModificationInfo {
     private TaskEntity task;
 
     @Column(name = "modified_field")
-    private String modifiedField;
+    private String modifiedField; //처리자(requestor) / 요청상태(taskStatus) -> task 상태 변경 혹은 처리 변경시에 taskhistory 테이블도 변경해야함
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_member_id")
+    @JoinColumn(name = "modified_member_id") //처리자가 바뀌는 경우
     private MemberEntity member;
 
     @Column(name = "new_value")
-    private String newValue;
+    private String newValue; //상태가 바뀌는 경우
 }
