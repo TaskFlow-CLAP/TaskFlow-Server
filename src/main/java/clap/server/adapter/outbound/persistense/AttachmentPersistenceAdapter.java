@@ -38,7 +38,7 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
     }
 
     @Override
-    public List<Attachment> findAllByTaskId(Long taskId) {
+    public List<Attachment> findAllByTaskId(final Long taskId) {
         List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskId(taskId);
         return attachmentEntities.stream()
                 .map(attachmentPersistenceMapper::toDomain)
