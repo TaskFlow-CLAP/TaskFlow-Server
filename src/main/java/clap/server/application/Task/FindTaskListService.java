@@ -1,4 +1,4 @@
-package clap.server.application;
+package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.FindTaskListResponse;
