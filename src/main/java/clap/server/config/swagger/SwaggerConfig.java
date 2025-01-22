@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Collections;
 import java.util.List;
 
-import static clap.server.common.AuthConstants.AUTHORIZATION;
+import static clap.server.common.constants.AuthConstants.AUTHORIZATION;
 
 @Configuration
 public class SwaggerConfig {
