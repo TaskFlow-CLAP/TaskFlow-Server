@@ -9,7 +9,7 @@ public record FindTaskDetailsResponse(
         Long taskId,
         String taskCode,
         LocalDateTime requestedAt,
-        LocalDateTime completedAt,
+        LocalDateTime finishedAt,
         TaskStatus taskStatus,
         String requesterNickName,
         String requesterImageUrl,
