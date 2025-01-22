@@ -18,9 +18,7 @@ public record RegisterMemberRequest(
         @NotNull
         MemberRole role,
         @NotBlank
-        String departmentRole,
-        @NotNull
-        Long adminId
+        String departmentRole
 ) {
 }
 

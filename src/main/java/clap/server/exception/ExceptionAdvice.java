@@ -76,21 +76,22 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         );
     }
 
-    @ExceptionHandler(value = ApplicationException.class)
-    public ResponseEntity onThrowException(ApplicationException applicationException, HttpServletRequest request) {
-        BaseErrorCode baseErrorCode = applicationException.getCode();
+    @ExceptionHandler(value = { ApplicationException.class, DomainException.class })
+    public ResponseEntity<Object> onThrowException(
+            BaseException exception,
+            HttpServletRequest request) {
 
-        return handleExceptionInternal(applicationException, baseErrorCode, null, request);
+        BaseErrorCode baseErrorCode = exception.getCode();
+        return handleExceptionInternal(exception, baseErrorCode, null, request);
     }
 
     private ResponseEntity<Object> handleExceptionInternal(
-            ApplicationException e,
+            BaseException e,
             BaseErrorCode baseErrorCode,
             HttpHeaders headers,
             HttpServletRequest request
     ) {
         String code = baseErrorCode.getCustomCode();
-
         WebRequest webRequest = new ServletWebRequest(request);
 
         return super.handleExceptionInternal(

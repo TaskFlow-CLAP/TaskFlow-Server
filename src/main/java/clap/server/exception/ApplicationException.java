@@ -1,16 +1,11 @@
 package clap.server.exception;
 
 import clap.server.exception.code.BaseErrorCode;
-import lombok.Getter;
 
-@Getter
-public class ApplicationException extends RuntimeException {
-
-    private final BaseErrorCode code;
+public class ApplicationException extends BaseException {
 
     public ApplicationException(BaseErrorCode code) {
-        super(code.getMessage());
-        this.code = code;
+        super(code);
     }
 
     public static ApplicationException from(BaseErrorCode code) {

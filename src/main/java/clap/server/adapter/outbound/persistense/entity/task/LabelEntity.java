@@ -25,9 +25,6 @@ public class LabelEntity extends BaseTimeEntity {
     private MemberEntity admin;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private LabelType labelType;
 
