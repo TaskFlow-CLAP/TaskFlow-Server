@@ -40,5 +40,4 @@ jobs:
           script: |
             docker rm -f taskflow
             docker image rm ${{ secrets.DOCKER_REPO }} -f
-            docker pull ${{ secrets.DOCKER_REPO }}
             docker run --name taskflow --network host -d -p 8080:8080 ${{ secrets.DOCKER_REPO }} --restart on-failure
