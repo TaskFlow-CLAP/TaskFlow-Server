@@ -10,8 +10,8 @@ jwt:
 
 password:
   policy:
-    length: 12
-    characters: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+"
+    length: ${INITIAL_PASSWORD_LENGTH:12}
+    characters: ${INITIAL_PASSWORD_CHARACTERS:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+}
 
 ---
 spring.config.activate.on-profile: local
