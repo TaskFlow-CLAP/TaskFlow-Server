@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthController {
     private final AuthUsecase authUsecase;
 
-    @Operation(description = "로그인 API")
+    @Operation(summary = "로그인 API")
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authUsecase.login(request.nickname(), request.password()));
