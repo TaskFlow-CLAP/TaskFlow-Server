@@ -1,6 +1,9 @@
 spring.profiles.active: local
 
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
   config:
     import:
       - mysql.yml
@@ -8,7 +11,7 @@ spring:
       - redis.yml
       - optional:classpath:env.properties
   application:
-    name: taskflow
+    name: taskflow2
 
 web.resources.add-mappings: false
 
@@ -44,3 +47,4 @@ spring.config.activate.on-profile: prod
 logging:
   level:
     root: INFO
+---

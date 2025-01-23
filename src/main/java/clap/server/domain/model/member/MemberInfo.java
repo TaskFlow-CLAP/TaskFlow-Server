@@ -27,4 +27,5 @@ public class MemberInfo {
         this.role = role;
         this.departmentRole = departmentRole;
     }
+
 }

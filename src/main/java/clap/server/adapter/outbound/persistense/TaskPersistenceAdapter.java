@@ -42,4 +42,6 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
                 .map(taskPersistenceMapper::toDomain);
         return taskList.map(TaskMapper::toFindTaskListResponse);
     }
+
+
 }
