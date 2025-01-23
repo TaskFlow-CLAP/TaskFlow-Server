@@ -1,9 +1,6 @@
 package clap.server.adapter.inbound.web.statistics;
 
-import clap.server.application.port.inbound.statistics.FindCategoryTaskRequestUsecase;
-import clap.server.application.port.inbound.statistics.FindPeriodTaskProcessUsecase;
-import clap.server.application.port.inbound.statistics.FindPeriodTaskRequestUsecase;
-import clap.server.application.port.inbound.statistics.FindSubCategoryTaskRequestUsecase;
+import clap.server.application.port.inbound.statistics.*;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +20,7 @@ public class FindStatisticsController {
     private final FindPeriodTaskProcessUsecase findPeriodTaskProcessUsecase;
     private final FindCategoryTaskRequestUsecase findCategoryTaskRequestUsecase;
     private final FindSubCategoryTaskRequestUsecase findSubCategoryTaskRequestUsecase;
-//    private final ManagerTaskProcessUsecase managerTaskProcessUsecase;
+    private final ManagerTaskProcessUsecase managerTaskProcessUsecase;
 
     @GetMapping(value = "/task-requests-by-period")
     public ResponseEntity<Map<String, Long>> aggregatePeriodTaskRequest(@RequestParam String period) {
@@ -34,6 +31,7 @@ public class FindStatisticsController {
     public ResponseEntity<Map<String, Long>> aggregatePeriodTaskProcess(@RequestParam String period) {
         return ResponseEntity.ok(findPeriodTaskProcessUsecase.aggregatePeriodTaskProcess(period));
     }
+
     @GetMapping("/task-requests-by-category")
     public ResponseEntity<Map<String, Long>> aggregateCategoryTaskRequest(@RequestParam String period) {
         return ResponseEntity.ok(findCategoryTaskRequestUsecase.aggregateCategoryTaskRequest(period));
@@ -43,5 +41,9 @@ public class FindStatisticsController {
     public ResponseEntity<Map<String, Long>> aggregateSubCategoryTaskRequest(@RequestParam String period, @RequestParam String mainCategory) {
         return ResponseEntity.ok(findSubCategoryTaskRequestUsecase.aggregateSubCategoryTaskRequest(period, mainCategory));
     }
-//    @GetMapping("/task/statistics/tasks-processed-by-manager")
+
+    @GetMapping("/tasks-processed-by-manager")
+    public ResponseEntity<Map<String, Long>> aggregateSubCategoryTaskRequest(@RequestParam String period) {
+        return ResponseEntity.ok(managerTaskProcessUsecase.aggregateManagerTaskProcess(period));
+    }
 }
