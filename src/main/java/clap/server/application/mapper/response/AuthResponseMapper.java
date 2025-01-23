@@ -22,6 +22,7 @@ public class AuthResponseMapper {
                 member.getMemberId(),
                 member.getMemberInfo().getName(),
                 member.getMemberInfo().getNickname(),
+                member.getImageUrl(),
                 member.getMemberInfo().getRole(),
                 member.getStatus()
         );
