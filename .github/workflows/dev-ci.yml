@@ -1,0 +1,50 @@
+# github repository actions 페이지에 나타날 이름
+name: CI/CD using github actions
+
+# event trigger
+# develop 브랜치에 pull_request가 열렸을 때 실행
+on:
+  pull_request:
+    types: [opened, synchronize, closed]
+    branches: [ "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  CI:
+    if: github.event.action == 'opened' || github.event.action == 'synchronize'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Set up jdk'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin' # https://github.com/actions/setup-java
+
+      - run: touch ./Dockerfile
+      - run: echo "${{ secrets.DEV_DOCKERFILE }}" > ./Dockerfile
+
+      # gradle caching - 빌드 시간 향상
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      ## gradle build
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/libs/*.jar
