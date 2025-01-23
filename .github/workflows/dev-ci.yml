@@ -1,11 +1,11 @@
 # github repository actions 페이지에 나타날 이름
-name: CI/CD to dev using github actions
+name: CI for dev using github actions
 
 # event trigger
 # develop 브랜치에 pull_request가 열렸을 때 실행
 on:
   pull_request:
-    types: [opened, synchronize, closed]
+    types: [opened, synchronize]
     branches: [ "develop" ]
 
 permissions:
@@ -23,9 +23,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin' # https://github.com/actions/setup-java
 
-      - run: touch ./Dockerfile
-      - run: echo "${{ secrets.DEV_DOCKERFILE }}" > ./Dockerfile
-
       # gradle caching - 빌드 시간 향상
       - name: Gradle Caching
         uses: actions/cache@v4
@@ -42,37 +39,3 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: build/libs/*.jar
-
-  DEV-CD:
-    if: github.event.action == 'closed' && github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          github-token: ${{ secrets.GH_TOKEN }}
-
-      - name: Docker build & push to prod
-        run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }} .
-          docker push ${{ secrets.DOCKER_REPO }}
-
-      - name: Deploy to dev
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_HOST_USERNAME }}
-          key: ${{ secrets.DEV_HOST_KEY }}
-          port: ${{ secrets.DEV_HOST_PORT }}
-          script: |
-            docker rm -f taskflow || true
-            docker image rm ${{ secrets.DOCKER_REPO }} -f || true
-            docker run --name taskflow --network host -d -p 8080:8080 ${{ secrets.DOCKER_REPO }} --restart on-failure
