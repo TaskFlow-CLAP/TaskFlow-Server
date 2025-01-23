@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class IssueTokenService {
+class IssueTokenService {
     private final JwtProvider accessTokenProvider;
     private final JwtProvider refreshTokenProvider;
     private final JwtProvider temporaryTokenProvider;
