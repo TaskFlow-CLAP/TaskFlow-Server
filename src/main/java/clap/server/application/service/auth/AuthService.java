@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.application.mapper.response.AuthResponseMapper;
 import clap.server.application.port.inbound.auth.AuthUsecase;
+import clap.server.application.port.outbound.auth.CommandRefreshTokenPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.auth.CustomJwts;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 class AuthService implements AuthUsecase {
     private final LoadMemberPort loadMemberPort;
+    private final CommandRefreshTokenPort commandRefreshTokenPort;
     private final IssueTokenService issueTokenService;
     private final PasswordEncoder passwordEncoder;
 
@@ -29,22 +31,25 @@ class AuthService implements AuthUsecase {
         validatePassword(password, member.getPassword());
 
         if (member.getStatus().equals(MemberStatus.APPROVAL_REQUEST)) {
-            String temporaryToken = issueTokenService.createTemporaryToken(member);
+            String temporaryToken = issueTokenService.issueTemporaryToken(member.getMemberId());
             return AuthResponseMapper.toLoginResponse(
                     temporaryToken, null, member
             );
         } else {
-            CustomJwts jwtTokens = issueTokenService.createToken(member);
+            CustomJwts jwtTokens = issueTokenService.issueTokens(member);
+            commandRefreshTokenPort.save(
+                issueTokenService.issueRefreshToken(member.getMemberId())
+            );
             return AuthResponseMapper.toLoginResponse(
                     jwtTokens.accessToken(), jwtTokens.refreshToken(), member
             );
         }
     }
 
-
     private void validatePassword(String inputPassword, String encodedPassword) {
         if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
             throw new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND);
         }
     }
+
 }
