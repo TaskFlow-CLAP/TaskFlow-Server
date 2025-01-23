@@ -2,6 +2,8 @@ package clap.server.application.mapper.response;
 
 import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
 import clap.server.adapter.inbound.web.dto.auth.MemberInfoResponse;
+import clap.server.adapter.inbound.web.dto.auth.ReissueTokenResponse;
+import clap.server.domain.model.auth.CustomJwts;
 import clap.server.domain.model.member.Member;
 
 public class AuthResponseMapper {
@@ -24,6 +26,13 @@ public class AuthResponseMapper {
                 member.getMemberInfo().getNickname(),
                 member.getMemberInfo().getRole(),
                 member.getStatus()
+        );
+    }
+
+    public static ReissueTokenResponse toReissueTokenResponse(final CustomJwts jwtTokens) {
+        return new ReissueTokenResponse(
+                jwtTokens.accessToken(),
+                jwtTokens.refreshToken()
         );
     }
 }
