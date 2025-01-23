@@ -44,4 +44,9 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
                 .map(attachmentPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteByIds(List<Long> attachmentIds) {
+        attachmentRepository.deleteAllByAttachmentIdIn(attachmentIds);
+    }
 }
