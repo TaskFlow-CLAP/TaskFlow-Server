@@ -32,7 +32,7 @@ public class FindTaskDetailsService implements FindTaskDetailsUsecase {
         memberService.findActiveMember(requesterId);
         Task task = loadTaskPort.findById(taskId)
                 .orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
-        List<Attachment> attachments = loadAttachmentPort.findAllByTaskId(taskId);
+        List<Attachment> attachments = loadAttachmentPort.findAllByTaskId(taskId); //TODO: comment에 달린 이미지 첨부파일은 가져오지 않도록 수정
         return TaskMapper.toFindTaskDetailResponses(task, attachments);
     }
 }

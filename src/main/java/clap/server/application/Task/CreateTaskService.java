@@ -1,7 +1,7 @@
 package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.CreateAndUpdateTaskResponse;
 
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
@@ -25,7 +25,6 @@ import java.util.List;
 
 @ApplicationService
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CreateTaskService implements CreateTaskUsecase {
 
     private final MemberService memberService;
@@ -35,16 +34,16 @@ public class CreateTaskService implements CreateTaskUsecase {
 
     @Override
     @Transactional
-    public CreateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest) {
+    public CreateAndUpdateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest) {
         Member member = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(createTaskRequest.categoryId());
 
         Task task = TaskMapper.toTask(member, category, createTaskRequest.title(), createTaskRequest.description());
         Task savedTask = commandTaskPort.save(task);
 
-        List<Attachment> attachments = AttachmentMapper.toAttachments(savedTask, createTaskRequest.fileUrls());
+        List<Attachment> attachments = AttachmentMapper.toCreateAttachments(savedTask, createTaskRequest.fileUrls());
         commandAttachmentPort.saveAll(attachments);
 
-        return TaskMapper.toCreateTaskResponse(savedTask);
+        return TaskMapper.toCreateAndUpdateTaskResponse(savedTask);
     }
 }

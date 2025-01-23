@@ -1,8 +1,8 @@
 package clap.server.application.port.inbound.task;
 
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.CreateAndUpdateTaskResponse;
 
 public interface CreateTaskUsecase {
-    CreateTaskResponse createTask(Long memberId, CreateTaskRequest createTaskRequest);
+    CreateAndUpdateTaskResponse createTask(Long memberId, CreateTaskRequest createTaskRequest);
 }
