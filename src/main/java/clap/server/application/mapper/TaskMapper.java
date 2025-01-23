@@ -21,17 +21,7 @@ public class TaskMapper {
         throw new IllegalArgumentException();
     }
     private static final String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
-    public static Task toTask(Member member, Category category, String title, String description) {
 
-        return Task.builder()
-                .title(title)
-                .description(description)
-                .category(category)
-                .requester(member)
-                .taskStatus(TaskStatus.REQUESTED)
-                .taskCode(category.getMainCategory().getCode() + formattedDateTime)
-                .build();
-    }
     public static Task toUpdatedTask(Task task, Member member, Category category, String title, String description) {
 
         return Task.builder()

@@ -4,11 +4,13 @@ import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @SuperBuilder
@@ -27,4 +29,29 @@ public class Task extends BaseTime {
     private Member reviewer;
     private LocalDateTime dueDate;
     private LocalDateTime completedAt;
+
+    public static Task createTask(Member member, Category category, String title, String description) {
+        return Task.builder()
+                .requester(member)
+                .category(category)
+                .title(title)
+                .description(description)
+                .taskStatus(TaskStatus.REQUESTED)
+                .taskCode(category.getMainCategory().getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm")))
+                .build();
+    }
+
+    public static Task updateTask(Task task, Member member, Category category, String title, String description) {
+
+        return Task.builder()
+                .taskId(task.getTaskId())
+                .requester(member)
+                .category(category)
+                .title(title)
+                .description(description)
+                .taskStatus(TaskStatus.REQUESTED)
+                .taskCode(category.getMainCategory().getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm")))
+                .build();
+    }
+
 }
