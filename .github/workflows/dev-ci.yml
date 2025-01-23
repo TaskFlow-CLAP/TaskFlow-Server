@@ -1,5 +1,5 @@
 # github repository actions 페이지에 나타날 이름
-name: CI/CD using github actions
+name: CI for dev using github actions
 
 # event trigger
 # develop 브랜치에 pull_request가 열렸을 때 실행
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  CI:
+  DEV_CI:
     if: github.event.action == 'opened' || github.event.action == 'synchronize'
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +28,7 @@ jobs:
 
       # gradle caching - 빌드 시간 향상
       - name: Gradle Caching
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
