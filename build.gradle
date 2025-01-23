@@ -69,6 +69,10 @@ dependencies {
 
     // Junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:elasticsearch:1.20.4'
+    testImplementation 'com.redis:testcontainers-redis:2.2.2'
 
     // Json
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
