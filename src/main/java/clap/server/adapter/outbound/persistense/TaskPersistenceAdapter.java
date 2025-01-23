@@ -57,4 +57,6 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
         return taskRepository.findYesterdayTaskByUpdatedAtIsBetween(now.minusDays(1), now)
                 .stream().map(taskPersistenceMapper::toDomain).toList();
     }
+
+
 }
