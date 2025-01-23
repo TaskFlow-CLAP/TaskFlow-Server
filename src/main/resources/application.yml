@@ -10,6 +10,8 @@ spring:
       - optional:classpath:env.properties
   application:
     name: taskflow
+  elasticsearch:
+    uris: ${ELASTIC_URI:127.0.0.1:9200}
 
 web.resources.add-mappings: false
 

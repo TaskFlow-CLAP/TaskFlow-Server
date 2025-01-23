@@ -1,0 +1,65 @@
+# github repository actions 페이지에 나타날 이름
+name: CD to dev using github actions
+
+# event trigger
+# develop 브랜치에 pull_request가 닫혔을 때 실행
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  DEV-CD:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 'Set up jdk'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin' # https://github.com/actions/setup-java
+
+      - run: touch ./Dockerfile
+      - run: echo "${{ secrets.DEV_DOCKERFILE }}" > ./Dockerfile
+
+      # gradle caching - 빌드 시간 향상
+      - name: Gradle Caching
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      ## gradle build
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build -x test
+
+        ## docker build & push to production
+      - name: Docker build & push to dev
+        run: |
+          docker login clap.kr-central-2.kcr.dev -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REPO }} .
+          docker push ${{ secrets.DOCKER_REPO }}
+
+        ## deploy to dev
+      - name: Deploy to prod
+        uses: appleboy/ssh-action@master
+        id: deploy
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_HOST_USERNAME }}
+          key: ${{ secrets.DEV_HOST_KEY }}
+          port: ${{ secrets.DEV_HOST_PORT }}
+          script: |
+            docker rm -f taskflow
+            docker image rm ${{ secrets.DOCKER_REPO }} -f
+            docker run --name taskflow --network host -d -p 9090:9090 ${{ secrets.DOCKER_REPO }} --restart on-failure
