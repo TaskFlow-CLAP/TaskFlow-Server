@@ -6,7 +6,9 @@ import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.domain.model.task.Attachment;
 
 import clap.server.domain.model.task.Task;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,13 +28,13 @@ public class TaskMapper {
         return new FindTaskListResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
-                task.getCreatedAt(),
+                task.getUpdatedAt(),
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getTitle(),
-                task.getProcessor() != null ? task.getProcessor().getMemberInfo().getName() : null,
+                task.getProcessor() != null ? task.getProcessor().getMemberInfo().getNickname() : "",
                 task.getTaskStatus(),
-                task.getCompletedAt()
+                task.getCompletedAt() != null ? task.getCompletedAt() : null
         );
     }
 
@@ -56,8 +58,8 @@ public class TaskMapper {
                 task.getTaskStatus(),
                 task.getRequester().getMemberInfo().getNickname(),
                 task.getRequester().getImageUrl(),
-                task.getProcessor() != null ? task.getProcessor().getMemberInfo().getNickname() : null,
-                task.getProcessor() != null ? task.getProcessor().getImageUrl() : null,
+                task.getProcessor() != null ? task.getProcessor().getMemberInfo().getNickname() : "",
+                task.getProcessor() != null ? task.getProcessor().getImageUrl() : "",
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getTitle(),
