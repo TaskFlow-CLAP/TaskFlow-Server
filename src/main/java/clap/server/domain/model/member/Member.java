@@ -36,4 +36,13 @@ public class Member extends BaseTime {
         this.status = MemberStatus.PENDING;
         this.password = null;
     }
+
+    public void resetPassword(String newEncodedPassword) {
+        this.password = newEncodedPassword;
+    }
+
+    public void resetPasswordAndActivateMember(String newEncodedPassword) {
+        this.password = newEncodedPassword;
+        this.status = MemberStatus.ACTIVE;
+    }
 }

@@ -9,9 +9,14 @@ import jakarta.validation.constraints.Pattern;
 public record RegisterMemberRequest(
         @NotBlank @Schema(description = "회원 이름")
         String name,
-        @NotBlank @Schema(description = "회원 이메일")
+        @NotBlank
+        @Pattern(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
+                message = "올바른 이메일 형식이 아닙니다.")
+        @Schema(description = "회원 이메일")
         String email,
-        @NotBlank @Schema(description = "회원 닉네임, 로그인할 때 쓰입니다.") @Pattern(regexp = "^[a-z]{3,10}\\.[a-z]{1,5}$", message = "올바른 형식이 아닙니다.")
+        @NotBlank @Schema(description = "회원 닉네임, 로그인할 때 쓰입니다.")
+        @Pattern(regexp = "^[a-z]{3,10}\\.[a-z]{1,5}$",
+                message = "올바른 닉네임 형식이 아닙니다.")
         String nickname,
         @NotNull @Schema(description = "승인 권한 여부")
         Boolean isReviewer,

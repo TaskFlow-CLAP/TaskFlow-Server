@@ -20,7 +20,7 @@ import static clap.server.application.mapper.MemberMapper.toMember;
 
 @ApplicationService
 @RequiredArgsConstructor
-public class RegisterMemberService implements RegisterMemberUsecase {
+class RegisterMemberService implements RegisterMemberUsecase {
     private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;

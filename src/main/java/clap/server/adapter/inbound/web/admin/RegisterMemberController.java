@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RegisterMemberController {
     private final RegisterMemberUsecase registerMemberUsecase;
 
-    @Operation(description = "단일 회원 등록 API")
+    @Operation(summary = "단일 회원 등록 API")
     @PostMapping("/members")
     @Secured("ROLE_ADMIN")
     public void registerMember(@AuthenticationPrincipal SecurityUserDetails userInfo,
