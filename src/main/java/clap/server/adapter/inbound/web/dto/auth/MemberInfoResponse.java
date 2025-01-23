@@ -11,6 +11,8 @@ public record MemberInfoResponse(
         String memberName,
         @Schema(description = "회원 닉네임, 로그인에 쓰입니다")
         String nickname,
+        @Schema(description = "회원 프로필 이미지")
+        String imageUrl,
         @Schema(description = "회원 역할")
         MemberRole memberRole,
         @Schema(description = "회원 상태")
