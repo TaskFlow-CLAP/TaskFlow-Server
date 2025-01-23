@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
 import clap.server.adapter.outbound.persistense.entity.task.QTaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
+import clap.server.domain.model.task.Term;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -27,22 +28,22 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(task.requester.memberId.eq(requesterId));
 
-        Long categoryId = findTaskListRequest.categoryId();
-        Long mainCategoryId = findTaskListRequest.mainCategoryId();
+        List<Long> categoryIds = findTaskListRequest.categoryIds();
+        List<Long> mainCategoryIds = findTaskListRequest.mainCategoryIds();
         String title = findTaskListRequest.title();
         String nickName = findTaskListRequest.nickName();
         TaskStatus taskStatus = findTaskListRequest.taskStatus();
-        Integer term = findTaskListRequest.term();
+        Term term = findTaskListRequest.term();
 
         if (term != null) {
-            LocalDateTime fromDate = LocalDateTime.now().minusMonths(term);
+            LocalDateTime fromDate = LocalDateTime.now().minusMonths(term.getHours());
             whereClause.and(task.createdAt.after(fromDate));
         }
-        if (categoryId != null) {
-            whereClause.and(task.category.categoryId.eq(categoryId));
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            whereClause.and(task.category.categoryId.in(categoryIds));  // 리스트를 처리하는 in 조건
         }
-        if (mainCategoryId != null) {
-            whereClause.and(task.category.mainCategory.categoryId.eq(mainCategoryId));
+        if (mainCategoryIds != null && !mainCategoryIds.isEmpty()) {
+            whereClause.and(task.category.mainCategory.categoryId.in(mainCategoryIds));  // 리스트를 처리하는 in 조건
         }
         if (title != null && !title.isEmpty()) {
             whereClause.and(task.title.containsIgnoreCase(title));

@@ -1,8 +1,9 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.CreateAndUpdateTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.UpdateTaskResponse;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
@@ -23,13 +24,13 @@ public class ManagementTaskController {
     private static final Long memberId = 4L;
 
     @PostMapping
-    public ResponseEntity<CreateAndUpdateTaskResponse> createTask(
+    public ResponseEntity<CreateTaskResponse> createTask(
             @RequestBody @Valid CreateTaskRequest createTaskRequest){
             return ResponseEntity.ok(createTaskUsecase.createTask(memberId, createTaskRequest));
     }
 
     @PatchMapping
-    public ResponseEntity<CreateAndUpdateTaskResponse> updateTask(
+    public ResponseEntity<UpdateTaskResponse> updateTask(
             @RequestBody @Valid UpdateTaskRequest updateTaskRequest){
         return ResponseEntity.ok(updateTaskUsecase.updateTask(memberId, updateTaskRequest));
     }
