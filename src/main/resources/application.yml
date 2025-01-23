@@ -6,6 +6,7 @@ spring:
       - mysql.yml
       - swagger.yml
       - redis.yml
+      - auth.yml
       - optional:classpath:env.properties
   application:
     name: taskflow
@@ -25,15 +26,18 @@ server:
 logging:
   level:
     root: INFO
+    taskflow.clap.server: ERROR
     org:
       springframework: DEBUG
-    taskflow.clap.server: DEBUG
 
 ---
 spring.config.activate.on-profile: local
 logging:
   level:
     root: INFO
+    taskflow.clap.server: ERROR
+    org:
+      springframework: DEBUG
 
 ---
 spring.config.activate.on-profile: dev

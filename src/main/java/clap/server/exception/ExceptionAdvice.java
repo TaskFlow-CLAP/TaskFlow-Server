@@ -1,5 +1,6 @@
 package clap.server.exception;
 
+import clap.server.exception.code.AuthErrorCode;
 import clap.server.exception.code.BaseErrorCode;
 import clap.server.exception.code.CommonErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -154,6 +156,18 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 headers,
                 baseErrorCode.getHttpStatus(),
                 request
+        );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e, WebRequest request) {
+        return handleExceptionInternalFalse(
+                e,
+                AuthErrorCode.FORBIDDEN,
+                HttpHeaders.EMPTY,
+                HttpStatus.FORBIDDEN,
+                request,
+                AuthErrorCode.FORBIDDEN.getMessage()
         );
     }
 }

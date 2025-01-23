@@ -1,48 +1,62 @@
 package clap.server.config.swagger;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
+import java.util.Collections;
 import java.util.List;
+
+import static clap.server.common.constants.AuthConstants.AUTHORIZATION;
 
 @Configuration
 public class SwaggerConfig {
+
+    private static final String API_NAME = "TaskFlow API";
+    private static final String API_VERSION = "1.0.0";
 
     @Value("${swagger.server.url}")
     private String serverUrl;
 
     @Bean
-    @Profile("local")
-    public OpenAPI localOpenAPI() {
-        return createOpenAPI(getLocalServer());
-    }
-
-    @Bean
-    @Profile("dev")
-    public OpenAPI devOpenAPI() {
-        return createOpenAPI(getDevServer());
-    }
-
-    private OpenAPI createOpenAPI(Server server) {
+    public OpenAPI getOpenAPI() {
         return new OpenAPI()
-                .servers(List.of(server))
-                .info(new Info().title("TaskFlow API").version("1.0"));
+                .components(getComponents())
+                .servers(List.of(getServer()))
+                .security(getSecurity())
+                .info(getInfo());
     }
 
-    private Server getLocalServer() {
-        return new Server()
-                .url(serverUrl)
-                .description("Local Server");
+    private Info getInfo() {
+        return new Info()
+                .title(API_NAME)
+                .version(API_VERSION);
     }
 
-    private Server getDevServer() {
+    private static List<SecurityRequirement> getSecurity() {
+        SecurityRequirement securityRequirement = new SecurityRequirement()
+                .addList(AUTHORIZATION.getValue());
+
+        return Collections.singletonList(securityRequirement);
+    }
+
+    private Server getServer() {
         return new Server()
-                .url(serverUrl)
-                .description("Development Server");
+                .url(serverUrl);
+    }
+
+    private static Components getComponents() {
+        SecurityScheme securityScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT").name(AUTHORIZATION.getValue())
+                .in(SecurityScheme.In.HEADER).name(AUTHORIZATION.getValue());
+
+        return new Components()
+                .addSecuritySchemes(AUTHORIZATION.getValue(), securityScheme);
     }
 }
