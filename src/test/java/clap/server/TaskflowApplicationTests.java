@@ -1,7 +1,9 @@
 package clap.server;
 
+import clap.server.adapter.outbound.persistense.repository.member.MemberRepository;
 import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -17,6 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @SpringBootTest
 class TaskflowApplicationTests {
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Container
 //    @ServiceConnection
@@ -34,6 +39,7 @@ class TaskflowApplicationTests {
 
     @Test
     void contextLoads() {
+        assertThat(memberRepository.findAll()).isEmpty();
         assertThat(ES_CONTAINER.isRunning()).isTrue();
         assertThat(REDIS_CONTAINER.isRunning()).isTrue();
         System.out.println("Redis: " + REDIS_CONTAINER.getHost() + ":" + REDIS_CONTAINER.getMappedPort(6379));
