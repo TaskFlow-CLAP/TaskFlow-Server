@@ -24,14 +24,14 @@ public class AttachmentEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String fileUrl;
 
+    @Column(nullable = false)
+    private String fileSize;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     private TaskEntity task;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private CommentEntity comment;
-
-    @Column(nullable = false)
-    private String fileSize;
 }

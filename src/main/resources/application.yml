@@ -9,11 +9,16 @@ spring:
       - mysql.yml
       - swagger.yml
       - redis.yml
+      - auth.yml
       - optional:classpath:env.properties
   application:
-    name: taskflow2
 
-web.resources.add-mappings: false
+    name: taskflow2
+  elasticsearch:
+    uris: ${ELASTIC_URI:127.0.0.1:9200}
+  web.resources.add-mappings: false
+
+
 
 server:
   port: ${APPLICATION_PORT:8080}
@@ -26,15 +31,18 @@ server:
 logging:
   level:
     root: INFO
+    taskflow.clap.server: ERROR
     org:
       springframework: DEBUG
-    taskflow.clap.server: DEBUG
 
 ---
 spring.config.activate.on-profile: local
 logging:
   level:
     root: INFO
+    taskflow.clap.server: ERROR
+    org:
+      springframework: DEBUG
 
 ---
 spring.config.activate.on-profile: dev

@@ -1,0 +1,35 @@
+spring:
+  # H2 Setting Info (H2 Console에 접속하기 위한 설정정보 입력)
+  h2:
+    console:
+      enabled: false  # H2 Console을 사용할지 여부 (H2 Console은 H2 Database를 UI로 제공해주는 기능)
+      path: /h2  # H2 Console의 Path
+  # Database Setting Info (Database를 H2로 사용하기 위해 H2연결 정보 입력)
+  datasource:
+    driver-class-name: org.h2.Driver  # Database를 H2로 사용하겠다.
+    url: jdbc:h2:mem:testdb  # H2 접속 정보
+    username: taskflow  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
+    password:  # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+swagger:
+  server:
+    url: http://localhost:8080
+
+
+jwt:
+  secret-key:
+    access-token: exampleSecretKeyForTFSystemAccessSecretKeyTestForPadding
+    temporary-token: exampleSecretKeyForTFSystemTemporarySecretKeyTestForPadding
+    refresh-token: exampleSecretKeyTFSystemRefreshSecretKeyTestForPadding
+  expiration-time:
+    access-token: 43200000 # 1000 * 60 * 60 * 12 = 43200000 (12 hours)
+    temporary-token: 300000
+    refresh-token: 1209600000 # 1000 * 60 * 60 * 24 * 14 = 1209600000 (14 days)
+
+password:
+  policy:
+    length: 12
+    characters: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+"

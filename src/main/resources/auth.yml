@@ -1,0 +1,23 @@
+jwt:
+  secret-key:
+    access-token: ${JWT_ACCESS_SECRET_KEY:exampleSecretKeyForTFSystemAccessSecretKeyTestForPadding}
+    temporary-token: ${JWT_TEMPORARY_SECRET_KEY:exampleSecretKeyForTFSystemTemporarySecretKeyTestForPadding}
+    refresh-token: ${JWT_REFRESH_SECRET_KEY:exampleSecretKeyTFSystemRefreshSecretKeyTestForPadding}
+  expiration-time:
+    access-token: ${JWT_ACCESS_EXPIRATION_TIME:43200000} # 1000 * 60 * 60 * 12 = 43200000 (12 hours)
+    temporary-token: ${JWT_TEMPORARY_EXPIRATION_TIME:300000} 
+    refresh-token: ${JWT_REFRESH_EXPIRATION_TIME:1209600000} # 1000 * 60 * 60 * 24 * 14 = 1209600000 (14 days)
+
+password:
+  policy:
+    length: ${INITIAL_PASSWORD_LENGTH:12}
+    characters: ${INITIAL_PASSWORD_CHARACTERS:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+}
+
+---
+spring.config.activate.on-profile: local
+
+---
+spring.config.activate.on-profile: dev
+
+---
+spring.config.activate.on-profile: prod

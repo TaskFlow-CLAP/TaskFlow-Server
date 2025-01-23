@@ -11,8 +11,6 @@ public class MemberMapper {
     public static Member toMember(MemberInfo memberInfo) {
         return Member.builder()
                 .memberInfo(memberInfo)
-                .notificationEnabled(null)
-                .imageUrl(null)
                 .build();
     }
 }

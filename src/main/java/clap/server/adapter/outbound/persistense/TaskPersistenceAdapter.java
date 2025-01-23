@@ -9,12 +9,13 @@ import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
-
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -43,5 +44,9 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
         return taskList.map(TaskMapper::toFindTaskListResponse);
     }
 
-
+    @Override
+    public List<Task> findYesterdayTaskByDate(LocalDateTime now) {
+        return taskRepository.findYesterdayTaskByUpdatedAtIsBetween(now.minusDays(1), now)
+                .stream().map(taskPersistenceMapper::toDomain).toList();
+    }
 }

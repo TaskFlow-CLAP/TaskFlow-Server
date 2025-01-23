@@ -5,8 +5,8 @@ import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRol
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.adapter.outbound.persistense.mapper.MemberPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.member.MemberRepository;
-import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.application.port.outbound.member.CommandMemberPort;
+import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
 import clap.server.domain.model.task.Task;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus ;
@@ -39,6 +39,12 @@ import java.util.Optional;
     @Override
     public Optional<Member> findActiveMemberById(final Long id) {
         Optional<MemberEntity> memberEntity = memberRepository.findByStatusAndMemberId(MemberStatus.ACTIVE, id);
+        return memberEntity.map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Member> findByNickname(final String nickname) {
+        Optional<MemberEntity> memberEntity = memberRepository.findByNickname(nickname);
         return memberEntity.map(memberPersistenceMapper::toDomain);
     }
 

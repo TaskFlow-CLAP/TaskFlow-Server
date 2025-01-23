@@ -10,4 +10,5 @@ public interface CommandAttachmentPort {
 
     void saveAll(List<Attachment> attachments);
 
+    void deleteByIds(List<Long> attachmentId);
 }
