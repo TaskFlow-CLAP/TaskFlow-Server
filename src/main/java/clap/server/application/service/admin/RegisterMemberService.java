@@ -1,4 +1,4 @@
-package clap.server.application;
+package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.RegisterMemberRequest;
 import clap.server.application.port.inbound.domain.MemberService;
