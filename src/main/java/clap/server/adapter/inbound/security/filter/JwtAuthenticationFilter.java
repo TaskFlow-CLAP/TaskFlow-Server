@@ -32,7 +32,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String TEMPORARY_TOKEN_ALLOWED_ENDPOINT = "/api/auths/initial-password";
+    private static final String TEMPORARY_TOKEN_ALLOWED_ENDPOINT = "/api/members/initial-password";
     private final UserDetailsService securityUserDetailsService;
     private final JwtProvider accessTokenProvider;
     private final JwtProvider temporaryTokenProvider;
@@ -51,6 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String accessToken = resolveAccessToken(request);
+
             UserDetails userDetails = getUserDetails(accessToken);
             authenticateUser(userDetails, request);
         } catch (AccessDeniedException e) {
@@ -80,8 +81,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean isTemporaryToken = isTemporaryToken(token);
         JwtProvider tokenProvider = isTemporaryToken ? temporaryTokenProvider : accessTokenProvider;
 
-        if (!(isTemporaryTokenAllowed(requestUrl) && isTemporaryToken)) {
-            log.error("FORBIDDEN_TEMPORARY_TOKEN");
+        log.info("Token is Temporary {}", isTemporaryToken);
+
+        if (isTemporaryTokenAllowed(requestUrl) != isTemporaryToken) {
+            log.error("FORBIDDEN_TEMPORARY_TOKEN_ACCESS");
             handleAuthException(AuthErrorCode.FORBIDDEN_ACCESS_TOKEN);
         }
 
@@ -110,7 +113,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private UserDetails getUserDetails(String accessToken) {
-        JwtClaims claims = accessTokenProvider.parseJwtClaimsFromToken(accessToken);
+        JwtProvider tokenProvider = isTemporaryToken(accessToken) ? temporaryTokenProvider : accessTokenProvider;
+        JwtClaims claims = tokenProvider.parseJwtClaimsFromToken(accessToken);
         String memberId = (String) claims.getClaims().get(AccessTokenClaimKeys.USER_ID.getValue());
         return securityUserDetailsService.loadUserByUsername(memberId);
     }
