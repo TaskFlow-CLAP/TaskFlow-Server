@@ -1,6 +1,5 @@
 package clap.server.application.Task;
 
-import clap.server.adapter.inbound.web.dto.task.AttachmentRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateAndUpdateTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
 import clap.server.application.mapper.AttachmentMapper;
@@ -23,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 
 
@@ -46,13 +44,13 @@ public class UpdateTaskService implements UpdateTaskUsecase {
         Category category = categoryService.findById(updateTaskRequest.categoryId());
         Task task = taskService.findById(updateTaskRequest.taskId());
 
-        Task updatedTask = TaskMapper.toUpdatedTask(task,member, category, updateTaskRequest.title(), updateTaskRequest.description());
+        Task updatedTask = Task.updateTask(task, member, category, updateTaskRequest.title(), updateTaskRequest.description());
         Task savedTask = commandTaskPort.save(updatedTask);
 
         List<Long> attachmentIds = AttachmentMapper.toAttachmentIds(updateTaskRequest.attachmentRequests());
         commandAttachmentPort.deleteByIds(attachmentIds);
 
-        List<Attachment> attachments = AttachmentMapper.toUpdateAttachments(savedTask, updateTaskRequest.attachmentRequests());
+        List<Attachment> attachments = Attachment.updateAttachments(savedTask, updateTaskRequest.attachmentRequests());
         commandAttachmentPort.saveAll(attachments);
         return TaskMapper.toCreateAndUpdateTaskResponse(savedTask);
     }
