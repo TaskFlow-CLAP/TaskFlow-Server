@@ -15,6 +15,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 public class SecurityFilterConfig {
 	private final UserDetailsService securityUserDetails;
 	private final JwtProvider accessTokenProvider;
+	private final JwtProvider temporaryTokenProvider;
 	private final AccessDeniedHandler accessDeniedHandler;
 
 	@Bean
@@ -24,6 +25,6 @@ public class SecurityFilterConfig {
 
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
-		return new JwtAuthenticationFilter(securityUserDetails, accessTokenProvider, accessDeniedHandler);
+		return new JwtAuthenticationFilter(securityUserDetails, accessTokenProvider, temporaryTokenProvider, accessDeniedHandler);
 	}
 }

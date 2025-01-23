@@ -1,8 +1,8 @@
-package clap.server.adapter.outbound.jwt.access;
+package clap.server.adapter.outbound.jwt.access.temporary;
 
 import clap.server.adapter.outbound.jwt.JwtClaims;
 import clap.server.application.port.outbound.auth.JwtProvider;
-import clap.server.common.annotation.jwt.AccessTokenStrategy;
+import clap.server.common.annotation.jwt.TemporaryTokenStrategy;
 import clap.server.common.utils.DateUtil;
 import clap.server.exception.JwtException;
 import clap.server.exception.code.AuthErrorCode;
@@ -24,14 +24,14 @@ import static clap.server.adapter.outbound.jwt.access.AccessTokenClaimKeys.USER_
 
 @Slf4j
 @Component
-@AccessTokenStrategy
-public class AccessTokenProvider implements JwtProvider {
+@TemporaryTokenStrategy
+public class TemporaryTokenProvider implements JwtProvider {
     private final SecretKey secretKey;
     private final Duration tokenExpiration;
 
-    public AccessTokenProvider(
-            @Value("${jwt.secret-key.access-token}") String jwtSecretKey,
-            @Value("${jwt.expiration-time.access-token}") Duration tokenExpiration
+    public TemporaryTokenProvider(
+            @Value("${jwt.secret-key.temporary-token}") String jwtSecretKey,
+            @Value("${jwt.expiration-time.temporary-token}") Duration tokenExpiration
     ) {
         byte[] keyBytes = Base64.getDecoder().decode(jwtSecretKey);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
@@ -53,7 +53,7 @@ public class AccessTokenProvider implements JwtProvider {
     @Override
     public JwtClaims parseJwtClaimsFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
-        return AccessTokenClaim.of(
+        return TemporaryTokenClaim.of(
                 Long.parseLong(claims.get(USER_ID.getValue(), String.class))
         );
     }
