@@ -1,7 +1,7 @@
 package clap.server.application.Task;
 
-import clap.server.adapter.inbound.web.dto.task.CreateAndUpdateTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.UpdateTaskResponse;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
@@ -39,7 +39,7 @@ public class UpdateTaskService implements UpdateTaskUsecase {
 
     @Override
     @Transactional
-    public CreateAndUpdateTaskResponse updateTask(Long requesterId, UpdateTaskRequest updateTaskRequest) {
+    public UpdateTaskResponse updateTask(Long requesterId, UpdateTaskRequest updateTaskRequest) {
         Member member = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(updateTaskRequest.categoryId());
         Task task = taskService.findById(updateTaskRequest.taskId());
@@ -52,6 +52,6 @@ public class UpdateTaskService implements UpdateTaskUsecase {
 
         List<Attachment> attachments = Attachment.updateAttachments(savedTask, updateTaskRequest.attachmentRequests());
         commandAttachmentPort.saveAll(attachments);
-        return TaskMapper.toCreateAndUpdateTaskResponse(savedTask);
+        return TaskMapper.toUpdateTaskResponse(savedTask);
     }
 }
