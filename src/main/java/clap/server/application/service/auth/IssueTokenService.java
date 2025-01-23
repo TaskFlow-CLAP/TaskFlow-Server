@@ -1,6 +1,7 @@
 package clap.server.application.service.auth;
 
 import clap.server.adapter.outbound.jwt.access.AccessTokenClaim;
+import clap.server.adapter.outbound.jwt.access.temporary.TemporaryTokenClaim;
 import clap.server.adapter.outbound.jwt.refresh.RefreshTokenClaim;
 import clap.server.application.port.outbound.auth.CommandRefreshTokenPort;
 import clap.server.application.port.outbound.auth.JwtProvider;
@@ -20,9 +21,10 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class IssueTokenService {
+class IssueTokenService {
     private final JwtProvider accessTokenProvider;
     private final JwtProvider refreshTokenProvider;
+    private final JwtProvider temporaryTokenProvider;
     private final LoadRefreshTokenPort loadRefreshTokenPort;
     private final CommandRefreshTokenPort commandRefreshTokenPort;
 
@@ -38,6 +40,10 @@ public class IssueTokenService {
         );
 
         return CustomJwts.of(accessToken, refreshToken);
+    }
+
+    public String createTemporaryToken(Member member) {
+        return temporaryTokenProvider.createToken(TemporaryTokenClaim.of(member.getMemberId()));
     }
 
     private long toSeconds(LocalDateTime expiredDate) {

@@ -1,7 +1,7 @@
 package clap.server.application.port.outbound.auth;
 
 import clap.server.adapter.outbound.jwt.JwtClaims;
-import clap.server.common.AuthConstants;
+import clap.server.common.constants.AuthConstants;
 import io.jsonwebtoken.Claims;
 import org.springframework.util.StringUtils;
 

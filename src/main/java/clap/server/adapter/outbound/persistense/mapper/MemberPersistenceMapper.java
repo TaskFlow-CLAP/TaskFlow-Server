@@ -13,18 +13,17 @@ public interface MemberPersistenceMapper {
     @Mapping(source = "nickname", target = "memberInfo.nickname")
     @Mapping(source = "role", target = "memberInfo.role")
     @Mapping(source = "departmentRole", target = "memberInfo.departmentRole")
-    @Mapping(source = "department", target = "memberInfo.department") // Department 변환
+    @Mapping(source = "department", target = "memberInfo.department")
     @Mapping(source = "admin", target = "admin")
-    Member toDomain(final MemberEntity entity);
-
+    Member toDomain(MemberEntity entity);
 
     @Mapping(source = "memberInfo.name", target = "name")
     @Mapping(source = "memberInfo.email", target = "email")
     @Mapping(source = "memberInfo.nickname", target = "nickname")
     @Mapping(source = "memberInfo.role", target = "role")
     @Mapping(source = "memberInfo.departmentRole", target = "departmentRole")
-    @Mapping(source = "memberInfo.department", target = "department") // Department 변환
-    @Mapping(source = "admin", target = "admin")
+    @Mapping(source = "memberInfo.department", target = "department")
+    @Mapping(target = "admin", source = "admin")
     MemberEntity toEntity(Member member);
 
     default boolean mapIsReviewer(Member member) {
