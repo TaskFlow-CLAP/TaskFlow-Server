@@ -1,4 +1,4 @@
-package clap.server.common;
+package clap.server.common.constants;
 
 import lombok.Getter;
 
