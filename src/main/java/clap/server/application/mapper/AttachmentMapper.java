@@ -15,8 +15,6 @@ public class AttachmentMapper {
         throw new IllegalArgumentException();
     }
 
-
-
     public static List<Long> toAttachmentIds(List<AttachmentRequest> attachmentRequests) {
         return attachmentRequests.stream()
                 .map(AttachmentRequest::fileId)
