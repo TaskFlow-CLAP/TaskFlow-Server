@@ -1,8 +1,6 @@
 package clap.server.application.service.notification;
 
 import clap.server.adapter.inbound.web.dto.notification.FindNotificationListResponse;
-import clap.server.application.port.inbound.domain.MemberService;
-import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.notification.FindNotificationListUsecase;
 import clap.server.application.port.outbound.notification.LoadNotificationPort;
 import clap.server.common.annotation.architecture.ApplicationService;
