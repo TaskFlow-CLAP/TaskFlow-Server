@@ -36,8 +36,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         String nickName = findTaskListRequest.nickName();
         List<TaskStatus> taskStatuses = findTaskListRequest.taskStatus();
         Integer termHours = findTaskListRequest.term();
-        String sortTarget = findTaskListRequest.orderRequest().target();
-        String sortType = findTaskListRequest.orderRequest().type();
+        String sortBy = findTaskListRequest.orderRequest().sortBy();
+        String sortDirection = findTaskListRequest.orderRequest().sortDirection();
 
         if (termHours != null) {
             LocalDateTime fromDate = LocalDateTime.now().minusHours(termHours);
@@ -59,7 +59,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
             whereClause.and(taskEntity.taskStatus.in(taskStatuses));
         }
 
-        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortTarget, sortType);
+        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortBy, sortDirection);
 
         List<TaskEntity> result = queryFactory
                 .selectFrom(taskEntity)
@@ -75,13 +75,13 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         return new PageImpl<>(result, pageable, total);
     }
 
-    private OrderSpecifier<?> getOrderSpecifier(String sortTarget, String sortType) {
-        DateTimePath<LocalDateTime> sortColumn = switch (sortTarget) {
+    private OrderSpecifier<?> getOrderSpecifier(String sortBy, String sortDirection) {
+        DateTimePath<LocalDateTime> sortColumn = switch (sortBy) {
             case "REQUESTED_AT" -> taskEntity.updatedAt;
             case "FINISHED_AT" -> taskEntity.completedAt;
             default -> taskEntity.updatedAt;
         };
-        return "ASC".equalsIgnoreCase(sortType)
+        return "ASC".equalsIgnoreCase(sortDirection)
                 ? new OrderSpecifier<>(ASC, sortColumn)
                 : new OrderSpecifier<>(DESC, sortColumn);
     }

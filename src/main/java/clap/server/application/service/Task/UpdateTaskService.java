@@ -1,4 +1,4 @@
-package clap.server.application.Task;
+package clap.server.application.service.Task;
 
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskResponse;
