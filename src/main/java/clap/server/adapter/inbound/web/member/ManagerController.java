@@ -18,6 +18,13 @@ public class ManagerController {
 
     @GetMapping
     public List<FindManagersResponse> findManagers() {
-        return findManagersUsecase.execute();
+
+        List<FindManagersResponse> managers = findManagersUsecase.execute();
+
+        if (managers.isEmpty()) {
+            return FindManagersResponse.emptyListResponse();
+        }
+
+        return managers;
     }
 }

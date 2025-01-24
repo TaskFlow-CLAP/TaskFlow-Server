@@ -18,7 +18,12 @@ public class FindManagersUsecaseImpl implements FindManagersUsecase {
     @Override
     @Transactional
     public List<FindManagersResponse> execute() {
+
         List<Member> managers = memberService.findActiveManagers();
+
+        if (managers.isEmpty()) {
+            return FindManagersResponse.emptyListResponse(); // 빈 리스트 반환
+        }
 
         return managers.stream().map(manager -> {
             int remainingTasks = memberService.getRemainingTasks(manager.getMemberId());

@@ -3,13 +3,21 @@ package clap.server.adapter.inbound.web.dto.admin;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public class FindManagersResponse {
 
     private Long memberId;
-    private String nickname;  // 닉네임 필드 추가
-    private String imageUrl;  // 이미지 URL 필드 추가
+    private String nickname;
+    private String imageUrl;
     private int remainingTasks;
 
+    public static List<FindManagersResponse> emptyListResponse() {
+        return List.of();
+    }
+
 }
+
+

@@ -45,6 +45,11 @@ public class MemberService {
     }
 
     public List<Member> findActiveManagers() {
-        return loadMemberPort.findActiveManagers();
+        List<Member> activeManagers = loadMemberPort.findActiveManagers();
+
+        if (activeManagers.isEmpty()) {
+            return List.of();
+        }
+        return activeManagers;
     }
 }

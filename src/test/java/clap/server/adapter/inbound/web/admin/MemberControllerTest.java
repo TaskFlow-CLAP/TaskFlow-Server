@@ -8,6 +8,7 @@ import clap.server.adapter.outbound.persistense.entity.member.constant.MemberSta
 import clap.server.adapter.outbound.persistense.entity.task.CategoryEntity;
 import clap.server.adapter.outbound.persistense.entity.task.LabelEntity;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
+import clap.server.config.elastic.ElasticsearchConfig;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
@@ -26,9 +29,11 @@ import java.util.List;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(ElasticsearchConfig.class)
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
@@ -174,6 +179,7 @@ public class MemberControllerTest {
 
 
     @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     public void testFindManagers() throws Exception {
         mockMvc.perform(get("/manager"))
                 .andExpect(status().isOk())
@@ -182,7 +188,8 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$[0].remainingTasks").value(1))
                 .andExpect(jsonPath("$[1].nickname").value("Manager2"))  // 추가된 관리자
                 .andExpect(jsonPath("$[1].imageUrl").value("http://example.com/manager2.jpg"))
-                .andExpect(jsonPath("$[1].remainingTasks").value(0));  // 예시로 추가된 관리자들의 데이터를 검증
+                .andExpect(jsonPath("$[1].remainingTasks").value(0))  // 예시로 추가된 관리자들의 데이터를 검증
+                .andDo(print());
     }
 
 }

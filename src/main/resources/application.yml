@@ -1,9 +1,6 @@
 spring.profiles.active: local
 
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: none
   config:
     import:
       - mysql.yml
@@ -12,12 +9,11 @@ spring:
       - auth.yml
       - optional:classpath:env.properties
   application:
-
     name: taskflow2
   elasticsearch:
     uris: ${ELASTIC_URI:127.0.0.1:9200}
-  web.resources.add-mappings: false
 
+  web.resources.add-mappings: false
 
 
 server:
@@ -55,4 +51,3 @@ spring.config.activate.on-profile: prod
 logging:
   level:
     root: INFO
----
