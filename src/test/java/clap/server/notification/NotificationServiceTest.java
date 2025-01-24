@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.notification.FindNotificationListResp
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.notification.LoadNotificationPort;
 import clap.server.application.service.notification.FindNotificationListService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,10 +58,10 @@ public class NotificationServiceTest {
         Page<FindNotificationListResponse> result = findNotificationListService.findNotificationList(1L, pageable);
 
         //Then
-        assertEquals(3, result.getContent().size());
+        Assertions.assertEquals(3, result.getContent().size());
 
-        assertEquals("VM 생성해주세요", result.getContent().get(0).taskTitle());
-        assertEquals("VM 생성해주세요", result.getContent().get(1).taskTitle());
-        assertEquals("VM 생성해주세요", result.getContent().get(2).taskTitle());
+        Assertions.assertEquals("VM 생성해주세요", result.getContent().get(0).taskTitle());
+        Assertions.assertEquals("VM 생성해주세요", result.getContent().get(1).taskTitle());
+        Assertions.assertEquals("VM 생성해주세요", result.getContent().get(2).taskTitle());
     }
 }
