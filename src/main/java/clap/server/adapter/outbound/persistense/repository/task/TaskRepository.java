@@ -1,22 +1,19 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
-import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
+
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import io.lettuce.core.dynamic.annotation.Param;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.stereotype.Repository;
 
-import java.nio.channels.FileChannel;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
 
 import java.util.List;
 
