@@ -27,7 +27,7 @@ public class CommentEntity extends BaseTimeEntity {
     @JoinColumn(name = "task_id", nullable = false)
     private TaskEntity task;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false) //nullable false인 이유
     private String content;
 
     @Column(name = "is_modified", nullable = false)
