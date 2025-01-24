@@ -22,5 +22,13 @@ public class Category extends BaseTime {
    private String descriptionExample;
    private LocalDateTime createdAt; 
    private LocalDateTime updatedAt;
+
+   public static Category createMainCategory(Member admin, String code, String name) {
+      Category category = new Category();
+      category.admin = admin;
+      category.code = code;
+      category.name = name;
+      return category;
+   }
  }
 

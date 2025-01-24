@@ -1,10 +1,11 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
-import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
-import clap.server.adapter.outbound.persistense.entity.task.QTaskEntity;
+import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
+import static com.querydsl.core.types.Order.*;
+
 @Repository
 @RequiredArgsConstructor
 public class TaskCustomRepositoryImpl implements TaskCustomRepository {
@@ -22,50 +26,63 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<TaskEntity> findRequestedTaskList(Long requesterId, Pageable pageable, FindTaskListRequest findTaskListRequest) {
-        QTaskEntity task = QTaskEntity.taskEntity;
+    public Page<TaskEntity> findRequestedTaskList(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest) {
         BooleanBuilder whereClause = new BooleanBuilder();
-        whereClause.and(task.requester.memberId.eq(requesterId));
+        whereClause.and(taskEntity.requester.memberId.eq(requesterId));
 
-        Long categoryId = findTaskListRequest.categoryId();
-        Long mainCategoryId = findTaskListRequest.mainCategoryId();
+        List<Long> categoryIds = findTaskListRequest.categoryIds();
+        List<Long> mainCategoryIds = findTaskListRequest.mainCategoryIds();
         String title = findTaskListRequest.title();
         String nickName = findTaskListRequest.nickName();
-        TaskStatus taskStatus = findTaskListRequest.taskStatus();
-        Integer term = findTaskListRequest.term();
+        List<TaskStatus> taskStatuses = findTaskListRequest.taskStatus();
+        Integer termHours = findTaskListRequest.term();
+        String sortBy = findTaskListRequest.orderRequest().sortBy();
+        String sortDirection = findTaskListRequest.orderRequest().sortDirection();
 
-        if (term != null) {
-            LocalDateTime fromDate = LocalDateTime.now().minusMonths(term);
-            whereClause.and(task.createdAt.after(fromDate));
+        if (termHours != null) {
+            LocalDateTime fromDate = LocalDateTime.now().minusHours(termHours);
+            whereClause.and(taskEntity.createdAt.after(fromDate));
         }
-        if (categoryId != null) {
-            whereClause.and(task.category.categoryId.eq(categoryId));
+        if (!categoryIds.isEmpty()) {
+            whereClause.and(taskEntity.category.categoryId.in(categoryIds));
         }
-        if (mainCategoryId != null) {
-            whereClause.and(task.category.mainCategory.categoryId.eq(mainCategoryId));
+        if (!mainCategoryIds.isEmpty()) {
+            whereClause.and(taskEntity.category.mainCategory.categoryId.in(mainCategoryIds));
         }
-        if (title != null && !title.isEmpty()) {
-            whereClause.and(task.title.containsIgnoreCase(title));
+        if (!title.isEmpty()) {
+            whereClause.and(taskEntity.title.containsIgnoreCase(title));
         }
-        if (nickName != null) {
-            whereClause.and(task.processor.nickname.eq(nickName));
+        if (!nickName.isEmpty()) {
+            whereClause.and(taskEntity.processor.nickname.eq(nickName));
         }
-        if (taskStatus != null) {
-            whereClause.and(task.taskStatus.eq(taskStatus));
+        if (!taskStatuses.isEmpty()) {
+            whereClause.and(taskEntity.taskStatus.in(taskStatuses));
         }
+
+        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortBy, sortDirection);
 
         List<TaskEntity> result = queryFactory
-                .selectFrom(task)
+                .selectFrom(taskEntity)
                 .where(whereClause)
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
         int total = queryFactory
-                .selectFrom(task)
+                .selectFrom(taskEntity)
                 .where(whereClause)
                 .fetch().size();
-
         return new PageImpl<>(result, pageable, total);
+    }
+
+    private OrderSpecifier<?> getOrderSpecifier(String sortBy, String sortDirection) {
+        DateTimePath<LocalDateTime> sortColumn = switch (sortBy) {
+            case "REQUESTED_AT" -> taskEntity.updatedAt;
+            case "FINISHED_AT" -> taskEntity.completedAt;
+            default -> taskEntity.updatedAt;
+        };
+        return "ASC".equalsIgnoreCase(sortDirection)
+                ? new OrderSpecifier<>(ASC, sortColumn)
+                : new OrderSpecifier<>(DESC, sortColumn);
     }
 }

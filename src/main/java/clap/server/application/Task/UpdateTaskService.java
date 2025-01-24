@@ -1,7 +1,7 @@
 package clap.server.application.Task;
 
-import clap.server.adapter.inbound.web.dto.task.CreateAndUpdateTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.UpdateTaskResponse;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
@@ -39,19 +39,19 @@ public class UpdateTaskService implements UpdateTaskUsecase {
 
     @Override
     @Transactional
-    public CreateAndUpdateTaskResponse updateTask(Long requesterId, UpdateTaskRequest updateTaskRequest) {
-        Member member = memberService.findActiveMember(requesterId);
+    public UpdateTaskResponse updateTask(Long requesterId, UpdateTaskRequest updateTaskRequest) {
+        memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(updateTaskRequest.categoryId());
         Task task = taskService.findById(updateTaskRequest.taskId());
-
-        Task updatedTask = Task.updateTask(task, member, category, updateTaskRequest.title(), updateTaskRequest.description());
-        Task savedTask = commandTaskPort.save(updatedTask);
+        //TODO: 작업이 요청 상태인 경우만 업데이트 가능
+        task.updateTask(category, updateTaskRequest.title(), updateTaskRequest.description());
+        Task updatedTask = commandTaskPort.save(task);
 
         List<Long> attachmentIds = AttachmentMapper.toAttachmentIds(updateTaskRequest.attachmentRequests());
         commandAttachmentPort.deleteByIds(attachmentIds);
 
-        List<Attachment> attachments = Attachment.updateAttachments(savedTask, updateTaskRequest.attachmentRequests());
+        List<Attachment> attachments = Attachment.updateAttachments(updatedTask, updateTaskRequest.attachmentRequests());
         commandAttachmentPort.saveAll(attachments);
-        return TaskMapper.toCreateAndUpdateTaskResponse(savedTask);
+        return TaskMapper.toUpdateTaskResponse(updatedTask);
     }
 }

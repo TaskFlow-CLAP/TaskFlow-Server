@@ -23,7 +23,7 @@ public class Task extends BaseTime {
     private Category category;
     private Member requester;
     private TaskStatus taskStatus;
-    private int processorOrder; //칸반보드 상태에 따른 순서
+    private int processorOrder;
     private Member processor;
     private Label label;
     private Member reviewer;
@@ -37,21 +37,18 @@ public class Task extends BaseTime {
                 .title(title)
                 .description(description)
                 .taskStatus(TaskStatus.REQUESTED)
-                .taskCode(category.getMainCategory().getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm")))
+                .taskCode(toTaskCode(category))
                 .build();
     }
 
-    public static Task updateTask(Task task, Member member, Category category, String title, String description) {
-
-        return Task.builder()
-                .taskId(task.getTaskId())
-                .requester(member)
-                .category(category)
-                .title(title)
-                .description(description)
-                .taskStatus(TaskStatus.REQUESTED)
-                .taskCode(category.getMainCategory().getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm")))
-                .build();
+    public  void updateTask(Category category, String title, String description) {
+        this.category = category;
+        this.title = title;
+        this.description = description;
+        this.taskCode = toTaskCode(category);
     }
 
+    private static String toTaskCode(Category category){
+        return category.getMainCategory().getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
+    }
 }

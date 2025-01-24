@@ -1,9 +1,9 @@
 package clap.server.application.port.inbound.task;
 
 
-import clap.server.adapter.inbound.web.dto.task.CreateAndUpdateTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.UpdateTaskResponse;
 
 public interface UpdateTaskUsecase {
-    CreateAndUpdateTaskResponse updateTask(Long memberId, UpdateTaskRequest updateTaskRequest);
+    UpdateTaskResponse updateTask(Long memberId, UpdateTaskRequest updateTaskRequest);
 }
