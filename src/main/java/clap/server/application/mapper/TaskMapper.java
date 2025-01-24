@@ -36,8 +36,8 @@ public class TaskMapper {
         );
     }
 
-    public static FilterTaskStatusRequestedListResponse toFilterTaskStatusRequestedListResponse(Task task) {
-        return new FilterTaskStatusRequestedListResponse(
+    public static FilterPendingApprovalResponse toFilterPendingApprovalTasksResponse(Task task) {
+        return new FilterPendingApprovalResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
                 task.getUpdatedAt(),

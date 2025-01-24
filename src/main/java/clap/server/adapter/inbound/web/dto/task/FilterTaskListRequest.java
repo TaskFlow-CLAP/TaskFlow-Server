@@ -4,11 +4,9 @@ package clap.server.adapter.inbound.web.dto.task;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
-@Schema(description = "작업 필터링 요청")
 public record FilterTaskListRequest(
 
         @Schema(description = "검색 기간 (단위: 시간)", example = "1, 24, 168, 730, 2190 (1시간, 24시간, 1주일, 1개월, 3개월)")

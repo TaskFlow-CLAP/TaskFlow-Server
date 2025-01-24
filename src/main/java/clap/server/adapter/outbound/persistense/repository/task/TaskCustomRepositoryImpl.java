@@ -26,85 +26,45 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<TaskEntity> findRequestedTaskList(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest) {
-        BooleanBuilder whereClause = new BooleanBuilder();
+    public Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest) {
+        BooleanBuilder whereClause = createFilter(findTaskListRequest);
         whereClause.and(taskEntity.requester.memberId.eq(requesterId));
-
-        List<Long> categoryIds = findTaskListRequest.categoryIds();
-        List<Long> mainCategoryIds = findTaskListRequest.mainCategoryIds();
-        String title = findTaskListRequest.title();
-        String nickName = findTaskListRequest.nickName();
-        List<TaskStatus> taskStatuses = findTaskListRequest.taskStatus();
-        Integer termHours = findTaskListRequest.term();
-        String sortBy = findTaskListRequest.orderRequest().sortBy();
-        String sortDirection = findTaskListRequest.orderRequest().sortDirection();
-
-        if (termHours != null) {
-            LocalDateTime fromDate = LocalDateTime.now().minusHours(termHours);
-            whereClause.and(taskEntity.createdAt.after(fromDate));
-        }
-        if (!categoryIds.isEmpty()) {
-            whereClause.and(taskEntity.category.categoryId.in(categoryIds));
-        }
-        if (!mainCategoryIds.isEmpty()) {
-            whereClause.and(taskEntity.category.mainCategory.categoryId.in(mainCategoryIds));
-        }
-        if (!title.isEmpty()) {
-            whereClause.and(taskEntity.title.containsIgnoreCase(title));
-        }
-        if (!nickName.isEmpty()) {
-            whereClause.and(taskEntity.processor.nickname.eq(nickName));
-        }
-        if (!taskStatuses.isEmpty()) {
-            whereClause.and(taskEntity.taskStatus.in(taskStatuses));
-        }
-
-        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortBy, sortDirection);
-
-        List<TaskEntity> result = queryFactory
-                .selectFrom(taskEntity)
-                .where(whereClause)
-                .orderBy(orderSpecifier)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-        int total = queryFactory
-                .selectFrom(taskEntity)
-                .where(whereClause)
-                .fetch().size();
-        return new PageImpl<>(result, pageable, total);
+        return getTasksPage(pageable, whereClause, findTaskListRequest.orderRequest().sortBy(), findTaskListRequest.orderRequest().sortDirection());
     }
 
     @Override
-    public Page<TaskEntity> findAllByTaskStatusRequested(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+    public Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        BooleanBuilder whereClause = createFilter(filterTaskListRequest);
+        whereClause.and(taskEntity.taskStatus.eq(TaskStatus.REQUESTED));
+        return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+    }
+
+    private BooleanBuilder createFilter(FilterTaskListRequest request) {
         BooleanBuilder whereClause = new BooleanBuilder();
 
-        List<Long> categoryIds = filterTaskListRequest.categoryIds();
-        List<Long> mainCategoryIds = filterTaskListRequest.mainCategoryIds();
-        String title = filterTaskListRequest.title();
-        String nickName = filterTaskListRequest.nickName();
-
-        Integer termHours = filterTaskListRequest.term();
-        String sortBy = filterTaskListRequest.orderRequest().sortBy();
-        String sortDirection = filterTaskListRequest.orderRequest().sortDirection();
-
-        if (termHours != null) {
-            LocalDateTime fromDate = LocalDateTime.now().minusHours(termHours);
+        if (request.term() != null) {
+            LocalDateTime fromDate = LocalDateTime.now().minusHours(request.term());
             whereClause.and(taskEntity.createdAt.after(fromDate));
         }
-        if (!categoryIds.isEmpty()) {
-            whereClause.and(taskEntity.category.categoryId.in(categoryIds));
+        if (!request.categoryIds().isEmpty()) {
+            whereClause.and(taskEntity.category.categoryId.in(request.categoryIds()));
         }
-        if (!mainCategoryIds.isEmpty()) {
-            whereClause.and(taskEntity.category.mainCategory.categoryId.in(mainCategoryIds));
+        if (!request.mainCategoryIds().isEmpty()) {
+            whereClause.and(taskEntity.category.mainCategory.categoryId.in(request.mainCategoryIds()));
         }
-        if (!title.isEmpty()) {
-            whereClause.and(taskEntity.title.containsIgnoreCase(title));
+        if (!request.title().isEmpty()) {
+            whereClause.and(taskEntity.title.containsIgnoreCase(request.title()));
         }
-        if (!nickName.isEmpty()) {
-            whereClause.and(taskEntity.requester.nickname.eq(nickName));
+        if (!request.nickName().isEmpty()) {
+            whereClause.and(taskEntity.processor.nickname.eq(request.nickName()));
         }
+        if (!request.taskStatus().isEmpty()) {
+            whereClause.and(taskEntity.taskStatus.in(request.taskStatus()));
+        }
+        return whereClause;
+    }
 
+    private Page<TaskEntity> getTasksPage(Pageable pageable, BooleanBuilder whereClause, String sortBy, String sortDirection) {
         OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortBy, sortDirection);
 
         List<TaskEntity> result = queryFactory
@@ -114,7 +74,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        int total = queryFactory
+        long total = queryFactory
                 .selectFrom(taskEntity)
                 .where(whereClause)
                 .fetch().size();

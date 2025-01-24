@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface TaskCustomRepository {
 
-    Page<TaskEntity> findRequestedTaskList(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
-    Page<TaskEntity> findAllByTaskStatusRequested(Pageable pageable, FilterTaskListRequest findTaskListRequest);
+    Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
+    Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
 }
