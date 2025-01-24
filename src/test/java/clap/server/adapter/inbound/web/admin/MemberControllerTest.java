@@ -1,13 +1,15 @@
 package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.outbound.persistense.entity.member.DepartmentEntity;
+import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.member.constant.DepartmentStatus;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
-import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.adapter.outbound.persistense.entity.task.CategoryEntity;
 import clap.server.adapter.outbound.persistense.entity.task.LabelEntity;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
+import clap.server.adapter.outbound.persistense.entity.task.constant.LabelType;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.config.elastic.ElasticsearchConfig;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -19,14 +21,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
-import clap.server.adapter.outbound.persistense.entity.task.constant.LabelType;
+import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,7 +41,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
+@Testcontainers
 public class MemberControllerTest {
+
+    @Container
+    public static ElasticsearchContainer ES_CONTAINER = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:7.17.5")
+            .withReuse(true);
+
+    @DynamicPropertySource
+    static void elasticProperties(DynamicPropertyRegistry registry) {
+        // Elasticsearch 설정
+        registry.add("spring.elasticsearch.uris", ES_CONTAINER::getHttpHostAddress);
+    }
 
     @Autowired
     private MockMvc mockMvc;

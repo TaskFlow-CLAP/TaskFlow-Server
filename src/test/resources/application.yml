@@ -14,8 +14,9 @@ spring:
     hibernate:
       ddl-auto: create
 
-  elasticsearch:
-    uris: ${ELASTIC_URI:127.0.0.1:9200}  # 기본 URL로 localhost 사용
+  testcontainers:
+    beans:
+      startup: parallel
 
 swagger:
   server:
@@ -35,3 +36,4 @@ password:
   policy:
     length: 12
     characters: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+"
+
