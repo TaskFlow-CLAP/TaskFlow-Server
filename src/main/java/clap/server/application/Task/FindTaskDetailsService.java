@@ -28,11 +28,11 @@ public class FindTaskDetailsService implements FindTaskDetailsUsecase {
     private final LoadAttachmentPort loadAttachmentPort;
 
     @Override
-    public List<FindTaskDetailsResponse> findRequestedTaskDetails(final Long requesterId, final Long taskId) {
+    public FindTaskDetailsResponse findRequestedTaskDetails(final Long requesterId, final Long taskId) {
         memberService.findActiveMember(requesterId);
         Task task = loadTaskPort.findById(taskId)
                 .orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
         List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNull(taskId);
-        return TaskMapper.toFindTaskDetailResponses(task, attachments);
+        return TaskMapper.toFindTaskDetailResponse(task, attachments);
     }
 }
