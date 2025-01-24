@@ -27,12 +27,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks")
-@Slf4j
 public class FindTaskController {
     private final FindTaskDetailsUsecase taskDetailsUsecase;
     private final FindTaskListUsecase taskListUsecase;
 
-    @Operation(summary = "내가 요청한 작업 목록 조회 (filtering, paging, sorting")
+    @Operation(summary = "사용자 요청 작업 목록 조회")
     @Secured({"ROLE_USER"})
     @GetMapping("/requests")
     public ResponseEntity<Page<FindTaskListResponse>> getRequestedTaskList(
@@ -41,18 +40,6 @@ public class FindTaskController {
             @ModelAttribute FilterTaskListRequest filterTaskListRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         Pageable pageable = PageRequest.of(page, pageSize);
-
-        log.info("요청된 파라미터 - page: {}, pageSize: {}, userId: {}", page, pageSize, userInfo.getUserId());
-        log.info("FilterTaskListRequest - term: {}, categoryIds: {}, mainCategoryIds: {}, title: {}, nickName: {}, taskStatus: {}, orderRequest: {}",
-                filterTaskListRequest.term(),
-                filterTaskListRequest.categoryIds(),
-                filterTaskListRequest.mainCategoryIds(),
-                filterTaskListRequest.title(),
-                filterTaskListRequest.nickName(),
-                filterTaskListRequest.taskStatus(),
-                filterTaskListRequest.orderRequest());
-        log.info("isEmpty={}", filterTaskListRequest.nickName().isEmpty());
-
         return ResponseEntity.ok(taskListUsecase.findRequestedTaskList(userInfo.getUserId(), pageable, filterTaskListRequest));
     }
     @Operation(summary = "요청한 작업 상세 조회")
