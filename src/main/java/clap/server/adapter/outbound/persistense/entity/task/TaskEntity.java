@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "task")
@@ -62,5 +64,4 @@ public class TaskEntity extends BaseTimeEntity {
 
     @Column
     private LocalDateTime completedAt;
-
 }

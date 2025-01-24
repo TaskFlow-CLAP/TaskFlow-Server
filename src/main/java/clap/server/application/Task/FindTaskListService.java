@@ -1,4 +1,4 @@
-package clap.server.application;
+package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.FindTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.FindTaskListResponse;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ApplicationService
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class FindTasklistService implements FindTaskListUsecase {
+public class FindTaskListService implements FindTaskListUsecase {
 
     private final MemberService memberService;
     private final LoadTaskPort loadTaskPort;

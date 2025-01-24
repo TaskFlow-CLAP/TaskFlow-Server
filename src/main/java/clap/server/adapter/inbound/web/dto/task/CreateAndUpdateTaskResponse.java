@@ -1,6 +1,8 @@
 package clap.server.adapter.inbound.web.dto.task;
 
-public record CreateTaskResponse(
+
+
+public record CreateAndUpdateTaskResponse(
         Long taskId,
         Long categoryId,
         String title

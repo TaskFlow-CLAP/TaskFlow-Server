@@ -69,6 +69,14 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
         return getNonPeriodTaskResults(executeQuery(query), "manager_task");
     }
 
+    @Override
+    public Map<String, Long> findManagerTaskProcessByPeriod(String period) {
+        PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
+
+        NativeQuery query = buildManagerTaskProcessQuery(periodConfig);
+        return getManagerTaskResults(executeQuery(query));
+    }
+
     private NativeQuery buildPeriodTaskRequestQuery(PeriodConfig config) {
         return NativeQuery.builder()
                 .withQuery(q -> q
@@ -191,6 +199,22 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
     private Map<String, Long> getNonPeriodTaskResults(ElasticsearchAggregations aggregations, String name) {
         return new TreeMap<>(
                 aggregations.get(name)
+                        .aggregation()
+                        .getAggregate()
+                        .sterms()
+                        .buckets()
+                        .array()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                bucket -> bucket.key().stringValue(),
+                                MultiBucketBase::docCount
+                        ))
+        );
+    }
+
+    private Map<String, Long> getManagerTaskResults(ElasticsearchAggregations aggregations) {
+        return new TreeMap<>(
+                aggregations.get("manager_task")
                         .aggregation()
                         .getAggregate()
                         .sterms()

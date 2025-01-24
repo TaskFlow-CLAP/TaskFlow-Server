@@ -1,9 +1,9 @@
-package clap.server.application;
+package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.CreateAndUpdateTaskResponse;
 
-import clap.server.application.mapper.AttachmentMapper;
+import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
@@ -21,12 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static clap.server.application.mapper.TaskMapper.toCreateTaskResponse;
-import static clap.server.application.mapper.TaskMapper.toTask;
 
 @ApplicationService
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CreateTaskService implements CreateTaskUsecase {
 
     private final MemberService memberService;
@@ -36,16 +33,15 @@ public class CreateTaskService implements CreateTaskUsecase {
 
     @Override
     @Transactional
-    public CreateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest) {
+    public CreateAndUpdateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest) {
         Member member = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(createTaskRequest.categoryId());
-
-        Task task = toTask(member, category, createTaskRequest.title(), createTaskRequest.description());
+        Task task = Task.createTask(member, category, createTaskRequest.title(), createTaskRequest.description());
         Task savedTask = commandTaskPort.save(task);
 
-        List<Attachment> attachments = AttachmentMapper.toAttachments(savedTask, createTaskRequest.fileUrls());
+        List<Attachment> attachments = Attachment.createAttachments(savedTask, createTaskRequest.fileUrls());
         commandAttachmentPort.saveAll(attachments);
 
-        return toCreateTaskResponse(savedTask);
+        return TaskMapper.toCreateAndUpdateTaskResponse(savedTask);
     }
 }

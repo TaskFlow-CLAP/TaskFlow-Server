@@ -45,4 +45,8 @@ public class Member extends BaseTime {
         this.password = newEncodedPassword;
         this.status = MemberStatus.ACTIVE;
     }
+    public String getNickname() {
+        return memberInfo != null ? memberInfo.getNickname() : null;
+    }
+
 }

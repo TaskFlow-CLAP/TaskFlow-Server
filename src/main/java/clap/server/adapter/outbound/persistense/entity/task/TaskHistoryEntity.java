@@ -26,7 +26,7 @@ public class TaskHistoryEntity extends BaseTimeEntity {
     @Embedded
     private TaskModificationInfo taskModificationInfo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private CommentEntity comment;
 }
