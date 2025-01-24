@@ -52,4 +52,8 @@ public class MemberService {
         }
         return activeManagers;
     }
+
+    public List<Member> findReviewers() {
+        return loadMemberPort.findReviewers();
+    }
 }

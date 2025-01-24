@@ -19,4 +19,6 @@ public interface LoadMemberPort {
 
     Optional<Member> findByNickname(String nickname);
 
+    List<Member> findReviewers();
+
 }

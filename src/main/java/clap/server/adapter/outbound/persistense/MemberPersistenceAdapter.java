@@ -48,6 +48,15 @@ import java.util.Optional;
         return memberEntity.map(memberPersistenceMapper::toDomain);
     }
 
+    // 검토자인 담당자들 조회
+    @Override
+    public List<Member> findReviewers() {
+        List<MemberEntity> memberEntities = memberRepository.findByIsReviewerTrue();
+        return memberEntities.stream()
+                .map(memberPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public void save(final Member member) {
         MemberEntity memberEntity = memberPersistenceMapper.toEntity(member);
