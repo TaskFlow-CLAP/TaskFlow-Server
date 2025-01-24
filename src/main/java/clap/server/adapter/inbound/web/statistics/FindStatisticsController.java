@@ -6,6 +6,8 @@ import clap.server.adapter.inbound.web.dto.statistics.StatisticsType;
 import clap.server.application.port.inbound.statistics.*;
 import clap.server.common.annotation.architecture.WebAdapter;
 import clap.server.exception.StatisticsException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,9 @@ public class FindStatisticsController {
     private final FindSubCategoryTaskRequestUsecase findSubCategoryTaskRequestUsecase;
     private final FindManagerTaskProcessUsecase findManagerTaskProcessUsecase;
 
+    @Operation(summary = "기본 통계 API")
+    @Parameter(name = "periodType", description = "day, week, month", required = true)
+    @Parameter(name = "statisticsType", description = "request-by-period, process-by-period, request-by-category, process-by-manager", required = true)
     @GetMapping
     public ResponseEntity<List<StatisticsResponse>> aggregateTaskStatistics(@RequestParam PeriodType periodType, @RequestParam StatisticsType statisticsType) {
         switch (statisticsType) {
@@ -62,10 +67,13 @@ public class FindStatisticsController {
         throw new StatisticsException(STATISTICS_BAD_REQUEST);
     }
 
+    @Operation(summary = "1차 카테고리 하위 2차 카테고리별 통계 API")
+    @Parameter(name = "periodType", description = "day, week, month", required = true)
+    @Parameter(name = "mainCategory", description = "1차 카테고리 이름", required = true)
     @GetMapping("/subcategory")
-    public ResponseEntity<List<StatisticsResponse>> aggregateSubCategoryTaskRequest(@RequestParam String period, @RequestParam String mainCategory) {
+    public ResponseEntity<List<StatisticsResponse>> aggregateSubCategoryTaskRequest(@RequestParam PeriodType periodType, @RequestParam String mainCategory) {
         return ResponseEntity.ok(findSubCategoryTaskRequestUsecase
-                .aggregateSubCategoryTaskRequest(period, mainCategory)
+                .aggregateSubCategoryTaskRequest(periodType.getType(), mainCategory)
                 .entrySet()
                 .stream()
                 .map(result -> new StatisticsResponse(result.getKey(), result.getValue()))
