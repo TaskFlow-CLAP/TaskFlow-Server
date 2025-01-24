@@ -10,7 +10,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:taskflow2}?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&autoReconnect=true
+    url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:taskflow}?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&autoReconnect=true
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     data-source-properties:
