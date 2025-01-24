@@ -2,6 +2,6 @@ package clap.server.application.port.inbound.statistics;
 
 import java.util.Map;
 
-public interface ManagerTaskProcessUsecase {
+public interface FindManagerTaskProcessUsecase {
     Map<String, Long> aggregateManagerTaskProcess(String period);
 }
