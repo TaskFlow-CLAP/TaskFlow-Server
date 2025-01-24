@@ -4,6 +4,10 @@ import clap.server.adapter.outbound.persistense.entity.log.AnonymousLogEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AnonymousLogRepository extends JpaRepository<AnonymousLogEntity, Long> {
+    // 비회원 로그
+    List<AnonymousLogEntity> findByLogType(String logType);
 }
