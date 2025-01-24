@@ -3,6 +3,8 @@ package clap.server.application.service;
 import clap.server.adapter.inbound.web.dto.admin.FindManagersResponse;
 import clap.server.domain.model.member.Member;
 import clap.server.application.port.inbound.domain.MemberService;
+import clap.server.application.mapper.ManagersMapper;
+import clap.server.application.port.inbound.domain.FindManagersUsecase;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,29 +12,22 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service  // 여기 추가
 @RequiredArgsConstructor
-public class FindActiveManagersService {
+public class FindActiveManagersService implements FindManagersUsecase {
 
     private final MemberService memberService;
+    private final ManagersMapper findManagersResponseMapper;
 
     @Transactional
+    @Override
     public List<FindManagersResponse> execute() {
 
         List<Member> managers = memberService.findActiveManagers();
 
-        // 빈 리스트라도 매핑하여 반환
-        return managers.stream().map(manager -> {
-            int remainingTasks = memberService.getRemainingTasks(manager.getMemberId());
-            String nickname = memberService.getMemberNickname(manager.getMemberId());
-            String imageUrl = memberService.getMemberImageUrl(manager.getMemberId());
-
-            return new FindManagersResponse(
-                    manager.getMemberId(),
-                    nickname,
-                    imageUrl,
-                    remainingTasks
-            );
-        }).collect(Collectors.toList());
+        // managers를 FindManagersResponse로 매핑
+        return managers.stream()
+                .map(findManagersResponseMapper::mapToFindManagersResponse)
+                .collect(Collectors.toList());
     }
 }

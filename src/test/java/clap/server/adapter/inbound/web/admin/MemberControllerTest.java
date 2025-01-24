@@ -33,7 +33,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(ElasticsearchConfig.class)
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.lifecycle.Startables;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.DynamicPropertyRegistry;
+
+@Testcontainers // 테스트 컨테이너 활성화
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
@@ -44,6 +53,26 @@ public class MemberControllerTest {
 
     @Autowired
     private EntityManager entityManager;
+
+    // Elasticsearch 컨테이너 설정
+    @Container
+    public static ElasticsearchContainer ES_CONTAINER = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:7.17.5")
+            .withReuse(true);
+
+    // Redis 컨테이너 설정 (필요 시 사용)
+    @Container
+    public static GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse("redis:6.2.6"))
+            .withExposedPorts(6379)
+            .withReuse(true);
+
+    @DynamicPropertySource
+    static void dynamicProperties(DynamicPropertyRegistry registry) {
+        // Elasticsearch 설정
+        registry.add("spring.elasticsearch.uris", ES_CONTAINER::getHttpHostAddress);
+        // Redis 설정
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379));
+    }
 
     @BeforeEach
     @Transactional
