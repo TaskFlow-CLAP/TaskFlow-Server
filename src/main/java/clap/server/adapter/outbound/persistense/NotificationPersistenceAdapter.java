@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.notification.FindNotificationListResp
 import clap.server.adapter.outbound.persistense.mapper.NotificationPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.notification.NotificationRepository;
 import clap.server.application.mapper.NotificationMapper;
+import clap.server.application.port.outbound.notification.CommandNotificationPort;
 import clap.server.application.port.outbound.notification.LoadNotificationPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
 import clap.server.domain.model.notification.Notification;
@@ -13,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class NotificationPersistenceAdapter implements LoadNotificationPort {
+public class NotificationPersistenceAdapter implements LoadNotificationPort, CommandNotificationPort {
 
     private final NotificationRepository notificationRepository;
     private final NotificationPersistenceMapper notificationPersistenceMapper;
@@ -24,5 +25,10 @@ public class NotificationPersistenceAdapter implements LoadNotificationPort {
         Page<Notification> notificationList = notificationRepository.findAllByReceiver_MemberId(receiverId, pageable)
                 .map(notificationPersistenceMapper::toDomain);
         return notificationList.map(NotificationMapper::toFindNoticeListResponse);
+    }
+
+    @Override
+    public void save(Notification notification) {
+        notificationRepository.save(notificationPersistenceMapper.toEntity(notification));
     }
 }
