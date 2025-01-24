@@ -7,9 +7,8 @@ spring:
       - swagger.yml
       - redis.yml
       - auth.yml
-      - optional:classpath:env.properties
   application:
-    name: taskflow2
+    name: taskflow
   elasticsearch:
     uris: ${ELASTIC_URI:127.0.0.1:9200}
 
@@ -24,12 +23,12 @@ server:
       max: 600
       min-spare: 100
 
-logging:
-  level:
-    root: INFO
-    taskflow.clap.server: ERROR
-    org:
-      springframework: DEBUG
+#logging:
+#  level:
+#    root: INFO
+#    taskflow.clap.server: ERROR
+#    org:
+#      springframework: DEBUG
 
 ---
 spring.config.activate.on-profile: local
@@ -37,8 +36,8 @@ logging:
   level:
     root: INFO
     taskflow.clap.server: ERROR
-    org:
-      springframework: DEBUG
+#    org:
+#      springframework: DEBUG
 
 ---
 spring.config.activate.on-profile: dev
