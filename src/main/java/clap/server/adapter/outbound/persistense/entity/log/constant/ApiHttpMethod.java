@@ -10,5 +10,6 @@ public enum ApiHttpMethod {
     GET,
     PATCH,
     PUT,
-    DELETE;
+    DELETE,
+    UNKNOWN; // Logging
 }
