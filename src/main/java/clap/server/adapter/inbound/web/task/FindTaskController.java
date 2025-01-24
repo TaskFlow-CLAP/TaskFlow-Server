@@ -1,9 +1,10 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.web.dto.task.FilterTaskStatusRequestedListResponse;
 import clap.server.adapter.inbound.web.dto.task.FindTaskDetailsResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.FindTaskListResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterTaskListResponse;
 import clap.server.application.port.inbound.task.FindTaskDetailsUsecase;
 import clap.server.application.port.inbound.task.FindTaskListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
@@ -11,7 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +34,7 @@ public class FindTaskController {
     @Operation(summary = "사용자 요청 작업 목록 조회")
     @Secured({"ROLE_USER"})
     @GetMapping("/requests")
-    public ResponseEntity<Page<FindTaskListResponse>> getRequestedTaskList(
+    public ResponseEntity<Page<FilterTaskListResponse>> getRequestedTaskList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
             @ModelAttribute FilterTaskListRequest filterTaskListRequest,
@@ -45,9 +45,20 @@ public class FindTaskController {
     @Operation(summary = "요청한 작업 상세 조회")
     @Secured({"ROLE_USER", "ROLE_MANAGER"})
     @GetMapping("/requests/details/{taskId}")
-    public ResponseEntity<List<FindTaskDetailsResponse>> getRequestedTaskDetails(
+    public ResponseEntity<FindTaskDetailsResponse> getRequestedTaskDetails(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         return ResponseEntity.ok(taskDetailsUsecase.findRequestedTaskDetails(userInfo.getUserId(), taskId));
+    }
+    @Operation(summary = "승인대기 중인 요청 목록 조회")
+    @Secured({"ROLE_MANAGER"})
+    @GetMapping("/requests/pending")
+    public ResponseEntity<Page<FilterTaskStatusRequestedListResponse>> getApprovalPendingTasks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int pageSize,
+            @ModelAttribute FilterTaskListRequest filterTaskListRequest,
+            @AuthenticationPrincipal SecurityUserDetails userInfo){
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return ResponseEntity.ok(taskListUsecase.findTaskListByTaskStatusRequested(userInfo.getUserId(), pageable, filterTaskListRequest));
     }
 }

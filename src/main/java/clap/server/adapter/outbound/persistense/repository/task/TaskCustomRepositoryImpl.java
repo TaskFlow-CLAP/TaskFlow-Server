@@ -75,6 +75,52 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         return new PageImpl<>(result, pageable, total);
     }
 
+    @Override
+    public Page<TaskEntity> findAllByTaskStatusRequested(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        BooleanBuilder whereClause = new BooleanBuilder();
+
+        List<Long> categoryIds = filterTaskListRequest.categoryIds();
+        List<Long> mainCategoryIds = filterTaskListRequest.mainCategoryIds();
+        String title = filterTaskListRequest.title();
+        String nickName = filterTaskListRequest.nickName();
+
+        Integer termHours = filterTaskListRequest.term();
+        String sortBy = filterTaskListRequest.orderRequest().sortBy();
+        String sortDirection = filterTaskListRequest.orderRequest().sortDirection();
+
+        if (termHours != null) {
+            LocalDateTime fromDate = LocalDateTime.now().minusHours(termHours);
+            whereClause.and(taskEntity.createdAt.after(fromDate));
+        }
+        if (!categoryIds.isEmpty()) {
+            whereClause.and(taskEntity.category.categoryId.in(categoryIds));
+        }
+        if (!mainCategoryIds.isEmpty()) {
+            whereClause.and(taskEntity.category.mainCategory.categoryId.in(mainCategoryIds));
+        }
+        if (!title.isEmpty()) {
+            whereClause.and(taskEntity.title.containsIgnoreCase(title));
+        }
+        if (!nickName.isEmpty()) {
+            whereClause.and(taskEntity.requester.nickname.eq(nickName));
+        }
+
+        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortBy, sortDirection);
+
+        List<TaskEntity> result = queryFactory
+                .selectFrom(taskEntity)
+                .where(whereClause)
+                .orderBy(orderSpecifier)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        int total = queryFactory
+                .selectFrom(taskEntity)
+                .where(whereClause)
+                .fetch().size();
+        return new PageImpl<>(result, pageable, total);
+    }
+
     private OrderSpecifier<?> getOrderSpecifier(String sortBy, String sortDirection) {
         DateTimePath<LocalDateTime> sortColumn = switch (sortBy) {
             case "REQUESTED_AT" -> taskEntity.updatedAt;

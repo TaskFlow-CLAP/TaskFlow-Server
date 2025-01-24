@@ -1,7 +1,8 @@
 package clap.server.application.port.outbound.task;
 
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.FindTaskListResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterTaskListResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterTaskStatusRequestedListResponse;
 import clap.server.domain.model.task.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,8 @@ public interface LoadTaskPort {
 
     List<Task> findYesterdayTaskByDate(LocalDateTime now);
 
-    Page<FindTaskListResponse> findAllByRequesterId(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
+    Page<FilterTaskListResponse> findAllByRequesterId(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
+
+    Page<FilterTaskStatusRequestedListResponse> findAllByTaskStatusRequested(Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 
 }

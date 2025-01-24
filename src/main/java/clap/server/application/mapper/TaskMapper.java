@@ -6,9 +6,7 @@ import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.domain.model.task.Attachment;
 
 import clap.server.domain.model.task.Task;
-import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +22,8 @@ public class TaskMapper {
         return new UpdateTaskResponse(task.getTaskId(), task.getCategory().getCategoryId(), task.getTitle());
     }
 
-    public static FindTaskListResponse toFindTaskListResponse(Task task) {
-        return new FindTaskListResponse(
+    public static FilterTaskListResponse toFilterTaskListResponse(Task task) {
+        return new FilterTaskListResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
                 task.getUpdatedAt(),
@@ -38,7 +36,19 @@ public class TaskMapper {
         );
     }
 
-    public static List<FindTaskDetailsResponse> toFindTaskDetailResponses(Task task, List<Attachment> attachments){
+    public static FilterTaskStatusRequestedListResponse toFilterTaskStatusRequestedListResponse(Task task) {
+        return new FilterTaskStatusRequestedListResponse(
+                task.getTaskId(),
+                task.getTaskCode(),
+                task.getUpdatedAt(),
+                task.getCategory().getMainCategory().getName(),
+                task.getCategory().getName(),
+                task.getTitle(),
+                task.getRequester().getMemberInfo().getNickname()
+        );
+    }
+
+    public static FindTaskDetailsResponse toFindTaskDetailResponse(Task task, List<Attachment> attachments){
 
         List<AttachmentResponse> attachmentResponses = attachments.stream()
                 .map(attachment -> new AttachmentResponse(
@@ -50,7 +60,7 @@ public class TaskMapper {
                 ))
                 .collect(Collectors.toList());
 
-        FindTaskDetailsResponse response = new FindTaskDetailsResponse(
+        return new FindTaskDetailsResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
                 task.getCreatedAt(),
@@ -66,7 +76,5 @@ public class TaskMapper {
                 task.getDescription(),
                 attachmentResponses
         );
-
-        return List.of(response);
     }
 }
