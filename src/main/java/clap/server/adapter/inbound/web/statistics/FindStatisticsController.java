@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 import static clap.server.exception.code.StatisticsErrorCode.STATISTICS_BAD_REQUEST;
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
 @Tag(name = "작업 관련 통계")
 @WebAdapter
@@ -31,8 +32,8 @@ public class FindStatisticsController {
     private final FindManagerTaskProcessUsecase findManagerTaskProcessUsecase;
 
     @Operation(summary = "기본 통계 API")
-    @Parameter(name = "periodType", description = "day, week, month", required = true)
-    @Parameter(name = "statisticsType", description = "request-by-period, process-by-period, request-by-category, process-by-manager", required = true)
+    @Parameter(name = "periodType", description = "day, week, month", required = true, in = QUERY)
+    @Parameter(name = "statisticsType", description = "request-by-period, process-by-period, request-by-category, process-by-manager", required = true, in = QUERY)
     @GetMapping
     public ResponseEntity<List<StatisticsResponse>> aggregateTaskStatistics(@RequestParam PeriodType periodType, @RequestParam StatisticsType statisticsType) {
         switch (statisticsType) {
@@ -68,8 +69,8 @@ public class FindStatisticsController {
     }
 
     @Operation(summary = "1차 카테고리 하위 2차 카테고리별 통계 API")
-    @Parameter(name = "periodType", description = "day, week, month", required = true)
-    @Parameter(name = "mainCategory", description = "1차 카테고리 이름", required = true)
+    @Parameter(name = "periodType", description = "day, week, month", required = true, in = QUERY)
+    @Parameter(name = "mainCategory", description = "1차 카테고리 이름", required = true, in = QUERY)
     @GetMapping("/subcategory")
     public ResponseEntity<List<StatisticsResponse>> aggregateSubCategoryTaskRequest(@RequestParam PeriodType periodType, @RequestParam String mainCategory) {
         return ResponseEntity.ok(findSubCategoryTaskRequestUsecase
