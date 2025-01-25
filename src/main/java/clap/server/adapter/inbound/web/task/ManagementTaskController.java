@@ -1,10 +1,8 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
-import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.UpdateTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.*;
+import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
@@ -15,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +30,7 @@ public class ManagementTaskController {
 
     private final CreateTaskUsecase createTaskUsecase;
     private final UpdateTaskUsecase updateTaskUsecase;
+    private final ApprovalTaskUsecase approvalTaskUsecase;
 
     @Operation(summary = "작업 요청 생성")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -50,5 +50,14 @@ public class ManagementTaskController {
             @RequestPart(name = "attachment") @NotNull  List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         return ResponseEntity.ok(updateTaskUsecase.updateTask(userInfo.getUserId(), taskId, updateTaskRequest, attachments));
+    }
+
+    @Operation(summary = "작업 승인")
+    @Secured({"ROLE_MANAGER"})
+    @PostMapping("/approval")
+    public ResponseEntity<ApprovalTaskResponse> approvalTask(
+            @RequestBody @Valid ApprovalTaskRequest approvalTaskRequest,
+            @AuthenticationPrincipal SecurityUserDetails userInfo){
+        return ResponseEntity.ok(approvalTaskUsecase.approvalTaskByReviewer(userInfo.getUserId(), approvalTaskRequest));
     }
 }

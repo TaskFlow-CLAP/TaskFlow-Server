@@ -1,8 +1,8 @@
-package clap.server.task;
+package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.OrderRequest;
+import clap.server.adapter.inbound.web.dto.task.OrderTaskRequest;
 
 import clap.server.application.Task.FindTaskListService;
 import clap.server.application.port.inbound.domain.MemberService;
@@ -42,7 +42,7 @@ class FindTaskListServiceTest {
     void setUp() {
         pageable = PageRequest.of(0, 20);
         filterTaskListRequest = new FilterTaskListRequest(
-                null, List.of(2L), List.of(1L), "작업 제목", "", List.of(), new OrderRequest("REQUESTED_AT", "DESC")
+                null, List.of(2L), List.of(1L), "작업 제목", "", List.of(), new OrderTaskRequest("REQUESTED_AT", "DESC")
         );
 
         FilterPendingApprovalResponse response = new FilterPendingApprovalResponse(

@@ -27,7 +27,7 @@ public class FindTaskController {
     private final FindTaskListUsecase taskListUsecase;
 
     @Operation(summary = "사용자 요청 작업 목록 조회")
-    @Secured({"ROLE_USER"})
+    @Secured({"ROLE_USER", "ROLE_MANAGER"})
     @GetMapping("/requests")
     public ResponseEntity<Page<FilterTaskListResponse>> findTasksRequestedByUser(
             @RequestParam(defaultValue = "0") int page,

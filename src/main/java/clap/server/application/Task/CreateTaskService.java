@@ -2,15 +2,15 @@ package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
-import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
+
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
-import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
+
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.notification.Notification;
@@ -19,13 +19,12 @@ import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.FilePath;
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
-import static clap.server.domain.model.notification.Notification.createTaskNotification;
 
 
 @ApplicationService
