@@ -24,7 +24,7 @@ public record FilterTaskListRequest(
         @NotNull
         String title,
 
-        @Schema(description = "사용자 닉네임", example = "atom.park")
+        @Schema(description = "요청자/처리자 닉네임", example = "atom.park")
         @NotNull
         String nickName,
 

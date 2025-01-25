@@ -26,22 +26,28 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest) {
-        BooleanBuilder whereClause = createFilter(findTaskListRequest);
+    public Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        BooleanBuilder whereClause = createFilter(filterTaskListRequest);
+        if (!filterTaskListRequest.nickName().isEmpty()) {
+            whereClause.and(taskEntity.processor.nickname.eq(filterTaskListRequest.nickName()));
+        }
         whereClause.and(taskEntity.requester.memberId.eq(requesterId));
-        return getTasksPage(pageable, whereClause, findTaskListRequest.orderRequest().sortBy(), findTaskListRequest.orderRequest().sortDirection());
+
+        return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
     }
 
     @Override
     public Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         BooleanBuilder whereClause = createFilter(filterTaskListRequest);
+        if (!filterTaskListRequest.nickName().isEmpty()) {
+            whereClause.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
+        }
         whereClause.and(taskEntity.taskStatus.eq(TaskStatus.REQUESTED));
         return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
     }
 
     private BooleanBuilder createFilter(FilterTaskListRequest request) {
         BooleanBuilder whereClause = new BooleanBuilder();
-
         if (request.term() != null) {
             LocalDateTime fromDate = LocalDateTime.now().minusHours(request.term());
             whereClause.and(taskEntity.createdAt.after(fromDate));
@@ -54,9 +60,6 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         }
         if (!request.title().isEmpty()) {
             whereClause.and(taskEntity.title.containsIgnoreCase(request.title()));
-        }
-        if (!request.nickName().isEmpty()) {
-            whereClause.and(taskEntity.processor.nickname.eq(request.nickName()));
         }
         if (!request.taskStatus().isEmpty()) {
             whereClause.and(taskEntity.taskStatus.in(request.taskStatus()));
