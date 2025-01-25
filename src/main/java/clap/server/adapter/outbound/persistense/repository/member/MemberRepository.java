@@ -22,6 +22,9 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
     List<MemberEntity> findByIsReviewerTrue();
 
+    List<MemberEntity> findAll(); // 전체 회원 조회
+
+
     Optional<MemberEntity> findByMemberIdAndIsReviewerTrue(Long memberId);
 }
 
