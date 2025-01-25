@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "카테고리 추가")
 @WebAdapter
 @RequiredArgsConstructor
-public class addCategoryController {
+public class AddCategoryController {
     private final AddMainCategoryUsecase addMainCategoryUsecase;
     private final AddSubCategoryUsecase addSubCategoryUsecase;
 

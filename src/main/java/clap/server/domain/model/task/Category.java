@@ -24,20 +24,20 @@ public class Category extends BaseTime {
    private LocalDateTime updatedAt;
 
    public static Category createMainCategory(Member admin, String code, String name) {
-      Category category = new Category();
-      category.admin = admin;
-      category.code = code;
-      category.name = name;
-      return category;
+      return Category.builder()
+              .admin(admin)
+              .code(code)
+              .name(name)
+              .build();
    }
 
    public static Category createSubCategory(Member admin, Category mainCategory, String code, String name) {
-      Category category = new Category();
-      category.mainCategory = mainCategory;
-      category.admin = admin;
-      category.code = code;
-      category.name = name;
-      return category;
+      return Category.builder()
+              .mainCategory(mainCategory)
+              .admin(admin)
+              .code(code)
+              .name(name)
+              .build();
    }
  }
 
