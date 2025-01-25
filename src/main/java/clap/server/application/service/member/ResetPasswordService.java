@@ -1,4 +1,4 @@
-package clap.server.application;
+package clap.server.application.service.member;
 
 import clap.server.application.port.inbound.auth.ResetPasswordUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
