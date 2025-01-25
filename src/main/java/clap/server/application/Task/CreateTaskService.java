@@ -1,6 +1,5 @@
 package clap.server.application.Task;
 
-import clap.server.adapter.inbound.web.dto.notification.CreateNotificationRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateAndUpdateTaskResponse;
 
@@ -14,6 +13,7 @@ import clap.server.application.port.outbound.task.CommandTaskPort;
 
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
+import clap.server.domain.model.notification.Notification;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Task;
@@ -37,7 +37,7 @@ public class CreateTaskService implements CreateTaskUsecase {
 
     @Override
     @Transactional
-    public CreateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest) {
+    public CreateAndUpdateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest) {
         Member member = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(createTaskRequest.categoryId());
         Task task = Task.createTask(member, category, createTaskRequest.title(), createTaskRequest.description());
@@ -51,19 +51,19 @@ public class CreateTaskService implements CreateTaskUsecase {
 
         List<Member> reviewers = memberService.findReviewers();
 
-        CreateNotificationRequest createNotificationRequest;
 
         // 검토자들 각각에 대한 알림 생성 후 event 발행
         for (Member reviewer : reviewers) {
-            createNotificationRequest = new CreateNotificationRequest(
-                    savedTask.getTaskId(), NotificationType.TASK_REQUESTED,
-                    reviewer.getMemberId(), null
-            );
-
+            Notification notification = Notification.builder()
+                    .task(savedTask)
+                    .type(NotificationType.TASK_REQUESTED)
+                    .receiver(reviewer)
+                    .message(null)
+                    .build();
             // publish event로 event 발행
-            applicationEventPublisher.publishEvent(createNotificationRequest);
+            applicationEventPublisher.publishEvent(notification);
         }
 
-        return TaskMapper.toCreateTaskResponse(savedTask);
+        return TaskMapper.toCreateAndUpdateTaskResponse(savedTask);
     }
 }

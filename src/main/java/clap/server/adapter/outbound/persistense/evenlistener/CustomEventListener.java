@@ -1,7 +1,7 @@
-package clap.server.config.evenlistener;
+package clap.server.adapter.outbound.persistense.evenlistener;
 
-import clap.server.adapter.inbound.web.dto.notification.CreateNotificationRequest;
 import clap.server.application.service.notification.CreateNotificationService;
+import clap.server.domain.model.notification.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,7 +17,7 @@ public class CustomEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void handler(CreateNotificationRequest request) {
+    public void handler(Notification request) {
         createNotificationService.createNotification(request);
     }
 }
