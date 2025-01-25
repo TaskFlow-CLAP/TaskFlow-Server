@@ -37,7 +37,7 @@ public class CreateTaskService implements CreateTaskUsecase {
 
     @Override
     @Transactional
-    public CreateAndUpdateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest) {
+    public CreateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest) {
         Member member = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(createTaskRequest.categoryId());
         Task task = Task.createTask(member, category, createTaskRequest.title(), createTaskRequest.description());
@@ -64,6 +64,6 @@ public class CreateTaskService implements CreateTaskUsecase {
             applicationEventPublisher.publishEvent(notification);
         }
 
-        return TaskMapper.toCreateAndUpdateTaskResponse(savedTask);
+        return TaskMapper.toCreateTaskResponse(savedTask);
     }
 }
