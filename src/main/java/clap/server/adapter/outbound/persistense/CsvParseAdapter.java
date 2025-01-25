@@ -2,8 +2,6 @@
 
     import clap.server.adapter.inbound.web.dto.admin.RegisterMemberRequest;
     import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
-    import clap.server.common.annotation.architecture.WebAdapter;
-    import clap.server.domain.model.member.Member;
     import org.springframework.stereotype.Component;
     import org.springframework.web.multipart.MultipartFile;
 
@@ -32,14 +30,13 @@
                         throw new IllegalArgumentException("CSV 데이터가 잘못되었습니다. " + lineNumber + "번째 줄");
                     }
                     try {
-                        // DTO 생성
                         memberRequests.add(new RegisterMemberRequest(
                                 fields[0].trim(), // name
                                 fields[4].trim(), // email
                                 fields[1].trim(), // nickname
-                                Boolean.valueOf(fields[6].trim()), // isReviewer (Boolean 객체)
-                                Long.valueOf(fields[2].trim()), // departmentId (Long 객체)
-                                MemberRole.valueOf(fields[5].trim()), // role (enum)
+                                Boolean.valueOf(fields[6].trim()), // isReviewer
+                                Long.valueOf(fields[2].trim()), // departmentId
+                                MemberRole.valueOf(fields[5].trim()), // role
                                 fields[3].trim() // departmentRole
                         ));
                     } catch (Exception e) {

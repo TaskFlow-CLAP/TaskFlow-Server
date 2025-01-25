@@ -17,17 +17,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "회원 관리 - 등록")
 @WebAdapter
-@RequiredArgsConstructor
 @RequestMapping("/api/managements")
 public class RegisterMemberController {
-    @Qualifier("registerMemberService")
+
     private final RegisterMemberUsecase registerMemberUsecase;
+
+    // @Qualifier 추가
+    public RegisterMemberController(@Qualifier("registerMemberService") RegisterMemberUsecase registerMemberUsecase) {
+        this.registerMemberUsecase = registerMemberUsecase;
+    }
 
     @Operation(summary = "단일 회원 등록 API")
     @PostMapping("/members")
     @Secured("ROLE_ADMIN")
     public void registerMember(@AuthenticationPrincipal SecurityUserDetails userInfo,
-                               @RequestBody @Valid RegisterMemberRequest request){
+                               @RequestBody @Valid RegisterMemberRequest request) {
         registerMemberUsecase.registerMember(userInfo.getUserId(), request);
     }
 }

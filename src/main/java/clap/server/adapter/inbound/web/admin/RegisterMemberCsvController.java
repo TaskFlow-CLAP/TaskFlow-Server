@@ -23,6 +23,7 @@ public class RegisterMemberCsvController {
         this.registerMemberUsecase = registerMemberUsecase;
     }
 
+
     @Operation(summary = "CSV 파일로 회원 등록 API")
     @PostMapping("/members/upload")
     @Secured("ROLE_ADMIN")

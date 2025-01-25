@@ -18,6 +18,7 @@ import java.util.List;
 public class RegisterMemberCsvService implements RegisterMemberUsecase {
     private final CsvParseAdapter csvParser;
 
+
     @Override
     @Transactional
     public int registerMembersFromCsv(Long adminId, MultipartFile file) {
