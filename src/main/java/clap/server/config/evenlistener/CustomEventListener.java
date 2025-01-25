@@ -3,7 +3,6 @@ package clap.server.config.evenlistener;
 import clap.server.adapter.inbound.web.dto.notification.CreateNotificationRequest;
 import clap.server.application.service.notification.CreateNotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

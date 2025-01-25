@@ -64,6 +64,6 @@ public class CreateTaskService implements CreateTaskUsecase {
             applicationEventPublisher.publishEvent(createNotificationRequest);
         }
 
-        return TaskMapper.toCreateAndUpdateTaskResponse(savedTask);
+        return TaskMapper.toCreateTaskResponse(savedTask);
     }
 }
