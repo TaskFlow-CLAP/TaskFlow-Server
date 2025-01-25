@@ -34,4 +34,8 @@ public class Notification extends BaseTime {
         this.message = message;
         this.isRead = false;
     }
+
+    public void updateNotificationIsRead() {
+        this.isRead = true;
+    }
 }
