@@ -34,11 +34,8 @@ public class NotificationEntity extends BaseTimeEntity {
     @JoinColumn(name = "receiver_id", nullable = false)
     private MemberEntity receiver;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String message;
-
-    @Column
-    private String taskTitle;
 
     @Column(nullable = false)
     private boolean isRead;

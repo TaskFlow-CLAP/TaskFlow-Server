@@ -23,7 +23,6 @@ public class Notification extends BaseTime {
     private NotificationType type;
     private Member receiver;
     private String message;
-    private String taskTitle;
     private boolean isRead;
 
     public Notification(Task task, NotificationType type, Member receiver, String message) {
