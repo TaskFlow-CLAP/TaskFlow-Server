@@ -1,5 +1,6 @@
 package clap.server.application.port.inbound.domain;
 
+import clap.server.application.port.inbound.management.FindAllMemberUsecase;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberService implements FindAllMemberUsecase {
     private final LoadMemberPort loadMemberPort;
 
     public Member findById(Long memberId) {
@@ -55,5 +56,10 @@ public class MemberService {
 
     public List<Member> findReviewers() {
         return loadMemberPort.findReviewers();
+    }
+
+    @Override
+    public List<Member> findAllMembers() {
+        return loadMemberPort.findAllMembers();
     }
 }

@@ -21,5 +21,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     Optional<MemberEntity> findByNickname(String nickname);
 
     List<MemberEntity> findByIsReviewerTrue();
+
+    List<MemberEntity> findAll(); // 전체 회원 조회
+
 }
 

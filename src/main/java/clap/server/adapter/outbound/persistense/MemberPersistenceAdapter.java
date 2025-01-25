@@ -86,5 +86,12 @@ import java.util.Optional;
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Member> findAllMembers() {
+        List<MemberEntity> entities = memberRepository.findAll();
+        return entities.stream()
+                .map(memberPersistenceMapper::toDomain)
+                .toList();
+    }
 }
 

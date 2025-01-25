@@ -21,4 +21,7 @@ public interface LoadMemberPort {
 
     List<Member> findReviewers();
 
+    List<Member> findAllMembers(); // 전체 회원 조회
+
+
 }
