@@ -7,6 +7,7 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Task;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -25,6 +26,7 @@ public class Notification extends BaseTime {
     private String message;
     private boolean isRead;
 
+    @Builder
     public Notification(Task task, NotificationType type, Member receiver, String message) {
         this.task = task;
         this.type = type;
