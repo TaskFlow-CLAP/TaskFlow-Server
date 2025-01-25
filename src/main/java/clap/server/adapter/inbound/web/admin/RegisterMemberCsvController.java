@@ -3,6 +3,7 @@ package clap.server.adapter.inbound.web.admin;
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.application.port.inbound.management.RegisterMemberUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
+import clap.server.exception.ApplicationException;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,6 @@ public class RegisterMemberCsvController {
         this.registerMemberUsecase = registerMemberUsecase;
     }
 
-
     @Operation(summary = "CSV 파일로 회원 등록 API")
     @PostMapping("/members/upload")
     @Secured("ROLE_ADMIN")
@@ -33,11 +33,12 @@ public class RegisterMemberCsvController {
         try {
             int addedCount = registerMemberUsecase.registerMembersFromCsv(userInfo.getUserId(), file);
             return ResponseEntity.ok(addedCount + "명의 회원이 등록되었습니다.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("CSV 형식 오류: " + e.getMessage());
+        } catch (ApplicationException e) {
+            return ResponseEntity.status(e.getCode().getHttpStatus())
+                    .body(e.getCode().getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("회원 등록 중 오류가 발생했습니다: " + e.getMessage());
+                    .body("회원 등록 중 알 수 없는 오류가 발생했습니다: " + e.getMessage());
         }
     }
 }

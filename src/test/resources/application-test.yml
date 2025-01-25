@@ -1,0 +1,41 @@
+spring:
+  flyway:
+    enabled: false # Flyway 비활성화
+  elasticsearch:
+    enabled: false  # Elasticsearch 비활성화
+
+  application:
+    name: taskflow  # 애플리케이션 이름 설정
+
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE  # H2 임베디드 메모리 데이터베이스
+    driver-class-name: org.h2.Driver  # H2 데이터베이스 드라이버
+    username: sa  # 데이터베이스 사용자명
+    password:  # 비밀번호 없음
+    sql:
+      init:
+        mode: always  # SQL 초기화 활성화
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # 테스트 실행 시 스키마 생성 및 삭제
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect  # H2용 방언 설정
+        show_sql: true  # SQL 쿼리 출력
+        format_sql: true  # SQL 쿼리를 보기 좋게 출력
+        use_sql_comments: true  # SQL 쿼리에 주석 포함
+        default_batch_fetch_size: 1000  # 배치 페치 크기 설정
+
+  logging:
+    level:
+      root: debug  # 디버그 레벨로 로그 출력
+
+swagger:
+  server:
+    url: http://localhost:8080  # Swagger 기본 서버 URL
+
+jwt:
+  secret-key:
+    access-token: exampleSecretKeyForTFSystemAccessSecretKeyTestForPadding
+    temporary-token: exampleSecretKeyForTFSystem
