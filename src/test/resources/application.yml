@@ -17,6 +17,15 @@ spring:
   testcontainers:
     beans:
       startup: parallel
+server:
+  domain:
+    local: 127.0.0.1:8080
+    service: 127.0.0.1:8080
+
+web:
+  domain:
+    local: 127.0.0.1:3O00
+    service: 127.0.0.1:3000
 
 swagger:
   server:
@@ -35,5 +44,6 @@ jwt:
 password:
   policy:
     length: 12
-    characters: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+"
+    characters: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+
+
 
