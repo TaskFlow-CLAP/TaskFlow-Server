@@ -13,13 +13,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+@Testcontainers
 @ExtendWith(MockitoExtension.class)
 public class NotificationServiceTest {
 
