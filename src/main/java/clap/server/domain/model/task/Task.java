@@ -3,6 +3,8 @@ package clap.server.domain.model.task;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.MemberErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,11 +43,20 @@ public class Task extends BaseTime {
                 .build();
     }
 
-    public  void updateTask(Category category, String title, String description) {
+    public void updateTask(Category category, String title, String description) {
         this.category = category;
         this.title = title;
         this.description = description;
         this.taskCode = toTaskCode(category);
+    }
+
+    public void approveTask(Member reviewer, Member processor, LocalDateTime dueDate, Category mainCategory, Category category, Label label) {
+        this.reviewer = reviewer;
+        this.processor = processor;
+        this.dueDate = dueDate;
+        this.category.updateMainCategory(mainCategory);
+        this.category = category;
+        this.label = label;
     }
 
     private static String toTaskCode(Category category){

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum MemberErrorCode implements BaseErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_001", "회원을 찾을 수 없습니다."),
     ACTIVE_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_002", "활성화 회원을 찾을 수 없습니다."),
+    NOT_A_REVIEWER(HttpStatus.FORBIDDEN, "MEMBER_003", "리뷰어 권한이 없습니다.")
     ;
 
     private final HttpStatus httpStatus;
