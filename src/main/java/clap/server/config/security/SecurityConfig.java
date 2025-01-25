@@ -1,15 +1,17 @@
 package clap.server.config.security;
 
+import clap.server.adapter.inbound.security.LoginAttemptFilter;
+import clap.server.adapter.inbound.security.filter.JwtAuthenticationFilter;
+import clap.server.adapter.inbound.security.filter.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.AbstractRequestMatcherRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,41 +21,45 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import static clap.server.config.security.WebSecurityUrl.*;
+
 
 @Configuration
 @EnableWebSecurity
 @ConditionalOnDefaultWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final SecurityAdapterConfig securityAdapterConfig;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionFilter jwtExceptionFilter;
+    private final LoginAttemptFilter loginAttemptFilter;
+
+    private final DaoAuthenticationProvider daoAuthenticationProvider;
     private final CorsConfigurationSource corsConfigurationSource;
     private final AccessDeniedHandler accessDeniedHandler;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
-    @Profile({"local", "dev"})
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
-    public SecurityFilterChain filterChainForDev(HttpSecurity http) throws Exception {
+    public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
         return defaultSecurity(http)
+                .exceptionHandling(
+                        exception -> exception
+                                .accessDeniedHandler(accessDeniedHandler)
+                                .authenticationEntryPoint(authenticationEntryPoint)
+                )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
+                .addFilterBefore(loginAttemptFilter, JwtExceptionFilter.class)
                 .authorizeHttpRequests(
                         auth ->
                                 defaultAuthorizeHttpRequest(auth)
                                         .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
+                                        .requestMatchers(LOGIN_ENDPOINT).permitAll()
                                         .anyRequest().authenticated()
-                ).build();
-    }
-
-    @Bean
-    @Profile({"prod"})
-    @Order(SecurityProperties.BASIC_AUTH_ORDER)
-    public SecurityFilterChain filterChainForProd(HttpSecurity http) throws Exception {
-        return defaultSecurity(http)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .authorizeHttpRequests(auth -> defaultAuthorizeHttpRequest(auth).anyRequest().authenticated()
                 ).build();
     }
 
@@ -66,12 +72,8 @@ public class SecurityConfig {
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
-                .with(securityAdapterConfig, Customizer.withDefaults())
-                .exceptionHandling(
-                        exception -> exception
-                                .accessDeniedHandler(accessDeniedHandler)
-                                .authenticationEntryPoint(authenticationEntryPoint)
-                );
+                .authenticationProvider(daoAuthenticationProvider)
+                ;
     }
 
     private AbstractRequestMatcherRegistry<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizedUrl> defaultAuthorizeHttpRequest(
@@ -83,8 +85,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, READ_ONLY_PUBLIC_ENDPOINTS).permitAll()
                 .requestMatchers(HEALTH_CHECK_ENDPOINT).permitAll()
                 .requestMatchers(REISSUANCE_ENDPOINTS).permitAll()
-                .requestMatchers(AUTHENTICATED_ENDPOINTS).authenticated()
-                .requestMatchers(ANONYMOUS_ENDPOINTS).permitAll();
+                .requestMatchers(SWAGGER_ENDPOINTS).permitAll();
     }
 
 }

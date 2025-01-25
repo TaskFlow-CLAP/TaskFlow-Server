@@ -79,7 +79,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         );
     }
 
-    @ExceptionHandler(value = { ApplicationException.class, DomainException.class })
+    @ExceptionHandler(value = { BaseException.class })
     public ResponseEntity<Object> onThrowException(
             BaseException exception,
             HttpServletRequest request) {

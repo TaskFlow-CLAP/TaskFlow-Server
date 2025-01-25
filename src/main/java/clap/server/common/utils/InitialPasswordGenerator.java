@@ -7,14 +7,13 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
-@Component
 @RequiredArgsConstructor
 public class InitialPasswordGenerator {
 
     private final PasswordPolicyProperties properties;
 
-    public String generateRandomPassword() {
-        return generateRandomPassword(properties.getLength());
+    private InitialPasswordGenerator() {
+        throw new IllegalStateException("Utility class");
     }
 
     public String generateRandomPassword(int length) {
