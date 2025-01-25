@@ -30,5 +30,14 @@ public class Category extends BaseTime {
       category.name = name;
       return category;
    }
+
+   public static Category createSubCategory(Member admin, Category mainCategory, String code, String name) {
+      Category category = new Category();
+      category.mainCategory = mainCategory;
+      category.admin = admin;
+      category.code = code;
+      category.name = name;
+      return category;
+   }
  }
 
