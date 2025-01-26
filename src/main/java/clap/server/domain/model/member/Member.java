@@ -1,5 +1,6 @@
 package clap.server.domain.model.member;
 
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
 import lombok.*;
@@ -29,12 +30,15 @@ public class Member extends BaseTime {
         this.password = password;
     }
 
-    public void register(Member admin) {
-        this.admin = admin;
-        this.notificationEnabled = null;
-        this.imageUrl = null;
-        this.status = MemberStatus.PENDING;
-        this.password = null;
+    public static Member createMember(Member admin, MemberInfo memberInfo) {
+       return Member.builder()
+               .memberInfo(memberInfo)
+               .notificationEnabled(null)
+               .admin(admin)
+               .imageUrl(null)
+               .status(MemberStatus.PENDING)
+               .password(null)
+               .build();
     }
 
     public void resetPassword(String newEncodedPassword) {
@@ -45,6 +49,7 @@ public class Member extends BaseTime {
         this.password = newEncodedPassword;
         this.status = MemberStatus.ACTIVE;
     }
+
     public String getNickname() {
         return memberInfo != null ? memberInfo.getNickname() : null;
     }

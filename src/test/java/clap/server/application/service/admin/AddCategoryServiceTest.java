@@ -34,9 +34,7 @@ class AddCategoryServiceTest {
     }
 
     @Autowired
-    private AddMainCategoryService addMainCategoryService;
-    @Autowired
-    private AddSubCategoryService addsubCategoryService;
+    private AddCategoryService addCategoryService;
     @Autowired
     private EntityManager entityManager;
 
@@ -58,7 +56,7 @@ class AddCategoryServiceTest {
         entityManager.persist(admin);
 
         admin = entityManager.find(MemberEntity.class, 1);
-        addMainCategoryService.addMainCategory(admin.getMemberId(), "VM", "가상머신");
+        addCategoryService.addMainCategory(admin.getMemberId(), "VM", "가상머신");
 
         CategoryEntity category = entityManager.find(CategoryEntity.class, 1);
         assertThat(category.getCategoryId()).isEqualTo(1);
@@ -70,7 +68,7 @@ class AddCategoryServiceTest {
     @Test
     void addSubCategory() {
         MemberEntity admin = entityManager.find(MemberEntity.class, 1);
-        addsubCategoryService.addSubCategory(admin.getMemberId(), 1L, "CR", "생성");
+        addCategoryService.addSubCategory(admin.getMemberId(), 1L, "CR", "생성");
 
         CategoryEntity category = entityManager.find(CategoryEntity.class, 2);
         assertThat(category.getCategoryId()).isEqualTo(2);
