@@ -196,7 +196,7 @@ public class MemberControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     public void testFindManagers() throws Exception {
-        mockMvc.perform(get("/manager"))
+        mockMvc.perform(get("/api/managers"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].nickname").value("Manager1"))
                 .andExpect(jsonPath("$[0].imageUrl").value("http://example.com/manager1.jpg"))
