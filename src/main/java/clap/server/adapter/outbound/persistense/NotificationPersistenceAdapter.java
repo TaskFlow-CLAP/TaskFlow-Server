@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+import java.util.Optional;
+
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class NotificationPersistenceAdapter implements LoadNotificationPort, CommandNotificationPort {
@@ -19,6 +22,12 @@ public class NotificationPersistenceAdapter implements LoadNotificationPort, Com
     private final NotificationRepository notificationRepository;
     private final NotificationPersistenceMapper notificationPersistenceMapper;
 
+
+    @Override
+    public Optional<Notification> findById(Long notificationId) {
+        return notificationRepository.findById(notificationId)
+                .map(notificationPersistenceMapper::toDomain);
+    }
 
     @Override
     public Page<FindNotificationListResponse> findAllByReceiverId(Long receiverId, Pageable pageable) {
