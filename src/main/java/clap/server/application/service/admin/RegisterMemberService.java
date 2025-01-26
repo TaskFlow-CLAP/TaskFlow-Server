@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import static clap.server.application.mapper.MemberInfoMapper.toMemberInfo;
+import static clap.server.application.mapper.MemberMapper.toMemberInfo;
 import static clap.server.application.mapper.MemberMapper.toMember;
 
 @ApplicationService
