@@ -21,7 +21,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin' # https://github.com/actions/setup-java
-      - run: echo "${{ secrets.S3_PROPERTIES }}" >> ./src/test/resources/s3.yml
+      - run: echo "${{ secrets.S3_PROPERTIES }}" >> ./src/test/resources/application.yml
       
       # gradle caching - 빌드 시간 향상
       - name: Gradle Caching
