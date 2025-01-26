@@ -14,6 +14,6 @@ import lombok.experimental.SuperBuilder;
 public class Label extends BaseTime {
     private Long labelId;
     private Member admin;
-    private LabelType labelType;
+    private String labelName;
     private boolean isDeleted;
 }

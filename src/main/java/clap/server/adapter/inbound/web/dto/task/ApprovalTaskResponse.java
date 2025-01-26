@@ -10,7 +10,7 @@ public record ApprovalTaskResponse(
         String processorName,
         String reviewerName,
         LocalDateTime deadLine,
-        LabelType labelName,
+        String labelName,
         TaskStatus taskStatus
 ) {
 }

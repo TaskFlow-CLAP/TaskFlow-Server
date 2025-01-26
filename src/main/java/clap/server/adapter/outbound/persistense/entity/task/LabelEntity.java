@@ -25,8 +25,7 @@ public class LabelEntity extends BaseTimeEntity {
     private MemberEntity admin;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private LabelType labelType;
+    private String labelName;
 
     @Column(nullable = false)
     private boolean isDeleted;
