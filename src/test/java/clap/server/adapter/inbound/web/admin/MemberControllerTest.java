@@ -8,7 +8,6 @@ import clap.server.adapter.outbound.persistense.entity.member.constant.MemberSta
 import clap.server.adapter.outbound.persistense.entity.task.CategoryEntity;
 import clap.server.adapter.outbound.persistense.entity.task.LabelEntity;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
-import clap.server.adapter.outbound.persistense.entity.task.constant.LabelType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.config.elastic.ElasticsearchConfig;
 import jakarta.persistence.EntityManager;
@@ -100,7 +99,6 @@ public class MemberControllerTest {
 
         // 라벨 추가
         LabelEntity label = LabelEntity.builder()
-                .labelType(LabelType.EMERGENCY)
                 .admin(admin)
                 .isDeleted(false)
                 .build();

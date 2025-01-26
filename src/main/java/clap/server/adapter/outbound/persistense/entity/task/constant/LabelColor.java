@@ -5,11 +5,14 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum LabelType {
-    EMERGENCY("긴급"),
-    NORMAL("일반"),
-    REGULAR("정기");
+public enum LabelColor {
+    RED("빨강"),
+    ORANGE("주황"),
+    YELLOW("노랑"),
+    GREEN("초록"),
+    BLUE("파랑"),
+    PURPLE("보라"),
+    GREY("회색");
 
     private final String description;
 }
-
