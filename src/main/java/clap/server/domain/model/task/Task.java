@@ -57,6 +57,7 @@ public class Task extends BaseTime {
         this.category.updateMainCategory(mainCategory);
         this.category = category;
         this.label = label;
+        this.taskStatus = TaskStatus.IN_PROGRESS;
     }
 
     private static String toTaskCode(Category category){
