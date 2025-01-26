@@ -2,9 +2,7 @@ package clap.server.application.mapper;
 
 
 import clap.server.adapter.inbound.web.dto.task.*;
-
 import clap.server.domain.model.task.Attachment;
-
 import clap.server.domain.model.task.Task;
 
 import java.util.List;
@@ -14,6 +12,7 @@ public class TaskMapper {
     private TaskMapper() {
         throw new IllegalArgumentException();
     }
+
     public static CreateTaskResponse toCreateTaskResponse(Task task) {
         return new CreateTaskResponse(task.getTaskId(), task.getCategory().getCategoryId(), task.getTitle());
     }
