@@ -11,10 +11,15 @@ import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @Tag(name = "작업 생성 및 수정")
@@ -28,18 +33,22 @@ public class ManagementTaskController {
     private final UpdateTaskUsecase updateTaskUsecase;
 
     @Operation(summary = "작업 요청 생성")
-    @PostMapping
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CreateTaskResponse> createTask(
-            @RequestBody @Valid CreateTaskRequest createTaskRequest,
-            @AuthenticationPrincipal SecurityUserDetails userInfo){
-            return ResponseEntity.ok(createTaskUsecase.createTask(userInfo.getUserId(), createTaskRequest));
+            @RequestPart(name = "taskInfo") @Valid CreateTaskRequest createTaskRequest,
+            @RequestPart(name = "attachment") @NotNull  List<MultipartFile> attachments,
+            @AuthenticationPrincipal SecurityUserDetails userInfo
+            ){
+            return ResponseEntity.ok(createTaskUsecase.createTask(userInfo.getUserId(), createTaskRequest, attachments));
     }
 
-    @Operation(summary = "요청한 작업 수정")
-    @PatchMapping
+    @Operation(summary = "작업 수정")
+    @PatchMapping(value = "/{taskId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<UpdateTaskResponse> updateTask(
-            @RequestBody @Valid UpdateTaskRequest updateTaskRequest,
+            @PathVariable @NotNull Long taskId,
+            @RequestPart(name = "taskInfo") @Valid UpdateTaskRequest updateTaskRequest,
+            @RequestPart(name = "attachment") @NotNull  List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
-        return ResponseEntity.ok(updateTaskUsecase.updateTask(userInfo.getUserId(), updateTaskRequest));
+        return ResponseEntity.ok(updateTaskUsecase.updateTask(userInfo.getUserId(), taskId, updateTaskRequest, attachments));
     }
 }

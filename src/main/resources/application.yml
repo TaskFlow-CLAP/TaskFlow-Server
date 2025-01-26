@@ -8,6 +8,7 @@ spring:
       - redis.yml
       - auth.yml
       - elasticsearch.yml
+      - s3.yml
   application:
     name: taskflow
   web.resources.add-mappings: false

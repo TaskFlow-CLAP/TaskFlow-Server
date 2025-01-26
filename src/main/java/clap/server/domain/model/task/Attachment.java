@@ -1,14 +1,11 @@
 package clap.server.domain.model.task;
 
-import clap.server.adapter.inbound.web.dto.task.AttachmentRequest;
 import clap.server.domain.model.common.BaseTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @SuperBuilder
@@ -21,24 +18,29 @@ public class Attachment extends BaseTime {
     private String fileUrl;
     private String fileSize;
 
-    public static List<Attachment> createAttachments(Task task, List<String> fileUrls) {
-        return fileUrls.stream()
-                .map(fileUrl -> Attachment.builder()
-                        .task(task)
-                        .fileUrl(fileUrl)
-                        .originalName("파일 이름")
-                        .fileSize("16MB") //TODO: 하드코딩 제거
-                        .build())
-                .collect(Collectors.toList());
+    @Builder
+    public Attachment(Task task, Comment comment, String originalName, String fileUrl, String fileSize) {
+        this.task = task;
+        this.comment = comment;
+        this.originalName = originalName;
+        this.fileUrl = fileUrl;
+        this.fileSize = fileSize;
     }
 
-    public static List<Attachment> updateAttachments(Task task, List<AttachmentRequest> attachmentRequests) {
-        return attachmentRequests.stream()
-                .map(request -> Attachment.builder()
-                        .task(task)
-                        .fileUrl(request.fileUrl())
-                        .originalName("수정된 파일 이름")
-                        .fileSize("17MB")
-                        .build())
-                .collect(Collectors.toList());
-    }}
+    public static Attachment createAttachment(Task task, String originalName, String fileUrl, long fileSize) {
+        return Attachment.builder()
+                .task(task)
+                .comment(null)
+                .originalName(originalName)
+                .fileUrl(fileUrl)
+                .fileSize(formatFileSize(fileSize))
+                .build();
+    }
+
+    public static String formatFileSize(long size) {
+        if (size < 1024) return size + " B";
+        int z = (63 - Long.numberOfLeadingZeros(size)) / 10;
+        return String.format("%.1f %sB", (double) size / (1L << (z * 10)), " KMGTPE".charAt(z));
+    }
+
+}

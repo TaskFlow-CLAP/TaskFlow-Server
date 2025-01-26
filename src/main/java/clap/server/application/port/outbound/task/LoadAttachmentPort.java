@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface LoadAttachmentPort {
     List<Attachment> findAllByTaskIdAndCommentIsNull(Long task);
+    List<Attachment> findAllByTaskIdAndCommentIsNullAndAttachmentId(Long taskId, List<Long> attachmentIds);
 }
