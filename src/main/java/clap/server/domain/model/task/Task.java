@@ -50,11 +50,10 @@ public class Task extends BaseTime {
         this.taskCode = toTaskCode(category);
     }
 
-    public void approveTask(Member reviewer, Member processor, LocalDateTime dueDate, Category mainCategory, Category category, Label label) {
+    public void approveTask(Member reviewer, Member processor, LocalDateTime dueDate, Category category, Label label) {
         this.reviewer = reviewer;
         this.processor = processor;
         this.dueDate = dueDate;
-        this.category.updateMainCategory(mainCategory);
         this.category = category;
         this.label = label;
         this.taskStatus = TaskStatus.IN_PROGRESS;

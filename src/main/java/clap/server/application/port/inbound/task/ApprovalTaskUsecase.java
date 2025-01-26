@@ -4,5 +4,5 @@ import clap.server.adapter.inbound.web.dto.task.ApprovalTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.ApprovalTaskResponse;
 
 public interface ApprovalTaskUsecase {
-    ApprovalTaskResponse approvalTaskByReviewer(Long userId, ApprovalTaskRequest approvalTaskRequest);
+    ApprovalTaskResponse approvalTaskByReviewer(Long userId, Long taskId, ApprovalTaskRequest approvalTaskRequest);
 }

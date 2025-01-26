@@ -54,10 +54,11 @@ public class ManagementTaskController {
 
     @Operation(summary = "작업 승인")
     @Secured({"ROLE_MANAGER"})
-    @PostMapping("/approval")
+    @PostMapping("/approval/{taskId}")
     public ResponseEntity<ApprovalTaskResponse> approvalTask(
             @RequestBody @Valid ApprovalTaskRequest approvalTaskRequest,
+            @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
-        return ResponseEntity.ok(approvalTaskUsecase.approvalTaskByReviewer(userInfo.getUserId(), approvalTaskRequest));
+        return ResponseEntity.ok(approvalTaskUsecase.approvalTaskByReviewer(userInfo.getUserId(), taskId, approvalTaskRequest));
     }
 }

@@ -1,6 +1,5 @@
 package clap.server.domain.model.task;
 
-import clap.server.adapter.outbound.persistense.entity.task.LabelEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.LabelType;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;

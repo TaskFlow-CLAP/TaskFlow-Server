@@ -32,18 +32,17 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
 
     @Override
     @Transactional
-    public ApprovalTaskResponse approvalTaskByReviewer(Long reviewerId, ApprovalTaskRequest approvalTaskRequest) {
+    public ApprovalTaskResponse approvalTaskByReviewer(Long reviewerId, Long taskId, ApprovalTaskRequest approvalTaskRequest) {
         Member reviewer = memberService.findActiveMember(reviewerId);
         if (!reviewer.isReviewer()) {
             throw new ApplicationException(MemberErrorCode.NOT_A_REVIEWER);
         }
-        Task task = taskService.findById(approvalTaskRequest.taskId());
+        Task task = taskService.findById(taskId);
         Member processor = memberService.findById(approvalTaskRequest.processorId());
-        Category mainCategory = categoryService.findById(approvalTaskRequest.mainCategoryId());
         Category category = categoryService.findById(approvalTaskRequest.categoryId());
         Label label = labelService.findById(approvalTaskRequest.labelId());
 
-        task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(),mainCategory, category, label);
+        task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
         return TaskMapper.toApprovalTaskResponse(commandTaskPort.save(task));
     }
 }
