@@ -1,4 +1,4 @@
-package clap.server.application;
+package clap.server.application.statistics;
 
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.application.port.outbound.task.TaskDocumentPort;
