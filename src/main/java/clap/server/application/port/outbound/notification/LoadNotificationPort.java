@@ -15,4 +15,6 @@ public interface LoadNotificationPort {
     Optional<Notification> findById(Long notificationId);
 
     Page<FindNotificationListResponse> findAllByReceiverId(Long receiverId, Pageable pageable);
+
+    List<Notification> findNotificationsByMemberId(Long memberId);
 }

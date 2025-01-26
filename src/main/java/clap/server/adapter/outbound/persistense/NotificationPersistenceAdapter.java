@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -34,6 +35,13 @@ public class NotificationPersistenceAdapter implements LoadNotificationPort, Com
         Page<Notification> notificationList = notificationRepository.findAllByReceiver_MemberId(receiverId, pageable)
                 .map(notificationPersistenceMapper::toDomain);
         return notificationList.map(NotificationMapper::toFindNoticeListResponse);
+    }
+
+    @Override
+    public List<Notification> findNotificationsByMemberId(Long memberId) {
+        return notificationRepository.findAllByReceiver_MemberId(memberId)
+                .stream().map(notificationPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
