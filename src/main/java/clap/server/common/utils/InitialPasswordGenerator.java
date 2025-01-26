@@ -1,16 +1,15 @@
 package clap.server.common.utils;
 
-import clap.server.common.properties.PasswordPolicyProperties;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
-@RequiredArgsConstructor
 public class InitialPasswordGenerator {
 
-    private final PasswordPolicyProperties properties;
+    @Value("${password.policy.characters}")
+    private String characters;
+
+    private static final int PASSWORD_LENGTH = 8;
 
     private InitialPasswordGenerator() {
         throw new IllegalStateException("Utility class");
@@ -24,10 +23,8 @@ public class InitialPasswordGenerator {
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder password = new StringBuilder(length);
 
-        String characters = properties.getCharacters();
-
         for (int i = 0; i < length; i++) {
-            int randomIndex = secureRandom.nextInt(properties.getLength());
+            int randomIndex = secureRandom.nextInt(PASSWORD_LENGTH);
             password.append(characters.charAt(randomIndex));
         }
 
