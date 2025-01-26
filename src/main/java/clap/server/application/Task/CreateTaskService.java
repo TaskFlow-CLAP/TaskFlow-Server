@@ -1,5 +1,6 @@
 package clap.server.application.Task;
 
+import clap.server.adapter.inbound.web.dto.notification.SseRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
 
@@ -66,8 +67,18 @@ public class CreateTaskService implements CreateTaskUsecase {
 
         // 검토자들 각각에 대한 알림 생성 후 event 발행
         for (Member reviewer : reviewers) {
+            // 알림 저장
             Notification notification = createTaskNotification(task, reviewer, NotificationType.TASK_REQUESTED);
             applicationEventPublisher.publishEvent(notification);
+
+            // SSE 실시간 알림 전송
+            SseRequest sseRequest = new SseRequest(
+                    notification.getTask().getTitle(),
+                    notification.getType(),
+                    reviewer.getMemberId(),
+                    null
+            );
+            applicationEventPublisher.publishEvent(sseRequest);
         }
     }
 
