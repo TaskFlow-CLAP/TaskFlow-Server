@@ -44,22 +44,6 @@ public class KakaoS3Config {
 
 
     @Bean
-    public S3Presigner s3Presigner() {
-        S3Configuration s3Configuration = S3Configuration.builder()
-                .pathStyleAccessEnabled(true)
-                .build();
-
-        return S3Presigner.builder()
-                .region(Region.of(region))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(accessKey, secretKey)))
-                .endpointOverride(URI.create(endpoint))
-                .serviceConfiguration(s3Configuration)
-                .build();
-    }
-
-
-    @Bean
     public S3Client s3Client() {
         return S3Client.builder()
                 .region(Region.of(region))
