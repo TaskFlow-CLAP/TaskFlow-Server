@@ -2,6 +2,8 @@ package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskResponse;
+import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
@@ -47,7 +49,7 @@ public class UpdateTaskService implements UpdateTaskUsecase {
     public UpdateTaskResponse updateTask(Long requesterId, Long taskId, UpdateTaskRequest updateTaskRequest, List<MultipartFile> files) {
         memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(updateTaskRequest.categoryId());
-        Task task = taskService.findById(updateTaskRequest.taskId());
+        Task task = taskService.findById(taskId);
         if(task.getTaskStatus() != TaskStatus.REQUESTED){
             throw new ApplicationException(TaskErrorCode.TASK_STATUS_MISMATCH);
         }
