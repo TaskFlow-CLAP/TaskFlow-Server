@@ -13,6 +13,20 @@ spring:
     name: taskflow
   web.resources.add-mappings: false
 
+  # 구글 알림 이메일 발신자 정보 설정(논의 필요)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: leegd120@gmail.com
+    password: znlictzarqurxlla
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
 
 server:
   port: ${APPLICATION_PORT:8080}
