@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.notification.SseRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
 
+import clap.server.adapter.inbound.web.dto.webhook.SendAgitRequest;
 import clap.server.adapter.inbound.web.dto.webhook.SendKakaoWorkRequest;
 import clap.server.adapter.inbound.web.dto.webhook.SendWebhookRequest;
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
@@ -104,8 +105,18 @@ public class CreateTaskService implements CreateTaskUsecase {
                     null,
                     null
             );
-            //Kakao Webhook 실시간 전송
             applicationEventPublisher.publishEvent(sendKakaoWorkRequest);
+
+            //아지트 Webhook 실시간 전송
+            SendAgitRequest sendAgitRequest = new SendAgitRequest(
+                    reviewer.getMemberInfo().getEmail(),
+                    NotificationType.TASK_REQUESTED,
+                    task.getTitle(),
+                    task.getRequester().getNickname(),
+                    null,
+                    null
+            );
+            applicationEventPublisher.publishEvent(sendAgitRequest);
         }
     }
 

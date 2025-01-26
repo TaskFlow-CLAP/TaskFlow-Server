@@ -1,10 +1,12 @@
 package clap.server.adapter.outbound.persistense.evenlistener;
 
 import clap.server.adapter.inbound.web.dto.notification.SseRequest;
+import clap.server.adapter.inbound.web.dto.webhook.SendAgitRequest;
 import clap.server.adapter.inbound.web.dto.webhook.SendKakaoWorkRequest;
 import clap.server.adapter.inbound.web.dto.webhook.SendWebhookRequest;
 import clap.server.application.service.notification.CreateNotificationService;
 import clap.server.application.service.notification.SendSseService;
+import clap.server.application.service.webhook.SendAgitService;
 import clap.server.application.service.webhook.SendEmailService;
 import clap.server.application.service.webhook.SendKaKaoWorkService;
 import clap.server.domain.model.notification.Notification;
@@ -23,6 +25,7 @@ public class CustomEventListener {
     private final SendSseService sendSseService;
     private final SendEmailService sendEmailService;
     private final SendKaKaoWorkService sendKaKaoWorkService;
+    private final SendAgitService agitService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handler(Notification request) {
@@ -35,12 +38,17 @@ public class CustomEventListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleEmailSend(SendWebhookRequest request) {
-        sendEmailService.sendEmail(request);
+    public void handleEmailSend(SendWebhookRequest email) {
+        sendEmailService.sendEmail(email);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleKakaoWorkSend(SendKakaoWorkRequest kakaoWork) {
         sendKaKaoWorkService.sendKaKaoWork(kakaoWork);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleAgitSend(SendAgitRequest agit) {
+        agitService.sendAgit(agit);
     }
 }
