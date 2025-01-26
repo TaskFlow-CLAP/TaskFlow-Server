@@ -18,7 +18,6 @@ public class MemberMapper {
                 .build();
     }
 
-
     public static MemberInfo toMemberInfo(String name, String email, String nickname, boolean isReviewer,
                                           Department department, MemberRole role, String departmentRole) {
         return MemberInfo.builder()
@@ -30,6 +29,7 @@ public class MemberMapper {
                 .role(role)
                 .departmentRole(departmentRole)
                 .build();
+    }
 
     public static MemberProfileResponse toMemberProfileResponse(Member member) {
         return new MemberProfileResponse(
@@ -39,6 +39,5 @@ public class MemberMapper {
                 member.getImageUrl(),
                 member.getMemberInfo().getRole()
         );
-
     }
 }
