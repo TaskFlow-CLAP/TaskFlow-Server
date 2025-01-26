@@ -6,10 +6,6 @@ import java.time.LocalDateTime;
 
 public record ApprovalTaskRequest(
         @NotNull
-        Long taskId,
-        @NotNull
-        Long mainCategoryId,
-        @NotNull
         Long categoryId,
         @NotNull
         Long processorId,
