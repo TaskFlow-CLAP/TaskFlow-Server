@@ -76,4 +76,15 @@ public class TaskMapper {
                 attachmentResponses
         );
     }
+
+    public static ApprovalTaskResponse toApprovalTaskResponse(Task approvedTask) {
+        return new ApprovalTaskResponse(
+                approvedTask.getTaskId(),
+                approvedTask.getProcessor().getNickname(),
+                approvedTask.getReviewer().getNickname(),
+                approvedTask.getDueDate(),
+                approvedTask.getLabel().getLabelName(),
+                approvedTask.getTaskStatus()
+        );
+    }
 }

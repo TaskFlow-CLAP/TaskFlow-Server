@@ -54,4 +54,7 @@ public class Member extends BaseTime {
         return memberInfo != null ? memberInfo.getNickname() : null;
     }
 
+    public boolean isReviewer() {
+        return this.memberInfo != null && this.memberInfo.isReviewer();
+    }
 }

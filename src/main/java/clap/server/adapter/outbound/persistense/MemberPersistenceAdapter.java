@@ -85,6 +85,5 @@ import java.util.Optional;
                 .map(taskPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
     }
-
 }
 

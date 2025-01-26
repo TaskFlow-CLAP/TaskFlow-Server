@@ -32,8 +32,8 @@ public record FilterTaskListRequest(
         @NotNull
         List<TaskStatus> taskStatus,
 
-        @Schema(description = "정렬 기준", implementation = OrderRequest.class)
+        @Schema(description = "정렬 기준", implementation = OrderTaskRequest.class)
         @NotNull
-        OrderRequest orderRequest
+        OrderTaskRequest orderRequest
 ) {
 }
