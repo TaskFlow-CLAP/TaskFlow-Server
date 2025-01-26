@@ -3,7 +3,6 @@ package clap.server.exception;
 import clap.server.exception.code.AuthErrorCode;
 import clap.server.exception.code.BaseErrorCode;
 import clap.server.exception.code.CommonErrorCode;
-import clap.server.exception.code.StatisticsErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -169,18 +168,6 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 HttpStatus.FORBIDDEN,
                 request,
                 AuthErrorCode.FORBIDDEN.getMessage()
-        );
-    }
-
-    @ExceptionHandler(StatisticsException.class)
-    public ResponseEntity<Object> handleAccessDeniedException(StatisticsException e, WebRequest request) {
-        return handleExceptionInternalFalse(
-                e,
-                StatisticsErrorCode.STATISTICS_BAD_REQUEST,
-                HttpHeaders.EMPTY,
-                HttpStatus.BAD_REQUEST,
-                request,
-                StatisticsErrorCode.STATISTICS_BAD_REQUEST.getMessage()
         );
     }
 }
