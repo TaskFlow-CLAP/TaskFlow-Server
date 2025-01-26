@@ -44,7 +44,7 @@ public class Notification extends BaseTime {
                 .task(task)
                 .type(type)
                 .receiver(reviewer)
-                .message("테스트메세지")
+                .message(null)
                 .build();
     }
 }
