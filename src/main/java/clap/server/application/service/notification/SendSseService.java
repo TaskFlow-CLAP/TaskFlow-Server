@@ -24,7 +24,7 @@ public class SendSseService implements SendSseUsecase {
             sseEmitter.send(SseEmitter.event()
                     .id(String.valueOf(request.receiverId()))
                     .data(request));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ApplicationException(NotificationErrorCode.SSE_SEND_FAILED);
         }
     }

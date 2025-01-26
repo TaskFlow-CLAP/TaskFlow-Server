@@ -32,7 +32,7 @@ public class SubscribeSseService implements SubscribeSseUsecase {
             emitter.send(SseEmitter.event()
                     .id(String.valueOf(memberId))
                     .data("Sse 연결 성공. [memberId = " + memberId + "]"));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ApplicationException(NotificationErrorCode.SSE_SEND_FAILED);
         }
         return emitter;
