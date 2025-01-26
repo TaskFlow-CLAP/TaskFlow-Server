@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.notification.SseRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
 
+import clap.server.adapter.inbound.web.dto.webhook.SendWebhookRequest;
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.mapper.AttachmentMapper;
@@ -79,6 +80,17 @@ public class CreateTaskService implements CreateTaskUsecase {
                     null
             );
             applicationEventPublisher.publishEvent(sseRequest);
+
+            //Email Webhook 실시간 전송
+            SendWebhookRequest sendWebhookRequest = new SendWebhookRequest(
+                    reviewer.getMemberInfo().getEmail(),
+                    NotificationType.TASK_REQUESTED,
+                    task.getTitle(),
+                    task.getRequester().getNickname(),
+                    null,
+                    null
+            );
+            applicationEventPublisher.publishEvent(sendWebhookRequest);
         }
     }
 

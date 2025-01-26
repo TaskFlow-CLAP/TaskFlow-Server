@@ -1,8 +1,10 @@
 package clap.server.adapter.outbound.persistense.evenlistener;
 
 import clap.server.adapter.inbound.web.dto.notification.SseRequest;
+import clap.server.adapter.inbound.web.dto.webhook.SendWebhookRequest;
 import clap.server.application.service.notification.CreateNotificationService;
 import clap.server.application.service.notification.SendSseService;
+import clap.server.application.service.webhook.SendEmailService;
 import clap.server.domain.model.notification.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class CustomEventListener {
     private final CreateNotificationService createNotificationService;
     private final SendSseService sendSseService;
+    private final SendEmailService sendEmailService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -27,5 +30,10 @@ public class CustomEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSseNotification(SseRequest sseRequest) {
         sendSseService.send(sseRequest);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleEmailSend(SendWebhookRequest request) {
+        sendEmailService.sendEmail(request);
     }
 }
