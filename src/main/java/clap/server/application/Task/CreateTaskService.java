@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.notification.SseRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
 
+import clap.server.adapter.inbound.web.dto.webhook.SendKakaoWorkRequest;
 import clap.server.adapter.inbound.web.dto.webhook.SendWebhookRequest;
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
@@ -15,6 +16,7 @@ import clap.server.application.port.inbound.task.CreateTaskUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 
+import clap.server.application.service.webhook.SendKaKaoWorkService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.notification.Notification;
@@ -42,6 +44,7 @@ public class CreateTaskService implements CreateTaskUsecase {
     private final CommandTaskPort commandTaskPort;
     private final CommandAttachmentPort commandAttachmentPort;
     private final S3UploadAdapter s3UploadAdapter;
+    private final SendKaKaoWorkService sendKaKaoWorkService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
@@ -91,6 +94,18 @@ public class CreateTaskService implements CreateTaskUsecase {
                     null
             );
             applicationEventPublisher.publishEvent(sendWebhookRequest);
+
+            //Kakao Webhook 실시간 전송
+            SendKakaoWorkRequest sendKakaoWorkRequest = new SendKakaoWorkRequest(
+                    reviewer.getMemberInfo().getEmail(),
+                    NotificationType.TASK_REQUESTED,
+                    task.getTitle(),
+                    task.getRequester().getNickname(),
+                    null,
+                    null
+            );
+            //Kakao Webhook 실시간 전송
+            applicationEventPublisher.publishEvent(sendKakaoWorkRequest);
         }
     }
 
