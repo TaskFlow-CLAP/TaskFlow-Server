@@ -1,4 +1,4 @@
-package clap.server.application.port.inbound.auth;
+package clap.server.application.port.inbound.member;
 
 public interface ResetPasswordUsecase {
     void resetPassword(Long memberId, String password);
