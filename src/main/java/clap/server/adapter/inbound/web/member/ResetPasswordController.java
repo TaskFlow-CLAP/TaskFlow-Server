@@ -1,7 +1,7 @@
 package clap.server.adapter.inbound.web.member;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.application.port.inbound.auth.ResetPasswordUsecase;
+import clap.server.application.port.inbound.member.ResetPasswordUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import clap.server.common.annotation.validation.password.ValidPassword;
 import io.swagger.v3.oas.annotations.Operation;

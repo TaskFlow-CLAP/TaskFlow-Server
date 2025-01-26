@@ -1,5 +1,6 @@
 package clap.server.application.mapper;
 
+import clap.server.adapter.inbound.web.dto.member.MemberProfileResponse;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
 
@@ -12,5 +13,15 @@ public class MemberMapper {
         return Member.builder()
                 .memberInfo(memberInfo)
                 .build();
+    }
+
+    public static MemberProfileResponse toMemberProfileResponse(Member member) {
+        return new MemberProfileResponse(
+                member.getMemberId(),
+                member.getMemberInfo().getName(),
+                member.getMemberInfo().getNickname(),
+                member.getImageUrl(),
+                member.getMemberInfo().getRole()
+        );
     }
 }
