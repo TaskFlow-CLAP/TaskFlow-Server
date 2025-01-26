@@ -34,6 +34,8 @@ public class ManagementTaskController {
 
     @Operation(summary = "작업 요청 생성")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Secured({"ROLE_MANAGER, ROLE_USER"})
+    @PostMapping
     public ResponseEntity<CreateTaskResponse> createTask(
             @RequestPart(name = "taskInfo") @Valid CreateTaskRequest createTaskRequest,
             @RequestPart(name = "attachment") @NotNull  List<MultipartFile> attachments,
@@ -44,6 +46,8 @@ public class ManagementTaskController {
 
     @Operation(summary = "작업 수정")
     @PatchMapping(value = "/{taskId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Secured({"ROLE_MANAGER, ROLE_USER"})
+    @PatchMapping
     public ResponseEntity<UpdateTaskResponse> updateTask(
             @PathVariable @NotNull Long taskId,
             @RequestPart(name = "taskInfo") @Valid UpdateTaskRequest updateTaskRequest,
