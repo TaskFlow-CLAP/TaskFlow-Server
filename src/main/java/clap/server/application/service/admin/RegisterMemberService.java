@@ -30,6 +30,7 @@ class RegisterMemberService implements RegisterMemberUsecase {
         Department department = loadDepartmentPort.findById(request.departmentId()).orElseThrow(()->
                 new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
+        //TODO: 인프라팀만 담당자가 될 수 있도록 수정해야함
         MemberInfo memberInfo = MemberInfo.toMemberInfo(request.name(), request.email(), request.nickname(), request.isReviewer(),
                 department, request.role(), request.departmentRole());
         Member member = Member.createMember(admin, memberInfo);

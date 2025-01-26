@@ -8,7 +8,6 @@ import clap.server.application.port.outbound.member.LoadDepartmentPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.member.MemberInfo;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.DepartmentErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ApplicationService
 @RequiredArgsConstructor
 @Transactional
-public class ManageMemberService implements ManageMemberUsecase {
+class ManageMemberService implements ManageMemberUsecase {
     private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
@@ -27,6 +26,7 @@ public class ManageMemberService implements ManageMemberUsecase {
         Member member = memberService.findActiveMember(memberId);
         Department department = loadDepartmentPort.findById(request.departmentId()).orElseThrow(() -> new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
+        //TODO: 인프라팀만 담당자가 될 수 있도록 수정해야함
         member.getMemberInfo().updateMemberInfo(
                 request.name(), request.email(), request.isReviewer(),
                 department, request.role(), request.departmentRole());
