@@ -11,11 +11,14 @@ import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
+import clap.server.application.port.outbound.task.LoadAttachmentPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.FilePath;
 import clap.server.domain.model.task.Task;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,7 @@ public class UpdateTaskService implements UpdateTaskUsecase {
     private final CategoryService categoryService;
     private final TaskService taskService;
     private final CommandTaskPort commandTaskPort;
+    private final LoadAttachmentPort loadAttachmentPort;
     private final CommandAttachmentPort commandAttachmentPort;
     private final S3UploadService s3UploadService;
 
@@ -47,13 +51,20 @@ public class UpdateTaskService implements UpdateTaskUsecase {
         task.updateTask(category, updateTaskRequest.title(), updateTaskRequest.description());
         Task updatedTask = commandTaskPort.save(task);
 
-        updateAttachments(updateTaskRequest, files, task);
+        if (!updateTaskRequest.attachmentsToDelete().isEmpty()){
+            updateAttachments(updateTaskRequest.attachmentsToDelete(), files, task);
+        }
         return TaskMapper.toUpdateTaskResponse(updatedTask);
     }
 
-    private void updateAttachments(UpdateTaskRequest updateTaskRequest, List<MultipartFile> files, Task task) {
-        List<Long> attachmentIds = updateTaskRequest.attachmentsToDelete();
-        commandAttachmentPort.deleteByIds(attachmentIds);
+    private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
+        List<Attachment> attachmentsOfTask = loadAttachmentPort.findAllByTaskIdAndAttachmentIdIn(task.getTaskId(), attachmentIdsToDelete);
+
+        if(attachmentsOfTask.size() != attachmentIdsToDelete.size()) {
+            throw new ApplicationException(TaskErrorCode.TASK_ATTACHMENT_NOT_FOUND);
+        }
+
+        commandAttachmentPort.deleteByIds(attachmentIdsToDelete);
 
         List<String> fileUrls = s3UploadService.uploadFiles(FilePath.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
