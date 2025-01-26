@@ -83,7 +83,8 @@ public class TaskMapper {
                 approvedTask.getProcessor().getNickname(),
                 approvedTask.getReviewer().getNickname(),
                 approvedTask.getDueDate(),
-                approvedTask.getLabel().getLabelType()
+                approvedTask.getLabel().getLabelType(),
+                approvedTask.getTaskStatus()
         );
     }
 }
