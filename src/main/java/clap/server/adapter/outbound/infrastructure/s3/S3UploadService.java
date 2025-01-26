@@ -26,21 +26,19 @@ public class S3UploadService {
     private final S3Client s3Client;
 
     public List<String> uploadFiles(FilePath filePrefix, List<MultipartFile> multipartFiles)  {
-        return multipartFiles.stream().map((file) -> {
-            try {
-                return uploadSingleFile(filePrefix, file);
-            } catch (IOException e) {
-                throw new S3Exception(S3Errorcode.FILE_UPLOAD_REQUEST_FAILED);
-            }
-        }).toList();
+        return multipartFiles.stream().map((file) -> uploadSingleFileAndGetUrl(filePrefix, file)).toList();
     }
 
-    public String uploadSingleFile(FilePath filePrefix, MultipartFile file) throws IOException {
-        Path filePath = getFilePath(file);
-        String objectKey = createObjectKey(filePrefix.getPath(), file.getOriginalFilename());
-        uploadToS3(objectKey, filePath);
-        Files.delete(filePath);
-        return getFileUrl(objectKey);
+    private String uploadSingleFileAndGetUrl(FilePath filePrefix, MultipartFile file) {
+        try {
+            Path filePath = getFilePath(file);
+            String objectKey = createObjectKey(filePrefix.getPath(), file.getOriginalFilename());
+            uploadToS3(objectKey, filePath);
+            Files.delete(filePath);
+            return getFileUrl(objectKey);
+        } catch (IOException e) {
+            throw new S3Exception(S3Errorcode.FILE_UPLOAD_REQUEST_FAILED);
+        }
     }
 
     private String getFileUrl(String objectKey) {
