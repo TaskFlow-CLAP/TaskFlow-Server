@@ -2,7 +2,7 @@ package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
-import clap.server.adapter.outbound.infrastructure.s3.S3UploadService;
+import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
@@ -36,7 +36,7 @@ public class CreateTaskService implements CreateTaskUsecase {
     private final CategoryService categoryService;
     private final CommandTaskPort commandTaskPort;
     private final CommandAttachmentPort commandAttachmentPort;
-    private final S3UploadService s3UploadService;
+    private final S3UploadAdapter s3UploadAdapter;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
@@ -53,7 +53,7 @@ public class CreateTaskService implements CreateTaskUsecase {
     }
 
     private void saveAttachments(List<MultipartFile> files, Task task) {
-        List<String> fileUrls = s3UploadService.uploadFiles(FilePath.TASK_IMAGE, files);
+        List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePath.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }
