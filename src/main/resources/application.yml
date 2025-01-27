@@ -28,8 +28,8 @@ server:
 
 web:
   domain:
-    local: ${TASKFLOW_LOCAL_WEB:127.0.0.1:5173}
-    service: ${TASKFLOW_SERVICE_WEB:127.0.0.1:5173}
+    local: ${TASKFLOW_LOCAL_WEB:127.0.0.1:3O00}
+    service: ${TASKFLOW_SERVICE_WEB:127.0.0.1:3000}
 #logging:
 #  level:
 #    root: INFO
