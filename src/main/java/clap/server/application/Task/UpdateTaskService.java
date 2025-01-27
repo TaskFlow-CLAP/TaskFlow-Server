@@ -64,6 +64,7 @@ public class UpdateTaskService implements UpdateTaskUsecase {
     }
 
     @Override
+    @Transactional
     public UpdateTaskResponse updateTaskState(Long memberId, Long taskId, UpdateTaskStateRequest updateTaskStateRequest) {
         memberService.findActiveMember(memberId);
         Task task = taskService.findById(taskId);
