@@ -7,6 +7,7 @@ import clap.server.common.annotation.architecture.PersistenceAdapter;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.NotificationErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,8 +17,11 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class KakaoWorkClient implements SendKaKaoWorkPort {
 
-    private static final String KAKAOWORK_URL = "https://api.kakaowork.com/v1/messages.send_by_email";
-    private static final String KAKAOWORK_AUTH = "Bearer 1b01becc.a7f10da76d2e4038948771107cfe5c1d";
+    @Value("${kakaowork.url}")
+    private String kakaworkUrl;
+
+    @Value("${kakaowork.auth}")
+    private String kakaworkAuth;
 
     private final ObjectBlockService makeObjectBlock;
 
@@ -46,7 +50,7 @@ public class KakaoWorkClient implements SendKaKaoWorkPort {
         // HTTP 요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        headers.add("Authorization", KAKAOWORK_AUTH);
+        headers.add("Authorization", kakaworkAuth);
 
         // HTTP 요청 엔터티 생성
         HttpEntity<String> entity = new HttpEntity<>(payload, headers);
@@ -54,7 +58,7 @@ public class KakaoWorkClient implements SendKaKaoWorkPort {
         try {
             // Post 요청 전송
             restTemplate.exchange(
-                    KAKAOWORK_URL, HttpMethod.POST, entity, String.class
+                    kakaworkUrl, HttpMethod.POST, entity, String.class
             );
 
         } catch (Exception e) {

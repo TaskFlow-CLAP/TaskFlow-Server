@@ -5,6 +5,7 @@ import clap.server.adapter.outbound.persistense.entity.notification.constant.Not
 import clap.server.application.port.outbound.webhook.SendAgitPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,7 +16,8 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class AgitClient implements SendAgitPort {
 
-    private static final String AGITWEBHOOK_URL = "https://agit.io/webhook/a342181d-fb18-4eb0-a99a-30f4fb5b14b1";
+    @Value("${agit.url}")
+    private String AGITWEBHOOK_URL;
 
     @Override
     public void sendAgit(SendAgitRequest request) {

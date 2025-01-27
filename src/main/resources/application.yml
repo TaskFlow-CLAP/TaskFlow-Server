@@ -43,6 +43,17 @@ web:
   domain:
     local: ${TASKFLOW_LOCAL_WEB:127.0.0.1:3O00}
     service: ${TASKFLOW_SERVICE_WEB:127.0.0.1:3000}
+
+
+# 카카오워크 및 agit url, accessKey값 환경 변수로 설정
+kakaowork:
+  url: "https://api.kakaowork.com/v1/messages.send_by_email";
+  auth: "Bearer 1b01becc.a7f10da76d2e4038948771107cfe5c1d"
+
+agit:
+  url: "https://agit.io/webhook/a342181d-fb18-4eb0-a99a-30f4fb5b14b1"
+
+
 #logging:
 #  level:
 #    root: INFO
