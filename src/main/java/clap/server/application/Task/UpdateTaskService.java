@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
+import java.util.Objects;
 
 
 @ApplicationService
@@ -47,13 +47,15 @@ public class UpdateTaskService implements UpdateTaskUsecase {
     @Override
     @Transactional
     public UpdateTaskResponse updateTask(Long requesterId, Long taskId, UpdateTaskRequest updateTaskRequest, List<MultipartFile> files) {
-        memberService.findActiveMember(requesterId);
+        Member requester = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(updateTaskRequest.categoryId());
         Task task = taskService.findById(taskId);
-        if(task.getTaskStatus() != TaskStatus.REQUESTED){
+
+        if(!Objects.equals(requester.getMemberId(), task.getRequester().getMemberId())) {
             throw new ApplicationException(TaskErrorCode.TASK_STATUS_MISMATCH);
         }
-        task.updateTask(category, updateTaskRequest.title(), updateTaskRequest.description());
+
+        task.updateTask(task.getTaskStatus(), category, updateTaskRequest.title(), updateTaskRequest.description());
         Task updatedTask = commandTaskPort.save(task);
 
         if (!updateTaskRequest.attachmentsToDelete().isEmpty()){
@@ -63,18 +65,19 @@ public class UpdateTaskService implements UpdateTaskUsecase {
     }
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
-        validateAttachments(attachmentIdsToDelete, task);
-        commandAttachmentPort.deleteByIds(attachmentIdsToDelete);
+        List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
+        attachmentsToDelete.forEach(Attachment::softDelete);
 
         List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePath.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }
 
-    private void validateAttachments(List<Long> attachmentIdsToDelete, Task task) {
+    private List<Attachment> validateAndGetAttachments(List<Long> attachmentIdsToDelete, Task task) {
         List<Attachment> attachmentsOfTask = loadAttachmentPort.findAllByTaskIdAndCommentIsNullAndAttachmentId(task.getTaskId(), attachmentIdsToDelete);
         if(attachmentsOfTask.size() != attachmentIdsToDelete.size()) {
             throw new ApplicationException(TaskErrorCode.TASK_ATTACHMENT_NOT_FOUND);
         }
+        return attachmentsOfTask;
     }
 }

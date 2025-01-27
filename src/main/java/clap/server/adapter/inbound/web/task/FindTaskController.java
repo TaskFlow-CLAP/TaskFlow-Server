@@ -37,6 +37,7 @@ public class FindTaskController {
         Pageable pageable = PageRequest.of(page, pageSize);
         return ResponseEntity.ok(taskListUsecase.findTasksRequestedByUser(userInfo.getUserId(), pageable, filterTaskListRequest));
     }
+
     @Operation(summary = "요청한 작업 상세 조회")
     @Secured({"ROLE_USER", "ROLE_MANAGER"})
     @GetMapping("/requests/details/{taskId}")
@@ -45,7 +46,8 @@ public class FindTaskController {
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         return ResponseEntity.ok(taskDetailsUsecase.findRequestedTaskDetails(userInfo.getUserId(), taskId));
     }
-    @Operation(summary = "승인대기 중인 요청 목록 조회")
+
+    @Operation(summary = "승인 대기 중인 요청 목록 조회")
     @Secured({"ROLE_MANAGER"})
     @GetMapping("/requests/pending")
     public ResponseEntity<Page<FilterPendingApprovalResponse>> findPendingApprovalTasks(

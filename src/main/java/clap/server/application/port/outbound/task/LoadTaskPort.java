@@ -1,11 +1,13 @@
 package clap.server.application.port.outbound.task;
 
+import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,4 +22,5 @@ public interface LoadTaskPort {
 
     Page<FilterPendingApprovalResponse> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 
+    Slice<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, Pageable pageable);
 }

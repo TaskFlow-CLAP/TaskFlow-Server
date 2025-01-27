@@ -42,8 +42,8 @@ public class TaskEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
 
-    @Column(nullable = false)
-    private int processorOrder;
+    @Column
+    private Long processorOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id")
@@ -62,4 +62,7 @@ public class TaskEntity extends BaseTimeEntity {
 
     @Column
     private LocalDateTime completedAt;
+
+    @Column
+    private LocalDateTime finishedAt;
 }

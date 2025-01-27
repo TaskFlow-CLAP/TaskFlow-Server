@@ -3,16 +3,16 @@ package clap.server.domain.model.task;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
-import clap.server.exception.ApplicationException;
-import clap.server.exception.code.MemberErrorCode;
+import clap.server.exception.DomainException;
+import clap.server.exception.code.TaskErrorCode;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Getter
 @SuperBuilder
@@ -25,12 +25,12 @@ public class Task extends BaseTime {
     private Category category;
     private Member requester;
     private TaskStatus taskStatus;
-    private int processorOrder;
+    private long processorOrder;
     private Member processor;
     private Label label;
     private Member reviewer;
     private LocalDateTime dueDate;
-    private LocalDateTime completedAt;
+    private LocalDateTime finishedAt;
 
     public static Task createTask(Member member, Category category, String title, String description) {
         return Task.builder()
@@ -43,11 +43,20 @@ public class Task extends BaseTime {
                 .build();
     }
 
-    public void updateTask(Category category, String title, String description) {
+    public void updateTask(TaskStatus status, Category category, String title, String description) {
+        if (status != TaskStatus.REQUESTED) {
+            throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
+        }
         this.category = category;
         this.title = title;
         this.description = description;
         this.taskCode = toTaskCode(category);
+    }
+
+    public void setInitialProcessorOrder() {
+        if(this.processor == null) {
+            this.processorOrder = this.taskId * 128L;
+        }
     }
 
     public void approveTask(Member reviewer, Member processor, LocalDateTime dueDate, Category category, Label label) {

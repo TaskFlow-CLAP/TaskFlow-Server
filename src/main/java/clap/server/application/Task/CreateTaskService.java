@@ -49,6 +49,8 @@ public class CreateTaskService implements CreateTaskUsecase {
         Category category = categoryService.findById(createTaskRequest.categoryId());
         Task task = Task.createTask(member, category, createTaskRequest.title(), createTaskRequest.description());
         Task savedTask = commandTaskPort.save(task);
+        savedTask.setInitialProcessorOrder();
+        commandTaskPort.save(savedTask);
 
         saveAttachments(files, savedTask);
         publishNotification(savedTask);

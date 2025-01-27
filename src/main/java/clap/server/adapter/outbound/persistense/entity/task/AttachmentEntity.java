@@ -34,4 +34,7 @@ public class AttachmentEntity extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private CommentEntity comment;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 }
