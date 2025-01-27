@@ -1,4 +1,4 @@
-package clap.server.adapter.outbound.persistense.repository.notification;
+package clap.server.adapter.outbound.infrastructure.sse.repository;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 

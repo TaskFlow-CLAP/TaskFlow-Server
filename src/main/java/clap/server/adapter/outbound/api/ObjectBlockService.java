@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.api;
 
 
-import clap.server.adapter.inbound.web.dto.webhook.SendKakaoWorkRequest;
+import clap.server.adapter.outbound.api.dto.SendKakaoWorkRequest;
 import clap.server.adapter.outbound.persistense.repository.notification.NotificationRepository;
 import clap.server.application.port.outbound.webhook.MakeObjectBlockPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;

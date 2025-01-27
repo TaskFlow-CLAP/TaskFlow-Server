@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.api;
 
-import clap.server.adapter.inbound.web.dto.webhook.SendAgitRequest;
+import clap.server.adapter.outbound.api.dto.SendAgitRequest;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.webhook.SendAgitPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;

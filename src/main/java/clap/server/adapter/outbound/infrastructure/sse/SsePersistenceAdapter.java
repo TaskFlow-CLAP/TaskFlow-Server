@@ -1,6 +1,6 @@
-package clap.server.adapter.outbound.persistense;
+package clap.server.adapter.outbound.infrastructure.sse;
 
-import clap.server.adapter.outbound.persistense.repository.notification.EmitterRepository;
+import clap.server.adapter.outbound.infrastructure.sse.repository.EmitterRepository;
 import clap.server.application.port.outbound.notification.CommandSsePort;
 import clap.server.application.port.outbound.notification.LoadSsePort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;

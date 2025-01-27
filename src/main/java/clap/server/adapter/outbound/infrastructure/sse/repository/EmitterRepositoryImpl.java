@@ -1,4 +1,4 @@
-package clap.server.adapter.outbound.persistense.repository.notification;
+package clap.server.adapter.outbound.infrastructure.sse.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
