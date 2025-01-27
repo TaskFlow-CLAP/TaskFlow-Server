@@ -25,7 +25,7 @@ public class Task extends BaseTime {
     private Category category;
     private Member requester;
     private TaskStatus taskStatus;
-    private int processorOrder;
+    private long processorOrder;
     private Member processor;
     private Label label;
     private Member reviewer;
@@ -48,6 +48,12 @@ public class Task extends BaseTime {
         this.title = title;
         this.description = description;
         this.taskCode = toTaskCode(category);
+    }
+
+    public void setInitialProcessorOrder() {
+        if(this.processor == null) {
+            this.processorOrder = this.taskId * 128L;
+        }
     }
 
     public void updateTaskStatus(TaskStatus status) {
