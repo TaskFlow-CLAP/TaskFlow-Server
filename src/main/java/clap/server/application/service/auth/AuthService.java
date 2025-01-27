@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-@Slf4j
 @ApplicationService
 @RequiredArgsConstructor
 @Transactional
