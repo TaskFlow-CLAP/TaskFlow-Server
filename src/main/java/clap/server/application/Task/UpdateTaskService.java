@@ -2,6 +2,7 @@ package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.UpdateTaskStateRequest;
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.AttachmentMapper;
@@ -9,6 +10,7 @@ import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
+import clap.server.application.port.inbound.task.UpdateTaskStatusUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
@@ -34,7 +36,7 @@ import java.util.Objects;
 @ApplicationService
 @RequiredArgsConstructor
 @Slf4j
-public class UpdateTaskService implements UpdateTaskUsecase {
+public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUsecase {
 
     private final MemberService memberService;
     private final CategoryService categoryService;
@@ -62,6 +64,18 @@ public class UpdateTaskService implements UpdateTaskUsecase {
             updateAttachments(updateTaskRequest.attachmentsToDelete(), files, task);
         }
         return TaskMapper.toUpdateTaskResponse(updatedTask);
+    }
+
+    @Override
+    @Transactional
+    public UpdateTaskResponse updateTaskState(Long memberId, Long taskId, UpdateTaskStateRequest updateTaskStateRequest) {
+        memberService.findActiveMember(memberId);
+        Task task = taskService.findById(taskId);
+        task.updateTaskStatus(updateTaskStateRequest.taskStatus());
+        Task updateTask = commandTaskPort.save(task);
+        return TaskMapper.toUpdateTaskResponse(updateTask);
+
+        // TODO : 알림 생성 로직 및 푸시 알림 로직 추가
     }
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
