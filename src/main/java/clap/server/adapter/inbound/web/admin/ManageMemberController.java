@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "회원 관리 - 수정/ 삭제")
+@Tag(name = "05. Admin", description = "[관리자] 회원 수정 및 삭제 API")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/managements/members")
 public class ManageMemberController {
     private final ManageMemberUsecase manageMemberUsecase;
 
-    @Operation(summary = "단일 회원 등록 API")
+    @Operation(summary = "회원 정보 수정 API")
     @PostMapping("/{memberId}")
     @Secured("ROLE_ADMIN")
     public void registerMember(@AuthenticationPrincipal SecurityUserDetails userInfo,

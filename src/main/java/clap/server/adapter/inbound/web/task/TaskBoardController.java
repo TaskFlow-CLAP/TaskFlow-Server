@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
-@Tag(name = "작업 보드 조회 및 순서 변경")
+@Tag(name = "02. Task", description = "[담당자] 작업 보드 API")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor

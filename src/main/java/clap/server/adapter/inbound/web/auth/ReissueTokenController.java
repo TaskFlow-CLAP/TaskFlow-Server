@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "토큰 재발급")
+@Tag(name = "00. Auth", description = "토큰 재발급 API")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/auths")

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "회원 관리 - 등록")
+@Tag(name = "05. Admin", description = "[관리자] 회원 - 등록 API")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/managements")
