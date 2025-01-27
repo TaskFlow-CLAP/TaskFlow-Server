@@ -1,15 +1,18 @@
 package clap.server.adapter.inbound.web.auth;
 
+import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.auth.LoginRequest;
 import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
 import clap.server.application.port.inbound.auth.AuthUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -35,5 +38,13 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "로그아웃 API")
+    @PostMapping("/logout")
+    public void logout(@AuthenticationPrincipal SecurityUserDetails userInfo,
+                                       @Parameter(hidden = true) @RequestHeader(value = "Authorization") String authHeader,
+                                       @RequestHeader(value = "refreshToken") String refreshToken) {
+        String accessToken = authHeader.split(" ")[1];
+        authUsecase.logout(userInfo.getUserId(), accessToken, refreshToken);
+    }
 
 }
