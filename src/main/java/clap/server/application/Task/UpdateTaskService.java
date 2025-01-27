@@ -10,6 +10,7 @@ import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
+import clap.server.application.port.inbound.task.UpdateTaskStatusUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
@@ -35,7 +36,7 @@ import java.util.List;
 @ApplicationService
 @RequiredArgsConstructor
 @Slf4j
-public class UpdateTaskService implements UpdateTaskUsecase {
+public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUsecase {
 
     private final MemberService memberService;
     private final CategoryService categoryService;

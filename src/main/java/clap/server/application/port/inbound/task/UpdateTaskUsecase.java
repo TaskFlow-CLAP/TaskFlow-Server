@@ -10,5 +10,4 @@ import java.util.List;
 
 public interface UpdateTaskUsecase {
     UpdateTaskResponse updateTask(Long memberId, Long taskId, UpdateTaskRequest updateTaskRequest, List<MultipartFile> files);
-    UpdateTaskResponse updateTaskState(Long memberId, Long taskId, UpdateTaskStateRequest updateTaskStateRequest);
 }

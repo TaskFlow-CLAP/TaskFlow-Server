@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
+import clap.server.application.port.inbound.task.UpdateTaskStatusUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +31,7 @@ public class ManagementTaskController {
 
     private final CreateTaskUsecase createTaskUsecase;
     private final UpdateTaskUsecase updateTaskUsecase;
+    private final UpdateTaskStatusUsecase updateTaskStatusUsecase;
     private final ApprovalTaskUsecase approvalTaskUsecase;
 
     @Operation(summary = "작업 요청 생성")
@@ -62,7 +64,7 @@ public class ManagementTaskController {
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @RequestBody UpdateTaskStateRequest updateTaskStateRequest) {
 
-        return ResponseEntity.ok(updateTaskUsecase.updateTaskState(userInfo.getUserId(), taskId, updateTaskStateRequest));
+        return ResponseEntity.ok(updateTaskStatusUsecase.updateTaskState(userInfo.getUserId(), taskId, updateTaskStateRequest));
     }
 
     @Operation(summary = "작업 승인")
