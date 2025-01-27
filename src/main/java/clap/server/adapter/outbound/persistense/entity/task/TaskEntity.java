@@ -43,7 +43,7 @@ public class TaskEntity extends BaseTimeEntity {
     private TaskStatus taskStatus;
 
     @Column(nullable = false)
-    private int processorOrder;
+    private long processorOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id")
