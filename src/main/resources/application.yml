@@ -41,8 +41,8 @@ server:
 
 web:
   domain:
-    local: ${TASKFLOW_LOCAL_WEB:127.0.0.1:3O00}
-    service: ${TASKFLOW_SERVICE_WEB:127.0.0.1:3000}
+    local: ${TASKFLOW_LOCAL_WEB:127.0.0.1:5173}
+    service: ${TASKFLOW_SERVICE_WEB:127.0.0.1:5173}
 
 
 # 카카오워크 및 agit url, accessKey값 환경 변수로 설정
@@ -53,6 +53,8 @@ kakaowork:
 agit:
   url: https://agit.io/webhook/a342181d-fb18-4eb0-a99a-30f4fb5b14b1
 
+local: ${TASKFLOW_LOCAL_WEB:127.0.0.1:5173}
+service: ${TASKFLOW_SERVICE_WEB:127.0.0.1:5173}
 
 #logging:
 #  level:
