@@ -103,7 +103,7 @@ public class TaskMapper {
                 task.getCategory().getName(),
                 task.getTitle(),
                 task.getRequester().getMemberInfo().getNickname(),
-                task.getProcessor().getMemberInfo().getNickname(),
+                task.getProcessor() != null ? task.getProcessor().getMemberInfo().getNickname() : "",
                 task.getTaskStatus(),
                 task.getFinishedAt() != null ? task.getFinishedAt() : null
         );
