@@ -1,16 +1,12 @@
 package clap.server.application.Task;
 
-import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskOrderRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.MemberService;
-import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.TaskBoardUsecase;
-import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
