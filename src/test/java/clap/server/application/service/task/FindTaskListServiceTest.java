@@ -27,9 +27,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FindTaskListServiceTest {
-
-    @Mock
-    private MemberService memberService;
     @Mock
     private LoadTaskPort loadTaskPort;
     @InjectMocks
