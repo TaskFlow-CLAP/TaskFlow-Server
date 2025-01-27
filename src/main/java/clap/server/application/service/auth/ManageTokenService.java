@@ -20,7 +20,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-class IssueTokenService {
+class ManageTokenService {
     private final JwtProvider accessTokenProvider;
     private final JwtProvider refreshTokenProvider;
     private final JwtProvider temporaryTokenProvider;
@@ -34,7 +34,6 @@ class IssueTokenService {
     public String issueAccessToken(Long memberId) {
         return accessTokenProvider.createToken(AccessTokenClaim.of(memberId));
     }
-
 
     public RefreshToken issueRefreshToken(Long memberId) {
         String refreshToken = refreshTokenProvider.createToken(RefreshTokenClaim.of(memberId));
@@ -55,6 +54,10 @@ class IssueTokenService {
         return getClaimValue(claims,
                 RefreshTokenClaimKeys.USER_ID.getValue(),
                 Long::parseLong);
+    }
+
+    public LocalDateTime getExpiredDate(String accessToken) {
+        return accessTokenProvider.getExpiredDate(accessToken);
     }
 
     private long toSeconds(LocalDateTime expiredDate) {
