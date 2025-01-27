@@ -20,7 +20,7 @@ import java.util.List;
 import static clap.server.exception.code.StatisticsErrorCode.STATISTICS_BAD_REQUEST;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
-@Tag(name = "02. Task", description = "[담당자] 작업 통게 API")
+@Tag(name = "02. Task [담당자]", description = "작업 통계 API")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks/statistics")
