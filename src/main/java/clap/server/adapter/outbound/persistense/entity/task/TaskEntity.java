@@ -42,8 +42,8 @@ public class TaskEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
 
-    @Column(nullable = false)
-    private long processorOrder;
+    @Column
+    private Long processorOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id")
