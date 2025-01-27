@@ -1,9 +1,10 @@
 package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterTaskListResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.task.TaskRepository;
 import clap.server.application.mapper.TaskMapper;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @PersistenceAdapter
@@ -57,6 +59,5 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
         return taskRepository.findYesterdayTaskByUpdatedAtIsBetween(now.minusDays(1), now)
                 .stream().map(taskPersistenceMapper::toDomain).toList();
     }
-
 
 }

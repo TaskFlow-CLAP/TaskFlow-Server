@@ -26,33 +26,6 @@ public class MemberService {
                 () -> new ApplicationException(MemberErrorCode.ACTIVE_MEMBER_NOT_FOUND));
     }
 
-    public int getRemainingTasks(Long memberId) {
-        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.PENDING_COMPLETED);
-        return loadMemberPort.findTasksByMemberIdAndStatus(memberId, targetStatuses).size();
-    }
-
-    public String getMemberNickname(Long memberId) {
-        Member member = findById(memberId);
-        if (member.getMemberInfo() == null) {
-            throw new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND);
-        }
-        return member.getMemberInfo().getNickname();
-    }
-
-    public String getMemberImageUrl(Long memberId) {
-        Member member = findById(memberId);
-        return member.getImageUrl() != null ? member.getImageUrl() : "default-image-url";
-    }
-
-    public List<Member> findActiveManagers() {
-        List<Member> activeManagers = loadMemberPort.findActiveManagers();
-
-        if (activeManagers.isEmpty()) {
-            return List.of();
-        }
-        return activeManagers;
-    }
-
     public List<Member> findReviewers() {
         return loadMemberPort.findReviewers();
     }
