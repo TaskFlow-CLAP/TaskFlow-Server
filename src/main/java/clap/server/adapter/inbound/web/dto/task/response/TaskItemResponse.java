@@ -14,6 +14,6 @@ public record TaskItemResponse(
         String requesterDepartment,
         long processorOrder,
         TaskStatus taskStatus,
-        LocalDateTime finishedAt
+        LocalDateTime createdAt
 ){
 }
