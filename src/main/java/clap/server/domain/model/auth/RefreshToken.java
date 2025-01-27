@@ -1,6 +1,9 @@
 package clap.server.domain.model.auth;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -28,5 +31,9 @@ public class RefreshToken {
 
 	public void rotation(String token) {
 		this.token = token;
+	}
+
+	public static boolean isTakenAway(String requestRefreshToken, String expectedRefreshToken) {
+		return !requestRefreshToken.equals(expectedRefreshToken);
 	}
 }

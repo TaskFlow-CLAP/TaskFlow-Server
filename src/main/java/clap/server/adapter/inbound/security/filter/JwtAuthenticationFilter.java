@@ -2,6 +2,7 @@ package clap.server.adapter.inbound.security.filter;
 
 import clap.server.adapter.outbound.jwt.JwtClaims;
 import clap.server.adapter.outbound.jwt.access.AccessTokenClaimKeys;
+import clap.server.application.port.outbound.auth.ForbiddenTokenPort;
 import clap.server.application.port.outbound.auth.JwtProvider;
 import clap.server.exception.JwtException;
 import clap.server.exception.code.AuthErrorCode;
@@ -27,7 +28,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-// 요청에서 JWT 토큰을 추출하고 유효성을 검사합니다.
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider accessTokenProvider;
     private final JwtProvider temporaryTokenProvider;
     private final AccessDeniedHandler accessDeniedHandler;
+    private final ForbiddenTokenPort forbiddenTokenPort;
 
     @Override
     protected void doFilterInternal(
@@ -70,15 +71,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request
     ) throws ServletException {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String token = accessTokenProvider.resolveToken(authHeader);
+        String accessToken = accessTokenProvider.resolveToken(authHeader);
 
-        if (!StringUtils.hasText(token)) {
+        if (!StringUtils.hasText(accessToken)) {
             log.error("EMPTY_ACCESS_TOKEN");
             handleAuthException(AuthErrorCode.EMPTY_ACCESS_KEY);
         }
 
         String requestUrl = request.getRequestURI();
-        boolean isTemporaryToken = isTemporaryToken(token);
+        boolean isTemporaryToken = isTemporaryToken(accessToken);
         JwtProvider tokenProvider = isTemporaryToken ? temporaryTokenProvider : accessTokenProvider;
 
         log.info("Token is Temporary {}", isTemporaryToken);
@@ -88,14 +89,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             handleAuthException(AuthErrorCode.FORBIDDEN_ACCESS_TOKEN);
         }
 
-        // TODO: 블랙리스트 토큰 처리 로직 추가 필요
+        if (forbiddenTokenPort.getIsForbidden(accessToken)) {
+            log.error("FORBIDDEN_ACCESS_TOKEN");
+            handleAuthException(AuthErrorCode.FORBIDDEN_ACCESS_TOKEN);
+        }
 
-        if (tokenProvider.isTokenExpired(token)) {
+        if (tokenProvider.isTokenExpired(accessToken)) {
             log.error("EXPIRED_TOKEN");
             handleAuthException(AuthErrorCode.EXPIRED_TOKEN);
         }
 
-        return token;
+        return accessToken;
     }
 
 

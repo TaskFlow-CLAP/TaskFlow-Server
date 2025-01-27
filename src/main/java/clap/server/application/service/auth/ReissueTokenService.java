@@ -3,7 +3,6 @@ package clap.server.application.service.auth;
 import clap.server.adapter.inbound.web.dto.auth.ReissueTokenResponse;
 import clap.server.application.port.inbound.auth.ReissueTokenUsecase;
 import clap.server.application.port.outbound.auth.CommandRefreshTokenPort;
-import clap.server.application.port.outbound.auth.LoadRefreshTokenPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.auth.CustomJwts;
 import clap.server.domain.model.auth.RefreshToken;
@@ -17,24 +16,24 @@ import static clap.server.application.mapper.response.AuthResponseMapper.toReiss
 @ApplicationService
 @RequiredArgsConstructor
 class ReissueTokenService implements ReissueTokenUsecase {
-    private final IssueTokenService issueTokenService;
-    private final LoadRefreshTokenPort loadRefreshTokenPort;
+    private final ManageTokenService manageTokenService;
     private final CommandRefreshTokenPort commandRefreshTokenPort;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public ReissueTokenResponse reissueToken(String oldRefreshToken) {
-        Long memberId = issueTokenService.resolveRefreshToken(oldRefreshToken);
+        Long memberId = manageTokenService.resolveRefreshToken(oldRefreshToken);
         RefreshToken newRefreshToken;
         try {
             newRefreshToken = refresh(memberId, oldRefreshToken,
-                    issueTokenService.issueRefreshToken(memberId).getToken());
+                    manageTokenService.issueRefreshToken(memberId).getToken());
         } catch (IllegalArgumentException e) {
             throw new AuthException(AuthErrorCode.EXPIRED_TOKEN);
         } catch (IllegalStateException e) {
             throw new AuthException(AuthErrorCode.TAKEN_AWAY_TOKEN);
         }
 
-        String newAccessToken = issueTokenService.issueAccessToken(memberId);
+        String newAccessToken = manageTokenService.issueAccessToken(memberId);
         CustomJwts tokens = CustomJwts.of(newAccessToken, newRefreshToken.getToken());
         return toReissueTokenResponse(tokens);
     }
@@ -44,25 +43,12 @@ class ReissueTokenService implements ReissueTokenUsecase {
             String oldRefreshToken,
             String newRefreshToken
     ) throws IllegalArgumentException, IllegalStateException {
-        RefreshToken refreshToken = loadRefreshTokenPort.findByMemberId(memberId).orElseThrow(
-                () -> new AuthException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND)
-        );
-        validateToken(oldRefreshToken, refreshToken);
+        RefreshToken refreshToken = refreshTokenService.getRefreshToken(memberId);
+        refreshTokenService.validateToken(oldRefreshToken, refreshToken);
 
         refreshToken.rotation(newRefreshToken);
         commandRefreshTokenPort.save(refreshToken);
         return refreshToken;
-    }
-
-    private void validateToken(String oldRefreshToken, RefreshToken refreshToken) {
-        if (isTakenAway(oldRefreshToken, refreshToken.getToken())) {
-            commandRefreshTokenPort.delete(refreshToken);
-            throw new AuthException(AuthErrorCode.REFRESH_TOKEN_MISMATCHED);
-        }
-    }
-
-    private boolean isTakenAway(String requestRefreshToken, String expectedRefreshToken) {
-        return !requestRefreshToken.equals(expectedRefreshToken);
     }
 
 }
