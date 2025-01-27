@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "카테고리 추가")
+@Tag(name = "05. Admin")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/managements")

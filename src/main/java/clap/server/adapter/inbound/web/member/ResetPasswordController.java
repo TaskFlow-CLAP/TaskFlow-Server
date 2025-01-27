@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "비밀번호 재설정")
+@Tag(name = "01. Member")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api")

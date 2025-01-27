@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import static clap.server.common.utils.ClientIpParseUtil.getClientIp;
 
 @Slf4j
-@Tag(name = "로그인 / 로그아웃")
+@Tag(name = "00. Auth", description = "로그인, 로그아웃, 토큰 재발급 API")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/auths")
