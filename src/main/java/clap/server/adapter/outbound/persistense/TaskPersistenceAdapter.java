@@ -1,8 +1,9 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
@@ -43,10 +44,10 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
     }
 
     @Override
-    public Page<FilterTaskListResponse> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+    public Page<FilterRequestedTasksResponse> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         Page<Task> taskList = taskRepository.findTasksRequestedByUser(requesterId, pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
-        return taskList.map(TaskMapper::toFilterTaskListResponse);
+        return taskList.map(TaskMapper::toFilterRequestedTasksResponse);
     }
 
     @Override
@@ -68,4 +69,10 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
                 .stream().map(taskPersistenceMapper::toDomain).toList();
     }
 
+    @Override
+    public Page<FilterAllTasksResponse> findAllTasks (Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        Page<Task> taskList = taskRepository.findAllTasks(pageable, filterTaskListRequest)
+                .map(taskPersistenceMapper::toDomain);
+        return taskList.map(TaskMapper::toFilterAllTasksResponse);
+    }
 }

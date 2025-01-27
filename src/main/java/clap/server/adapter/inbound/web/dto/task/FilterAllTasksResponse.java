@@ -4,7 +4,7 @@ import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 
 import java.time.LocalDateTime;
 
-public record FilterTaskListResponse(
+public record FilterAllTasksResponse(
         Long taskId,
         String taskCode,
         LocalDateTime requestedAt,
@@ -12,6 +12,7 @@ public record FilterTaskListResponse(
         String categoryName,
         String title,
         String processorName,
+        String requesterName,
         TaskStatus taskStatus,
         LocalDateTime finishedAt
 ) {

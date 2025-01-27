@@ -27,8 +27,8 @@ public class TaskMapper {
         return new UpdateTaskResponse(task.getTaskId(), task.getCategory().getCategoryId(), task.getTitle());
     }
 
-    public static FilterTaskListResponse toFilterTaskListResponse(Task task) {
-        return new FilterTaskListResponse(
+    public static FilterRequestedTasksResponse toFilterRequestedTasksResponse(Task task) {
+        return new FilterRequestedTasksResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
                 task.getUpdatedAt(),
@@ -91,6 +91,21 @@ public class TaskMapper {
                 approvedTask.getDueDate(),
                 approvedTask.getLabel().getLabelName(),
                 approvedTask.getTaskStatus()
+        );
+    }
+
+    public static FilterAllTasksResponse toFilterAllTasksResponse(Task task) {
+        return new FilterAllTasksResponse(
+                task.getTaskId(),
+                task.getTaskCode(),
+                task.getUpdatedAt(),
+                task.getCategory().getMainCategory().getName(),
+                task.getCategory().getName(),
+                task.getTitle(),
+                task.getRequester().getMemberInfo().getNickname(),
+                task.getProcessor().getMemberInfo().getNickname(),
+                task.getTaskStatus(),
+                task.getCompletedAt() != null ? task.getCompletedAt() : null
         );
     }
 

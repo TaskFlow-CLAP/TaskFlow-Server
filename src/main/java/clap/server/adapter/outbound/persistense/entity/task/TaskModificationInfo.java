@@ -2,12 +2,16 @@ package clap.server.adapter.outbound.persistense.entity.task;
 
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @Embeddable
+@AllArgsConstructor
+@Builder
 public class TaskModificationInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
@@ -18,7 +22,7 @@ public class TaskModificationInfo {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modified_member_id") //처리자가 바뀌는 경우
-    private MemberEntity member;
+    private MemberEntity modifiedMember;
 
     @Column(name = "new_value")
     private String newValue; //상태가 바뀌는 경우
