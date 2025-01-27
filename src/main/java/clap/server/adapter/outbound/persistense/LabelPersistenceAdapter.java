@@ -1,7 +1,6 @@
-package clap.server.adapter.outbound.persistense.repository;
+package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.outbound.persistense.entity.task.LabelEntity;
-import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.mapper.LabelPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.task.LabelRepository;
 import clap.server.application.port.outbound.task.LoadLabelPort;
