@@ -23,8 +23,7 @@ public class NotificationMapper {
     public static SliceResponse<FindNotificationListResponse> toSliceOfFindNoticeListResponse(Slice<FindNotificationListResponse> slice) {
         return new SliceResponse<>(
                 slice.getContent(),
-                slice.getNumber(),
-                slice.getSize(),
+                slice.hasNext(),
                 slice.isFirst(),
                 slice.isLast()
         );
