@@ -152,4 +152,12 @@ public class TaskMapper {
                 attachmentResponses
         );
     }
+
+    public static FindApprovalFormResponse toFindApprovalFormResponse(Task task) {
+        return new FindApprovalFormResponse(
+                task.getCategory().getCategoryId(),
+                task.getCategory().getName(),
+                task.getCategory().getMainCategory().getName()
+        );
+    }
 }
