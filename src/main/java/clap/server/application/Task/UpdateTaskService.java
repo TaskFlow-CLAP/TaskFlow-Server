@@ -2,9 +2,8 @@ package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.UpdateTaskResponse;
-import clap.server.adapter.inbound.web.dto.task.UpdateTaskStateRequest;
+import clap.server.adapter.inbound.web.dto.task.UpdateTaskStatusRequest;
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
@@ -68,10 +67,10 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Override
     @Transactional
-    public UpdateTaskResponse updateTaskState(Long memberId, Long taskId, UpdateTaskStateRequest updateTaskStateRequest) {
+    public UpdateTaskResponse updateTaskState(Long memberId, Long taskId, UpdateTaskStatusRequest updateTaskStatusRequest) {
         memberService.findActiveMember(memberId);
         Task task = taskService.findById(taskId);
-        task.updateTaskStatus(updateTaskStateRequest.taskStatus());
+        task.updateTaskStatus(updateTaskStatusRequest.taskStatus());
         Task updateTask = commandTaskPort.save(task);
         return TaskMapper.toUpdateTaskResponse(updateTask);
 
