@@ -1,4 +1,4 @@
-package clap.server.adapter.outbound.persistense;
+package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.inbound.web.dto.webhook.SendWebhookRequest;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
@@ -15,7 +15,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class EmailPersistenceAdapter implements SendEmailPort {
+public class EmailClient implements SendEmailPort {
 
     private final SpringTemplateEngine templateEngine;
     private final JavaMailSender mailSender;

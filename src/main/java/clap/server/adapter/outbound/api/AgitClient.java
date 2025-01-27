@@ -1,22 +1,19 @@
-package clap.server.adapter.outbound.persistense;
+package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.inbound.web.dto.webhook.SendAgitRequest;
-import clap.server.adapter.inbound.web.dto.webhook.SendWebhookRequest;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.webhook.SendAgitPort;
-import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class AgitPersistenceAdapter implements SendAgitPort {
+public class AgitClient implements SendAgitPort {
 
     private static final String AGITWEBHOOK_URL = "https://agit.io/webhook/a342181d-fb18-4eb0-a99a-30f4fb5b14b1";
 

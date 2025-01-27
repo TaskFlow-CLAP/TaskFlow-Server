@@ -1,4 +1,4 @@
-package clap.server.adapter.outbound.persistense;
+package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.inbound.web.dto.webhook.SendKakaoWorkRequest;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
@@ -14,12 +14,12 @@ import org.springframework.web.client.RestTemplate;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class KakaoWorkPersistenceAdapter implements SendKaKaoWorkPort {
+public class KakaoWorkClient implements SendKaKaoWorkPort {
 
     private static final String KAKAOWORK_URL = "https://api.kakaowork.com/v1/messages.send_by_email";
     private static final String KAKAOWORK_AUTH = "Bearer 1b01becc.a7f10da76d2e4038948771107cfe5c1d";
 
-    private final ObjectBlockPersistenceAdapter makeObjectBlock;
+    private final ObjectBlockService makeObjectBlock;
 
     @Override
     public void sendKakaoWord(SendKakaoWorkRequest request) {
