@@ -2,10 +2,8 @@ package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.*;
-import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
-import clap.server.application.port.inbound.task.CreateTaskUsecase;
-import clap.server.application.port.inbound.task.UpdateTaskStatusUsecase;
-import clap.server.application.port.inbound.task.UpdateTaskUsecase;
+import clap.server.adapter.inbound.web.dto.task.UpdateTaskProcessorRequest;
+import clap.server.application.port.inbound.task.*;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +30,7 @@ public class ManagementTaskController {
     private final CreateTaskUsecase createTaskUsecase;
     private final UpdateTaskUsecase updateTaskUsecase;
     private final UpdateTaskStatusUsecase updateTaskStatusUsecase;
+    private final UpdateTaskProcessorUsecase updateTaskProcessorUsecase;
     private final ApprovalTaskUsecase approvalTaskUsecase;
 
     @Operation(summary = "작업 요청 생성")
@@ -62,9 +61,19 @@ public class ManagementTaskController {
     public ResponseEntity<UpdateTaskResponse> updateTaskState(
             @PathVariable @NotNull Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestBody UpdateTaskStateRequest updateTaskStateRequest) {
+            @RequestBody UpdateTaskStatusRequest updateTaskStatusRequest) {
 
-        return ResponseEntity.ok(updateTaskStatusUsecase.updateTaskState(userInfo.getUserId(), taskId, updateTaskStateRequest));
+        return ResponseEntity.ok(updateTaskStatusUsecase.updateTaskState(userInfo.getUserId(), taskId, updateTaskStatusRequest));
+    }
+
+    @Operation(summary = "작업 처리자 변경")
+    @Secured({"ROLE_MANAGER"})
+    @PatchMapping("/processor/{taskId}")
+    public ResponseEntity<UpdateTaskResponse> updateTaskProcessor(
+            @PathVariable Long taskId,
+            @AuthenticationPrincipal SecurityUserDetails userInfo,
+            @RequestBody UpdateTaskProcessorRequest updateTaskProcessorRequest) {
+        return ResponseEntity.ok(updateTaskProcessorUsecase.updateTaskProcessor(taskId, userInfo.getUserId(), updateTaskProcessorRequest));
     }
 
     @Operation(summary = "작업 승인")
