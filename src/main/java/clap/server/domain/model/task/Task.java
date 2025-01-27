@@ -3,7 +3,6 @@ package clap.server.domain.model.task;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
-import clap.server.exception.ApplicationException;
 import clap.server.exception.DomainException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.AccessLevel;
@@ -13,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Getter
 @SuperBuilder
@@ -25,7 +25,7 @@ public class Task extends BaseTime {
     private Category category;
     private Member requester;
     private TaskStatus taskStatus;
-    private int processorOrder;
+    private long processorOrder;
     private Member processor;
     private Label label;
     private Member reviewer;
@@ -44,13 +44,19 @@ public class Task extends BaseTime {
     }
 
     public void updateTask(TaskStatus status, Category category, String title, String description) {
-        if(status != TaskStatus.REQUESTED){
+        if (status != TaskStatus.REQUESTED) {
             throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
         }
         this.category = category;
         this.title = title;
         this.description = description;
         this.taskCode = toTaskCode(category);
+    }
+
+    public void setInitialProcessorOrder() {
+        if(this.processor == null) {
+            this.processorOrder = this.taskId * 128L;
+        }
     }
 
     public void approveTask(Member reviewer, Member processor, LocalDateTime dueDate, Category category, Label label) {
