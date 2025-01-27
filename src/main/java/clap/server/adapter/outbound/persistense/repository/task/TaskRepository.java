@@ -28,7 +28,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
     @Query("SELECT t FROM TaskEntity t " +
             "WHERE t.processor.memberId = :processorId " +
             "AND t.taskStatus IN :taskStatus " +
-            "AND (t.taskStatus != 'COMPLETED' OR t.completedAt >= :untilDate)")
+            "AND (t.taskStatus != 'COMPLETED' OR t.finishedAt >= :untilDate)")
     Slice<TaskEntity> findTasksWithTaskStatusAndCompletedAt(
             @Param("processorId") Long processorId,
             @Param("taskStatus") List<TaskStatus> taskStatus,
