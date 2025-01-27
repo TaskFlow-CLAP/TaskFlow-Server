@@ -65,18 +65,19 @@ public class UpdateTaskService implements UpdateTaskUsecase {
     }
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
-        validateAttachments(attachmentIdsToDelete, task);
-        commandAttachmentPort.deleteByIds(attachmentIdsToDelete);
+        List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
+        attachmentsToDelete.forEach(Attachment::softDelete);
 
         List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePath.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }
 
-    private void validateAttachments(List<Long> attachmentIdsToDelete, Task task) {
+    private List<Attachment> validateAndGetAttachments(List<Long> attachmentIdsToDelete, Task task) {
         List<Attachment> attachmentsOfTask = loadAttachmentPort.findAllByTaskIdAndCommentIsNullAndAttachmentId(task.getTaskId(), attachmentIdsToDelete);
         if(attachmentsOfTask.size() != attachmentIdsToDelete.size()) {
             throw new ApplicationException(TaskErrorCode.TASK_ATTACHMENT_NOT_FOUND);
         }
+        return attachmentsOfTask;
     }
 }

@@ -17,14 +17,16 @@ public class Attachment extends BaseTime {
     private String originalName;
     private String fileUrl;
     private String fileSize;
+    private boolean isDeleted;
 
     @Builder
-    public Attachment(Task task, Comment comment, String originalName, String fileUrl, String fileSize) {
+    public Attachment(Task task, Comment comment, String originalName, String fileUrl, String fileSize, boolean isDeleted) {
         this.task = task;
         this.comment = comment;
         this.originalName = originalName;
         this.fileUrl = fileUrl;
         this.fileSize = fileSize;
+        this.isDeleted = isDeleted;
     }
 
     public static Attachment createAttachment(Task task, String originalName, String fileUrl, long fileSize) {
@@ -34,7 +36,12 @@ public class Attachment extends BaseTime {
                 .originalName(originalName)
                 .fileUrl(fileUrl)
                 .fileSize(formatFileSize(fileSize))
+                .isDeleted(false)
                 .build();
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
     }
 
     public static String formatFileSize(long size) {
