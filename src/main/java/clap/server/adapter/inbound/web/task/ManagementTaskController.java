@@ -54,6 +54,17 @@ public class ManagementTaskController {
         return ResponseEntity.ok(updateTaskUsecase.updateTask(userInfo.getUserId(), taskId, updateTaskRequest, attachments));
     }
 
+    @Operation(summary = "작업 상태 변경")
+    @Secured({"ROLE_MANGER"})
+    @PatchMapping("/state/{taskId}")
+    public ResponseEntity<UpdateTaskResponse> updateTaskState(
+            @PathVariable @NotNull Long taskId,
+            @AuthenticationPrincipal SecurityUserDetails userInfo,
+            @RequestBody UpdateTaskStateRequest updateTaskStateRequest) {
+
+        return ResponseEntity.ok(updateTaskUsecase.updateTaskState(userInfo.getUserId(), taskId, updateTaskStateRequest));
+    }
+
     @Operation(summary = "작업 승인")
     @Secured({"ROLE_MANAGER"})
     @PostMapping("/approval/{taskId}")
