@@ -2,8 +2,6 @@ package clap.server.application.port.inbound.domain;
 
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.task.Task;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
