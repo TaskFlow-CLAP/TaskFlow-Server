@@ -25,11 +25,9 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks/statistics")
 public class FindStatisticsController {
-    private final FindPeriodTaskRequestUsecase findPeriodTaskRequestUsecase;
-    private final FindPeriodTaskProcessUsecase findPeriodTaskProcessUsecase;
-    private final FindCategoryTaskRequestUsecase findCategoryTaskRequestUsecase;
+    private final FindTaskProcessUsecase findTaskProcessUsecase;
     private final FindSubCategoryTaskRequestUsecase findSubCategoryTaskRequestUsecase;
-    private final FindManagerTaskProcessUsecase findManagerTaskProcessUsecase;
+
 
     @Operation(summary = "기본 통계 API")
     @Parameter(name = "periodType", description = "day, week, month", required = true, in = QUERY)
@@ -38,32 +36,13 @@ public class FindStatisticsController {
     public ResponseEntity<List<StatisticsResponse>> aggregateTaskStatistics(@RequestParam PeriodType periodType, @RequestParam StatisticsType statisticsType) {
         switch (statisticsType) {
             case REQUEST_BY_PERIOD ->
-                    ResponseEntity.ok(findPeriodTaskRequestUsecase
-                    .aggregatePeriodTaskRequest(periodType.getType())
-                    .entrySet()
-                    .stream()
-                    .map(result -> new StatisticsResponse(result.getKey(), result.getValue()))
-                    .toList());
-            case PROCESS_BY_PERIOD ->
-                    ResponseEntity.ok(findPeriodTaskProcessUsecase
-                    .aggregatePeriodTaskProcess(periodType.getType())
-                    .entrySet()
-                    .stream()
-                    .map(result -> new StatisticsResponse(result.getKey(), result.getValue()))
-                    .toList());
+                    ResponseEntity.ok(findTaskProcessUsecase.aggregatePeriodTaskRequest(periodType.getType()));
+            case PROCESS_BY_PERIOD -> ResponseEntity.ok(findTaskProcessUsecase
+                    .aggregatePeriodTaskProcess(periodType.getType()));
             case REQUEST_BY_CATEGORY ->
-                    ResponseEntity.ok(findCategoryTaskRequestUsecase.aggregateCategoryTaskRequest(periodType.getType())
-                            .entrySet()
-                            .stream()
-                            .map(result -> new StatisticsResponse(result.getKey(), result.getValue()))
-                            .toList());
-            case PROCESS_BY_MANAGER ->
-                    ResponseEntity.ok(findManagerTaskProcessUsecase
-                    .aggregateManagerTaskProcess(periodType.getType())
-                    .entrySet()
-                    .stream()
-                    .map(result -> new StatisticsResponse(result.getKey(), result.getValue()))
-                    .toList());
+                    ResponseEntity.ok(findTaskProcessUsecase.aggregateCategoryTaskRequest(periodType.getType()));
+            case PROCESS_BY_MANAGER -> ResponseEntity.ok(findTaskProcessUsecase
+                    .aggregateManagerTaskProcess(periodType.getType()));
         }
         throw new StatisticsException(STATISTICS_BAD_REQUEST);
     }
@@ -74,10 +53,6 @@ public class FindStatisticsController {
     @GetMapping("/subcategory")
     public ResponseEntity<List<StatisticsResponse>> aggregateSubCategoryTaskRequest(@RequestParam PeriodType periodType, @RequestParam String mainCategory) {
         return ResponseEntity.ok(findSubCategoryTaskRequestUsecase
-                .aggregateSubCategoryTaskRequest(periodType.getType(), mainCategory)
-                .entrySet()
-                .stream()
-                .map(result -> new StatisticsResponse(result.getKey(), result.getValue()))
-                .toList());
+                .aggregateSubCategoryTaskRequest(periodType.getType(), mainCategory));
     }
 }
