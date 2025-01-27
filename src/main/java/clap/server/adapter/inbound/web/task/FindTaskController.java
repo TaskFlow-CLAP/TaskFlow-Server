@@ -37,7 +37,6 @@ public class FindTaskController {
         Pageable pageable = PageRequest.of(page, pageSize);
         return ResponseEntity.ok(taskListUsecase.findTasksRequestedByUser(userInfo.getUserId(), pageable, filterTaskListRequest));
     }
-
     @Operation(summary = "요청한 작업 상세 조회")
     @Secured({"ROLE_USER", "ROLE_MANAGER"})
     @GetMapping("/requests/details/{taskId}")
@@ -69,5 +68,14 @@ public class FindTaskController {
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         Pageable pageable = PageRequest.of(page, pageSize);
         return ResponseEntity.ok(taskListUsecase.findAllTasks(userInfo.getUserId(), pageable, filterTaskListRequest));
+    }
+
+    @Operation(summary = "전체요청, 내 작업에 대한 상세 조회")
+    @Secured("ROLE_MANAGER")
+    @GetMapping("/details/{taskId}")
+    public ResponseEntity<FindTaskDetailsForManagerResponse> findRequestedTaskDetailsForManager(
+            @PathVariable Long taskId,
+            @AuthenticationPrincipal SecurityUserDetails userInfo) {
+        return ResponseEntity.ok(taskDetailsUsecase.findTaskDetailsForManager(userInfo.getUserId(), taskId));
     }
 }

@@ -1,5 +1,8 @@
 package clap.server.application.port.outbound.task;
 
+import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
