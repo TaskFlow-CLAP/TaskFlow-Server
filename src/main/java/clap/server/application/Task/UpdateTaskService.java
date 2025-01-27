@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
+import java.util.Objects;
 
 
 @ApplicationService
@@ -47,13 +47,15 @@ public class UpdateTaskService implements UpdateTaskUsecase {
     @Override
     @Transactional
     public UpdateTaskResponse updateTask(Long requesterId, Long taskId, UpdateTaskRequest updateTaskRequest, List<MultipartFile> files) {
-        memberService.findActiveMember(requesterId);
+        Member requester = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(updateTaskRequest.categoryId());
         Task task = taskService.findById(taskId);
-        if(task.getTaskStatus() != TaskStatus.REQUESTED){
+
+        if(!Objects.equals(requester.getMemberId(), task.getRequester().getMemberId())) {
             throw new ApplicationException(TaskErrorCode.TASK_STATUS_MISMATCH);
         }
-        task.updateTask(category, updateTaskRequest.title(), updateTaskRequest.description());
+
+        task.updateTask(task.getTaskStatus(), category, updateTaskRequest.title(), updateTaskRequest.description());
         Task updatedTask = commandTaskPort.save(task);
 
         if (!updateTaskRequest.attachmentsToDelete().isEmpty()){
