@@ -2,15 +2,15 @@ package clap.server.adapter.outbound.infrastructure.redis.log;
 
 import clap.server.application.port.outbound.auth.CommandLoginLogPort;
 import clap.server.application.port.outbound.auth.LoadLoginLogPort;
+import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import clap.server.domain.model.auth.LoginLog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Slf4j
-@Component
+@InfrastructureAdapter
 @RequiredArgsConstructor
 public class LoginLogAdapter implements LoadLoginLogPort, CommandLoginLogPort {
 	private final LoginLogRepository loginLogRepository;
