@@ -5,7 +5,8 @@ import java.util.List;
 
 public record SliceResponse<T> (
         List<T> content,
-        boolean hasNext,
+        int currentPage,
+        int size,
         boolean isFirst,
         boolean isLast
 ) {
