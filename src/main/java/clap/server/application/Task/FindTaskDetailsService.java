@@ -1,5 +1,6 @@
 package clap.server.application.Task;
 
+import clap.server.adapter.inbound.web.dto.task.FindTaskDetailsForManagerResponse;
 import clap.server.adapter.inbound.web.dto.task.FindTaskDetailsResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.application.mapper.TaskMapper;
@@ -34,5 +35,14 @@ public class FindTaskDetailsService implements FindTaskDetailsUsecase {
                 .orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
         List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNull(taskId);
         return TaskMapper.toFindTaskDetailResponse(task, attachments);
+    }
+
+    @Override
+    public FindTaskDetailsForManagerResponse findTaskDetailsForManager(final Long requesterId, final Long taskId) {
+        memberService.findActiveMember(requesterId);
+        Task task = loadTaskPort.findById(taskId)
+                .orElseThrow(() -> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
+        List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNull(taskId);
+        return TaskMapper.toFindTaskDetailForManagerResponse(task, attachments);
     }
 }

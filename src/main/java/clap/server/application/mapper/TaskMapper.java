@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static clap.server.application.mapper.AttachmentMapper.toAttachmentResponseList;
+
 public class TaskMapper {
     private TaskMapper() {
         throw new IllegalArgumentException();
@@ -54,17 +56,7 @@ public class TaskMapper {
     }
 
     public static FindTaskDetailsResponse toFindTaskDetailResponse(Task task, List<Attachment> attachments){
-
-        List<AttachmentResponse> attachmentResponses = attachments.stream()
-                .map(attachment -> new AttachmentResponse(
-                        attachment.getAttachmentId(),
-                        attachment.getOriginalName(),
-                        attachment.getFileSize(),
-                        attachment.getFileUrl(),
-                        attachment.getCreatedAt()
-                ))
-                .collect(Collectors.toList());
-
+        List<AttachmentResponse> attachmentResponses = toAttachmentResponseList(attachments);
         return new FindTaskDetailsResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
@@ -136,6 +128,28 @@ public class TaskMapper {
                 task.getProcessorOrder(),
                 task.getTaskStatus(),
                 task.getCreatedAt()
+        );
+    }
+
+    public static FindTaskDetailsForManagerResponse toFindTaskDetailForManagerResponse(Task task, List<Attachment> attachments) {
+        List<AttachmentResponse> attachmentResponses = toAttachmentResponseList(attachments);
+        return new FindTaskDetailsForManagerResponse(
+                task.getTaskId(),
+                task.getTaskCode(),
+                task.getCreatedAt(),
+                task.getFinishedAt(),
+                task.getTaskStatus(),
+                task.getRequester().getMemberInfo().getNickname(),
+                task.getRequester().getImageUrl(),
+                task.getProcessor() != null ? task.getProcessor().getMemberInfo().getNickname() : "",
+                task.getProcessor() != null ? task.getProcessor().getImageUrl() : "",
+                task.getCategory().getMainCategory().getName(),
+                task.getCategory().getName(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getDueDate(),
+                task.getLabel() != null ? task.getLabel().getLabelName() : "",
+                attachmentResponses
         );
     }
 }
