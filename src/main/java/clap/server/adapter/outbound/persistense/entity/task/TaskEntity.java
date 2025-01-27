@@ -62,4 +62,7 @@ public class TaskEntity extends BaseTimeEntity {
 
     @Column
     private LocalDateTime completedAt;
+
+    @Column
+    private LocalDateTime finishedAt;
 }
