@@ -25,7 +25,8 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
     );
 
 
-    @Query("SELECT t FROM TaskEntity t WHERE t.processor.memberId = :processorId " +
+    @Query("SELECT t FROM TaskEntity t " +
+            "WHERE t.processor.memberId = :processorId " +
             "AND t.taskStatus IN :taskStatus " +
             "AND (t.taskStatus != 'COMPLETED' OR t.completedAt >= :untilDate)")
     Slice<TaskEntity> findTasksWithTaskStatusAndCompletedAt(
@@ -34,6 +35,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
             @Param("untilDate") LocalDateTime untilDate,
             Pageable pageable
     );
+
 
 
 }

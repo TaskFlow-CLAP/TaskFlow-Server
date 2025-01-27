@@ -58,7 +58,6 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
 
     @Override
     public Slice<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, Pageable pageable) {
-        log.info("untildate {}", untilDate);
         Slice<TaskEntity> tasks = taskRepository.findTasksWithTaskStatusAndCompletedAt(processorId, statuses, untilDate, pageable);
         return tasks.map(taskPersistenceMapper::toDomain);
     }
