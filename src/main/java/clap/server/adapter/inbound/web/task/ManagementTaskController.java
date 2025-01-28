@@ -31,7 +31,6 @@ public class ManagementTaskController {
     private final UpdateTaskUsecase updateTaskUsecase;
     private final UpdateTaskStatusUsecase updateTaskStatusUsecase;
     private final UpdateTaskProcessorUsecase updateTaskProcessorUsecase;
-    private final UpdateTaskLabelUsecase updateTaskLabelUsecase;
     private final ApprovalTaskUsecase approvalTaskUsecase;
 
     @Operation(summary = "작업 요청 생성")
@@ -75,16 +74,6 @@ public class ManagementTaskController {
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @RequestBody UpdateTaskProcessorRequest updateTaskProcessorRequest) {
         return ResponseEntity.ok(updateTaskProcessorUsecase.updateTaskProcessor(taskId, userInfo.getUserId(), updateTaskProcessorRequest));
-    }
-
-    @Operation(summary = "작업 구분 변경")
-    @Secured({"ROLE_MANAGER"})
-    @PatchMapping("/label/{taskId}")
-    public ResponseEntity<UpdateTaskResponse> updateTaskLabel(
-            @PathVariable Long taskId,
-            @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestBody UpdateTaskLabelRequest updateTaskLabelRequest) {
-        return ResponseEntity.ok(updateTaskLabelUsecase.updateTaskLabel(taskId, userInfo.getUserId(), updateTaskLabelRequest));
     }
 
     @Operation(summary = "작업 승인")
