@@ -45,5 +45,10 @@ public class Category extends BaseTime {
         this.code = code;
         this.name = name;
     }
+
+    public void deleteCategory(Member admin) {
+        this.admin = admin;
+        this.isDeleted = true;
+    }
 }
 
