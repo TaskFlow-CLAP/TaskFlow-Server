@@ -13,11 +13,14 @@ import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus 
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.repository.task.TaskRepository;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
+
 import java.util.stream.Collectors;
 import java.util.List;
 
 import clap.server.domain.model.member.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -87,11 +90,9 @@ import java.util.Optional;
     }
 
     @Override
-    public List<Member> findAllMembers() {
-        List<MemberEntity> entities = memberRepository.findAll();
-        return entities.stream()
-                .map(memberPersistenceMapper::toDomain)
-                .toList();
+    public Page<Member> findAllMembers(Pageable pageable) {
+        Page<MemberEntity> entities = memberRepository.findAll(pageable);
+        return entities.map(memberPersistenceMapper::toDomain);
     }
 }
 
