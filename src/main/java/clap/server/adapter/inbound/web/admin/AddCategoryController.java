@@ -1,8 +1,8 @@
 package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.admin.AddSubCategoryRequest;
 import clap.server.adapter.inbound.web.dto.admin.AddMainCategoryRequest;
+import clap.server.adapter.inbound.web.dto.admin.AddSubCategoryRequest;
 import clap.server.application.port.inbound.admin.AddCategoryUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "05. Admin")
 @WebAdapter
 @RequiredArgsConstructor
-@RequestMapping("/api/managements")
+@RequestMapping("/api/management")
 public class AddCategoryController {
     private final AddCategoryUsecase addCategoryUsecase;
 

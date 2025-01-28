@@ -40,8 +40,10 @@ public class Category extends BaseTime {
                 .build();
     }
 
-    public void updateMainCategory(Category mainCategory){
-        this.mainCategory = mainCategory;
+    public void updateCategory(Member admin, String code, String name){
+        this.admin = admin;
+        this.code = code;
+        this.name = name;
     }
 }
 
