@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "카테고리 수정")
+@Tag(name = "05. Admin")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/management")

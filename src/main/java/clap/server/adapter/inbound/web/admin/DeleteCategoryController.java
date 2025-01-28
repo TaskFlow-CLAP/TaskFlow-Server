@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "카테고리 삭제")
+@Tag(name = "05. Admin")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/management")
