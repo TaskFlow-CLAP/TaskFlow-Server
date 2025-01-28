@@ -79,23 +79,21 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         );
     }
 
-    @ExceptionHandler(value = { ApplicationException.class, DomainException.class })
-    public ResponseEntity<Object> onThrowException(
-            BaseException exception,
-            HttpServletRequest request) {
-
-        BaseErrorCode baseErrorCode = exception.getCode();
-        return handleExceptionInternal(exception, baseErrorCode, null, request);
-    }
-
-    @ExceptionHandler(value = { ApplicationException.class })
-    public ResponseEntity<Object> handleCsvApplicationException(ApplicationException e, WebRequest request) {
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<Object> handleApplicationException(ApplicationException e, WebRequest request) {
+        // CSV 관련 에러만 처리
         if (e.getCode() == MemberErrorCode.CSV_PARSING_ERROR || e.getCode() == MemberErrorCode.INVALID_CSV_FORMAT) {
             log.error("CSV Parsing Error: {}", e.getCode().getMessage());
             return buildErrorResponse(e.getCode());
         }
-
         return buildErrorResponse(e.getCode());
+    }
+
+    @ExceptionHandler(value = { DomainException.class })
+    public ResponseEntity<Object> onThrowException(BaseException exception, HttpServletRequest request) {
+        BaseErrorCode baseErrorCode = exception.getCode();
+        log.error("BaseException occurred: {}", baseErrorCode.getMessage());
+        return handleExceptionInternal(exception, baseErrorCode, null, request);
     }
 
     private ResponseEntity<Object> handleExceptionInternal(

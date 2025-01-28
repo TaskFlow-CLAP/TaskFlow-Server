@@ -18,14 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "회원 관리 - 등록")
 @WebAdapter
 @RequestMapping("/api/managements")
+@RequiredArgsConstructor
 public class RegisterMemberController {
 
     private final RegisterMemberUsecase registerMemberUsecase;
-
-    // @Qualifier 추가
-    public RegisterMemberController(@Qualifier("registerMemberService") RegisterMemberUsecase registerMemberUsecase) {
-        this.registerMemberUsecase = registerMemberUsecase;
-    }
 
     @Operation(summary = "단일 회원 등록 API")
     @PostMapping("/members")

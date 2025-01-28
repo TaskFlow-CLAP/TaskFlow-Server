@@ -25,12 +25,12 @@ import static clap.server.application.mapper.MemberMapper.toMember;
 
 @ApplicationService
 @RequiredArgsConstructor
-class RegisterMemberService implements RegisterMemberUsecase {
+public class RegisterMemberService implements RegisterMemberUsecase {
     private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
     private final PasswordEncoder passwordEncoder;
-    private final CsvParseAdapter csvParser; // CsvParseAdapter 필드 추가
+    private final CsvParseAdapter csvParser; // CsvParseAdapter 주입
 
     @Override
     @Transactional
@@ -38,26 +38,28 @@ class RegisterMemberService implements RegisterMemberUsecase {
         Member admin = memberService.findActiveMember(adminId);
         Department department = loadDepartmentPort.findById(request.departmentId())
                 .orElseThrow(() -> new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-        MemberInfo memberInfo = toMemberInfo(request.name(), request.email(), request.nickname(), request.isReviewer(),
-                department, request.role(), request.departmentRole());
+
+        MemberInfo memberInfo = toMemberInfo(
+                request.name(),
+                request.email(),
+                request.nickname(),
+                request.isReviewer(),
+                department,
+                request.role(),
+                request.departmentRole()
+        );
+
         Member member = toMember(memberInfo);
         member.register(admin);
+
         commandMemberPort.save(member);
     }
 
     @Override
     @Transactional
     public int registerMembersFromCsv(Long adminId, MultipartFile file) {
-        try {
-            // CSV 파일 파싱
-            List<RegisterMemberRequest> memberRequests = csvParser.parse(file);
-
-            // 기존 단일 회원 등록 로직 재사용
-            memberRequests.forEach(request -> registerMember(adminId, request));
-
-            return memberRequests.size();
-        } catch (IOException e) {
-            throw new RuntimeException("CSV 파일 처리 중 오류 발생", e);
-        }
+        List<RegisterMemberRequest> memberRequests = csvParser.parse(file);
+        memberRequests.forEach(request -> registerMember(adminId, request));
+        return memberRequests.size();
     }
 }
