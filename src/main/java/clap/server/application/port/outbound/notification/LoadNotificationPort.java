@@ -15,4 +15,6 @@ public interface LoadNotificationPort {
     SliceResponse<FindNotificationListResponse> findAllByReceiverId(Long receiverId, Pageable pageable);
 
     List<Notification> findNotificationsByMemberId(Long memberId);
+
+    Integer countNotification(Long memberId);
 }
