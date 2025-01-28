@@ -67,6 +67,10 @@ public class Task extends BaseTime {
         this.processor = processor;
     }
 
+    public void updateLabel(Label label) {
+        this.label = label;
+    }
+
     public void approveTask(Member reviewer, Member processor, LocalDateTime dueDate, Category category, Label label) {
         this.reviewer = reviewer;
         this.processor = processor;
