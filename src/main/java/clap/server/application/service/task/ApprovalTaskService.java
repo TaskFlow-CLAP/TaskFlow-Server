@@ -1,4 +1,4 @@
-package clap.server.application.Task;
+package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.ApprovalTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.ApprovalTaskResponse;
