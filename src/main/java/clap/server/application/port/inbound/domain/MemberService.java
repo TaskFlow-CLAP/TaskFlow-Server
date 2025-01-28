@@ -1,5 +1,6 @@
 package clap.server.application.port.inbound.domain;
 
+import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
 import clap.server.application.port.inbound.management.FindAllMemberUsecase;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.domain.model.member.Member;
@@ -63,5 +64,10 @@ public class MemberService implements FindAllMemberUsecase {
     @Override
     public Page<Member> findAllMembers(Pageable pageable) {
         return loadMemberPort.findAllMembers(pageable);
+    }
+
+    @Override
+    public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest) {
+        return loadMemberPort.findMembersWithFilter(pageable, filterRequest);
     }
 }

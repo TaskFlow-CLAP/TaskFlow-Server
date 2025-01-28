@@ -1,10 +1,12 @@
 package clap.server.adapter.outbound.persistense;
 
+import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.adapter.outbound.persistense.mapper.MemberPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.member.MemberRepository;
+import clap.server.adapter.outbound.persistense.specification.MemberSpecification;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
@@ -92,6 +94,12 @@ import java.util.Optional;
     @Override
     public Page<Member> findAllMembers(Pageable pageable) {
         Page<MemberEntity> entities = memberRepository.findAll(pageable);
+        return entities.map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest) {
+        Page<MemberEntity> entities = memberRepository.findAll(MemberSpecification.withFilter(filterRequest), pageable);
         return entities.map(memberPersistenceMapper::toDomain);
     }
 }
