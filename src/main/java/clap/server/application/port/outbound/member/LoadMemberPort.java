@@ -1,5 +1,6 @@
 package clap.server.application.port.outbound.member;
 
+import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;  // Task 클래스 임포트 확인
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus; // TaskStatus 임포트
@@ -25,5 +26,8 @@ public interface LoadMemberPort {
     List<Member> findReviewers();
 
     Page<Member> findAllMembers(Pageable pageable);
+
+    Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest);
+
 
 }
