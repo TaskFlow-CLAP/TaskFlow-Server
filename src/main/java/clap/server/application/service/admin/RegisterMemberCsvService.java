@@ -25,22 +25,14 @@ public class RegisterMemberCsvService implements RegisterMemberUsecase {
     @Override
     @Transactional
     public int registerMembersFromCsv(Long adminId, MultipartFile file) {
-        try {
-            List<RegisterMemberRequest> memberRequests = csvParser.parse(file);
+        List<RegisterMemberRequest> memberRequests = csvParser.parse(file);
+        int successCount = 0;
 
-            int successCount = 0;
-            for (RegisterMemberRequest request : memberRequests) {
-                try {
-                    registerMember(adminId, request);
-                    successCount++;
-                } catch (Exception e) {
-                    throw ApplicationException.from(MemberErrorCode.MEMBER_REGISTRATION_FAILED);
-                }
-            }
-            return successCount;
-        } catch (IOException e) {
-            throw ApplicationException.from(MemberErrorCode.CSV_PARSING_ERROR);
+        for (RegisterMemberRequest request : memberRequests) {
+            registerMember(adminId, request);
+            successCount++;
         }
+        return successCount;
     }
 
     @Override

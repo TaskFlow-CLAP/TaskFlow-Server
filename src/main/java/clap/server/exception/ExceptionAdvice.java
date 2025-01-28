@@ -3,6 +3,7 @@ package clap.server.exception;
 import clap.server.exception.code.AuthErrorCode;
 import clap.server.exception.code.BaseErrorCode;
 import clap.server.exception.code.CommonErrorCode;
+import clap.server.exception.code.MemberErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -57,9 +58,9 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<Object> validation(ConstraintViolationException e, WebRequest request) {
         String errorMessage = e.getConstraintViolations().stream()
-            .map(ConstraintViolation::getMessage)
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("ConstraintViolationException Error"));
+                .map(ConstraintViolation::getMessage)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("ConstraintViolationException Error"));
 
         return handleExceptionInternalConstraint(e, CommonErrorCode.valueOf(errorMessage), HttpHeaders.EMPTY, request);
     }
@@ -85,6 +86,16 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
         BaseErrorCode baseErrorCode = exception.getCode();
         return handleExceptionInternal(exception, baseErrorCode, null, request);
+    }
+
+    @ExceptionHandler(value = { ApplicationException.class })
+    public ResponseEntity<Object> handleCsvApplicationException(ApplicationException e, WebRequest request) {
+        if (e.getCode() == MemberErrorCode.CSV_PARSING_ERROR || e.getCode() == MemberErrorCode.INVALID_CSV_FORMAT) {
+            log.error("CSV Parsing Error: {}", e.getCode().getMessage());
+            return buildErrorResponse(e.getCode());
+        }
+
+        return buildErrorResponse(e.getCode());
     }
 
     private ResponseEntity<Object> handleExceptionInternal(
@@ -169,5 +180,13 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 request,
                 AuthErrorCode.FORBIDDEN.getMessage()
         );
+    }
+
+    private ResponseEntity<Object> buildErrorResponse(BaseErrorCode errorCode) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(Map.of(
+                        "code", errorCode.getCustomCode(),
+                        "message", errorCode.getMessage()
+                ));
     }
 }

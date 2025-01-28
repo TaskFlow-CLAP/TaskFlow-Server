@@ -5,6 +5,7 @@ import clap.server.application.port.inbound.management.RegisterMemberUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import clap.server.exception.ApplicationException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -30,15 +31,7 @@ public class RegisterMemberCsvController {
     public ResponseEntity<String> registerMembersFromCsv(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @RequestParam("file") MultipartFile file) {
-        try {
-            int addedCount = registerMemberUsecase.registerMembersFromCsv(userInfo.getUserId(), file);
-            return ResponseEntity.ok(addedCount + "명의 회원이 등록되었습니다.");
-        } catch (ApplicationException e) {
-            return ResponseEntity.status(e.getCode().getHttpStatus())
-                    .body(e.getCode().getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("회원 등록 중 알 수 없는 오류가 발생했습니다: " + e.getMessage());
-        }
+        int addedCount = registerMemberUsecase.registerMembersFromCsv(userInfo.getUserId(), file);
+        return ResponseEntity.ok(addedCount + "명의 회원이 등록되었습니다.");
     }
 }
