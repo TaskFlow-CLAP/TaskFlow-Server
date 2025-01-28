@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "카테고리 추가")
 @WebAdapter
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/management")
 public class AddCategoryController {
     private final AddCategoryUsecase addCategoryUsecase;
 
