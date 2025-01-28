@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/tasks/form")
+@RequestMapping("/api/tasks")
 public class FindApprovalTaskFormController {
 
     private final ApprovalTaskUsecase approvalTaskUsecase;
 
     @Operation(summary = "요청 승인 폼 조회")
     @Secured("ROLE_MANAGER")
-    @GetMapping("/{taskId}")
+    @GetMapping("/approval/{taskId}")
     public ResponseEntity<FindApprovalFormResponse> findTaskForm(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
