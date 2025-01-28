@@ -20,14 +20,6 @@ public class TaskHistoryPersistenceAdapter implements LoadTaskHistoryPort {
     private final TaskHistoryPersistenceMapper taskHistoryPersistenceMapper;
 
     @Override
-    public List<TaskHistory> findAllByTaskIdNotInComment(Long taskId) {
-        return taskHistoryRepository.findAllByTaskModificationInfo_Task_TaskId(taskId)
-                .stream()
-                .map(taskHistoryPersistenceMapper::toDomain)
-                .toList();
-    }
-
-    @Override
     public List<TaskHistory> findAllTaskHistoriesByTaskId(Long taskId) {
         return taskHistoryRepository.findAllTaskHistoriesByTaskId(taskId)
                 .stream()
