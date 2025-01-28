@@ -8,6 +8,8 @@ import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,7 +61,7 @@ public class MemberService implements FindAllMemberUsecase {
     }
 
     @Override
-    public List<Member> findAllMembers() {
-        return loadMemberPort.findAllMembers();
+    public Page<Member> findAllMembers(Pageable pageable) {
+        return loadMemberPort.findAllMembers(pageable);
     }
 }
