@@ -2,9 +2,8 @@ package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.*;
-import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
-import clap.server.application.port.inbound.task.CreateTaskUsecase;
-import clap.server.application.port.inbound.task.UpdateTaskUsecase;
+import clap.server.adapter.inbound.web.dto.task.UpdateTaskProcessorRequest;
+import clap.server.application.port.inbound.task.*;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 
-@Tag(name = "작업 생성 및 수정")
+@Tag(name = "02. Task", description = "작업 생성/수정 API")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
@@ -30,11 +29,13 @@ public class ManagementTaskController {
 
     private final CreateTaskUsecase createTaskUsecase;
     private final UpdateTaskUsecase updateTaskUsecase;
+    private final UpdateTaskStatusUsecase updateTaskStatusUsecase;
+    private final UpdateTaskProcessorUsecase updateTaskProcessorUsecase;
     private final ApprovalTaskUsecase approvalTaskUsecase;
 
     @Operation(summary = "작업 요청 생성")
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Secured({"ROLE_MANAGER, ROLE_USER"})
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public ResponseEntity<CreateTaskResponse> createTask(
             @RequestPart(name = "taskInfo") @Valid CreateTaskRequest createTaskRequest,
             @RequestPart(name = "attachment") @NotNull  List<MultipartFile> attachments,
@@ -44,14 +45,35 @@ public class ManagementTaskController {
     }
 
     @Operation(summary = "작업 수정")
-    @PatchMapping(value = "/{taskId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Secured({"ROLE_MANAGER, ROLE_USER"})
+    @PatchMapping(value = "/{taskId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public ResponseEntity<UpdateTaskResponse> updateTask(
             @PathVariable @NotNull Long taskId,
             @RequestPart(name = "taskInfo") @Valid UpdateTaskRequest updateTaskRequest,
             @RequestPart(name = "attachment") @NotNull  List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         return ResponseEntity.ok(updateTaskUsecase.updateTask(userInfo.getUserId(), taskId, updateTaskRequest, attachments));
+    }
+
+    @Operation(summary = "작업 상태 변경")
+    @Secured({"ROLE_MANGER"})
+    @PatchMapping("/state/{taskId}")
+    public ResponseEntity<UpdateTaskResponse> updateTaskState(
+            @PathVariable @NotNull Long taskId,
+            @AuthenticationPrincipal SecurityUserDetails userInfo,
+            @RequestBody UpdateTaskStatusRequest updateTaskStatusRequest) {
+
+        return ResponseEntity.ok(updateTaskStatusUsecase.updateTaskState(userInfo.getUserId(), taskId, updateTaskStatusRequest));
+    }
+
+    @Operation(summary = "작업 처리자 변경")
+    @Secured({"ROLE_MANAGER"})
+    @PatchMapping("/processor/{taskId}")
+    public ResponseEntity<UpdateTaskResponse> updateTaskProcessor(
+            @PathVariable Long taskId,
+            @AuthenticationPrincipal SecurityUserDetails userInfo,
+            @RequestBody UpdateTaskProcessorRequest updateTaskProcessorRequest) {
+        return ResponseEntity.ok(updateTaskProcessorUsecase.updateTaskProcessor(taskId, userInfo.getUserId(), updateTaskProcessorRequest));
     }
 
     @Operation(summary = "작업 승인")

@@ -21,5 +21,4 @@ public record FindTaskDetailsResponse(
         String description,
         List<AttachmentResponse> attachmentResponses
 
-        //TODO: taskhistory 및 comment 정보 추가
-) {}
+) implements TaskDetailsResponse {}

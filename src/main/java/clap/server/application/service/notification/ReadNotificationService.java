@@ -10,6 +10,8 @@ import clap.server.exception.code.NotificationErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @ApplicationService
 @RequiredArgsConstructor
 public class ReadNotificationService implements UpdateNotificationUsecase {
@@ -25,5 +27,15 @@ public class ReadNotificationService implements UpdateNotificationUsecase {
                 .orElseThrow(() -> new ApplicationException(NotificationErrorCode.NOTIFICATION_NOT_FOUND));
         notification.updateNotificationIsRead();
         commandNotificationPort.save(notification);
+    }
+
+    @Transactional
+    @Override
+    public void updateAllNotification(Long memberId) {
+        List<Notification> notificationList = loadNotificationPort.findNotificationsByMemberId(memberId);
+        for (Notification notification : notificationList) {
+            notification.updateNotificationIsRead();
+            commandNotificationPort.save(notification);
+        }
     }
 }

@@ -46,6 +46,18 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
     }
 
+    @Override
+    public Page<TaskEntity> findAllTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        BooleanBuilder whereClause = createFilter(filterTaskListRequest);
+        if (!filterTaskListRequest.nickName().isEmpty()) {
+            whereClause.and(
+                    taskEntity.requester.nickname.eq(filterTaskListRequest.nickName())
+                            .or(taskEntity.processor.nickname.eq(filterTaskListRequest.nickName()))
+            );
+        }
+        return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+    }
+
     private BooleanBuilder createFilter(FilterTaskListRequest request) {
         BooleanBuilder whereClause = new BooleanBuilder();
         if (request.term() != null) {
@@ -87,7 +99,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     private OrderSpecifier<?> getOrderSpecifier(String sortBy, String sortDirection) {
         DateTimePath<LocalDateTime> sortColumn = switch (sortBy) {
             case "REQUESTED_AT" -> taskEntity.updatedAt;
-            case "FINISHED_AT" -> taskEntity.completedAt;
+            case "FINISHED_AT" -> taskEntity.finishedAt;
             default -> taskEntity.updatedAt;
         };
         return "ASC".equalsIgnoreCase(sortDirection)

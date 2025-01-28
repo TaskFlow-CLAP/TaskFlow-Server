@@ -29,7 +29,7 @@ public class FindTaskController {
     @Operation(summary = "사용자 요청 작업 목록 조회")
     @Secured({"ROLE_USER", "ROLE_MANAGER"})
     @GetMapping("/requests")
-    public ResponseEntity<Page<FilterTaskListResponse>> findTasksRequestedByUser(
+    public ResponseEntity<Page<FilterRequestedTasksResponse>> findTasksRequestedByUser(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
             @ModelAttribute FilterTaskListRequest filterTaskListRequest,
@@ -45,7 +45,8 @@ public class FindTaskController {
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         return ResponseEntity.ok(taskDetailsUsecase.findRequestedTaskDetails(userInfo.getUserId(), taskId));
     }
-    @Operation(summary = "승인대기 중인 요청 목록 조회")
+
+    @Operation(summary = "승인 대기 중인 요청 목록 조회")
     @Secured({"ROLE_MANAGER"})
     @GetMapping("/requests/pending")
     public ResponseEntity<Page<FilterPendingApprovalResponse>> findPendingApprovalTasks(
@@ -55,5 +56,26 @@ public class FindTaskController {
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         Pageable pageable = PageRequest.of(page, pageSize);
         return ResponseEntity.ok(taskListUsecase.findPendingApprovalTasks(userInfo.getUserId(), pageable, filterTaskListRequest));
+    }
+
+    @Operation(summary = "전체 작업 목록 조회")
+    @Secured("ROLE_MANAGER")
+    @GetMapping
+    public ResponseEntity<Page<FilterAllTasksResponse>> findAllTasks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int pageSize,
+            @ModelAttribute FilterTaskListRequest filterTaskListRequest,
+            @AuthenticationPrincipal SecurityUserDetails userInfo){
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return ResponseEntity.ok(taskListUsecase.findAllTasks(userInfo.getUserId(), pageable, filterTaskListRequest));
+    }
+
+    @Operation(summary = "전체요청, 내 작업에 대한 상세 조회")
+    @Secured("ROLE_MANAGER")
+    @GetMapping("/details/{taskId}")
+    public ResponseEntity<FindTaskDetailsForManagerResponse> findRequestedTaskDetailsForManager(
+            @PathVariable Long taskId,
+            @AuthenticationPrincipal SecurityUserDetails userInfo) {
+        return ResponseEntity.ok(taskDetailsUsecase.findTaskDetailsForManager(userInfo.getUserId(), taskId));
     }
 }

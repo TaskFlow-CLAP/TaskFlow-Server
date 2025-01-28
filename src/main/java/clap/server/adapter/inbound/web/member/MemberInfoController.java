@@ -12,7 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "회원 정보 조회/수정")
+@Tag(name = "01. Member", description = "회원 정보 조회 및 수정 API")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/members")

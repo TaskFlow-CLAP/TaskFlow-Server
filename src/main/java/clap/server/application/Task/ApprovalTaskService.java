@@ -2,6 +2,8 @@ package clap.server.application.Task;
 
 import clap.server.adapter.inbound.web.dto.task.ApprovalTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.ApprovalTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.FindApprovalFormResponse;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.LabelService;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @ApplicationService
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ApprovalTaskService implements ApprovalTaskUsecase {
 
     private final MemberService memberService;
@@ -44,5 +47,16 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
 
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
         return TaskMapper.toApprovalTaskResponse(commandTaskPort.save(task));
+    }
+
+
+    @Override
+    public FindApprovalFormResponse findApprovalForm(Long managerId, Long taskId) {
+        memberService.findActiveMember(managerId);
+        Task task = taskService.findById(taskId);
+        if (task.getTaskStatus() != TaskStatus.REQUESTED) {
+            throw new ApplicationException(TaskErrorCode.TASK_STATUS_MISMATCH);
+        }
+        return TaskMapper.toFindApprovalFormResponse(task);
     }
 }

@@ -1,13 +1,13 @@
 package clap.server.adapter.outbound.infrastructure.s3;
 
 import clap.server.application.port.outbound.s3.S3UploadPort;
+import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import clap.server.config.s3.KakaoS3Config;
 import clap.server.domain.model.task.FilePath;
 import clap.server.exception.S3Exception;
 import clap.server.exception.code.S3Errorcode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
-@Service
+@InfrastructureAdapter
 @RequiredArgsConstructor
 public class S3UploadAdapter implements S3UploadPort {
     private final KakaoS3Config kakaoS3Config;
