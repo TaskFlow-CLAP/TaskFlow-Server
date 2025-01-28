@@ -5,7 +5,7 @@ import clap.server.application.mapper.TaskHistoryMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.FindTaskHistoriesUsecase;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
-import clap.server.application.port.outbound.task.LoadCommentPort;
+
 import clap.server.application.port.outbound.task.LoadTaskHistoryPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -36,10 +36,5 @@ public class FindTaskHistoriesService implements FindTaskHistoriesUsecase {
         List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNotNull(task.getTaskId());
         List<TaskHistory> taskHistories = loadTaskHistoryPort.findAllTaskHistoriesByTaskId(task.getTaskId());
         return TaskHistoryMapper.toFindTaskHistoryResponse(taskHistories, attachments);
-
-        //task가 fk로 있고 comment가 null인 taskhisotry 를 가져온다
-        //List<TaskHistory> taskHistoriesNotComment = loadTaskHistoryPort.findAllByTaskIdNotInComment(taskId);
-        //task가 fk로 있는 comment를 가져오고 comment fk로 있는 taskhistory를 가져온다.
-        //task가 fk로 있는 comment를 가져오고 comment fk로 있는 attachment와 taskhistory를 가져온다.
     }
 }
