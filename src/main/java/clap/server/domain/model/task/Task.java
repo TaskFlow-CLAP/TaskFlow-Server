@@ -63,6 +63,10 @@ public class Task extends BaseTime {
         this.taskStatus = status;
     }
 
+    public void updateProcessor(Member processor) {
+        this.processor = processor;
+    }
+
     public void approveTask(Member reviewer, Member processor, LocalDateTime dueDate, Category category, Label label) {
         this.reviewer = reviewer;
         this.processor = processor;
