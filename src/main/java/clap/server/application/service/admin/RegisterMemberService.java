@@ -1,7 +1,6 @@
 package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.RegisterMemberRequest;
-import clap.server.adapter.outbound.persistense.CsvParseAdapter;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.management.RegisterMemberUsecase;
 import clap.server.application.port.outbound.member.CommandMemberPort;
@@ -17,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 import static clap.server.application.mapper.MemberInfoMapper.toMemberInfo;
@@ -30,7 +28,7 @@ public class RegisterMemberService implements RegisterMemberUsecase {
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
     private final PasswordEncoder passwordEncoder;
-    private final CsvParseAdapter csvParser; // CsvParseAdapter 주입
+    private final CsvParseService csvParser; // CsvParseService 주입
 
     @Override
     @Transactional

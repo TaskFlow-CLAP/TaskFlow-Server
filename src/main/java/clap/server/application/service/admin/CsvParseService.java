@@ -1,4 +1,4 @@
-package clap.server.adapter.outbound.persistense;
+package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.RegisterMemberRequest;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
@@ -6,6 +6,7 @@ import clap.server.exception.ApplicationException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -15,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
-public class CsvParseAdapter {
+@Service
+public class CsvParseService {
 
     public List<RegisterMemberRequest> parse(MultipartFile file) {
         List<RegisterMemberRequest> memberRequests = new ArrayList<>();
