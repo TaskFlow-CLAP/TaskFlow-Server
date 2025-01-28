@@ -93,7 +93,7 @@ import java.util.Optional;
 
     @Override
     public Page<Member> findAllMembers(Pageable pageable) {
-        Page<MemberEntity> entities = memberRepository.findAll(pageable);
+        Page<MemberEntity> entities = memberRepository.findAll(MemberSpecification.isNotDeleted(), pageable);
         return entities.map(memberPersistenceMapper::toDomain);
     }
 
@@ -101,6 +101,7 @@ import java.util.Optional;
     public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest) {
         Page<MemberEntity> entities = memberRepository.findAll(MemberSpecification.withFilter(filterRequest), pageable);
         return entities.map(memberPersistenceMapper::toDomain);
+
     }
 }
 
