@@ -20,7 +20,7 @@ import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
-import clap.server.domain.model.task.FilePath;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.task.Task;
 
 import clap.server.exception.ApplicationException;
@@ -100,7 +100,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
         attachmentsToDelete.forEach(Attachment::softDelete);
 
-        List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePath.TASK_IMAGE, files);
+        List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePathConstants.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }
