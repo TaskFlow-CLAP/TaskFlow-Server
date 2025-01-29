@@ -64,6 +64,12 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
     }
 
     @Override
+    public Optional<Task> findByIdAndStatus(Long id, TaskStatus status) {
+        Optional<TaskEntity> taskEntity = taskRepository.findByTaskIdAndTaskStatus(id, status);
+        return taskEntity.map(taskPersistenceMapper::toDomain);
+    }
+
+    @Override
     public List<Task> findYesterdayTaskByDate(LocalDateTime now) {
         return taskRepository.findYesterdayTaskByUpdatedAtIsBetween(now.minusDays(1), now)
                 .stream().map(taskPersistenceMapper::toDomain).toList();

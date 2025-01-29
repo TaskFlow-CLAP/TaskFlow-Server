@@ -38,6 +38,8 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
             Pageable pageable
     );
 
+    Optional<TaskEntity> findByTaskIdAndTaskStatus(Long id, TaskStatus status);
+
     Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderDesc(Long processorId, TaskStatus taskStatus, Long processorOrder);
 
     Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderDesc(

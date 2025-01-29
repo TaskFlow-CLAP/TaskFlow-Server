@@ -27,6 +27,8 @@ public interface LoadTaskPort {
 
     Slice<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, Pageable pageable);
 
+    Optional<Task> findByIdAndStatus(Long id, TaskStatus status);
+
     Optional<Task> findPrevOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder);
 
     Optional<Task> findNextOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder);
