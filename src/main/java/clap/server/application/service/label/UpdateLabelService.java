@@ -1,27 +1,34 @@
 package clap.server.application.service.label;
 
 import clap.server.adapter.inbound.web.dto.label.AddAndEditLabelRequest;
-import clap.server.application.port.inbound.admin.AddLabelUsecase;
+import clap.server.application.port.inbound.admin.UpdateLabelUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.CommandLabelPort;
+import clap.server.application.port.outbound.task.LoadLabelPort;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Label;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.LabelErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 @ApplicationService
 @RequiredArgsConstructor
-public class AddLabelService implements AddLabelUsecase {
+public class UpdateLabelService implements UpdateLabelUsecase {
 
     private final MemberService memberService;
+    private final LoadLabelPort loadLabelPort;
     private final CommandLabelPort commandLabelPort;
 
     @Transactional
     @Override
-    public void addLabel(Long adminId, AddAndEditLabelRequest request) {
-        Member admin = memberService.findActiveMember(adminId);
-        Label label = Label.addLabel(admin, request);
+    public void editLabel(Long adminId, Long labelId, AddAndEditLabelRequest request) {
+        memberService.findActiveMember(adminId);
+
+        Label label = loadLabelPort.findById(labelId)
+                .orElseThrow(() -> new ApplicationException(LabelErrorCode.LABEL_NOT_FOUND));
+
+        label.updateLabel(request);
         commandLabelPort.save(label);
     }
 }
