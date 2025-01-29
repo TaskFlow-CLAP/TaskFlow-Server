@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+import static clap.server.domain.model.task.constants.TaskProcessorOrderPolicy.DEFAULT_PROCESSOR_ORDER_GAP;
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -54,8 +56,8 @@ public class Task extends BaseTime {
     }
 
     public void setInitialProcessorOrder() {
-        if(this.processor == null) {
-            this.processorOrder = this.taskId * 128L;
+        if (this.processor == null) {
+            this.processorOrder = this.taskId * DEFAULT_PROCESSOR_ORDER_GAP;
         }
     }
 
@@ -80,7 +82,64 @@ public class Task extends BaseTime {
         this.taskStatus = TaskStatus.IN_PROGRESS;
     }
 
-    private static String toTaskCode(Category category){
+    private static String toTaskCode(Category category) {
         return category.getMainCategory().getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
     }
+
+    public void changeTaskStatus(TaskStatus newStatus) {
+        if (newStatus == null) {
+            throw new DomainException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
+        }
+        this.taskStatus = newStatus;
+    }
+
+    public void updateProcessorOrder(Long processorId, Long prevTaskOrder, Long nextTaskOrder) {
+        if (!Objects.equals(processorId, this.processor.getMemberId())) {
+            throw new DomainException(TaskErrorCode.NOT_A_PROCESSOR);
+        }
+        long newProcessorOrder;
+
+        // 최상위 이동: 가장 작은 processorOrder보다 더 작은 값 설정
+        if (prevTaskOrder == null && nextTaskOrder != null) {
+            newProcessorOrder = nextTaskOrder - DEFAULT_PROCESSOR_ORDER_GAP;
+        }
+        // 최하위 이동: 가장 큰 processorOrder보다 더 큰 값 설정
+        else if (prevTaskOrder != null && nextTaskOrder == null) {
+            newProcessorOrder = prevTaskOrder + DEFAULT_PROCESSOR_ORDER_GAP;
+        }
+        // 중간 위치로 이동: prevTask와 nextTask의 processorOrder 평균값 사용
+        else if (prevTaskOrder != null && nextTaskOrder != null) {
+            if (nextTaskOrder - prevTaskOrder < 2) {
+                throw new DomainException(TaskErrorCode.INVALID_TASK_ORDER);
+            }
+            newProcessorOrder = (prevTaskOrder + nextTaskOrder) / 2;
+        }
+        // 기본값 (예외적인 상황 방지)
+        else {
+            newProcessorOrder = DEFAULT_PROCESSOR_ORDER_GAP;
+        }
+        this.processorOrder = newProcessorOrder;
+    }
+
+
+
+    public static void checkTaskStatusIsSame(Task targetTask, Task prevTask, Task nextTask) {
+        if (targetTask.getTaskStatus() == null) {
+            throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
+        }
+        if (targetTask.getTaskStatus() != prevTask.getTaskStatus() ||
+                targetTask.getTaskStatus() != nextTask.getTaskStatus()) {
+            throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
+        }
+    }
+
+    public static void validateTaskStatusTransition(Task prevTask, Task nextTask, TaskStatus targetStatus) {
+        if (prevTask != null && prevTask.getTaskStatus() != targetStatus) {
+            throw new DomainException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
+        }
+        if (nextTask != null && nextTask.getTaskStatus() != targetStatus) {
+            throw new DomainException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
+        }
+    }
+
 }
