@@ -1,5 +1,6 @@
 package clap.server.adapter.outbound.persistense.repository.notification;
 
+import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.notification.NotificationEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,4 +16,6 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     Slice<NotificationEntity> findAllByReceiver_MemberIdOrderByCreatedAtDesc(Long receiverId, Pageable pageable);
 
     List<NotificationEntity> findAllByReceiver_MemberId(Long memberId);
+
+    Integer countByIsReadFalseAndReceiver_MemberId(Long memberId);
 }
