@@ -23,7 +23,7 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.notification.Notification;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
-import clap.server.domain.model.task.FilePath;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
 
@@ -64,7 +64,7 @@ public class CreateTaskService implements CreateTaskUsecase {
     }
 
     private void saveAttachments(List<MultipartFile> files, Task task) {
-        List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePath.TASK_IMAGE, files);
+        List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePathConstants.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }
