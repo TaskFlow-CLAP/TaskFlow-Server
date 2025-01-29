@@ -18,8 +18,7 @@ public record FindTaskHistoryResponse(
     ) {}
 
     public static record Details(
-            ProcessorChanged processorChanged,
-            TaskStatusSwitched taskStatusSwitched,
+            TaskDetails taskDetails,
             CommentDetails commentDetails,
             CommentFileDetails commentFileDetails
     ) {}
@@ -30,6 +29,10 @@ public record FindTaskHistoryResponse(
 
     public static record TaskStatusSwitched(
             String taskStatus
+    ) {}
+
+    public static record TaskDetails(
+            String newValue
     ) {}
 
     public static record CommentDetails(

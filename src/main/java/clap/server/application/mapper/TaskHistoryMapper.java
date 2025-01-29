@@ -20,23 +20,20 @@ public class TaskHistoryMapper {
                     FindTaskHistoryResponse.Details details =
                             switch (taskHistory.getType()) {
                                 case PROCESSOR_CHANGED, PROCESSOR_ASSIGNED -> new FindTaskHistoryResponse.Details(
-                                        new FindTaskHistoryResponse.ProcessorChanged(
+                                        new FindTaskHistoryResponse.TaskDetails(
                                                 taskHistory.getTaskModificationInfo().getModifiedMember().getNickname()
                                         ),
-                                        null,
                                         null,
                                         null
                                 );
                                 case STATUS_SWITCHED -> new FindTaskHistoryResponse.Details(
-                                        null,
-                                        new FindTaskHistoryResponse.TaskStatusSwitched(
+                                        new FindTaskHistoryResponse.TaskDetails(
                                                 taskHistory.getTaskModificationInfo().getTask().getTaskStatus().getDescription()
                                         ),
                                         null,
                                         null
                                 );
                                 case COMMENT -> new FindTaskHistoryResponse.Details(
-                                        null,
                                         null,
                                         new FindTaskHistoryResponse.CommentDetails(
                                                 taskHistory.getComment().getMember().getNickname(),
@@ -47,7 +44,6 @@ public class TaskHistoryMapper {
                                         null
                                 );
                                 case COMMENT_FILE -> new FindTaskHistoryResponse.Details(
-                                        null,
                                         null,
                                         null,
                                         attachments.stream()
