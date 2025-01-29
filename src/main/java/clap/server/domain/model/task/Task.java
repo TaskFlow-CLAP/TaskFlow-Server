@@ -3,6 +3,7 @@ package clap.server.domain.model.task;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
+import clap.server.exception.ApplicationException;
 import clap.server.exception.DomainException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.AccessLevel;
@@ -45,8 +46,11 @@ public class Task extends BaseTime {
                 .build();
     }
 
-    public void updateTask(TaskStatus status, Category category, String title, String description) {
-        if (status != TaskStatus.REQUESTED) {
+    public void updateTask(Long requesterId, Category category, String title, String description) {
+        if(!Objects.equals(requesterId, this.requester.getMemberId() )) {
+            throw new ApplicationException(TaskErrorCode.NOT_A_REQUESTER);
+        }
+        if (this.taskStatus != TaskStatus.REQUESTED) {
             throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
         }
         this.category = category;

@@ -5,6 +5,7 @@ import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
+import clap.server.application.port.inbound.domain.LabelService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.UpdateTaskLabelUsecase;
@@ -14,17 +15,14 @@ import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
-import clap.server.application.port.outbound.task.LoadLabelPort;
 import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
-import clap.server.common.constants.FilePathConstants;
+import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
-
 import clap.server.exception.ApplicationException;
-import clap.server.exception.code.LabelErrorCode;
-import clap.server.exception.code.MemberErrorCode;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Objects;
-
-import static clap.server.exception.code.MemberErrorCode.ACTIVE_MEMBER_NOT_FOUND;
 
 
 @ApplicationService
@@ -45,9 +40,10 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final MemberService memberService;
     private final CategoryService categoryService;
     private final TaskService taskService;
+
     private final CommandTaskPort commandTaskPort;
     private final LoadAttachmentPort loadAttachmentPort;
-    private final LoadLabelPort loadLabelPort;
+    private final LabelService labelService;
     private final CommandAttachmentPort commandAttachmentPort;
     private final S3UploadAdapter s3UploadAdapter;
 
@@ -58,14 +54,10 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         Category category = categoryService.findById(updateTaskRequest.categoryId());
         Task task = taskService.findById(taskId);
 
-        if(!Objects.equals(requester.getMemberId(), task.getRequester().getMemberId())) {
-            throw new ApplicationException(TaskErrorCode.TASK_STATUS_MISMATCH);
-        }
-
-        task.updateTask(task.getTaskStatus(), category, updateTaskRequest.title(), updateTaskRequest.description());
+        task.updateTask(requesterId, category, updateTaskRequest.title(), updateTaskRequest.description());
         Task updatedTask = commandTaskPort.save(task);
 
-        if (!updateTaskRequest.attachmentsToDelete().isEmpty()){
+        if (!updateTaskRequest.attachmentsToDelete().isEmpty()) {
             updateAttachments(updateTaskRequest.attachmentsToDelete(), files, task);
         }
         return TaskMapper.toUpdateTaskResponse(updatedTask);
@@ -86,11 +78,9 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Transactional
     @Override
     public UpdateTaskResponse updateTaskProcessor(Long taskId, Long userId, UpdateTaskProcessorRequest request) {
-        Member reviewer = memberService.findActiveMember(userId);
+        Member reviewer = memberService.findReviewer(userId);
         Member processor = memberService.findById(request.processorId());
-        if (!reviewer.isReviewer()) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_REVIEWER);
-        }
+
         Task task = taskService.findById(taskId);
         task.updateProcessor(processor);
         Task updateTask = commandTaskPort.save(task);
@@ -102,12 +92,9 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Transactional
     @Override
     public UpdateTaskResponse updateTaskLabel(Long taskId, Long userId, UpdateTaskLabelRequest request) {
-        Member reviewer = memberService.findActiveMember(userId);
-        if (!reviewer.isReviewer()) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_REVIEWER);
-        }
+        Member reviewer = memberService.findReviewer(userId);
         Task task = taskService.findById(taskId);
-        Label label = loadLabelPort.findById(request.labelId()).orElseThrow(() -> new ApplicationException(LabelErrorCode.LABEL_NOT_FOUND));
+        Label label = labelService.findById(request.labelId());
 
         task.updateLabel(label);
         Task updatetask = commandTaskPort.save(task);
@@ -125,7 +112,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     private List<Attachment> validateAndGetAttachments(List<Long> attachmentIdsToDelete, Task task) {
         List<Attachment> attachmentsOfTask = loadAttachmentPort.findAllByTaskIdAndCommentIsNullAndAttachmentId(task.getTaskId(), attachmentIdsToDelete);
-        if(attachmentsOfTask.size() != attachmentIdsToDelete.size()) {
+        if (attachmentsOfTask.size() != attachmentIdsToDelete.size()) {
             throw new ApplicationException(TaskErrorCode.TASK_ATTACHMENT_NOT_FOUND);
         }
         return attachmentsOfTask;
