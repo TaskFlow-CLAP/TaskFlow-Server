@@ -45,7 +45,6 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private MemberStatus status;
 
-    // TODO: spring security 적용 예정
     @Column(nullable = false)
     private String password;
 
@@ -53,7 +52,11 @@ public class MemberEntity extends BaseTimeEntity {
     private String imageUrl;
 
     @Column
-    private Boolean notificationEnabled;
+    private Boolean kakaoWorkNotificationEnabled;
+    @Column
+    private Boolean agitNotificationEnabled;
+    @Column
+    private Boolean emailNotificationEnabled;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
