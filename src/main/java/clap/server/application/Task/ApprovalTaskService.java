@@ -36,10 +36,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     @Override
     @Transactional
     public ApprovalTaskResponse approvalTaskByReviewer(Long reviewerId, Long taskId, ApprovalTaskRequest approvalTaskRequest) {
-        Member reviewer = memberService.findActiveMember(reviewerId);
-        if (!reviewer.isReviewer()) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_REVIEWER);
-        }
+        Member reviewer = memberService.findReviewer(reviewerId);
         Task task = taskService.findById(taskId);
         Member processor = memberService.findById(approvalTaskRequest.processorId());
         Category category = categoryService.findById(approvalTaskRequest.categoryId());
@@ -54,9 +51,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     public FindApprovalFormResponse findApprovalForm(Long managerId, Long taskId) {
         memberService.findActiveMember(managerId);
         Task task = taskService.findById(taskId);
-        if (task.getTaskStatus() != TaskStatus.REQUESTED) {
-            throw new ApplicationException(TaskErrorCode.TASK_STATUS_MISMATCH);
-        }
+        task.validateTaskRequested();
         return TaskMapper.toFindApprovalFormResponse(task);
     }
 }

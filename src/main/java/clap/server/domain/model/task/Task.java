@@ -50,13 +50,17 @@ public class Task extends BaseTime {
         if(!Objects.equals(requesterId, this.requester.getMemberId() )) {
             throw new ApplicationException(TaskErrorCode.NOT_A_REQUESTER);
         }
-        if (this.taskStatus != TaskStatus.REQUESTED) {
-            throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
-        }
+        validateTaskRequested();
         this.category = category;
         this.title = title;
         this.description = description;
         this.taskCode = toTaskCode(category);
+    }
+
+    public void validateTaskRequested() {
+        if (this.taskStatus != TaskStatus.REQUESTED) {
+            throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
+        }
     }
 
     public void setInitialProcessorOrder() {
