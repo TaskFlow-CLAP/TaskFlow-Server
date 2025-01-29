@@ -4,7 +4,7 @@ import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskOrderRequest;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
-import clap.server.application.port.inbound.task.MoveTaskBoardUsecase;
+import clap.server.application.port.inbound.task.UpdateTaskBoardUsecase;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @ApplicationService
 @RequiredArgsConstructor
-class MoveTaskBoardService implements MoveTaskBoardUsecase {
+class UpdateTaskBoardService implements UpdateTaskBoardUsecase {
     private final MemberService memberService;
     private final TaskService taskService;
     private final LoadTaskPort loadTaskPort;

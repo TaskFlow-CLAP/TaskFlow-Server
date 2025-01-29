@@ -4,7 +4,7 @@ import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskOrderRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
-import clap.server.application.port.inbound.task.MoveTaskBoardUsecase;
+import clap.server.application.port.inbound.task.UpdateTaskBoardUsecase;
 import clap.server.application.port.inbound.task.TaskBoardUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +28,7 @@ import java.time.LocalDate;
 @RequestMapping("/api/task-board")
 public class TaskBoardController {
     private final TaskBoardUsecase taskBoardUsecase;
-    private final MoveTaskBoardUsecase moveTaskBoardUsecase;
+    private final UpdateTaskBoardUsecase updateTaskBoardUsecase;
 
     @Operation(summary = "작업 보드 조회 API")
     @GetMapping
@@ -48,9 +48,9 @@ public class TaskBoardController {
                                 @RequestBody UpdateTaskOrderRequest request,
                                 @AuthenticationPrincipal SecurityUserDetails userInfo) {
         if (status == null) {
-            moveTaskBoardUsecase.updateTaskOrder(userInfo.getUserId(), request);
+            updateTaskBoardUsecase.updateTaskOrder(userInfo.getUserId(), request);
         } else {
-            moveTaskBoardUsecase.updateTaskOrderAndStatus(userInfo.getUserId(), request, status);
+            updateTaskBoardUsecase.updateTaskOrderAndStatus(userInfo.getUserId(), request, status);
         }
     }
 
