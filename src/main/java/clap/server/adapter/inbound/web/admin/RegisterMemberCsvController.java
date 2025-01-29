@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "05. Admin")
 @WebAdapter
-@RequestMapping("/api/admin")
+@RequestMapping("/api/managements")
 public class RegisterMemberCsvController {
     private final RegisterMemberUsecase registerMemberUsecase;
 
