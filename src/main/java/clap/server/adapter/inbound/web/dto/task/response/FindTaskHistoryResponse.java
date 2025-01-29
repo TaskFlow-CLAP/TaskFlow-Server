@@ -25,8 +25,7 @@ public record FindTaskHistoryResponse(
     ) {}
 
     public static record ProcessorChanged(
-            String previousProcessor,
-            String currentProcessor
+            String processorName
     ) {}
 
     public static record TaskStatusSwitched(

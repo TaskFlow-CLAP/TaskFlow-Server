@@ -21,7 +21,6 @@ public class TaskHistoryMapper {
                             switch (taskHistory.getType()) {
                                 case PROCESSOR_CHANGED, PROCESSOR_ASSIGNED -> new FindTaskHistoryResponse.Details(
                                         new FindTaskHistoryResponse.ProcessorChanged(
-                                                null, //TODO: 이전 처리자 이름 검토
                                                 taskHistory.getTaskModificationInfo().getModifiedMember().getNickname()
                                         ),
                                         null,
