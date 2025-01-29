@@ -23,27 +23,19 @@ public record FindTaskHistoryResponse(
             CommentFileDetails commentFileDetails
     ) {}
 
-    public static record ProcessorChanged(
-            String processorName
-    ) {}
-
-    public static record TaskStatusSwitched(
-            String taskStatus
-    ) {}
-
     public static record TaskDetails(
             String newValue
     ) {}
 
     public static record CommentDetails(
-            String name,
+            String nickName,
             String profileImageUrl,
             boolean isModified,
             String comment
     ) {}
 
     public static record CommentFileDetails(
-            String name,
+            String nickName,
             String profileImageUrl,
             boolean isModified,
             String fileName,
