@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+@Tag(name = "02. Task [조회]", description = "작업 조회 API")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
