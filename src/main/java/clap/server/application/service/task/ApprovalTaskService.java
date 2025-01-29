@@ -1,9 +1,8 @@
-package clap.server.application.Task;
+package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.ApprovalTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.ApprovalTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.FindApprovalFormResponse;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.LabelService;
@@ -16,9 +15,6 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
-import clap.server.exception.ApplicationException;
-import clap.server.exception.code.MemberErrorCode;
-import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 

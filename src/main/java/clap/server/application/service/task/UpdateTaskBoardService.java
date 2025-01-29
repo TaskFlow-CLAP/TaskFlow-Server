@@ -1,4 +1,4 @@
-package clap.server.application.Task;
+package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskOrderRequest;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
