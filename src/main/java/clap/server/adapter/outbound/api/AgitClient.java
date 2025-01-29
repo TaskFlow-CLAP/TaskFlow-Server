@@ -3,7 +3,7 @@ package clap.server.adapter.outbound.api;
 import clap.server.adapter.outbound.api.dto.SendAgitRequest;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.webhook.SendAgitPort;
-import clap.server.common.annotation.architecture.PersistenceAdapter;
+import clap.server.common.annotation.architecture.ExternalApiAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -12,12 +12,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
 
-@PersistenceAdapter
+@ExternalApiAdapter
 @RequiredArgsConstructor
 public class AgitClient implements SendAgitPort {
 
-    @Value("${agit.url}")
-    private String AGITWEBHOOK_URL;
+    @Value("${webhook.agit.url}")
+    private String AGIT_WEBHOOK_URL;
 
     @Override
     public void sendAgit(SendAgitRequest request) {
@@ -48,6 +48,6 @@ public class AgitClient implements SendAgitPort {
         HttpEntity<String> entity = new HttpEntity<>(payload, headers);
 
         // Post 요청
-        restTemplate.exchange(AGITWEBHOOK_URL, HttpMethod.POST, entity, String.class);
+        restTemplate.exchange(AGIT_WEBHOOK_URL, HttpMethod.POST, entity, String.class);
     }
 }

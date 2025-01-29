@@ -25,13 +25,8 @@ public class FindLabelListService implements FindLabelListUsecase {
     private final MemberService memberService;
 
     @Override
-    public SliceResponse<FindLabelListResponse> findLabelList(Long userId, Pageable pageable) {
-        Member member = memberService.findActiveMember(userId);
-
-        // 담당자인데 검토자가 아닌 경우 Error 처리
-        if (!member.getMemberInfo().isReviewer()) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_REVIEWER);
-        }
+    public SliceResponse<FindLabelListResponse> findLabelList(Long memberId, Pageable pageable) {
+        Member member = memberService.findReviewer(memberId);
         return loadLabelPort.findLabelListBySlice(pageable);
     }
 

@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface FindLabelListUsecase {
 
-    SliceResponse<FindLabelListResponse> findLabelList(Long userId, Pageable pageable);
-    List<FindLabelListResponse> findLabelListAdmin(Long userId);
+    SliceResponse<FindLabelListResponse> findLabelList(Long memberId, Pageable pageable);
+    List<FindLabelListResponse> findLabelListAdmin(Long memberId);
 }
