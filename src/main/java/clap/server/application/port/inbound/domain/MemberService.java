@@ -31,9 +31,4 @@ public class MemberService {
         return loadMemberPort.findReviewers();
     }
 
-    public void deleteMember(Long memberId) {
-        Member member = findById(memberId);
-        member.setStatusDeleted();
-        commandMemberPort.save(member);
-    }
 }
