@@ -50,6 +50,11 @@ public class NotificationPersistenceAdapter implements LoadNotificationPort, Com
     }
 
     @Override
+    public Integer countNotification(Long memberId) {
+        return notificationRepository.countByIsReadFalseAndReceiver_MemberId(memberId);
+    }
+
+    @Override
     public void save(Notification notification) {
         notificationRepository.save(notificationPersistenceMapper.toEntity(notification));
     }
