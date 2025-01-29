@@ -104,7 +104,7 @@ class MoveTaskBoardService implements MoveTaskBoardUsecase {
 
     private void updateNewTaskOrderAndStatus(TaskStatus targetStatus, Task targetTask, Long processorId, Long prevTaskOrder, Long nextTaskOrder) {
         targetTask.updateProcessorOrder(processorId, prevTaskOrder, nextTaskOrder);
-        targetTask.changeTaskStatus(targetStatus);
+        targetTask.updateTaskStatus(targetStatus);
         commandTaskPort.save(targetTask);
     }
 
