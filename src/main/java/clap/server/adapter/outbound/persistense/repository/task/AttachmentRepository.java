@@ -9,5 +9,5 @@ import java.util.List;
 public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Long> {
     List<AttachmentEntity> findAllByTask_TaskIdAndCommentIsNullAndIsDeletedIsFalse(Long taskId);
     List<AttachmentEntity> findAllByTask_TaskIdAndCommentIsNullAndIsDeletedIsFalseAndAttachmentIdIn(Long task_taskId, List<Long> attachmentId);
-
+    List<AttachmentEntity> findAllByTask_TaskIdAndCommentIsNotNullAndIsDeletedIsFalse(Long taskId);
 }

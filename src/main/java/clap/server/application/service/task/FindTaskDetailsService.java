@@ -13,7 +13,6 @@ import clap.server.domain.model.task.Task;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
 
 @ApplicationService
 @RequiredArgsConstructor
-@Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+@Transactional(readOnly = true)
 public class FindTaskDetailsService implements FindTaskDetailsUsecase {
     private final MemberService memberService;
     private final LoadTaskPort loadTaskPort;

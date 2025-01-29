@@ -17,7 +17,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "작업 조회")
+@Tag(name = "02. Task [조회]", description = "작업 조회 API")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
