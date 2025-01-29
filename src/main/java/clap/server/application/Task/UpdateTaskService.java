@@ -16,13 +16,12 @@ import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
 import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
-import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
-
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +40,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final MemberService memberService;
     private final CategoryService categoryService;
     private final TaskService taskService;
+
     private final CommandTaskPort commandTaskPort;
     private final LoadAttachmentPort loadAttachmentPort;
     private final LabelService labelService;
