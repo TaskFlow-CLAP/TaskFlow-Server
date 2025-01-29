@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.member;
+package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
 import clap.server.adapter.inbound.web.dto.admin.RetrieveAllMemberResponse;
@@ -17,7 +17,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/members")
+@RequestMapping("/api/managements")
 @RequiredArgsConstructor
 public class FindMemberController {
     private final FindAllMemberUsecase findAllMemberUsecase;
@@ -33,7 +33,7 @@ public class FindMemberController {
                     @Parameter(name = "size", description = "페이지 당 회원 수 (기본값: 20)", example = "20")
             }
     )
-    @GetMapping
+    @GetMapping("/members")
     public ResponseEntity<Page<RetrieveAllMemberResponse>> getAllMembers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
