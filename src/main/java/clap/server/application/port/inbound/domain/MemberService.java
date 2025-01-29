@@ -24,6 +24,12 @@ public class MemberService {
                 () -> new ApplicationException(MemberErrorCode.ACTIVE_MEMBER_NOT_FOUND));
     }
 
+    public Member findReviewer(Long memberId) {
+        return loadMemberPort.findReviewerById(memberId).orElseThrow(
+                ()-> new ApplicationException(MemberErrorCode.NOT_A_REVIEWER)
+        );
+    }
+
     public List<Member> findReviewers() {
         return loadMemberPort.findReviewers();
     }
