@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCustomRepository {
@@ -28,7 +29,8 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
     @Query("SELECT t FROM TaskEntity t " +
             "WHERE t.processor.memberId = :processorId " +
             "AND t.taskStatus IN :taskStatus " +
-            "AND (t.taskStatus != 'COMPLETED' OR t.finishedAt >= :untilDate)")
+            "AND (t.taskStatus != 'COMPLETED' OR t.finishedAt <= :untilDate) " +
+            "ORDER BY t.processorOrder ASC ")
     Slice<TaskEntity> findTasksWithTaskStatusAndCompletedAt(
             @Param("processorId") Long processorId,
             @Param("taskStatus") List<TaskStatus> taskStatus,
@@ -36,7 +38,12 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
             Pageable pageable
     );
 
+    Optional<TaskEntity> findByTaskIdAndTaskStatus(Long id, TaskStatus status);
 
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderDesc(Long processorId, TaskStatus taskStatus, Long processorOrder);
+
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderDesc(
+            Long processorId, TaskStatus taskStatus, Long processorOrder);
 
 }
 

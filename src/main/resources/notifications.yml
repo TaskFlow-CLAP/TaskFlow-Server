@@ -1,0 +1,20 @@
+#TODO 구글 알림 이메일 발신자 정보 설정(논의 필요)
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+
+webhook:
+  kakaowork:
+    url: ${KAKAOWORK_WEBHOOK_URL}
+    auth: ${KAKAOWORK_WEBHOOK_AUTH}
+  agit:
+    url: ${AGIT_WEBHOOK_URL}

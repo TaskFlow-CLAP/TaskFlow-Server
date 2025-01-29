@@ -14,4 +14,6 @@ public interface LoadMemberPort {
 
     List<Member> findReviewers();
 
+    Optional<Member> findReviewerById(Long id);
+
 }

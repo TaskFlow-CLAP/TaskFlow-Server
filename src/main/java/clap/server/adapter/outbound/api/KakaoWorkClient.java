@@ -3,7 +3,7 @@ package clap.server.adapter.outbound.api;
 import clap.server.adapter.outbound.api.dto.SendKakaoWorkRequest;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.webhook.SendKaKaoWorkPort;
-import clap.server.common.annotation.architecture.PersistenceAdapter;
+import clap.server.common.annotation.architecture.ExternalApiAdapter;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.NotificationErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -13,14 +13,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
-@PersistenceAdapter
+@ExternalApiAdapter
 @RequiredArgsConstructor
 public class KakaoWorkClient implements SendKaKaoWorkPort {
 
-    @Value("${kakaowork.url}")
+    @Value("${webhook.kakaowork.url}")
     private String kakaworkUrl;
 
-    @Value("${kakaowork.auth}")
+    @Value("${webhook.kakaowork.auth}")
     private String kakaworkAuth;
 
     private final ObjectBlockService makeObjectBlock;
