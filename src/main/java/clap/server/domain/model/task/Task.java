@@ -117,25 +117,4 @@ public class Task extends BaseTime {
         this.processorOrder = newProcessorOrder;
     }
 
-
-
-    public static void checkTaskStatusIsSame(Task targetTask, Task prevTask, Task nextTask) {
-        if (targetTask.getTaskStatus() == null) {
-            throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
-        }
-        if (targetTask.getTaskStatus() != prevTask.getTaskStatus() ||
-                targetTask.getTaskStatus() != nextTask.getTaskStatus()) {
-            throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
-        }
-    }
-
-    public static void validateTaskStatusTransition(Task prevTask, Task nextTask, TaskStatus targetStatus) {
-        if (prevTask != null && prevTask.getTaskStatus() != targetStatus) {
-            throw new DomainException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
-        }
-        if (nextTask != null && nextTask.getTaskStatus() != targetStatus) {
-            throw new DomainException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
-        }
-    }
-
 }
