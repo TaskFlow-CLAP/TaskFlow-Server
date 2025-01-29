@@ -62,6 +62,9 @@ public class Task extends BaseTime {
     }
 
     public void updateTaskStatus(TaskStatus status) {
+        if (status == null) {
+            throw new DomainException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
+        }
         this.taskStatus = status;
     }
 
@@ -80,13 +83,6 @@ public class Task extends BaseTime {
 
     private static String toTaskCode(Category category) {
         return category.getMainCategory().getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
-    }
-
-    public void changeTaskStatus(TaskStatus newStatus) {
-        if (newStatus == null) {
-            throw new DomainException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
-        }
-        this.taskStatus = newStatus;
     }
 
     public void updateProcessorOrder(Long processorId, Long prevTaskOrder, Long nextTaskOrder) {
