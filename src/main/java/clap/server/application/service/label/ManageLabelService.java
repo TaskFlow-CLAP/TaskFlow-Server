@@ -1,6 +1,7 @@
 package clap.server.application.service.label;
 
 import clap.server.adapter.inbound.web.dto.label.AddAndEditLabelRequest;
+import clap.server.application.port.inbound.admin.DeleteLabelUsecase;
 import clap.server.application.port.inbound.admin.UpdateLabelUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.CommandLabelPort;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @ApplicationService
 @RequiredArgsConstructor
-public class UpdateLabelService implements UpdateLabelUsecase {
+public class ManageLabelService implements UpdateLabelUsecase, DeleteLabelUsecase {
 
     private final MemberService memberService;
     private final LoadLabelPort loadLabelPort;
@@ -29,6 +30,19 @@ public class UpdateLabelService implements UpdateLabelUsecase {
                 .orElseThrow(() -> new ApplicationException(LabelErrorCode.LABEL_NOT_FOUND));
 
         label.updateLabel(request);
+        commandLabelPort.save(label);
+    }
+
+
+    @Transactional
+    @Override
+    public void deleteLabel(Long adminId, Long labelId) {
+        memberService.findActiveMember(adminId);
+
+        Label label = loadLabelPort.findById(labelId)
+                .orElseThrow(() -> new ApplicationException(LabelErrorCode.LABEL_NOT_FOUND));
+
+        label.deleteLabel();
         commandLabelPort.save(label);
     }
 }

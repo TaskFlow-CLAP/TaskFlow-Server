@@ -3,6 +3,7 @@ package clap.server.adapter.inbound.web.admin;
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.label.AddAndEditLabelRequest;
 import clap.server.application.port.inbound.admin.AddLabelUsecase;
+import clap.server.application.port.inbound.admin.DeleteLabelUsecase;
 import clap.server.application.port.inbound.admin.UpdateLabelUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/management/label")
-public class UpdateLabelController {
+public class ManagementLabelController {
 
     private final AddLabelUsecase addLabelUsecase;
     private final UpdateLabelUsecase updateLabelUsecase;
+    private final DeleteLabelUsecase deleteLabelUsecase;
 
     @Operation(summary = "구분(label) 추가 API")
     @PostMapping
@@ -37,5 +39,13 @@ public class UpdateLabelController {
                             @RequestBody AddAndEditLabelRequest request) {
         updateLabelUsecase.editLabel(userInfo.getUserId(), labelId, request);
 
+    }
+
+    @Operation(summary = "구분(label) 삭제 API")
+    @DeleteMapping("/{labelId}")
+    @Secured({"ROLE_ADMIN"})
+    public void deleteLabel(@AuthenticationPrincipal SecurityUserDetails userInfo,
+                            @PathVariable Long labelId) {
+        deleteLabelUsecase.deleteLabel(userInfo.getUserId(), labelId);
     }
 }

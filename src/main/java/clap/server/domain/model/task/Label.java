@@ -32,4 +32,8 @@ public class Label extends BaseTime {
         this.labelName = request.labelName();
         this.labelColor = request.labelColor();
     }
+
+    public void deleteLabel() {
+        this.isDeleted = true;
+    }
 }
