@@ -8,6 +8,7 @@ import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Label;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class AddLabelService implements AddLabelUsecase {
     private final MemberService memberService;
     private final CommandLabelPort commandLabelPort;
 
+    @Transactional
     @Override
     public void addLabel(Long adminId, AddLabelRequest request) {
         Member admin = memberService.findActiveMember(adminId);
