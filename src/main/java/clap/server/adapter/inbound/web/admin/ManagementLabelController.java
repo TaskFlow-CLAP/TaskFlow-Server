@@ -7,6 +7,8 @@ import clap.server.application.port.inbound.admin.DeleteLabelUsecase;
 import clap.server.application.port.inbound.admin.UpdateLabelUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -32,6 +34,7 @@ public class ManagementLabelController {
     }
 
     @Operation(summary = "구분(label) 수정 API")
+    @Parameter(name = "labelId", description = "구분(label) 고유 ID", required = true, in = ParameterIn.PATH)
     @PatchMapping("/{labelId}")
     @Secured({"ROLE_ADMIN"})
     public void updateLabel(@AuthenticationPrincipal SecurityUserDetails userInfo,
@@ -42,6 +45,7 @@ public class ManagementLabelController {
     }
 
     @Operation(summary = "구분(label) 삭제 API")
+    @Parameter(name = "labelId", description = "구분(label) 고유 ID", required = true, in = ParameterIn.PATH)
     @DeleteMapping("/{labelId}")
     @Secured({"ROLE_ADMIN"})
     public void deleteLabel(@AuthenticationPrincipal SecurityUserDetails userInfo,
