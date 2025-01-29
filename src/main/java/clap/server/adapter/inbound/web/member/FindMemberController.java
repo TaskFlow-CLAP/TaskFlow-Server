@@ -1,6 +1,7 @@
 package clap.server.adapter.inbound.web.member;
 
 import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
+import clap.server.adapter.inbound.web.dto.admin.RetrieveAllMemberResponse;
 import clap.server.application.mapper.RetrieveAllMemberMapper;
 import clap.server.application.port.inbound.management.FindAllMemberUsecase;
 import clap.server.domain.model.member.Member;
@@ -18,11 +19,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
-public class MemberController {
+public class FindMemberController {
     private final FindAllMemberUsecase findAllMemberUsecase;
     private final RetrieveAllMemberMapper retrieveAllMemberMapper;
 
-    @Tag(name = "Admin")
+    @Tag(name = "05. Admin")
     @Secured({"ROLE_ADMIN"})
     @Operation(
             summary = "전체 회원 조회 API",

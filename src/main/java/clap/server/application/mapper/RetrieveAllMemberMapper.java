@@ -1,6 +1,6 @@
 package clap.server.application.mapper;
 
-import clap.server.adapter.inbound.web.member.RetrieveAllMemberResponse;
+import clap.server.adapter.inbound.web.dto.admin.RetrieveAllMemberResponse;
 import clap.server.domain.model.member.Member;
 import org.springframework.stereotype.Component;
 
