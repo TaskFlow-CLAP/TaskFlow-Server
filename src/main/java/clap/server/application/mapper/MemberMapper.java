@@ -38,7 +38,7 @@ public class MemberMapper {
         return new MemberDetailInfoResponse.NotificationSettingInfoResponse(
                 member.getAgitNotificationEnabled(),
                 member.getEmailNotificationEnabled(),
-                member.getKakaoWorkNotificationEnabled()
+                member.getKakaoworkNotificationEnabled()
         );
     }
 }
