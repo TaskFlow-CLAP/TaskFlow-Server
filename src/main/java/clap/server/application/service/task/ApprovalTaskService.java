@@ -3,6 +3,7 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.task.ApprovalTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.ApprovalTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.FindApprovalFormResponse;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.LabelService;
@@ -10,11 +11,13 @@ import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.outbound.task.CommandTaskPort;
+import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
+import clap.server.domain.model.task.TaskHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     private final CategoryService categoryService;
     private final LabelService labelService;
     private final CommandTaskPort commandTaskPort;
+    private final CommandTaskHistoryPort commandTaskHistoryPort;
 
     @Override
     @Transactional
@@ -39,6 +43,8 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         Label label = labelService.findById(approvalTaskRequest.labelId());
 
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_ASSIGNED, task, null, processor,null);
+        commandTaskHistoryPort.save(taskHistory);
         return TaskMapper.toApprovalTaskResponse(commandTaskPort.save(task));
     }
 

@@ -10,9 +10,11 @@ import java.util.List;
 public class CategoryResponseMapper {
 
     public static FindAllCategoryResponse toFindAllCategoryResponse(
-            List<FindMainCategoryResponse> mainCategoryResponses,
+            Long id,
+            String name,
+            String code,
             List<FindSubCategoryResponse> subCategoryResponses) {
-        return new FindAllCategoryResponse(mainCategoryResponses, subCategoryResponses);
+        return new FindAllCategoryResponse(id, name, code, subCategoryResponses);
     }
 
     public static FindMainCategoryResponse toFindMainCategoryResponse(Category category) {

@@ -17,16 +17,6 @@ public enum TaskStatus {
 
     private final String description;
 
-    @JsonCreator
-    public static TaskStatus fromDescription(String description) {
-        for (TaskStatus status : TaskStatus.values()) {
-            if (status.getDescription().equals(description)) {
-                return status;
-            }
-        }
-        throw new IllegalArgumentException("Unknown description: " + description);
-    }
-
     public static List<TaskStatus> getTaskBoardStatusList() {
         return List.of(
                 TaskStatus.IN_PROGRESS,
