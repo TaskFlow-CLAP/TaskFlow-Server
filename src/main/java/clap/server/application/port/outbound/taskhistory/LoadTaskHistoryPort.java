@@ -1,4 +1,4 @@
-package clap.server.application.port.outbound.task;
+package clap.server.application.port.outbound.taskhistory;
 
 
 import clap.server.domain.model.task.TaskHistory;
