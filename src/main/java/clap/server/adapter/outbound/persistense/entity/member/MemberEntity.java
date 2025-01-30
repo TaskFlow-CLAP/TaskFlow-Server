@@ -52,7 +52,7 @@ public class MemberEntity extends BaseTimeEntity {
     private String imageUrl;
 
     @Column
-    private Boolean kakaoWorkNotificationEnabled;
+    private Boolean kakaoworkNotificationEnabled;
     @Column
     private Boolean agitNotificationEnabled;
     @Column

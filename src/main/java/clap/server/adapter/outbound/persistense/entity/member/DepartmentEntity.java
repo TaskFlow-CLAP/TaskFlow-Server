@@ -25,9 +25,6 @@ public class DepartmentEntity extends BaseTimeEntity {
     private MemberEntity admin;
 
     @Column(nullable = false)
-    private String code;
-
-    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
