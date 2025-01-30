@@ -67,6 +67,17 @@ public class EmailClient implements SendEmailPort {
                 body = templateEngine.process("processor-assign", context);
             }
 
+            else if (request.notificationType() == NotificationType.INVITATION) {
+                helper.setTo(request.email());
+                helper.setSubject("[TaskFlow 초대] 회원가입을 환영합니다.");
+
+                context.setVariable("invitationLink", "https://example.com/reset-password"); //TODO:비밀번호 설정 링크로 변경 예정
+                context.setVariable("initialPassword", request.message());
+                context.setVariable("receiverName", request.senderName());
+
+                body = templateEngine.process("invitation", context);
+            }
+
             else {
                 helper.setTo(request.email());
                 helper.setSubject("[TaskFlow 알림] 댓글이 작성되었습니다.");
