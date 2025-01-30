@@ -8,6 +8,7 @@ import clap.server.adapter.outbound.persistense.mapper.LabelPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.task.LabelRepository;
 import clap.server.application.mapper.LabelMapper;
 import clap.server.application.mapper.NotificationMapper;
+import clap.server.application.port.outbound.task.CommandLabelPort;
 import clap.server.application.port.outbound.task.LoadLabelPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
 import clap.server.domain.model.notification.Notification;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class LabelPersistenceAdapter implements LoadLabelPort {
+public class LabelPersistenceAdapter implements LoadLabelPort, CommandLabelPort {
 
     private final LabelRepository labelRepository;
     private final LabelPersistenceMapper labelPersistenceMapper;
@@ -50,5 +51,11 @@ public class LabelPersistenceAdapter implements LoadLabelPort {
         return LabelMapper.toSliceOfFindNoticeListResponse(
                 labelList.map(LabelMapper::toFindLabelListResponse)
         );
+    }
+
+    @Override
+    public void save(Label label) {
+        LabelEntity labelEntity = labelPersistenceMapper.toEntity(label);
+        labelRepository.save(labelEntity);
     }
 }
