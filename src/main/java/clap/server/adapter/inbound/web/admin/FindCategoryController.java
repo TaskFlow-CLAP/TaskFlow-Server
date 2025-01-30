@@ -27,7 +27,7 @@ public class FindCategoryController {
 
     @Operation(summary = "모든 카테고리 조회")
     @GetMapping("/category")
-    public ResponseEntity<FindAllCategoryResponse> findAllCategory() {
+    public ResponseEntity<List<FindAllCategoryResponse>> findAllCategory() {
         return ResponseEntity.ok(findAllCategoryUsecase.findAllCategory());
     }
 
