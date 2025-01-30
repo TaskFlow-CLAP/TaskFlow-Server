@@ -28,6 +28,7 @@ public class MemberMapper {
                 member.getImageUrl(),
                 member.isReviewer(),
                 member.getMemberInfo().getRole(),
+                member.getMemberInfo().getDepartment().getName(),
                 member.getMemberInfo().getDepartmentRole(),
                 toNotificationSettingInfoResponse(member)
         );
