@@ -47,9 +47,9 @@ public class PostCommentService implements PostCommentUsecase {
         // 담당자일 경우 => 처리자인지 확인
         if (checkCommenter(task, member)) {
             Comment comment = Comment.createComment(member, task, request.content());
-            commandCommentPort.saveComment(comment);
+            Comment savedComment = commandCommentPort.saveComment(comment);
 
-            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT, task, null, member,comment);
+            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT, task, null, member,savedComment);
             commandTaskHistoryPort.save(taskHistory);
         }
     }
@@ -65,7 +65,7 @@ public class PostCommentService implements PostCommentUsecase {
             Comment savedComment = commandCommentPort.saveComment(comment);
             saveAttachment(files, task, savedComment);
 
-            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, task, null, member,comment);
+            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, task, null, member, savedComment);
             commandTaskHistoryPort.save(taskHistory);
         }
     }
