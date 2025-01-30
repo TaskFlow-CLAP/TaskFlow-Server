@@ -1,5 +1,6 @@
 package clap.server.adapter.outbound.persistense;
 
+import clap.server.adapter.outbound.persistense.entity.task.CommentEntity;
 import clap.server.adapter.outbound.persistense.mapper.CommentPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.task.CommentRepository;
 import clap.server.application.port.outbound.task.CommandCommentPort;
@@ -23,7 +24,8 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CommandCommen
     }
 
     @Override
-    public void save(Comment comment) {
-        commentRepository.save(commentPersistenceMapper.toEntity(comment));
+    public Comment saveComment(Comment comment) {
+        CommentEntity commentEntity = commentRepository.save(commentPersistenceMapper.toEntity(comment));
+        return commentPersistenceMapper.toDomain(commentEntity);
     }
 }
