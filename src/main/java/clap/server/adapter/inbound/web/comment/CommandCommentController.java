@@ -1,6 +1,7 @@
 package clap.server.adapter.inbound.web.comment;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.web.dto.task.DeleteCommentRequest;
 import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
 import clap.server.application.port.inbound.comment.CommandCommentUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
@@ -23,7 +24,7 @@ public class CommandCommentController {
     private final CommandCommentUsecase commandCommentUsecase;
 
     @Operation(summary = "댓글 수정")
-    @Parameter(name = "commentId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
+    @Parameter(name = "commentId", description = "수정할 댓글 고유 ID", required = true, in = ParameterIn.PATH)
     @PatchMapping("/{commentId}")
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public void editComment(
@@ -32,4 +33,16 @@ public class CommandCommentController {
             @RequestBody PostAndEditCommentRequest request) {
         commandCommentUsecase.updateComment(userInfo.getUserId(), commentId, request);
     }
+
+    @Operation(summary = "댓글 삭제", description = "첨부파일 댓글일 경우 request body에 삭제할 파일 ID를 리스트로 전달")
+    @Parameter(name = "commentId", description = "수정할 댓글 고유 ID", required = true, in = ParameterIn.PATH)
+    @DeleteMapping("/{commentId}")
+    @Secured({"ROLE_MANAGER", "ROLE_USER"})
+    public void deleteComment(
+            @AuthenticationPrincipal SecurityUserDetails userInfo,
+            @PathVariable Long commentId,
+            @RequestBody DeleteCommentRequest request) {
+        commandCommentUsecase.deleteComment(userInfo.getUserId(), commentId, request);
+    }
+
 }
