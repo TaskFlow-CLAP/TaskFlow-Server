@@ -1,7 +1,7 @@
 package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.UpdateMemberInfoRequest;
-import clap.server.application.port.inbound.admin.UpdateMemberInfoUsecase;
+import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadDepartmentPort;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ApplicationService
 @RequiredArgsConstructor
 @Transactional
-class UpdateMemberInfoService implements UpdateMemberInfoUsecase {
+class UpdateMemberService implements UpdateMemberUsecase {
     private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
