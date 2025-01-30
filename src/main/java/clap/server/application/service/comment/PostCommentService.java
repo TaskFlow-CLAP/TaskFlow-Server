@@ -1,11 +1,13 @@
 package clap.server.application.service.comment;
 
 import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
+import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.port.inbound.comment.PostCommentUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
+import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandCommentPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.common.constants.FilePathConstants;
@@ -28,6 +30,8 @@ public class PostCommentService implements PostCommentUsecase {
     private final MemberService memberService;
     private final TaskService taskService;
     private final CommandCommentPort commandCommentPort;
+    private final S3UploadAdapter s3UploadAdapter;
+    private final CommandAttachmentPort commandAttachmentPort;
 
     @Transactional
     @Override
@@ -37,17 +41,46 @@ public class PostCommentService implements PostCommentUsecase {
 
         // 일반 회원일 경우 => 요청자인지 확인
         // 담당자일 경우 => 처리자인지 확인
+        if (checkCommenter(task, member)) {
+            Comment comment = Comment.createComment(member, task, request.content());
+            commandCommentPort.saveComment(comment);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void saveCommentAttachment(Long userId, Long taskId, List<MultipartFile> files) {
+        Task task = taskService.findById(taskId);
+        Member member = memberService.findActiveMember(userId);
+
+        if (checkCommenter(task, member)) {
+            Comment comment = Comment.createComment(member, task, "Attachment");
+            Comment savedComment = commandCommentPort.saveComment(comment);
+            saveAttachment(files, task, savedComment);
+        }
+    }
+
+    private void saveAttachment(List<MultipartFile> files, Task task, Comment comment) {
+        List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePathConstants.TASK_IMAGE, files);
+        List<Attachment> attachments = AttachmentMapper.toCommentAttachments(task, comment, files, fileUrls);
+        commandAttachmentPort.saveAll(attachments);
+    }
+
+    public Boolean checkCommenter(Task task, Member member) {
+        // 일반 회원일 경우 => 요청자인지 확인
+        // 담당자일 경우 => 처리자인지 확인
         if ((member.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER)
                 && !(member.getMemberId() == task.getProcessor().getMemberId())) {
             throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
         }
 
-        if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
+        else if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
                 && !(member.getMemberId() == task.getRequester().getMemberId())) {
             throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
         }
+        else {
+            return true;
+        }
 
-        Comment comment = Comment.createComment(member, task, request);
-        commandCommentPort.save(comment);
     }
 }

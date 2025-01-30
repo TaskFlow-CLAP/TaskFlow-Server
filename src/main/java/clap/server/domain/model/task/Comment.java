@@ -18,13 +18,12 @@ public class Comment extends BaseTime {
     private String content;
     private boolean isModified;
 
-    public static Comment createComment(Member member, Task task, PostAndEditCommentRequest request) {
+    public static Comment createComment(Member member, Task task, String content) {
         return Comment.builder()
                 .member(member)
                 .task(task)
-                .content(request.content())
+                .content(content)
                 .isModified(false)
                 .build();
     }
-
 }
