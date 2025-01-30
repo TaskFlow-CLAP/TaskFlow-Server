@@ -28,7 +28,7 @@ public class FindTaskHistoryController {
 
     @Operation(summary = "작업 히스토리 조회")
     @Secured({"ROLE_MANAGER","ROLE_USER"})
-    @GetMapping("/histories/{taskId}")
+    @GetMapping("/{taskId}/histories")
     public ResponseEntity<FindTaskHistoryResponse> findTaskHistories(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
