@@ -1,8 +1,8 @@
 package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.admin.UpdateMemberInfoRequest;
-import clap.server.application.port.inbound.admin.ManageMemberUsecase;
+import clap.server.adapter.inbound.web.dto.admin.UpdateMemberRequest;
+import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/api/managements/members")
 public class ManageMemberController {
-    private final ManageMemberUsecase manageMemberUsecase;
+    private final UpdateMemberUsecase updateMemberUsecase;
 
     @Operation(summary = "회원 정보 수정 API")
     @PostMapping("/{memberId}")
     @Secured("ROLE_ADMIN")
     public void registerMember(@AuthenticationPrincipal SecurityUserDetails userInfo,
                                @PathVariable Long memberId,
-                               @RequestBody @Valid UpdateMemberInfoRequest request){
-        manageMemberUsecase.updateMemberInfo(memberId, request);
+                               @RequestBody @Valid UpdateMemberRequest request){
+        updateMemberUsecase.updateMemberInfo(userInfo.getUserId(), memberId, request);
     }
 }

@@ -1,7 +1,6 @@
 package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.*;
-import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
@@ -13,6 +12,7 @@ import clap.server.application.port.inbound.task.UpdateTaskLabelUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskProcessorUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskStatusUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskUsecase;
+import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
@@ -44,8 +44,8 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final LoadAttachmentPort loadAttachmentPort;
     private final LabelService labelService;
     private final CommandAttachmentPort commandAttachmentPort;
+    private final S3UploadPort s3UploadPort;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
-    private final S3UploadAdapter s3UploadAdapter;
 
     @Override
     @Transactional
@@ -104,7 +104,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
         attachmentsToDelete.forEach(Attachment::softDelete);
 
-        List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePathConstants.TASK_IMAGE, files);
+        List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }

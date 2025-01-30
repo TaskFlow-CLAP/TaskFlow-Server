@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-public record UpdateMemberInfoRequest(
+public record UpdateMemberRequest(
         @NotBlank @Schema(description = "회원 이름", example = "서주원")
         String name,
         @NotBlank
