@@ -2,7 +2,7 @@ package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
 import clap.server.adapter.inbound.web.dto.admin.MemberLogResponse;
-import clap.server.application.port.inbound.log.GetApiLogsUseCase;
+import clap.server.application.port.inbound.log.FindApiLogsUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import clap.server.config.annotation.LogType;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LogController {
 
-    private final GetApiLogsUseCase getApiLogsUseCase;
+    private final FindApiLogsUsecase getApiLogsUseCase;
 
     @LogType("로그인 로그")
     @GetMapping("/login-logs")

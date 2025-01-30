@@ -7,7 +7,7 @@ import clap.server.domain.model.log.ApiLog;
 
 import java.util.List;
 
-public interface GetApiLogsUseCase {
+public interface FindApiLogsUsecase {
     List<AnonymousLogResponse> getAnonymousLogs();
     List<MemberLogResponse> getMemberLogs();
     List<ApiLog> getApiLogs();

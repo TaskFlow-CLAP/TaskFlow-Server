@@ -1,7 +1,9 @@
 package clap.server.application.port.outbound.log;
 
-import clap.server.domain.model.log.ApiLog;
+import clap.server.domain.model.log.AnonymousLog;
+import clap.server.domain.model.log.MemberLog;
 
 public interface CommandLogPort {
-    void save(ApiLog apiLog);
+    void saveMemberLog(MemberLog memberLog);
+    void saveAnonymousLog(AnonymousLog anonymousLog);
 }
