@@ -26,4 +26,11 @@ public class Comment extends BaseTime {
                 .isModified(false)
                 .build();
     }
+
+    public void updateComment(String content) {
+        this.content = content;
+        if(!this.isModified) {
+            this.isModified = true;
+        }
+    }
 }
