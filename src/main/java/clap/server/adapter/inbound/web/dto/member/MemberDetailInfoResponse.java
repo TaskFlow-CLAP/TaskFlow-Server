@@ -15,7 +15,9 @@ public record MemberDetailInfoResponse(
         Boolean isReviewer,
         @Schema(description = "회원 역할")
         MemberRole role,
-        @Schema(description = "회원 직책")
+        @Schema(description = "부서")
+        String departmentName,
+        @Schema(description = "직책")
         String departmentRole,
         @Schema(description = "알림 수신 여부")
         NotificationSettingInfoResponse notificationSettingInfo

@@ -53,6 +53,9 @@ public class Member extends BaseTime {
     public void resetPasswordAndActivateMember(String newEncodedPassword) {
         this.password = newEncodedPassword;
         this.status = MemberStatus.ACTIVE;
+        this.agitNotificationEnabled = true;
+        this.emailNotificationEnabled = true;
+        this.kakaoWorkNotificationEnabled = true;
     }
 
     public String getNickname() {
