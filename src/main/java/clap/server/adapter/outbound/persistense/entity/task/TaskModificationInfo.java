@@ -20,4 +20,7 @@ public class TaskModificationInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modified_member_id")
     private MemberEntity modifiedMember;
+
+    @JoinColumn(name = "modified_status")
+    private String modifiedStatus;
 }
