@@ -10,19 +10,23 @@ import clap.server.adapter.outbound.persistense.repository.log.ApiLogRepository;
 import clap.server.adapter.outbound.persistense.repository.log.MemberLogRepository;
 import clap.server.application.port.outbound.log.ApiLogRepositoryPort;
 import clap.server.domain.model.log.ApiLog;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
 
     private final AnonymousLogRepository anonymousLogRepository;
     private final MemberLogRepository memberLogRepository;
     private final ApiLogRepository apiLogRepository;
+    private final EntityManager entityManager;
 
     @Override
     public void save(ApiLog apiLog) {
@@ -30,8 +34,8 @@ public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
 
         ApiLogEntity entity;
 
-        if ("로그인 시도".equals(apiLog.getLogType())) {
-            // logType이 '로그인 시도'인 경우 비회원 로그 저장
+        if ("로그인 로그".equals(apiLog.getLogType())) {
+            // logType이 '로그인 로그'인 경우 비회원 로그 저장
             entity = createAnonymousLogEntity(apiLog);
         } else {
             // 회원 로그 저장
@@ -92,9 +96,12 @@ public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
         MemberEntity member = MemberEntity.builder()
                 .memberId(memberId)
                 .build();
+        //TODO: member 가져오도록 수정 -> 영속화
+        // 이미 존재하는 memberId로 MemberEntity를 조회
+        MemberEntity newMember = entityManager.find(MemberEntity.class, memberId);
 
         return MemberLogEntity.builder()
-                .member(member)
+                .member(newMember)
                 .serverIp(apiLog.getServerIp())
                 .clientIp(apiLog.getClientIp())
                 .requestUrl(apiLog.getRequestUrl())
