@@ -74,6 +74,7 @@ public class Member extends BaseTime {
         if (imageUrl != null) {
             this.imageUrl = imageUrl;
         }
+    }
     public void setStatusDeleted() {
         this.status = MemberStatus.DELETED;
     }
