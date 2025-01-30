@@ -71,6 +71,8 @@ public class Member extends BaseTime {
         this.agitNotificationEnabled = agitNotificationEnabled;
         this.emailNotificationEnabled = emailNotificationEnabled;
         this.kakaoWorkNotificationEnabled = kakaoWorkNotificationEnabled;
-        this.imageUrl = imageUrl;
+        if (imageUrl != null) {
+            this.imageUrl = imageUrl;
+        }
     }
 }
