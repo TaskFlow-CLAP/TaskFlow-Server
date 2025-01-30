@@ -8,7 +8,6 @@ import clap.server.adapter.outbound.persistense.entity.log.constant.ApiHttpMetho
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.application.RetrieveApiLogsUsecase;
 import clap.server.application.port.inbound.domain.LoginDomainService;
-import clap.server.application.port.outbound.log.ApiLogRepositoryPort;
 import clap.server.domain.model.log.ApiLog;
 import org.junit.jupiter.api.Test;
 

@@ -6,10 +6,8 @@ import clap.server.domain.model.log.ApiLog;
 
 import java.util.List;
 
-public interface ApiLogRepositoryPort {
-    void save(ApiLog apiLog);
+public interface LoadLogPort {
     List<ApiLog> findAllLogs();
-
     List<AnonymousLogEntity> findAnonymousLogs(String logType);
     List<MemberLogEntity> findMemberLogs();
 }

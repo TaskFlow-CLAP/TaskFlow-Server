@@ -4,11 +4,13 @@ import clap.server.adapter.outbound.persistense.entity.log.AnonymousLogEntity;
 import clap.server.adapter.outbound.persistense.entity.log.ApiLogEntity;
 import clap.server.adapter.outbound.persistense.entity.log.MemberLogEntity;
 import clap.server.adapter.outbound.persistense.entity.log.constant.ApiHttpMethod;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogTypeEnum;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.repository.log.AnonymousLogRepository;
 import clap.server.adapter.outbound.persistense.repository.log.ApiLogRepository;
 import clap.server.adapter.outbound.persistense.repository.log.MemberLogRepository;
-import clap.server.application.port.outbound.log.ApiLogRepositoryPort;
+import clap.server.application.port.outbound.log.CommandLogPort;
+import clap.server.application.port.outbound.log.LoadLogPort;
 import clap.server.domain.model.log.ApiLog;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,8 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
-public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
+@Transactional(readOnly = true)
+public class ApiLogPersistenceAdapter implements CommandLogPort, LoadLogPort {
 
     private final AnonymousLogRepository anonymousLogRepository;
     private final MemberLogRepository memberLogRepository;
@@ -29,19 +31,15 @@ public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
     private final EntityManager entityManager;
 
     @Override
+    @Transactional
     public void save(ApiLog apiLog) {
-        validateApiLog(apiLog); // 유효성 검증 추가
-
+        validateApiLog(apiLog);
         ApiLogEntity entity;
-
-        if ("로그인 로그".equals(apiLog.getLogType())) {
-            // logType이 '로그인 로그'인 경우 비회원 로그 저장
+        if (LogTypeEnum.LOGIN.equals(apiLog.getLogType())) {
             entity = createAnonymousLogEntity(apiLog);
         } else {
-            // 회원 로그 저장
             entity = createMemberLogEntity(apiLog);
         }
-
         apiLogRepository.save(entity);
     }
 
@@ -62,40 +60,37 @@ public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
         return memberLogRepository.findAll();
     }
 
-    // 유효성 검증 메서드
+
     private void validateApiLog(ApiLog apiLog) {
-//        if (apiLog.getLogType() == null || apiLog.getLogType().isBlank()) {
-//            throw new IllegalArgumentException("Log type must not be null or empty");
-//        }
-//        if (!"로그인 시도".equals(apiLog.getLogType()) && apiLog.getMemberId() == null) {
-//            throw new IllegalArgumentException("Member ID must not be null for member logs");
-//        }
+        if (apiLog.getLogType() == null) {
+            throw new IllegalArgumentException("Log type must not be null or empty");
+        }
+        if (!LogTypeEnum.LOGIN.equals(apiLog.getLogType()) && apiLog.getUserId() == null) {
+            throw new IllegalArgumentException("Member ID must not be null for member logs");
+        }
     }
 
-    // AnonymousLogEntity 생성 메서드
+
     private AnonymousLogEntity createAnonymousLogEntity(ApiLog apiLog) {
         return AnonymousLogEntity.builder()
                 .serverIp(apiLog.getServerIp())
                 .clientIp(apiLog.getClientIp())
                 .requestUrl(apiLog.getRequestUrl())
-                .requestMethod(ApiHttpMethod.valueOf(apiLog.getRequestMethod())) // Enum 변환
+                .requestMethod(ApiHttpMethod.valueOf(apiLog.getRequestMethod()))
                 .statusCode(apiLog.getStatusCode())
                 .customStatusCode(apiLog.getCustomStatusCode())
                 .request(apiLog.getRequest())
                 .response(apiLog.getResponse())
                 .requestAt(apiLog.getRequestAt())
                 .responseAt(apiLog.getResponseAt())
-                .loginNickname(apiLog.getMemberId() != null ? apiLog.getMemberId() : "UNKNOWN") // 닉네임 저장
+                .loginNickname(apiLog.getUserId() != null ? apiLog.getUserId() : "UNKNOWN")
                 .logType(apiLog.getLogType())
                 .build();
     }
 
-    // MemberLogEntity 생성 메서드
     private MemberLogEntity createMemberLogEntity(ApiLog apiLog) {
-        Long memberId = parseMemberId(apiLog.getMemberId());
-        MemberEntity member = MemberEntity.builder()
-                .memberId(memberId)
-                .build();
+        Long memberId = parseMemberId(apiLog.getUserId());
+
         //TODO: member 가져오도록 수정 -> 영속화
         // 이미 존재하는 memberId로 MemberEntity를 조회
         MemberEntity newMember = entityManager.find(MemberEntity.class, memberId);
@@ -105,7 +100,7 @@ public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
                 .serverIp(apiLog.getServerIp())
                 .clientIp(apiLog.getClientIp())
                 .requestUrl(apiLog.getRequestUrl())
-                .requestMethod(ApiHttpMethod.valueOf(apiLog.getRequestMethod())) // Enum 변환
+                .requestMethod(ApiHttpMethod.valueOf(apiLog.getRequestMethod()))
                 .statusCode(apiLog.getStatusCode())
                 .customStatusCode(apiLog.getCustomStatusCode())
                 .request(apiLog.getRequest())
@@ -116,7 +111,6 @@ public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
                 .build();
     }
 
-    // memberId 파싱 유틸 메서드
     private Long parseMemberId(String memberId) {
         try {
             return memberId != null ? Long.parseLong(memberId) : 0L; // 기본값 설정
@@ -125,7 +119,6 @@ public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
         }
     }
 
-    // 엔티티 → 도메인 매핑 메서드
     private ApiLog mapToDomain(ApiLogEntity entity) {
         if (entity instanceof MemberLogEntity memberLogEntity) {
             return ApiLog.builder()
@@ -140,7 +133,7 @@ public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
                     .response(memberLogEntity.getResponse())
                     .requestAt(memberLogEntity.getRequestAt())
                     .responseAt(memberLogEntity.getResponseAt())
-                    .memberId(memberLogEntity.getMember().getMemberId().toString()) // 회원 ID
+                    .userId(memberLogEntity.getMember().getMemberId().toString()) // 회원 ID
                     .logType(memberLogEntity.getLogType())
                     .build();
         } else if (entity instanceof AnonymousLogEntity anonymousLogEntity) {
@@ -156,7 +149,7 @@ public class ApiLogPersistenceAdapter implements ApiLogRepositoryPort {
                     .response(anonymousLogEntity.getResponse())
                     .requestAt(anonymousLogEntity.getRequestAt())
                     .responseAt(anonymousLogEntity.getResponseAt())
-                    .memberId(anonymousLogEntity.getLoginNickname()) // 로그인 시도 ID
+                    .userId(anonymousLogEntity.getLoginNickname()) // 로그인 시도 ID
                     .logType(anonymousLogEntity.getLogType())
                     .build();
         }

@@ -2,6 +2,7 @@ package clap.server.adapter.outbound.persistense.entity.log;
 
 import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.log.constant.ApiHttpMethod;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogTypeEnum;
 import clap.server.domain.model.log.ApiLog;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -55,7 +56,8 @@ public abstract class ApiLogEntity extends BaseTimeEntity {
     private LocalDateTime responseAt;
 
     @Column(nullable = false)
-    private String logType; //TODO: enum으로 수정
+    @Enumerated(EnumType.STRING)
+    private LogTypeEnum logType;
 
     @Version
     private Long version; // 낙관적 락 관리를 위한 버전

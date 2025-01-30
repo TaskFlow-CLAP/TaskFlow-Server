@@ -21,18 +21,12 @@ public class LogController {
 
     private final GetApiLogsUseCase getApiLogsUseCase;
 
-    /**
-     * 로그인 시도 기록 조회
-     */
     @LogType("로그인 로그")
     @GetMapping("/login-logs")
     public List<AnonymousLogResponse> getLoginAttempts() {
         return getApiLogsUseCase.getAnonymousLogs();
     }
 
-    /**
-     * 모든 API 호출 기록 조회
-     */
     @LogType("일반 로그")
     @GetMapping("/api-logs")
     public List<MemberLogResponse> getApiCalls(@RequestParam(defaultValue = "") String logType) {

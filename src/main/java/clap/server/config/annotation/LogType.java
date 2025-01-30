@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME) // 런타임 시 어노테이션 접근 가능
-@Target(ElementType.METHOD) // 메서드
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface LogType {
     String value();
 }
