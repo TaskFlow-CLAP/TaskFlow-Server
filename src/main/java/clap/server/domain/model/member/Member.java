@@ -56,8 +56,4 @@ public class Member extends BaseTime {
     public boolean isReviewer() {
         return this.memberInfo != null && this.memberInfo.isReviewer();
     }
-
-    public void setStatusDeleted() {
-        this.status = MemberStatus.DELETED;
-    }
 }
