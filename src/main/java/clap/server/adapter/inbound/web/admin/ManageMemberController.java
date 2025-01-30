@@ -1,7 +1,7 @@
 package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.admin.UpdateMemberInfoRequest;
+import clap.server.adapter.inbound.web.dto.admin.UpdateMemberRequest;
 import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +27,7 @@ public class ManageMemberController {
     @Secured("ROLE_ADMIN")
     public void registerMember(@AuthenticationPrincipal SecurityUserDetails userInfo,
                                @PathVariable Long memberId,
-                               @RequestBody @Valid UpdateMemberInfoRequest request){
+                               @RequestBody @Valid UpdateMemberRequest request){
         updateMemberUsecase.updateMemberInfo(userInfo.getUserId(), memberId, request);
     }
 }

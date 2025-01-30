@@ -1,6 +1,6 @@
 package clap.server.application.service.admin;
 
-import clap.server.adapter.inbound.web.dto.admin.UpdateMemberInfoRequest;
+import clap.server.adapter.inbound.web.dto.admin.UpdateMemberRequest;
 import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.member.CommandMemberPort;
@@ -22,7 +22,7 @@ class UpdateMemberService implements UpdateMemberUsecase {
     private final LoadDepartmentPort loadDepartmentPort;
 
     @Override
-    public void updateMemberInfo(Long adminId, Long memberId, UpdateMemberInfoRequest request) {
+    public void updateMemberInfo(Long adminId, Long memberId, UpdateMemberRequest request) {
         Member member = memberService.findActiveMember(memberId);
         Department department = loadDepartmentPort.findById(request.departmentId()).orElseThrow(() ->
                 new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
