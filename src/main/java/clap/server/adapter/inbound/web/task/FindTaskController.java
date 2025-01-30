@@ -39,7 +39,7 @@ public class FindTaskController {
     }
     @Operation(summary = "요청한 작업 상세 조회")
     @Secured({"ROLE_USER", "ROLE_MANAGER"})
-    @GetMapping("/requests/details/{taskId}")
+    @GetMapping("/{taskId}/requests/details")
     public ResponseEntity<FindTaskDetailsResponse> findRequestedTaskDetails(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
@@ -72,7 +72,7 @@ public class FindTaskController {
 
     @Operation(summary = "전체요청, 내 작업에 대한 상세 조회")
     @Secured("ROLE_MANAGER")
-    @GetMapping("/details/{taskId}")
+    @GetMapping("/{taskId}/details")
     public ResponseEntity<FindTaskDetailsForManagerResponse> findRequestedTaskDetailsForManager(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {

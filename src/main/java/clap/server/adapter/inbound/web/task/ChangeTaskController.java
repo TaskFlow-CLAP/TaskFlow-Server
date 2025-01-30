@@ -32,7 +32,7 @@ public class ChangeTaskController {
 
     @Operation(summary = "작업 상태 변경")
     @Secured("ROLE_MANAGER")
-    @PatchMapping("/state/{taskId}")
+    @PatchMapping("/{taskId}/status")
     public ResponseEntity<UpdateTaskResponse> updateTaskState(
             @PathVariable @NotNull Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
@@ -43,7 +43,7 @@ public class ChangeTaskController {
 
     @Operation(summary = "작업 처리자 변경")
     @Secured({"ROLE_MANAGER"})
-    @PatchMapping("/processor/{taskId}")
+    @PatchMapping("/{taskId}/processor")
     public ResponseEntity<UpdateTaskResponse> updateTaskProcessor(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
@@ -53,7 +53,7 @@ public class ChangeTaskController {
 
     @Operation(summary = "작업 구분 변경")
     @Secured({"ROLE_MANAGER"})
-    @PatchMapping("/label/{taskId}")
+    @PatchMapping("/{taskId}/label")
     public ResponseEntity<UpdateTaskResponse> updateTaskLabel(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
@@ -63,7 +63,7 @@ public class ChangeTaskController {
 
     @Operation(summary = "작업 승인")
     @Secured({"ROLE_MANAGER"})
-    @PostMapping("/approval/{taskId}")
+    @PostMapping("/{taskId}/approval")
     public ResponseEntity<ApprovalTaskResponse> approvalTask(
             @RequestBody @Valid ApprovalTaskRequest approvalTaskRequest,
             @PathVariable Long taskId,
