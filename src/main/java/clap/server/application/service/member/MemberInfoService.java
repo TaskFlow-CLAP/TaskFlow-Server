@@ -26,6 +26,7 @@ class MemberInfoService implements MemberProfileUsecase , MemberDetailInfoUsecas
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberDetailInfoResponse getMemberInfo(Long memberId) {
         Member member = memberService.findActiveMember(memberId);
         return toMemberDetailInfoResponse(member);
