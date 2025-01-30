@@ -2,7 +2,9 @@ package clap.server.adapter.inbound.web.notification;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
+import clap.server.adapter.inbound.web.dto.notification.CountNotificationResponse;
 import clap.server.adapter.inbound.web.dto.notification.FindNotificationListResponse;
+import clap.server.application.port.inbound.notification.CountNotificationUseCase;
 import clap.server.application.port.inbound.notification.FindNotificationListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FindNotificationController {
 
     private final FindNotificationListUsecase findNotificationListUsecase;
+    private final CountNotificationUseCase countNotificationUseCase;
 
     @Operation(summary = "알림 목록 조회 API")
     @Parameters({
@@ -40,5 +43,12 @@ public class FindNotificationController {
             @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(findNotificationListUsecase.findNotificationList(securityUserDetails.getUserId(), pageable));
+    }
+
+    @Operation(summary = "미확인 알림 개수 조회 API")
+    @GetMapping("/count")
+    public ResponseEntity<CountNotificationResponse> countNotification(
+            @AuthenticationPrincipal SecurityUserDetails userInfo) {
+        return ResponseEntity.ok(countNotificationUseCase.countNotification(userInfo.getUserId()));
     }
 }

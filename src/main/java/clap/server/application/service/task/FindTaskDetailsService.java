@@ -1,15 +1,13 @@
-package clap.server.application.Task;
+package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.FindTaskDetailsForManagerResponse;
 import clap.server.adapter.inbound.web.dto.task.FindTaskDetailsResponse;
-import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.FindTaskDetailsUsecase;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Task;
 import clap.server.exception.ApplicationException;

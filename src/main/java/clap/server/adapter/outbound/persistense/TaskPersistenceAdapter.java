@@ -1,9 +1,9 @@
 package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
+import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
@@ -64,6 +64,12 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
     }
 
     @Override
+    public Optional<Task> findByIdAndStatus(Long id, TaskStatus status) {
+        Optional<TaskEntity> taskEntity = taskRepository.findByTaskIdAndTaskStatus(id, status);
+        return taskEntity.map(taskPersistenceMapper::toDomain);
+    }
+
+    @Override
     public List<Task> findYesterdayTaskByDate(LocalDateTime now) {
         return taskRepository.findYesterdayTaskByUpdatedAtIsBetween(now.minusDays(1), now)
                 .stream().map(taskPersistenceMapper::toDomain).toList();
@@ -75,4 +81,16 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
                 .map(taskPersistenceMapper::toDomain);
         return taskList.map(TaskMapper::toFilterAllTasksResponse);
     }
+    @Override
+    public Optional<Task> findPrevOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder){
+        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderDesc(processorId, taskStatus, processorOrder);
+        return taskEntity.map(taskPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Task> findNextOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder){
+        Optional<TaskEntity> taskEntity =  taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderDesc(processorId, taskStatus, processorOrder);
+        return taskEntity.map(taskPersistenceMapper::toDomain);
+    }
+
 }

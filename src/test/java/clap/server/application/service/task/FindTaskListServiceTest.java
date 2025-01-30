@@ -3,7 +3,6 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.OrderTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
-import clap.server.application.Task.FindTaskListService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import org.junit.jupiter.api.BeforeEach;

@@ -45,8 +45,17 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<Attachment> findAllByTaskIdAndCommentIsNullAndAttachmentId(final Long taskId, final List<Long> attachmentIds) {
         List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNullAndIsDeletedIsFalseAndAttachmentIdIn(taskId, attachmentIds);
+        return attachmentEntities.stream()
+                .map(attachmentPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Attachment> findAllByTaskIdAndCommentIsNotNull(final Long taskId) {
+        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNotNullAndIsDeletedIsFalse(taskId);
         return attachmentEntities.stream()
                 .map(attachmentPersistenceMapper::toDomain)
                 .collect(Collectors.toList());

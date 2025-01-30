@@ -1,5 +1,6 @@
 package clap.server.application.port.inbound.domain;
 
+import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.domain.model.member.Member;
 import clap.server.exception.ApplicationException;
@@ -13,6 +14,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
     private final LoadMemberPort loadMemberPort;
+    private final CommandMemberPort commandMemberPort;
+
 
     public Member findById(Long memberId) {
         return loadMemberPort.findById(memberId).orElseThrow(
@@ -24,7 +27,14 @@ public class MemberService {
                 () -> new ApplicationException(MemberErrorCode.ACTIVE_MEMBER_NOT_FOUND));
     }
 
+    public Member findReviewer(Long memberId) {
+        return loadMemberPort.findReviewerById(memberId).orElseThrow(
+                ()-> new ApplicationException(MemberErrorCode.NOT_A_REVIEWER)
+        );
+    }
+
     public List<Member> findReviewers() {
         return loadMemberPort.findReviewers();
     }
+
 }

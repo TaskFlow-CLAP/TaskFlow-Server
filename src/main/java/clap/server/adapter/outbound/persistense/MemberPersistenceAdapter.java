@@ -49,6 +49,12 @@ import java.util.stream.Collectors;
     }
 
     @Override
+    public Optional<Member> findReviewerById(Long id) {
+        Optional<MemberEntity> memberEntity =  memberRepository.findByMemberIdAndIsReviewerTrue(id);
+        return memberEntity.map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
     public void save(final Member member) {
         MemberEntity memberEntity = memberPersistenceMapper.toEntity(member);
         memberRepository.save(memberEntity);
