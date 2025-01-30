@@ -32,4 +32,7 @@ public class CommentEntity extends BaseTimeEntity {
 
     @Column(name = "is_modified", nullable = false)
     private boolean isModified;
+
+    @Column(name="is_deleted", nullable = false)
+    private boolean isDeleted;
 }
