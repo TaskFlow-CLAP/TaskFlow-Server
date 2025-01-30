@@ -13,7 +13,7 @@ public class Member extends BaseTime {
     private Long memberId;
     private MemberInfo memberInfo;
     private Member admin;
-    private Boolean kakaoWorkNotificationEnabled;
+    private Boolean kakaoworkNotificationEnabled;
     private Boolean agitNotificationEnabled;
     private Boolean emailNotificationEnabled;
     private String imageUrl;
@@ -21,12 +21,12 @@ public class Member extends BaseTime {
     private String password;
 
     @Builder
-    public Member(MemberInfo memberInfo, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoWorkNotificationEnabled,
+    public Member(MemberInfo memberInfo, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoworkNotificationEnabled,
                   Member admin, String imageUrl, MemberStatus status, String password) {
         this.memberInfo = memberInfo;
         this.agitNotificationEnabled = agitNotificationEnabled;
         this.emailNotificationEnabled = emailNotificationEnabled;
-        this.kakaoWorkNotificationEnabled = kakaoWorkNotificationEnabled;
+        this.kakaoworkNotificationEnabled = kakaoworkNotificationEnabled;
         this.admin = admin;
         this.imageUrl = imageUrl;
         this.status = status;
@@ -38,7 +38,7 @@ public class Member extends BaseTime {
                 .memberInfo(memberInfo)
                 .agitNotificationEnabled(null)
                 .emailNotificationEnabled(null)
-                .kakaoWorkNotificationEnabled(null)
+                .kakaoworkNotificationEnabled(null)
                 .admin(admin)
                 .imageUrl(null)
                 .status(MemberStatus.PENDING)
@@ -55,7 +55,7 @@ public class Member extends BaseTime {
         this.status = MemberStatus.ACTIVE;
         this.agitNotificationEnabled = true;
         this.emailNotificationEnabled = true;
-        this.kakaoWorkNotificationEnabled = true;
+        this.kakaoworkNotificationEnabled = true;
     }
 
     public String getNickname() {
@@ -70,7 +70,11 @@ public class Member extends BaseTime {
         this.memberInfo.updateName(name);
         this.agitNotificationEnabled = agitNotificationEnabled;
         this.emailNotificationEnabled = emailNotificationEnabled;
-        this.kakaoWorkNotificationEnabled = kakaoWorkNotificationEnabled;
-        this.imageUrl = imageUrl;
+        this.kakaoworkNotificationEnabled = kakaoWorkNotificationEnabled;
+        if (imageUrl != null) {
+            this.imageUrl = imageUrl;
+        }
+    public void setStatusDeleted() {
+        this.status = MemberStatus.DELETED;
     }
 }
