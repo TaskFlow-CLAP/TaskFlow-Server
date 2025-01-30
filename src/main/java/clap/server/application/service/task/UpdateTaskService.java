@@ -79,13 +79,13 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Transactional
     @Override
     public UpdateTaskResponse updateTaskProcessor(Long taskId, Long userId, UpdateTaskProcessorRequest request) {
-        Member reviewer = memberService.findReviewer(userId);
+        memberService.findReviewer(userId);
         Member processor = memberService.findById(request.processorId());
-
         Task task = taskService.findById(taskId);
         task.updateProcessor(processor);
-        Task updateTask = commandTaskPort.save(task);
-        return TaskMapper.toUpdateTaskResponse(updateTask);
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor, null);
+        commandTaskHistoryPort.save(taskHistory);
+        return TaskMapper.toUpdateTaskResponse(commandTaskPort.save(task));
 
         // TODO : 알림 생성 로직 및 푸시 알림 로직 추가
     }
@@ -93,13 +93,11 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Transactional
     @Override
     public UpdateTaskResponse updateTaskLabel(Long taskId, Long userId, UpdateTaskLabelRequest request) {
-        Member reviewer = memberService.findReviewer(userId);
+        memberService.findReviewer(userId);
         Task task = taskService.findById(taskId);
         Label label = labelService.findById(request.labelId());
-
         task.updateLabel(label);
-        Task updatetask = commandTaskPort.save(task);
-        return TaskMapper.toUpdateTaskResponse(updatetask);
+        return TaskMapper.toUpdateTaskResponse(commandTaskPort.save(task));
     }
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
