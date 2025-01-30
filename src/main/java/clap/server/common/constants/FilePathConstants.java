@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum FilePathConstants {
     TASK_IMAGE("task/image"),
     TASK_DOCUMENT("task/docs"),
-    MEMBER_IMAGE("member/image"),
+    MEMBER_IMAGE("member"),
     ;
     private final String path;
 
