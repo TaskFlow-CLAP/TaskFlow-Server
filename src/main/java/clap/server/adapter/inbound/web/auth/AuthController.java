@@ -3,7 +3,8 @@ package clap.server.adapter.inbound.web.auth;
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.auth.LoginRequest;
 import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
-import clap.server.application.port.inbound.auth.AuthUsecase;
+import clap.server.application.port.inbound.auth.LoginUsecase;
+import clap.server.application.port.inbound.auth.LogoutUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,7 +24,8 @@ import static clap.server.common.utils.ClientIpParseUtil.getClientIp;
 @RequiredArgsConstructor
 @RequestMapping("/api/auths")
 public class AuthController {
-    private final AuthUsecase authUsecase;
+    private final LoginUsecase loginUsecase;
+    private final LogoutUsecase logoutUsecase;
 
     @Operation(summary = "로그인 API")
     @PostMapping("/login")
@@ -31,7 +33,7 @@ public class AuthController {
                                                @RequestBody LoginRequest request,
                                                HttpServletRequest httpRequest) {
         String clientIp = getClientIp(httpRequest);
-        LoginResponse response = authUsecase.login(request.nickname(), request.password(), sessionId, clientIp);
+        LoginResponse response = loginUsecase.login(request.nickname(), request.password(), sessionId, clientIp);
         return ResponseEntity.ok(response);
     }
 
@@ -41,7 +43,7 @@ public class AuthController {
                                        @Parameter(hidden = true) @RequestHeader(value = "Authorization") String authHeader,
                                        @RequestHeader(value = "refreshToken") String refreshToken) {
         String accessToken = authHeader.split(" ")[1];
-        authUsecase.logout(userInfo.getUserId(), accessToken, refreshToken);
+        logoutUsecase.logout(userInfo.getUserId(), accessToken, refreshToken);
     }
 
 }
