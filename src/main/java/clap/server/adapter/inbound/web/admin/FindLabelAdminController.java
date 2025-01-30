@@ -19,7 +19,7 @@ import java.util.List;
 @Tag(name = "05. Admin")
 @WebAdapter
 @RequiredArgsConstructor
-@RequestMapping("/api/managements/label")
+@RequestMapping("/api/managements/labels")
 public class FindLabelAdminController {
 
     private final FindLabelListUsecase findLabelListUsecase;
