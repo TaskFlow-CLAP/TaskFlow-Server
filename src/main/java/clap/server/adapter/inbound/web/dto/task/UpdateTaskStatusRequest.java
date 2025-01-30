@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 @Schema(description = "작업 상태 변경 요청")
 public record UpdateTaskStatusRequest(
 
-        @Schema(description = "변경하고 싶은 작업 상태", example = "완료")
+        @Schema(description = "변경하고 싶은 작업 상태", example = "COMPLETED")
         @NotNull
         TaskStatus taskStatus
 ) {

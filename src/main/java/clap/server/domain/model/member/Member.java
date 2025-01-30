@@ -1,6 +1,5 @@
 package clap.server.domain.model.member;
 
-import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
 import lombok.*;
@@ -56,5 +55,9 @@ public class Member extends BaseTime {
 
     public boolean isReviewer() {
         return this.memberInfo != null && this.memberInfo.isReviewer();
+    }
+
+    public void setStatusDeleted() {
+        this.status = MemberStatus.DELETED;
     }
 }

@@ -2,7 +2,6 @@ package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.*;
-import clap.server.adapter.inbound.web.dto.task.UpdateTaskProcessorRequest;
 import clap.server.application.port.inbound.task.*;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,9 +28,6 @@ public class ManagementTaskController {
 
     private final CreateTaskUsecase createTaskUsecase;
     private final UpdateTaskUsecase updateTaskUsecase;
-    private final UpdateTaskStatusUsecase updateTaskStatusUsecase;
-    private final UpdateTaskProcessorUsecase updateTaskProcessorUsecase;
-    private final ApprovalTaskUsecase approvalTaskUsecase;
 
     @Operation(summary = "작업 요청 생성")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -53,36 +49,5 @@ public class ManagementTaskController {
             @RequestPart(name = "attachment") @NotNull  List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         return ResponseEntity.ok(updateTaskUsecase.updateTask(userInfo.getUserId(), taskId, updateTaskRequest, attachments));
-    }
-
-    @Operation(summary = "작업 상태 변경")
-    @Secured({"ROLE_MANGER"})
-    @PatchMapping("/state/{taskId}")
-    public ResponseEntity<UpdateTaskResponse> updateTaskState(
-            @PathVariable @NotNull Long taskId,
-            @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestBody UpdateTaskStatusRequest updateTaskStatusRequest) {
-
-        return ResponseEntity.ok(updateTaskStatusUsecase.updateTaskState(userInfo.getUserId(), taskId, updateTaskStatusRequest));
-    }
-
-    @Operation(summary = "작업 처리자 변경")
-    @Secured({"ROLE_MANAGER"})
-    @PatchMapping("/processor/{taskId}")
-    public ResponseEntity<UpdateTaskResponse> updateTaskProcessor(
-            @PathVariable Long taskId,
-            @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestBody UpdateTaskProcessorRequest updateTaskProcessorRequest) {
-        return ResponseEntity.ok(updateTaskProcessorUsecase.updateTaskProcessor(taskId, userInfo.getUserId(), updateTaskProcessorRequest));
-    }
-
-    @Operation(summary = "작업 승인")
-    @Secured({"ROLE_MANAGER"})
-    @PostMapping("/approval/{taskId}")
-    public ResponseEntity<ApprovalTaskResponse> approvalTask(
-            @RequestBody @Valid ApprovalTaskRequest approvalTaskRequest,
-            @PathVariable Long taskId,
-            @AuthenticationPrincipal SecurityUserDetails userInfo){
-        return ResponseEntity.ok(approvalTaskUsecase.approvalTaskByReviewer(userInfo.getUserId(), taskId, approvalTaskRequest));
     }
 }
