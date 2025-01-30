@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "DTYPE")
+@DiscriminatorColumn
 public abstract class ApiLogEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +55,7 @@ public abstract class ApiLogEntity extends BaseTimeEntity {
     private LocalDateTime responseAt;
 
     @Column(nullable = false)
-    private String logType;
+    private String logType; //TODO: enum으로 수정
 
     @Version
     private Long version; // 낙관적 락 관리를 위한 버전

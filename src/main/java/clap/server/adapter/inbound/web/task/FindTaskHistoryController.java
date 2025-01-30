@@ -5,6 +5,7 @@ import clap.server.adapter.inbound.web.dto.task.FindTaskDetailsForManagerRespons
 import clap.server.adapter.inbound.web.dto.task.response.FindTaskHistoryResponse;
 import clap.server.application.port.inbound.task.FindTaskHistoriesUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
+import clap.server.config.annotation.LogType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class FindTaskHistoryController {
 
     private final FindTaskHistoriesUsecase findTaskHistoriesUsecase;
 
+    @LogType("일반 로그")
     @Operation(summary = "작업 히스토리 조회")
     @Secured({"ROLE_MANAGER","ROLE_USER"})
     @GetMapping("/{taskId}/histories")
