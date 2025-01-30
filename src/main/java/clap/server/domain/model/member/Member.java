@@ -2,6 +2,7 @@ package clap.server.domain.model.member;
 
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
+import jakarta.persistence.Column;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -13,16 +14,20 @@ public class Member extends BaseTime {
     private Long memberId;
     private MemberInfo memberInfo;
     private Member admin;
-    private Boolean notificationEnabled;
+    private Boolean kakaoWorkNotificationEnabled;
+    private Boolean agitNotificationEnabled;
+    private Boolean emailNotificationEnabled;
     private String imageUrl;
     private MemberStatus status;
     private String password;
 
     @Builder
-    public Member(MemberInfo memberInfo, Boolean notificationEnabled, Member admin, String imageUrl,
-                  MemberStatus status, String password) {
+    public Member(MemberInfo memberInfo, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoWorkNotificationEnabled,
+                  Member admin, String imageUrl, MemberStatus status, String password) {
         this.memberInfo = memberInfo;
-        this.notificationEnabled = notificationEnabled;
+        this.agitNotificationEnabled = agitNotificationEnabled;
+        this.emailNotificationEnabled = emailNotificationEnabled;
+        this.kakaoWorkNotificationEnabled = kakaoWorkNotificationEnabled;
         this.admin = admin;
         this.imageUrl = imageUrl;
         this.status = status;
@@ -32,7 +37,9 @@ public class Member extends BaseTime {
     public static Member createMember(Member admin, MemberInfo memberInfo) {
        return Member.builder()
                .memberInfo(memberInfo)
-               .notificationEnabled(null)
+               .agitNotificationEnabled(null)
+               .emailNotificationEnabled(null)
+               .kakaoWorkNotificationEnabled(null)
                .admin(admin)
                .imageUrl(null)
                .status(MemberStatus.PENDING)
@@ -47,6 +54,9 @@ public class Member extends BaseTime {
     public void resetPasswordAndActivateMember(String newEncodedPassword) {
         this.password = newEncodedPassword;
         this.status = MemberStatus.ACTIVE;
+        this.agitNotificationEnabled = true;
+        this.emailNotificationEnabled = true;
+        this.kakaoWorkNotificationEnabled = true;
     }
 
     public String getNickname() {

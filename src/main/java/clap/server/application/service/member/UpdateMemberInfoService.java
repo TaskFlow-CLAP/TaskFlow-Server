@@ -9,6 +9,7 @@ import clap.server.common.constants.FilePathConstants;
 import clap.server.common.utils.FileUtils;
 import clap.server.domain.model.member.Member;
 import clap.server.exception.ApplicationException;
+import clap.server.exception.code.AttachmentErrorcode;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ class UpdateMemberInfoService implements UpdateMemberInfoUsecase {
     @Override
     public void updateMemberInfo(Long memberId, UpdateMemberInfoRequest request, MultipartFile profileImage) throws IOException {
         if (!FileUtils.validImageFile(profileImage.getInputStream())) {
-            throw new ApplicationException(MemberErrorCode.UNSUPPORTED_FILE_TYPE);
+            throw new ApplicationException(AttachmentErrorcode.UNSUPPORTED_FILE_TYPE);
         }
         Member member = memberService.findActiveMember(memberId);
         String profileImageUrl = s3UploadPort.uploadSingleFile(FilePathConstants.MEMBER_IMAGE, profileImage);
