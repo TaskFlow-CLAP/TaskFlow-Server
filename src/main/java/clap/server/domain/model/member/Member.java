@@ -2,7 +2,6 @@ package clap.server.domain.model.member;
 
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
-import jakarta.persistence.Column;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -35,16 +34,16 @@ public class Member extends BaseTime {
     }
 
     public static Member createMember(Member admin, MemberInfo memberInfo) {
-       return Member.builder()
-               .memberInfo(memberInfo)
-               .agitNotificationEnabled(null)
-               .emailNotificationEnabled(null)
-               .kakaoWorkNotificationEnabled(null)
-               .admin(admin)
-               .imageUrl(null)
-               .status(MemberStatus.PENDING)
-               .password(null)
-               .build();
+        return Member.builder()
+                .memberInfo(memberInfo)
+                .agitNotificationEnabled(null)
+                .emailNotificationEnabled(null)
+                .kakaoWorkNotificationEnabled(null)
+                .admin(admin)
+                .imageUrl(null)
+                .status(MemberStatus.PENDING)
+                .password(null)
+                .build();
     }
 
     public void resetPassword(String newEncodedPassword) {
@@ -65,5 +64,13 @@ public class Member extends BaseTime {
 
     public boolean isReviewer() {
         return this.memberInfo != null && this.memberInfo.isReviewer();
+    }
+
+    public void updateMemberInfo(String name, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoWorkNotificationEnabled, String imageUrl) {
+        this.memberInfo.updateName(name);
+        this.agitNotificationEnabled = agitNotificationEnabled;
+        this.emailNotificationEnabled = emailNotificationEnabled;
+        this.kakaoWorkNotificationEnabled = kakaoWorkNotificationEnabled;
+        this.imageUrl = imageUrl;
     }
 }
