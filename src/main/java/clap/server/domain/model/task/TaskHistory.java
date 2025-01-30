@@ -24,15 +24,17 @@ public class TaskHistory extends BaseTime {
     public static class TaskModificationInfo {
         private Task task;
         private Member modifiedMember;
+        private String modifiedStatus;
     }
 
-    public static TaskHistory createTaskHistory(TaskHistoryType type, Task task, Member member, Comment comment) {
+    public static TaskHistory createTaskHistory(TaskHistoryType type, Task task, String statusDescription, Member member, Comment comment) {
         return TaskHistory.builder()
                 .type(type)
                 .taskModificationInfo(
                         TaskModificationInfo.builder()
                                 .task(task)
                                 .modifiedMember(member)
+                                .modifiedStatus(statusDescription)
                                 .build()
                 )
                 .comment(comment)
