@@ -101,6 +101,10 @@ dependencies {
     implementation 'software.amazon.awssdk:s3'
     implementation 'ch.qos.logback:logback-classic:1.4.12'
 
+    // Apache Tika
+    implementation 'org.apache.tika:tika-core:2.9.0'
+    implementation 'org.apache.tika:tika-parsers:2.9.0'
+
 }
 
 tasks.named('test') {
