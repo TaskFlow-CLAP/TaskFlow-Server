@@ -1,7 +1,6 @@
 package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.*;
-import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskMapper;
@@ -45,7 +44,6 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final LabelService labelService;
     private final CommandAttachmentPort commandAttachmentPort;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
-    private final S3UploadAdapter s3UploadAdapter;
 
     @Override
     @Transactional
