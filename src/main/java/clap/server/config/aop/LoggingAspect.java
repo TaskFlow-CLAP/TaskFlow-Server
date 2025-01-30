@@ -1,14 +1,14 @@
 package clap.server.config.aop;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
-import clap.server.application.port.outbound.log.ApiLogRepositoryPort;
+
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogTypeEnum;
+import clap.server.application.port.outbound.log.CommandLogPort;
 import clap.server.config.annotation.LogType;
 import clap.server.domain.model.log.ApiLog;
 import clap.server.exception.ErrorContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -34,7 +34,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class LoggingAspect {
 
-    private final ApiLogRepositoryPort apiLogRepositoryPort;
+    private final CommandLogPort commandLogPort;
     private final ObjectMapper objectMapper;
 
     @Pointcut("execution(* clap.server.adapter.inbound.web..*Controller.*(..))")
@@ -46,79 +46,77 @@ public class LoggingAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = wrapRequest(attributes.getRequest());
         HttpServletResponse response = attributes.getResponse();
-        LocalDateTime requestAt = LocalDateTime.now();
 
         Object result = null;
         try {
             result = joinPoint.proceed();
         } finally {
             LocalDateTime responseAt = LocalDateTime.now();
-
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-            String logType = extractLogType(methodSignature);
+            LogTypeEnum logType = getLogType(methodSignature);
             String customCode = getCustomCode(response);
-            log.info("logType={}", logType);
+            String userId = null;
 
-            // 로그 저장 로직
-            ApiLog apiLog = ApiLog.builder()
-                    .serverIp("127.0.0.1")
-                    .clientIp(request.getRemoteAddr())
-                    .requestUrl(request.getRequestURI())
-                    .requestMethod(request.getMethod())
-                    .statusCode(response != null ? response.getStatus() : 500)
-                    .customStatusCode(customCode)
-                    .request(extractRequestBody(request))
-                    .response(result != null ? result.toString() : "UNKNOWN")
-                    .requestAt(requestAt)
-                    .responseAt(responseAt)
-                    .logType(logType).build();
-
-            //TODO: security filter 구현 후 주석 해제
-            if ("로그인 로그".equals(logType)) {
-                String nickname = extractNicknameFromRequestBody(request);
-                apiLog = apiLog.toBuilder().memberId(nickname).build();
-                log.info("로그인 로그={}", logType);
-            } else if (isUserAuthenticated()) {
+            if (LogTypeEnum.LOGIN.equals(logType)) {
+                userId = getNicknameFromRequestBody(request);
+                saveApiLog(request, response, result, responseAt, logType, customCode, userId);
+            } else if (LogTypeEnum.GENERAL.equals(logType)) {
+                if (!isUserAuthenticated()) {
+                    log.error("인증된 사용자가 아니기 때문에 로그를 기록할 수 없습니다.");
+                }
                 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                log.info("일반 로그={}", logType);
-                log.info("principal={}", principal);
                 if (principal instanceof SecurityUserDetails userDetails) {
-                    // userDetails에서 userId를 추출하여 apiLog에 memberId로 설정
-                    log.info("useDetails={}", userDetails.getUserId());
-                    apiLog = apiLog.toBuilder().memberId(String.valueOf(userDetails.getUserId())).build();
+                    saveApiLog(request, response, result, responseAt, logType, customCode, userId);
                 }
             }
-            apiLogRepositoryPort.save(apiLog);
         }
         return result;
     }
 
+    private void saveApiLog(HttpServletRequest request, HttpServletResponse response,
+                            Object result, LocalDateTime responseAt, LogTypeEnum logType,
+                            String customCode, String userId) {
+        ApiLog apiLog = ApiLog.builder()
+                .serverIp("127.0.0.1")
+                .clientIp(request.getRemoteAddr())
+                .requestUrl(request.getRequestURI())
+                .requestMethod(request.getMethod())
+                .statusCode(response.getStatus())
+                .customStatusCode(customCode)
+                .request(getRequestBody(request))
+                .response(result != null ? result.toString() : "UNKNOWN")
+                .requestAt(LocalDateTime.now())
+                .responseAt(responseAt)
+                .logType(logType)
+                .userId(userId)
+                .build();
+        commandLogPort.save(apiLog);
+    }
+
+
     private HttpServletRequest wrapRequest(HttpServletRequest request) {
-        // ContentCachingRequestWrapper로 래핑
         if (request instanceof ContentCachingRequestWrapper) {
             return request;
         }
         return new ContentCachingRequestWrapper(request);
     }
 
-    private String extractLogType(MethodSignature methodSignature) {
-        // 일반 로그
+    private LogTypeEnum getLogType(MethodSignature methodSignature) {
         if (methodSignature.getMethod().isAnnotationPresent(LogType.class)) {
-            return methodSignature.getMethod().getAnnotation(LogType.class).value();
+            return LogTypeEnum.fromDescription(methodSignature.getMethod().getAnnotation(LogType.class).value());
+        } else {
+            throw new IllegalArgumentException("Log 추적이 허용되지 않은 엔드포인트");
         }
-        return "로그인 로그"; // 기본값
     }
 
     private String getCustomCode(HttpServletResponse response) {
-        // ErrorContext에서 커스텀 코드 추출
         String customCode = ErrorContext.getCustomCode();
         return customCode != null ? customCode : "CUSTOM" + (response != null ? response.getStatus() : 500);
     }
 
-    private String extractNicknameFromRequestBody(HttpServletRequest request) {
+    private String getNicknameFromRequestBody(HttpServletRequest request) {
         try {
-            // 요청 본문에서 nickname 필드 추출
-            String requestBody = extractRequestBody(request);
+            String requestBody = getRequestBody(request);
             JsonNode jsonNode = objectMapper.readTree(requestBody);
             return jsonNode.has("nickname") ? jsonNode.get("nickname").asText() : null;
         } catch (Exception e) {
@@ -126,9 +124,8 @@ public class LoggingAspect {
         }
     }
 
-    private String extractRequestBody(HttpServletRequest request) {
+    private String getRequestBody(HttpServletRequest request) {
         try {
-            // ContentCachingRequestWrapper를 통해 요청 본문 읽기
             ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper) request;
             byte[] content = cachingRequest.getContentAsByteArray();
             return new String(content, StandardCharsets.UTF_8);
@@ -137,10 +134,8 @@ public class LoggingAspect {
         }
     }
 
-    //TODO: security filter 구현 후 주석 해제
     private boolean isUserAuthenticated() {
-        // 사용자 인증 상태 확인
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null && authentication.isAuthenticated()
                 && !"anonymousUser".equals(authentication.getPrincipal());
     }

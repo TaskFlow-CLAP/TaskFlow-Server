@@ -22,7 +22,7 @@ public class AnonymousLogEntity extends ApiLogEntity {
     @Override
     public ApiLog toDomain() {
         return toCommonDomainBuilder()
-                .memberId(loginNickname)
+                .userId(loginNickname)
                 .build();
     }
 }

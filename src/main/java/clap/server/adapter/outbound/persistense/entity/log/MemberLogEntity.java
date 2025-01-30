@@ -15,14 +15,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class MemberLogEntity extends ApiLogEntity {
 
-    @ManyToOne(/*optional = false, */fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")//, nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private MemberEntity member;
 
     @Override
     public ApiLog toDomain() {
         return toCommonDomainBuilder()
-                .memberId(member != null ? String.valueOf(member.getMemberId()) : null) // memberId 포함
+                .userId(member != null ? String.valueOf(member.getMemberId()) : null)
                 .build();
     }
 }

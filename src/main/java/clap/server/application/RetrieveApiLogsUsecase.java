@@ -6,7 +6,6 @@ import clap.server.application.mapper.AnonymousLogMapper;
 import clap.server.application.mapper.MemberLogMapper;
 import clap.server.application.port.inbound.domain.LoginDomainService;
 import clap.server.application.port.inbound.log.GetApiLogsUseCase;
-import clap.server.application.port.outbound.log.ApiLogRepositoryPort;
 import clap.server.domain.model.log.ApiLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
