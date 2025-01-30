@@ -39,6 +39,8 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         Label label = labelService.findById(approvalTaskRequest.labelId());
 
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
+        //담당자 할당에 대한 히스토리 생성
+
         return TaskMapper.toApprovalTaskResponse(commandTaskPort.save(task));
     }
 
