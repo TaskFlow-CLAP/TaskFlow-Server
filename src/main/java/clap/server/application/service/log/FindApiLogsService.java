@@ -1,20 +1,20 @@
-package clap.server.application;
+package clap.server.application.service.log;
 
 import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
 import clap.server.adapter.inbound.web.dto.admin.MemberLogResponse;
 import clap.server.application.mapper.AnonymousLogMapper;
 import clap.server.application.mapper.MemberLogMapper;
 import clap.server.application.port.inbound.domain.LoginDomainService;
-import clap.server.application.port.inbound.log.GetApiLogsUseCase;
+import clap.server.application.port.inbound.log.FindApiLogsUsecase;
+import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.log.ApiLog;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
-public class RetrieveApiLogsUsecase implements GetApiLogsUseCase {
+public class FindApiLogsService implements FindApiLogsUsecase {
 
     private final ApiLogRepositoryPort apiLogRepositoryPort;
     private final LoginDomainService loginDomainService;

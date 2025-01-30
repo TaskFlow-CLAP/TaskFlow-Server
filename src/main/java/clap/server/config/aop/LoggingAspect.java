@@ -3,9 +3,9 @@ package clap.server.config.aop;
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogTypeEnum;
-import clap.server.application.port.outbound.log.CommandLogPort;
+import clap.server.application.port.inbound.log.CreateAnonymousLogsUsecase;
+import clap.server.application.port.inbound.log.CreateMemberLogsUsecase;
 import clap.server.config.annotation.LogType;
-import clap.server.domain.model.log.ApiLog;
 import clap.server.exception.ErrorContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,9 +33,9 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class LoggingAspect {
-
-    private final CommandLogPort commandLogPort;
     private final ObjectMapper objectMapper;
+    private final CreateAnonymousLogsUsecase createAnonymousLogsUsecase;
+    private final CreateMemberLogsUsecase createMemberLogsUsecase;
 
     @Pointcut("execution(* clap.server.adapter.inbound.web..*Controller.*(..))")
     public void controllerMethods() {
@@ -44,7 +44,10 @@ public class LoggingAspect {
     @Around("controllerMethods()")
     public Object logApiRequests(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        HttpServletRequest request = wrapRequest(attributes.getRequest());
+        HttpServletRequest request = attributes.getRequest();
+        if (!(request instanceof ContentCachingRequestWrapper)) {
+            request = new ContentCachingRequestWrapper(request);
+        }
         HttpServletResponse response = attributes.getResponse();
 
         Object result = null;
@@ -55,50 +58,21 @@ public class LoggingAspect {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             LogTypeEnum logType = getLogType(methodSignature);
             String customCode = getCustomCode(response);
-            String userId = null;
 
             if (LogTypeEnum.LOGIN.equals(logType)) {
-                userId = getNicknameFromRequestBody(request);
-                saveApiLog(request, response, result, responseAt, logType, customCode, userId);
+                createAnonymousLogsUsecase.createAnonymousLog(request, response, result, responseAt, logType, customCode, getRequestBody(request), getNicknameFromRequestBody(request));
             } else if (LogTypeEnum.GENERAL.equals(logType)) {
                 if (!isUserAuthenticated()) {
-                    log.error("인증된 사용자가 아니기 때문에 로그를 기록할 수 없습니다.");
-                }
-                Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                if (principal instanceof SecurityUserDetails userDetails) {
-                    saveApiLog(request, response, result, responseAt, logType, customCode, userId);
+                    log.error("로그를 기록할 수 없음");
+                }else{
+                    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                    if (principal instanceof SecurityUserDetails userDetails) {
+                        createMemberLogsUsecase.createMemberLog(request, response, result, responseAt, logType, customCode, getRequestBody(request), userDetails.getUserId());
+                    }
                 }
             }
         }
         return result;
-    }
-
-    private void saveApiLog(HttpServletRequest request, HttpServletResponse response,
-                            Object result, LocalDateTime responseAt, LogTypeEnum logType,
-                            String customCode, String userId) {
-        ApiLog apiLog = ApiLog.builder()
-                .serverIp("127.0.0.1")
-                .clientIp(request.getRemoteAddr())
-                .requestUrl(request.getRequestURI())
-                .requestMethod(request.getMethod())
-                .statusCode(response.getStatus())
-                .customStatusCode(customCode)
-                .request(getRequestBody(request))
-                .response(result != null ? result.toString() : "UNKNOWN")
-                .requestAt(LocalDateTime.now())
-                .responseAt(responseAt)
-                .logType(logType)
-                .userId(userId)
-                .build();
-        commandLogPort.save(apiLog);
-    }
-
-
-    private HttpServletRequest wrapRequest(HttpServletRequest request) {
-        if (request instanceof ContentCachingRequestWrapper) {
-            return request;
-        }
-        return new ContentCachingRequestWrapper(request);
     }
 
     private LogTypeEnum getLogType(MethodSignature methodSignature) {

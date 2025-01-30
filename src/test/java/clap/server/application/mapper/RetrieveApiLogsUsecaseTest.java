@@ -6,7 +6,7 @@ import clap.server.adapter.outbound.persistense.entity.log.AnonymousLogEntity;
 import clap.server.adapter.outbound.persistense.entity.log.MemberLogEntity;
 import clap.server.adapter.outbound.persistense.entity.log.constant.ApiHttpMethod;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
-import clap.server.application.RetrieveApiLogsUsecase;
+import clap.server.application.service.log.FindApiLogsService;
 import clap.server.application.port.inbound.domain.LoginDomainService;
 import clap.server.domain.model.log.ApiLog;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ class RetrieveApiLogsUsecaseTest {
 
     private final ApiLogRepositoryPort apiLogRepositoryPort = mock(ApiLogRepositoryPort.class);
     private final LoginDomainService loginDomainService = mock(LoginDomainService.class);
-    private final RetrieveApiLogsUsecase usecase = new RetrieveApiLogsUsecase(apiLogRepositoryPort, loginDomainService);
+    private final FindApiLogsService usecase = new FindApiLogsService(apiLogRepositoryPort, loginDomainService);
 
     @Test
     void getMemberLogs_ShouldReturnConvertedResponses() {
