@@ -1,15 +1,11 @@
 package clap.server.domain.model.task;
 
-import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
+
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.member.MemberInfo;
-import co.elastic.clients.elasticsearch.inference.TaskType;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -22,20 +18,25 @@ public class TaskHistory extends BaseTime {
     private Comment comment;
 
     @Getter
+    @Builder
+    @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class TaskModificationInfo {
         private Task task;
-        private String modifiedField;
         private Member modifiedMember;
-        private String newValue;
+    }
 
-        @Builder
-        public TaskModificationInfo(Task task, String modifiedField, Member modifiedMember, String newValue) {
-            this.task = task;
-            this.modifiedField = modifiedField;
-            this.modifiedMember = modifiedMember;
-            this.newValue = newValue;
-        }
+    public static TaskHistory createTaskHistory(TaskHistoryType type, Task task, Member member, Comment comment) {
+        return TaskHistory.builder()
+                .type(type)
+                .taskModificationInfo(
+                        TaskModificationInfo.builder()
+                                .task(task)
+                                .modifiedMember(member)
+                                .build()
+                )
+                .comment(comment)
+                .build();
     }
 }
 

@@ -17,13 +17,7 @@ public class TaskModificationInfo {
     @JoinColumn(name = "task_id")
     private TaskEntity task;
 
-    @Column(name = "modified_field")
-    private String modifiedField; //TODO: 속성 필요성 검토
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modified_member_id")
     private MemberEntity modifiedMember;
-
-    @Column(name = "new_value")
-    private String newValue; //TODO: 속성 필요성 검토
 }
