@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "05. Admin")
 @WebAdapter
 @RequiredArgsConstructor
-@RequestMapping("/api/management")
+@RequestMapping("/api/managements")
 public class AddCategoryController {
     private final AddCategoryUsecase addCategoryUsecase;
 
