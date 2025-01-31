@@ -42,7 +42,7 @@ public class CommandCommentService implements CommandCommentUsecase {
         Comment comment = loadCommentPort.findById(commentId)
                 .orElseThrow(() -> new ApplicationException(CommentErrorCode.COMMENT_NOT_FOUND));
 
-        if (checkCommenter(comment.getTask(), member)) {
+        if (Member.checkCommenter(comment.getTask(), member)) {
 
             comment.updateComment(request.content());
             commandCommentPort.saveComment(comment);
@@ -58,7 +58,7 @@ public class CommandCommentService implements CommandCommentUsecase {
         Comment comment = loadCommentPort.findById(commentId)
                 .orElseThrow(() -> new ApplicationException(CommentErrorCode.COMMENT_NOT_FOUND));
 
-        if (checkCommenter(comment.getTask(), member)) {
+        if (Member.checkCommenter(comment.getTask(), member)) {
 
             // 삭제할 댓글이 첨부파일일 경우
             if (!request.attachmentsToDelete().isEmpty()) {
@@ -82,22 +82,5 @@ public class CommandCommentService implements CommandCommentUsecase {
             throw new ApplicationException(TaskErrorCode.TASK_ATTACHMENT_NOT_FOUND);
         }
         return attachmentsOfTask;
-    }
-
-    public Boolean checkCommenter(Task task, Member member) {
-        // 일반 회원일 경우 => 요청자인지 확인
-        // 담당자일 경우 => 처리자인지 확인
-        if ((member.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER)
-                && !(member.getMemberId() == task.getProcessor().getMemberId())) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
-        }
-
-        else if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
-                && !(member.getMemberId() == task.getRequester().getMemberId())) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
-        }
-        else {
-            return true;
-        }
     }
 }
