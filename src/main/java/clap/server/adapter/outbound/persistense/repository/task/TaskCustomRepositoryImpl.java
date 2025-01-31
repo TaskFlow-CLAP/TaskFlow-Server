@@ -38,6 +38,17 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     }
 
     @Override
+    public Page<TaskEntity> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        BooleanBuilder whereClause = createFilter(filterTaskListRequest);
+        if (!filterTaskListRequest.nickName().isEmpty()) {
+            whereClause.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
+        }
+        whereClause.and(taskEntity.processor.memberId.eq(processorId));
+
+        return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+    }
+
+    @Override
     public Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         BooleanBuilder whereClause = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {

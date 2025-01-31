@@ -1,5 +1,6 @@
 package clap.server.application.port.outbound.task;
 
+import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
@@ -21,6 +22,8 @@ public interface LoadTaskPort {
     List<Task> findYesterdayTaskByDate(LocalDateTime now);
 
     Page<FilterRequestedTasksResponse> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
+
+    Page<FilterAssignedTaskListResponse> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 
     Page<FilterPendingApprovalResponse> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 

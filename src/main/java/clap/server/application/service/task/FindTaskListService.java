@@ -1,10 +1,7 @@
 package clap.server.application.service.task;
 
-import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
+import clap.server.adapter.inbound.web.dto.task.*;
 
-import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
 import clap.server.application.port.inbound.domain.MemberService;
 
 import clap.server.application.port.inbound.task.FindTaskListUsecase;
@@ -33,6 +30,12 @@ public class FindTaskListService implements FindTaskListUsecase {
     public Page<FilterRequestedTasksResponse> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest) {
         Member requester = memberService.findActiveMember(requesterId);
         return loadTaskPort.findTasksRequestedByUser(requester.getMemberId(), pageable, findTaskListRequest);
+    }
+
+    @Override
+    public Page<FilterAssignedTaskListResponse> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest findTaskListRequest) {
+        Member processor = memberService.findActiveMember(processorId);
+        return loadTaskPort.findTasksAssignedByManager(processor.getMemberId(), pageable, findTaskListRequest);
     }
 
     @Override

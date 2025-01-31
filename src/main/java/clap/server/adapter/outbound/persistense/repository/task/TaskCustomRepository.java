@@ -17,4 +17,5 @@ public interface TaskCustomRepository {
     Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
     Page<TaskEntity> findAllTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
     List<TaskEntity> findTasksByFilter(Long processorId, List<TaskStatus> statuses,  LocalDateTime localDateTime, FilterTaskBoardRequest request, Pageable pageable);
+    Page<TaskEntity> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
 }
