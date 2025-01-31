@@ -27,7 +27,7 @@ public class PostCommentController {
     private final PostCommentUsecase postCommentUsecase;
 
     @Operation(summary = "댓글 작성")
-    @Parameter(name = "labelId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
+    @Parameter(name = "taskId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
     @PostMapping("/{taskId}")
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public void createComment(
@@ -38,7 +38,7 @@ public class PostCommentController {
     }
 
     @Operation(summary = "댓글 작성(첨부 파일)")
-    @Parameter(name = "labelId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
+    @Parameter(name = "taskId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
     @PostMapping("/attachment/{taskId}")
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public void createAttachmentComment(
