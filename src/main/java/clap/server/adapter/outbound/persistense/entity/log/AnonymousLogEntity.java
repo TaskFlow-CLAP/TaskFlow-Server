@@ -19,10 +19,10 @@ public class AnonymousLogEntity extends ApiLogEntity {
     @Column(nullable = false)
     private String loginNickname;
 
-    @Override
-    public ApiLog toDomain() {
-        return toCommonDomainBuilder()
-                .userId(loginNickname)
-                .build();
-    }
+//    @Override
+//    public ApiLog toDomain() {
+//        return toCommonDomainBuilder()
+//                .userId(loginNickname)
+//                .build();
+//    }
 }

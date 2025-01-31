@@ -21,6 +21,6 @@ public record MemberLogResponse(
         @NotBlank
         Integer statusCode,
         @NotNull
-        String customStatusCode
+        String customStatusCode //TODO: 작업 구분 속성 추가
 ) {
 }

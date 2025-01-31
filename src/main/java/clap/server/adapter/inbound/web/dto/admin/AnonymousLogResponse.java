@@ -22,7 +22,6 @@ public record AnonymousLogResponse(
         Integer statusCode,
         @NotNull
         String customStatusCode,
-        @NotNull
-        Integer failedAttempts
+        int failedAttempts
 ) {
 }

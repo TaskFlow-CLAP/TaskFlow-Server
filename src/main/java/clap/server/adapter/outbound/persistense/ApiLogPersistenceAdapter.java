@@ -1,6 +1,5 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
 import clap.server.adapter.outbound.persistense.entity.log.AnonymousLogEntity;
 import clap.server.adapter.outbound.persistense.entity.log.MemberLogEntity;
 
@@ -20,43 +19,45 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import java.util.stream.Collectors;
-
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class ApiLogPersistenceAdapter implements CommandLogPort, LoadLogPort {
 
+    private final ApiLogRepository apiLogRepository;
     private final AnonymousLogRepository anonymousLogRepository;
     private final MemberLogRepository memberLogRepository;
-    private final ApiLogRepository apiLogRepository;
-    private final MemberPersistenceMapper memberPersistenceMapper;
     private final ApiLogPersistenceMapper apiLogPersistenceMapper;
+    private final MemberPersistenceMapper memberPersistenceMapper;
 
     @Override
     public void saveMemberLog(MemberLog memberLog) {
-        apiLogRepository.save(apiLogPersistenceMapper.mapLogToMemberLogEntity(memberLog, memberPersistenceMapper.toEntity(memberLog.getMember())));
+        apiLogRepository.save(apiLogPersistenceMapper.mapMemberLogToEntity(memberLog, memberPersistenceMapper.toEntity(memberLog.getMember())));
 
     }
 
     @Override
     public void saveAnonymousLog(AnonymousLog anonymousLog){
-        apiLogRepository.save(apiLogPersistenceMapper.mapLogToAnonymousLogEntity(anonymousLog, anonymousLog.getLoginNickname()));
+        apiLogRepository.save(apiLogPersistenceMapper.mapAnonymousLogToEntity(anonymousLog, anonymousLog.getLoginNickname()));
     }
 
     @Override
     public List<ApiLog> findAllLogs() {
         return apiLogRepository.findAll().stream()
-                .map(this::mapToDomain) // 엔티티를 도메인 객체로 매핑
-                .collect(Collectors.toList());
+                .map(apiLogPersistenceMapper::mapLogEntityToDomain)
+                .toList();
     }
 
     @Override
-    public List<AnonymousLogEntity> findAnonymousLogs(String logType) {
-        return anonymousLogRepository.findByLogType(logType);
+    public List<AnonymousLog> findAnonymousLogs() {
+        return anonymousLogRepository.findAll().stream()
+                .map(apiLogPersistenceMapper::mapAnonymousLogEntityToDomain)
+                .toList();
     }
 
     @Override
-    public List<MemberLogEntity> findMemberLogs() {
-        return memberLogRepository.findAll();
+    public List<MemberLog> findMemberLogs() {
+        return memberLogRepository.findAll().stream()
+                .map(apiLogPersistenceMapper::mapMemberLogEntityToDomain)
+                .toList();
     }
 }
