@@ -9,6 +9,7 @@ import clap.server.common.annotation.architecture.PersistenceAdapter;
 import clap.server.domain.model.task.Category;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @PersistenceAdapter
@@ -22,6 +23,30 @@ public class CategoryPersistenceAdapter implements LoadCategoryPort, CommandCate
     public Optional<Category> findById(Long id) {
         Optional<CategoryEntity> categoryEntity = categoryRepository.findById(id);
         return categoryEntity.map(categoryPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<Category> findAll() {
+        return categoryRepository.findByIsDeletedFalse()
+                .stream()
+                .map(categoryPersistenceMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Category> findMainCategory() {
+        return categoryRepository.findByIsDeletedFalseAndMainCategoryIsNull()
+                .stream()
+                .map(categoryPersistenceMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Category> findSubCategory() {
+        return categoryRepository.findByIsDeletedFalseAndMainCategoryIsNotNull()
+                .stream()
+                .map(categoryPersistenceMapper::toDomain)
+                .toList();
     }
 
     @Override

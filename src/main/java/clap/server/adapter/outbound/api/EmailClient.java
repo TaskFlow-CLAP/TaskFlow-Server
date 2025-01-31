@@ -3,7 +3,7 @@ package clap.server.adapter.outbound.api;
 import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.webhook.SendEmailPort;
-import clap.server.common.annotation.architecture.PersistenceAdapter;
+import clap.server.common.annotation.architecture.ExternalApiAdapter;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.NotificationErrorCode;
 import jakarta.mail.internet.MimeMessage;
@@ -13,7 +13,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-@PersistenceAdapter
+@ExternalApiAdapter
 @RequiredArgsConstructor
 public class EmailClient implements SendEmailPort {
 

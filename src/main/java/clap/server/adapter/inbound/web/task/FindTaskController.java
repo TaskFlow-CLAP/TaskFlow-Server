@@ -17,7 +17,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "작업 조회")
+@Tag(name = "02. Task [조회]", description = "작업 조회 API")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class FindTaskController {
 
     @Operation(summary = "요청한 작업 상세 조회")
     @Secured({"ROLE_USER", "ROLE_MANAGER"})
-    @GetMapping("/requests/details/{taskId}")
+    @GetMapping("/{taskId}/requests/details")
     public ResponseEntity<FindTaskDetailsResponse> findRequestedTaskDetails(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
@@ -85,7 +85,7 @@ public class FindTaskController {
 
     @Operation(summary = "전체요청, 내 작업에 대한 상세 조회")
     @Secured("ROLE_MANAGER")
-    @GetMapping("/details/{taskId}")
+    @GetMapping("/{taskId}/details")
     public ResponseEntity<FindTaskDetailsForManagerResponse> findRequestedTaskDetailsForManager(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {

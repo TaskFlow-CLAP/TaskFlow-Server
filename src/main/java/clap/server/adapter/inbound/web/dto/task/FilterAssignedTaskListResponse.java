@@ -15,5 +15,3 @@ public record FilterAssignedTaskListResponse(
         TaskStatus taskStatus,
         LocalDateTime finishedAt
 ) {}
-
-

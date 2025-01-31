@@ -14,6 +14,18 @@ spring:
     hibernate:
       ddl-auto: create
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: leegd120@gmail.com
+    password: znlictzarqurxlla
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   testcontainers:
     beans:
       startup: parallel
@@ -24,7 +36,7 @@ server:
 
 web:
   domain:
-    local: 127.0.0.1:3000
+    local: 127.0.0.1:3O00
     service: 127.0.0.1:3000
 
 swagger:
@@ -45,5 +57,4 @@ password:
   policy:
     length: 12
     characters: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+
-
 

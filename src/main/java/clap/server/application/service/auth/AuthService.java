@@ -3,7 +3,8 @@ package clap.server.application.service.auth;
 import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.application.mapper.response.AuthResponseMapper;
-import clap.server.application.port.inbound.auth.AuthUsecase;
+import clap.server.application.port.inbound.auth.LoginUsecase;
+import clap.server.application.port.inbound.auth.LogoutUsecase;
 import clap.server.application.port.outbound.auth.ForbiddenTokenPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -14,7 +15,6 @@ import clap.server.domain.model.member.Member;
 import clap.server.exception.AuthException;
 import clap.server.exception.code.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @ApplicationService
 @RequiredArgsConstructor
 @Transactional
-class AuthService implements AuthUsecase {
+class AuthService implements LoginUsecase, LogoutUsecase {
     private final LoadMemberPort loadMemberPort;
     private final ManageTokenService manageTokenService;
     private final PasswordEncoder passwordEncoder;
