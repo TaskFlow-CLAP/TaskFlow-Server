@@ -5,6 +5,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 
-public interface TaskBoardUsecase {
-    TaskBoardResponse getTaskBoards(Long processorId, LocalDate untilDate, Pageable pageable);
+public interface GetTaskBoardUsecase {
+    TaskBoardResponse getTaskBoards(Long processorId, LocalDate untilDate,Pageable pageable);
 }
