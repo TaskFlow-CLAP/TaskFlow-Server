@@ -17,6 +17,7 @@ public class Comment extends BaseTime {
     private Task task;
     private String content;
     private boolean isModified;
+    private boolean isDeleted;
 
     public static Comment createComment(Member member, Task task, String content) {
         return Comment.builder()
@@ -25,6 +26,13 @@ public class Comment extends BaseTime {
                 .content(content)
                 .isModified(false)
                 .build();
+    }
+    
+    public void updateComment(String content) {
+        this.content = content;
+        if(!this.isModified) {
+            this.isModified = true;
+        }
     }
 
     public void softDelete() {
