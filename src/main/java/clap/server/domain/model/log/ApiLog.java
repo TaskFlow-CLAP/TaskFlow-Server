@@ -13,14 +13,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApiLog extends BaseTime {
     private Long logId;
+    private String clientIp;
+    private String requestUrl;
+    private String requestMethod;
     private Integer statusCode;
-    private LocalDateTime requestAt;
-    private LocalDateTime responseAt;
+    private String customStatusCode;
     private String requestBody;
     private String responseBody;
-    private String requestUrl;
-    private String clientIp;
-    private String customStatusCode;
-    private String requestMethod;
+    private LocalDateTime requestAt;
     private LogStatus logStatus;
 }

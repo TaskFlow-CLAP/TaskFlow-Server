@@ -15,6 +15,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class AnonymousLogEntity extends ApiLogEntity {
 
-    @Column(nullable = false)
+    @Column
     private String loginNickname;
 }

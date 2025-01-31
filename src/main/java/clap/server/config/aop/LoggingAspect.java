@@ -54,21 +54,20 @@ public class LoggingAspect {
         try {
             result = joinPoint.proceed();
         } finally {
-            LocalDateTime responseAt = LocalDateTime.now();
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             LogStatus logType = getLogType(methodSignature);
             String customCode = getCustomCode(response);
 
             if (logType != null) {
                 if (LogStatus.LOGIN.equals(logType)) {
-                    createAnonymousLogsUsecase.createAnonymousLog(request, response, result, responseAt, logType, customCode, getRequestBody(request), getNicknameFromRequestBody(request));
+                    createAnonymousLogsUsecase.createAnonymousLog(request, response, result, logType, customCode, getRequestBody(request), getNicknameFromRequestBody(request));
                 } else {
                     if (!isUserAuthenticated()) {
                         log.error("로그인 시도 로그를 기록할 수 없음");
                     } else {
                         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                         if (principal instanceof SecurityUserDetails userDetails) {
-                            createMemberLogsUsecase.createMemberLog(request, response, result, responseAt, logType, customCode, getRequestBody(request), userDetails.getUserId());
+                            createMemberLogsUsecase.createMemberLog(request, response, result, logType, customCode, getRequestBody(request), userDetails.getUserId());
                         }
                     }
                 }

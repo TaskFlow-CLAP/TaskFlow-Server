@@ -25,7 +25,6 @@ public class ApiLogPersistenceMapper {
                 .requestBody(anonymousLog.getRequestBody())
                 .responseBody(anonymousLog.getResponseBody())
                 .requestAt(anonymousLog.getRequestAt())
-                .responseAt(anonymousLog.getResponseAt())
                 .loginNickname(nickName != null ? nickName : "UNKNOWN")
                 .logStatus(anonymousLog.getLogStatus())
                 .build();
@@ -40,9 +39,8 @@ public class ApiLogPersistenceMapper {
                 .statusCode(memberLog.getStatusCode())
                 .customStatusCode(memberLog.getCustomStatusCode())
                 .requestBody(memberLog.getRequestBody())
-                .responseBody(memberLog.getRequestBody())
+                .responseBody(memberLog.getResponseBody())
                 .requestAt(memberLog.getRequestAt())
-                .responseAt(memberLog.getResponseAt())
                 .logStatus(memberLog.getLogStatus())
                 .build();
     }
@@ -58,7 +56,6 @@ public class ApiLogPersistenceMapper {
                 .requestBody(anonymousLogEntity.getRequestBody())
                 .responseBody(anonymousLogEntity.getResponseBody())
                 .requestAt(anonymousLogEntity.getRequestAt())
-                .responseAt(anonymousLogEntity.getResponseAt())
                 .logStatus(anonymousLogEntity.getLogStatus())
                 .loginNickname(anonymousLogEntity.getLoginNickname())
                 .build();
@@ -75,7 +72,6 @@ public class ApiLogPersistenceMapper {
                 .requestBody(memberLogEntity.getRequestBody())
                 .responseBody(memberLogEntity.getResponseBody())
                 .requestAt(memberLogEntity.getRequestAt())
-                .responseAt(memberLogEntity.getResponseAt())
                 .logStatus(memberLogEntity.getLogStatus())
                 .member(memberLogEntity.getMember() != null
                         ? memberPersistenceMapper.toDomain(memberLogEntity.getMember())
@@ -94,7 +90,6 @@ public class ApiLogPersistenceMapper {
                 .requestBody(logEntity.getRequestBody())
                 .responseBody(logEntity.getResponseBody())
                 .requestAt(logEntity.getRequestAt())
-                .responseAt(logEntity.getResponseAt())
                 .logStatus(logEntity.getLogStatus())
                 .build();
     }
