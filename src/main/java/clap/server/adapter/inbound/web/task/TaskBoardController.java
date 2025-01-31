@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,7 @@ public class TaskBoardController {
     private final UpdateTaskBoardUsecase updateTaskBoardUsecase;
 
     @Operation(summary = "작업 보드 조회 API")
+    @Secured({"ROLE_MANAGER"})
     @PostMapping
     public ResponseEntity<TaskBoardResponse> getTaskBoard(@RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "20") int pageSize,
@@ -51,6 +53,7 @@ public class TaskBoardController {
     }
 
     @Operation(summary = "작업 보드 순서 및 상태 변경 API")
+    @Secured({"ROLE_MANAGER"})
     @PatchMapping
     public void updateTaskBoard(@Parameter(description = "전환될 작업의 상태, 상태 전환이 아니라면 입력 X", schema = @Schema(allowableValues = {"IN_PROGRESS", "PENDING_COMPLETED", "COMPLETED"}))
                                 @RequestParam(required = false) TaskStatus status,
