@@ -1,6 +1,7 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.application.port.inbound.task.FindTaskDetailsUsecase;
 import clap.server.application.port.inbound.task.FindTaskListUsecase;
@@ -29,7 +30,7 @@ public class FindTaskController {
     @Operation(summary = "사용자 요청 작업 목록 조회")
     @Secured({"ROLE_USER", "ROLE_MANAGER"})
     @GetMapping("/requests")
-    public ResponseEntity<Page<FilterRequestedTasksResponse>> findTasksRequestedByUser(
+    public ResponseEntity<PageResponse<FilterRequestedTasksResponse>> findTasksRequestedByUser(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
             @ModelAttribute FilterTaskListRequest filterTaskListRequest,
@@ -50,7 +51,7 @@ public class FindTaskController {
     @Operation(summary = "할당된 내 작업 목록 조회")
     @Secured({"ROLE_MANAGER"})
     @GetMapping("/assigned")
-    public ResponseEntity<Page<FilterAssignedTaskListResponse>> findTasksAssignedByManager(
+    public ResponseEntity<PageResponse<FilterAssignedTaskListResponse>> findTasksAssignedByManager(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
             @ModelAttribute FilterTaskListRequest filterTaskListRequest,
@@ -62,7 +63,7 @@ public class FindTaskController {
     @Operation(summary = "승인 대기 중인 요청 목록 조회")
     @Secured({"ROLE_MANAGER"})
     @GetMapping("/requests/pending")
-    public ResponseEntity<Page<FilterPendingApprovalResponse>> findPendingApprovalTasks(
+    public ResponseEntity<PageResponse<FilterPendingApprovalResponse>> findPendingApprovalTasks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
             @ModelAttribute FilterTaskListRequest filterTaskListRequest,
@@ -74,7 +75,7 @@ public class FindTaskController {
     @Operation(summary = "전체 작업 목록 조회")
     @Secured("ROLE_MANAGER")
     @GetMapping
-    public ResponseEntity<Page<FilterAllTasksResponse>> findAllTasks(
+    public ResponseEntity<PageResponse<FilterAllTasksResponse>> findAllTasks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
             @ModelAttribute FilterTaskListRequest filterTaskListRequest,
