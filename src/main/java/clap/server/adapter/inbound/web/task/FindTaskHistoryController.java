@@ -3,6 +3,7 @@ package clap.server.adapter.inbound.web.task;
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.FindTaskDetailsForManagerResponse;
 import clap.server.adapter.inbound.web.dto.task.response.FindTaskHistoryResponse;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.task.FindTaskHistoriesUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import clap.server.config.annotation.LogType;
@@ -27,7 +28,7 @@ public class FindTaskHistoryController {
 
     private final FindTaskHistoriesUsecase findTaskHistoriesUsecase;
 
-    @LogType("TASK_VIEWED")
+    @LogType(LogStatus.TASK_VIEWED)
     @Operation(summary = "작업 히스토리 조회")
     @Secured({"ROLE_MANAGER","ROLE_USER"})
     @GetMapping("/{taskId}/histories")
