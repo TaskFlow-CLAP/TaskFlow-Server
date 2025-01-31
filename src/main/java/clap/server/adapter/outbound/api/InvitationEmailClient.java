@@ -19,20 +19,18 @@ public class InvitationEmailClient implements SendInvitationEmailPort {
     private final JavaMailSender mailSender;
 
     @Override
-    public void sendInvitationEmail(SendInvitationRequest request, String memberEmail, String initialPassword) {
+    public void sendInvitationEmail(String memberEmail, String receiverName, String initialPassword) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            // 이메일 설정
             helper.setTo(memberEmail);
             helper.setSubject("[TaskFlow 초대] 회원가입을 환영합니다.");
 
-            // Thymeleaf 컨텍스트 설정
             Context context = new Context();
-            context.setVariable("invitationLink", "https://example.com/reset-password"); // TODO: 링크 변경 필요
+            context.setVariable("invitationLink", "https://example.com/reset-password"); //TODO: 비밀번호 재설정 링크로 변경
             context.setVariable("initialPassword", initialPassword);
-            context.setVariable("receiverName", "사용자 이름"); // 사용자 이름 필요
+            context.setVariable("receiverName", receiverName);
 
             // 이메일 템플릿 처리
             String body = templateEngine.process("invitation", context);

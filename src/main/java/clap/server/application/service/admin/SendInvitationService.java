@@ -6,11 +6,12 @@ import clap.server.application.port.outbound.email.SendInvitationEmailPort;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.common.utils.InitialPasswordGenerator;
 import clap.server.domain.model.member.Member;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @ApplicationService
@@ -19,6 +20,8 @@ public class SendInvitationService implements SendInvitationUsecase {
     private final LoadMemberPort loadMemberPort;
     private final CommandMemberPort commandMemberPort;
     private final SendInvitationEmailPort sendInvitationEmailPort;
+    private final InitialPasswordGenerator passwordGenerator;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -27,17 +30,21 @@ public class SendInvitationService implements SendInvitationUsecase {
         Member member = loadMemberPort.findById(request.memberId())
                 .orElseThrow(() -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        // 회원 상태를 PENDING으로 변경
-        member.changeStatusToPending();
+        // 초기 비밀번호 생성
+        String initialPassword = passwordGenerator.generateRandomPassword(8);
+        String encodedPassword = passwordEncoder.encode(initialPassword);
 
-        // 변경된 회원 저장
+        // 회원 비밀번호 업데이트
+        member.resetPassword(encodedPassword);
         commandMemberPort.save(member);
 
-        // 초대 이메일 전송
+        // 회원 상태를 APPROVAL_REQUEST으로 변경
+        member.changeStatusToAPPROVAL_REQUEST();
+
         sendInvitationEmailPort.sendInvitationEmail(
-                request,
                 member.getMemberInfo().getEmail(),
-                member.getPassword()           //TODO: 초기 비밀번호 생성 로직 추가
+                member.getMemberInfo().getName(),
+                initialPassword
         );
     }
 }

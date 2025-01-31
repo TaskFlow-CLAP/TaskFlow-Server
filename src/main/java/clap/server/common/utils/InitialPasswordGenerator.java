@@ -1,19 +1,13 @@
 package clap.server.common.utils;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
-
+@Component
 public class InitialPasswordGenerator {
-
-    @Value("${password.policy.characters}")
+    @Value("${password.policy.characters:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()}")
     private String characters;
-
-    private static final int PASSWORD_LENGTH = 8;
-
-    private InitialPasswordGenerator() {
-        throw new IllegalStateException("Utility class");
-    }
 
     public String generateRandomPassword(int length) {
         if (length <= 0) {
@@ -24,10 +18,11 @@ public class InitialPasswordGenerator {
         StringBuilder password = new StringBuilder(length);
 
         for (int i = 0; i < length; i++) {
-            int randomIndex = secureRandom.nextInt(PASSWORD_LENGTH);
+            int randomIndex = secureRandom.nextInt(characters.length());
             password.append(characters.charAt(randomIndex));
         }
 
         return password.toString();
     }
 }
+
