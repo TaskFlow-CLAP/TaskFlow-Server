@@ -52,10 +52,9 @@ public class ApiLogPersistenceAdapter implements CommandLogPort, LoadLogPort {
     }
 
     @Override
-    public Page<MemberLogResponse> filterMemberLogs(FilterLogRequest memberLogRequest, Pageable pageable) {
-        Page<MemberLog> memberLogs = memberLogRepository.filterMemberLogs(memberLogRequest, pageable)
+    public Page<MemberLog> filterMemberLogs(FilterLogRequest memberLogRequest, Pageable pageable) {
+        return memberLogRepository.filterMemberLogs(memberLogRequest, pageable)
                 .map(apiLogPersistenceMapper::mapMemberLogEntityToDomain);
-        return memberLogs.map(LogMapper::toMemberLogResponse);
     }
 
     @Override
