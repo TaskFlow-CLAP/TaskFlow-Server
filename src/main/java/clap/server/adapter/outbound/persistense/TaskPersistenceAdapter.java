@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
@@ -48,6 +49,13 @@ public class TaskPersistenceAdapter implements CommandTaskPort , LoadTaskPort {
         Page<Task> taskList = taskRepository.findTasksRequestedByUser(requesterId, pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
         return taskList.map(TaskMapper::toFilterRequestedTasksResponse);
+    }
+
+    @Override
+    public Page<FilterAssignedTaskListResponse> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        Page<Task> taskList = taskRepository.findTasksAssignedByManager(processorId, pageable, filterTaskListRequest)
+                .map(taskPersistenceMapper::toDomain);
+        return taskList.map(TaskMapper::toFilterAssignedTaskListResponse);
     }
 
     @Override
