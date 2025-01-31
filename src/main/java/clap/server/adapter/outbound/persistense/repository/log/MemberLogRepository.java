@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long> {
+public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long>, MemberLogCustomRepository {
 }
