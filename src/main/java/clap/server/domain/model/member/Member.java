@@ -83,6 +83,33 @@ public class Member extends BaseTime {
         this.status = MemberStatus.DELETED;
     }
 
+    public void updateKaKaoEnabled() {
+        if (!this.kakaoworkNotificationEnabled) {
+            this.kakaoworkNotificationEnabled = true;
+        }
+        else {
+            this.kakaoworkNotificationEnabled = false;
+        }
+    }
+
+    public void updateAgitEnabled() {
+        if (!this.agitNotificationEnabled) {
+            this.agitNotificationEnabled = true;
+        }
+        else {
+            this.agitNotificationEnabled = false;
+        }
+    }
+
+    public void updateEmailEnabled() {
+        if (!this.emailNotificationEnabled) {
+            this.emailNotificationEnabled = true;
+        }
+        else {
+            this.emailNotificationEnabled = false;
+        }
+    }
+
     public static Boolean checkCommenter(Task task, Member member) {
         // 일반 회원일 경우 => 요청자인지 확인
         // 담당자일 경우 => 처리자인지 확인
