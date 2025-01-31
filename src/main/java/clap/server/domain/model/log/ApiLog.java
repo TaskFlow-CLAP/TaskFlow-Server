@@ -1,6 +1,6 @@
 package clap.server.domain.model.log;
 
-import clap.server.adapter.outbound.persistense.entity.log.constant.LogTypeEnum;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.domain.model.common.BaseTime;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -20,8 +20,8 @@ public class ApiLog extends BaseTime {
     private String response;
     private String requestUrl;
     private String clientIp;
-    private String customStatusCode;
     private String serverIp;
+    private String customStatusCode;
     private String requestMethod;
-    private LogTypeEnum logType;
+    private LogStatus logStatus;
 }

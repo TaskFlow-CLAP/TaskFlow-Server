@@ -2,7 +2,7 @@ package clap.server.config.aop;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 
-import clap.server.adapter.outbound.persistense.entity.log.constant.LogTypeEnum;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.log.CreateAnonymousLogsUsecase;
 import clap.server.application.port.inbound.log.CreateMemberLogsUsecase;
 import clap.server.config.annotation.LogType;
@@ -56,18 +56,20 @@ public class LoggingAspect {
         } finally {
             LocalDateTime responseAt = LocalDateTime.now();
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-            LogTypeEnum logType = getLogType(methodSignature);
+            LogStatus logType = getLogType(methodSignature);
             String customCode = getCustomCode(response);
 
-            if (LogTypeEnum.LOGIN.equals(logType)) {
-                createAnonymousLogsUsecase.createAnonymousLog(request, response, result, responseAt, logType, customCode, getRequestBody(request), getNicknameFromRequestBody(request));
-            } else if (LogTypeEnum.GENERAL.equals(logType)) {
-                if (!isUserAuthenticated()) {
-                    log.error("로그를 기록할 수 없음");
-                }else{
-                    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                    if (principal instanceof SecurityUserDetails userDetails) {
-                        createMemberLogsUsecase.createMemberLog(request, response, result, responseAt, logType, customCode, getRequestBody(request), userDetails.getUserId());
+            if (logType != null) {
+                if (LogStatus.LOGIN.equals(logType)) {
+                    createAnonymousLogsUsecase.createAnonymousLog(request, response, result, responseAt, logType, customCode, getRequestBody(request), getNicknameFromRequestBody(request));
+                } else {
+                    if (!isUserAuthenticated()) {
+                        log.error("로그인 시도 로그를 기록할 수 없음");
+                    } else {
+                        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                        if (principal instanceof SecurityUserDetails userDetails) {
+                            createMemberLogsUsecase.createMemberLog(request, response, result, responseAt, logType, customCode, getRequestBody(request), userDetails.getUserId());
+                        }
                     }
                 }
             }
@@ -75,11 +77,11 @@ public class LoggingAspect {
         return result;
     }
 
-    private LogTypeEnum getLogType(MethodSignature methodSignature) {
+    private LogStatus getLogType(MethodSignature methodSignature) {
         if (methodSignature.getMethod().isAnnotationPresent(LogType.class)) {
-            return LogTypeEnum.fromDescription(methodSignature.getMethod().getAnnotation(LogType.class).value());
+            return LogStatus.valueOf(methodSignature.getMethod().getAnnotation(LogType.class).value());
         } else {
-            throw new IllegalArgumentException("Log 추적이 허용되지 않은 엔드포인트");
+            return null;
         }
     }
 

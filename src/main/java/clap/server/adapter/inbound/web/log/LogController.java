@@ -1,15 +1,13 @@
 package clap.server.adapter.inbound.web.log;
 
-import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
-import clap.server.adapter.inbound.web.dto.admin.MemberLogResponse;
+import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
+import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
 import clap.server.application.port.inbound.log.FindApiLogsUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
-import clap.server.config.annotation.LogType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;

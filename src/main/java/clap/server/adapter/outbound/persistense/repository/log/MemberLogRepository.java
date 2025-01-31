@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long> {
-    List<MemberLogEntity> findAll();
 }

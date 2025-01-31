@@ -1,8 +1,8 @@
 package clap.server.application.port.inbound.log;
 
 
-import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
-import clap.server.adapter.inbound.web.dto.admin.MemberLogResponse;
+import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
+import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
 import clap.server.domain.model.log.ApiLog;
 
 import java.util.List;

@@ -28,7 +28,7 @@ public class ApiLogPersistenceMapper {
                 .requestAt(anonymousLog.getRequestAt())
                 .responseAt(anonymousLog.getResponseAt())
                 .loginNickname(nickName != null ? nickName : "UNKNOWN")
-                .logType(anonymousLog.getLogType())
+                .logStatus(anonymousLog.getLogStatus())
                 .build();
     }
 
@@ -45,7 +45,7 @@ public class ApiLogPersistenceMapper {
                 .response(memberLog.getResponse())
                 .requestAt(memberLog.getRequestAt())
                 .responseAt(memberLog.getResponseAt())
-                .logType(memberLog.getLogType())
+                .logStatus(memberLog.getLogStatus())
                 .build();
     }
 
@@ -62,7 +62,7 @@ public class ApiLogPersistenceMapper {
                 .response(anonymousLogEntity.getResponse())
                 .requestAt(anonymousLogEntity.getRequestAt())
                 .responseAt(anonymousLogEntity.getResponseAt())
-                .logType(anonymousLogEntity.getLogType())
+                .logStatus(anonymousLogEntity.getLogStatus())
                 .loginNickname(anonymousLogEntity.getLoginNickname())
                 .build();
     }
@@ -80,7 +80,7 @@ public class ApiLogPersistenceMapper {
                 .response(memberLogEntity.getResponse())
                 .requestAt(memberLogEntity.getRequestAt())
                 .responseAt(memberLogEntity.getResponseAt())
-                .logType(memberLogEntity.getLogType())
+                .logStatus(memberLogEntity.getLogStatus())
                 .member(memberLogEntity.getMember() != null
                         ? memberPersistenceMapper.toDomain(memberLogEntity.getMember())
                         : null)
@@ -100,7 +100,7 @@ public class ApiLogPersistenceMapper {
                 .response(logEntity.getResponse())
                 .requestAt(logEntity.getRequestAt())
                 .responseAt(logEntity.getResponseAt())
-                .logType(logEntity.getLogType())
+                .logStatus(logEntity.getLogStatus())
                 .build();
     }
 }

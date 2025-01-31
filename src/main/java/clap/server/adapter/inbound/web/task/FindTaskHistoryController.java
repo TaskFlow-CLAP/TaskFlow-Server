@@ -27,7 +27,7 @@ public class FindTaskHistoryController {
 
     private final FindTaskHistoriesUsecase findTaskHistoriesUsecase;
 
-    @LogType("일반 로그")
+    @LogType("TASK_VIEWED")
     @Operation(summary = "작업 히스토리 조회")
     @Secured({"ROLE_MANAGER","ROLE_USER"})
     @GetMapping("/{taskId}/histories")
