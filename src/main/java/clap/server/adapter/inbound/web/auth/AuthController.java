@@ -3,9 +3,11 @@ package clap.server.adapter.inbound.web.auth;
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.auth.LoginRequest;
 import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.auth.LoginUsecase;
 import clap.server.application.port.inbound.auth.LogoutUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
+import clap.server.config.annotation.LogType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +29,7 @@ public class AuthController {
     private final LoginUsecase loginUsecase;
     private final LogoutUsecase logoutUsecase;
 
+    @LogType(LogStatus.LOGIN)
     @Operation(summary = "로그인 API")
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestHeader(name = "sessionId") String sessionId,
