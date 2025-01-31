@@ -38,8 +38,8 @@ public class MemberLogCustomRepositoryImpl implements MemberLogCustomRepository{
         if (!request.nickName().isEmpty()) {
             builder.and(memberEntity.nickname.contains(request.nickName()));
         }
-        if (!request.ipAddress().isEmpty()) {
-            builder.and(memberLogEntity.serverIp.eq(request.ipAddress()));
+        if (!request.clientIp().isEmpty()) {
+            builder.and(memberLogEntity.clientIp.eq(request.clientIp()));
         }
 
         List<MemberLogEntity> result = queryFactory

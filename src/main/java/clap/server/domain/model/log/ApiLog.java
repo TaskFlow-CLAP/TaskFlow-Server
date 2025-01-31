@@ -16,11 +16,10 @@ public class ApiLog extends BaseTime {
     private Integer statusCode;
     private LocalDateTime requestAt;
     private LocalDateTime responseAt;
-    private String request;
-    private String response;
+    private String requestBody;
+    private String responseBody;
     private String requestUrl;
     private String clientIp;
-    private String serverIp;
     private String customStatusCode;
     private String requestMethod;
     private LogStatus logStatus;

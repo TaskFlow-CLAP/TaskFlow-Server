@@ -6,14 +6,13 @@ import clap.server.domain.model.log.AnonymousLog;
 import clap.server.domain.model.log.MemberLog;
 
 public class LogMapper {
-    public static AnonymousLogResponse toAnonymounsLogResponse(AnonymousLog anonymousLog, int failedAttempts) {
+    public static AnonymousLogResponse toAnonymousLogResponse(AnonymousLog anonymousLog, int failedAttempts) {
         return new AnonymousLogResponse(
                 anonymousLog.getLogId(),
-                anonymousLog.getLoginNickname(),
+                anonymousLog.getLogStatus(),
                 anonymousLog.getRequestAt(),
-                anonymousLog.getResponseAt(),
-                anonymousLog.getRequestUrl(),
-                anonymousLog.getRequestMethod(),
+                anonymousLog.getLoginNickname(),
+                anonymousLog.getClientIp(),
                 anonymousLog.getStatusCode(),
                 anonymousLog.getCustomStatusCode(),
                 failedAttempts
@@ -25,7 +24,7 @@ public class LogMapper {
                 memberLog.getLogStatus(),
                 memberLog.getRequestAt(),
                 memberLog.getMember().getNickname(),
-                memberLog.getServerIp(),
+                memberLog.getClientIp(),
                 memberLog.getStatusCode()
         );
     }
