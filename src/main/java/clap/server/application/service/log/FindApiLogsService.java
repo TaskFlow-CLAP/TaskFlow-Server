@@ -1,14 +1,19 @@
 package clap.server.application.service.log;
 
 import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
+import clap.server.adapter.inbound.web.dto.log.MemberLogRequest;
 import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
 import clap.server.adapter.outbound.persistense.ApiLogPersistenceAdapter;
 import clap.server.application.mapper.response.LogMapper;
 import clap.server.application.port.inbound.domain.LoginDomainService;
 import clap.server.application.port.inbound.log.FindApiLogsUsecase;
+import clap.server.application.port.outbound.log.LoadLogPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.log.ApiLog;
+import clap.server.domain.model.log.MemberLog;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,6 +25,7 @@ public class FindApiLogsService implements FindApiLogsUsecase {
 
     private final ApiLogPersistenceAdapter apiLogPersistenceAdapter;
     private final LoginDomainService loginDomainService;
+    private final LoadLogPort loadLogPort;
 
     @Override
     public List<AnonymousLogResponse> getAnonymousLogs() {
@@ -31,12 +37,9 @@ public class FindApiLogsService implements FindApiLogsUsecase {
                 .toList();
     }
 
-    //TODO: Paging으로 수정
     @Override
-    public List<MemberLogResponse> getMemberLogs() {
-        return apiLogPersistenceAdapter.findMemberLogs().stream()
-                .map(LogMapper::toMemberLogResponse)
-                .toList();
+    public Page<MemberLogResponse> filterMemberLogs(MemberLogRequest memberLogRequest, Pageable pageable) {
+        return loadLogPort.filterMemberLogs(memberLogRequest, pageable);
     }
 
     //테스트용
