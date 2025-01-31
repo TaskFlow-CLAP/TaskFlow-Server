@@ -32,8 +32,9 @@ public class ManagementNotificationController {
     @Operation(summary = "알림 목록에서 한 개 눌렀을 때 읽음 처리")
     @Parameter(name = "notificationId", description = "알림 고유 ID", required = true, in = ParameterIn.PATH)
     @PatchMapping("/{notificationId}")
-    public void updateNotificationIsRead(@PathVariable Long notificationId) {
-        updateNotificationUsecase.updateNotification(notificationId);
+    public void updateNotificationIsRead(@AuthenticationPrincipal SecurityUserDetails userInfo,
+                                         @PathVariable Long notificationId) {
+        updateNotificationUsecase.updateNotification(userInfo.getUserId(), notificationId);
     }
 
     @Operation(summary = "알림 목록에서 전체 읽음 버튼을 눌렀을 때 전체 읽음 처리")
