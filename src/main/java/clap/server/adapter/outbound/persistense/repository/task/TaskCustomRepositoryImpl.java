@@ -1,6 +1,7 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -8,9 +9,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -19,6 +19,7 @@ import java.util.List;
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
 import static com.querydsl.core.types.Order.*;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class TaskCustomRepositoryImpl implements TaskCustomRepository {
@@ -69,6 +70,47 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
     }
 
+    @Override
+    public List<TaskEntity> findTasksByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request, Pageable pageable) {
+        BooleanBuilder whereClause = createTaskBoardFilter(processorId, statuses, untilDateTime, request);
+        return queryFactory
+                .selectFrom(taskEntity)
+                .where(whereClause)
+                .orderBy(taskEntity.processorOrder.asc())
+                .limit(pageable.getPageSize() + 1)
+                .offset(pageable.getOffset())
+                .fetch();
+    }
+
+    private BooleanBuilder createTaskBoardFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request) {
+        BooleanBuilder whereClause = new BooleanBuilder();
+
+        whereClause.and(taskEntity.processor.memberId.eq(processorId));
+        whereClause.and(taskEntity.taskStatus.in(statuses));
+        whereClause.and(taskEntity.finishedAt.isNull().or(taskEntity.finishedAt.loe(untilDateTime)));
+
+        if (request.labelId() != null) {
+            whereClause.and(taskEntity.label.labelId.eq(request.labelId()));
+        }
+        if (request.mainCategoryId() != null) {
+            whereClause.and(taskEntity.category.mainCategory.categoryId.eq(request.mainCategoryId()));
+        }
+        if (request.subCategoryId() != null) {
+            whereClause.and(taskEntity.category.categoryId.eq(request.subCategoryId()));
+        }
+        if (request.title() != null && !request.title().isEmpty()) {
+            String titleFilter = "%" + request.title() + "%";
+            whereClause.and(taskEntity.title.like(titleFilter));
+        }
+        if (request.requesterNickname() != null && !request.requesterNickname().isEmpty()) {
+            String nicknameFilter = "%" + request.requesterNickname().toLowerCase() + "%";
+            whereClause.and(taskEntity.requester.nickname.lower().like(nicknameFilter));
+
+        }
+
+        return whereClause;
+    }
+
     private BooleanBuilder createFilter(FilterTaskListRequest request) {
         BooleanBuilder whereClause = new BooleanBuilder();
         if (request.term() != null) {
@@ -89,6 +131,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         }
         return whereClause;
     }
+
 
     private Page<TaskEntity> getTasksPage(Pageable pageable, BooleanBuilder whereClause, String sortBy, String sortDirection) {
         OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortBy, sortDirection);

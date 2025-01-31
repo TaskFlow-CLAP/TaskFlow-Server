@@ -132,6 +132,7 @@ public class TaskMapper {
         return new TaskItemResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
+                task.getTitle(),
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getRequester().getNickname(),
