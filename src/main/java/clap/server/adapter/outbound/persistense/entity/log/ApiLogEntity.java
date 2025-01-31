@@ -24,9 +24,6 @@ public abstract class ApiLogEntity extends BaseTimeEntity {
     private Long logId;
 
     @Column(nullable = false)
-    private String serverIp;
-
-    @Column(nullable = false)
     private String clientIp;
 
     @Column(length = 4096, nullable = false)
@@ -43,10 +40,10 @@ public abstract class ApiLogEntity extends BaseTimeEntity {
     private String customStatusCode;
 
     @Column(length = 4096, nullable = false)
-    private String request;
+    private String requestBody;
 
     @Column(length = 4096, nullable = false)
-    private String response;
+    private String responseBody;
 
     @Column(nullable = false)
     private LocalDateTime requestAt;

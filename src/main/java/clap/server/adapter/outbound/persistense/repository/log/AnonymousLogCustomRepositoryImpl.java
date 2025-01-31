@@ -34,8 +34,8 @@ public class AnonymousLogCustomRepositoryImpl implements AnonymousLogCustomRepos
         if (!request.nickName().isEmpty()) {
             builder.and(anonymousLogEntity.loginNickname.contains(request.nickName()));
         }
-        if (!request.ipAddress().isEmpty()) {
-            builder.and(anonymousLogEntity.serverIp.eq(request.ipAddress()));
+        if (!request.clientIp().isEmpty()) {
+            builder.and(anonymousLogEntity.clientIp.eq(request.clientIp()));
         }
 
         List<AnonymousLogEntity> result = queryFactory

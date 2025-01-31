@@ -34,7 +34,7 @@ public class FindApiLogsService implements FindApiLogsUsecase {
         Page<AnonymousLog> anonymousLogs = loadLogPort.filterAnonymousLogs(anonymousLogRequest, pageable);
         Page<AnonymousLogResponse> anonymousLogResponses = anonymousLogs.map(anonymousLog -> {
             int failedAttempts = loginDomainService.getFailedAttemptCount(anonymousLog.getLoginNickname());
-            return LogMapper.toAnonymounsLogResponse(anonymousLog, failedAttempts);
+            return LogMapper.toAnonymousLogResponse(anonymousLog, failedAttempts);
         });
         return PageResponse.from(anonymousLogResponses);
     }

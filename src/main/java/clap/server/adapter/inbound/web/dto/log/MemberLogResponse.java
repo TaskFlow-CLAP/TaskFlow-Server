@@ -13,7 +13,7 @@ public record MemberLogResponse(
         @NotBlank
         LocalDateTime requestAt,
         String nickName,
-        String serverIp,
+        String clientIp,
         @NotBlank
         Integer statusCode
 ) {

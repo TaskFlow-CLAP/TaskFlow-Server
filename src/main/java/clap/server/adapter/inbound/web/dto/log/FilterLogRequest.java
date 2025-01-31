@@ -14,6 +14,6 @@ public record FilterLogRequest(
         @NotNull
         String nickName,
         @NotNull
-        String ipAddress
+        String clientIp
         ) {
 }

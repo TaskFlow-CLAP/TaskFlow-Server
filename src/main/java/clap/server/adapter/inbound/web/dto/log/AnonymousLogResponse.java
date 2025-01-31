@@ -1,5 +1,6 @@
 package clap.server.adapter.inbound.web.dto.log;
 
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -8,16 +9,12 @@ import java.time.LocalDateTime;
 public record AnonymousLogResponse(
         @NotBlank
         Long logId,
-        @NotBlank
-        String loginNickname,
+        LogStatus logStatus,
         @NotBlank
         LocalDateTime requestAt,
         @NotBlank
-        LocalDateTime responseAt,
-        @NotBlank
-        String requestUrl,
-        @NotBlank
-        String requestMethod,
+        String nickName,
+        String clientIp,
         @NotBlank
         Integer statusCode,
         @NotNull
