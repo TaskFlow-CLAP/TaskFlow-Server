@@ -5,9 +5,6 @@ import clap.server.domain.model.member.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-
-public interface FindAllMemberUsecase {
-    Page<Member> findAllMembers(Pageable pageable);
-    Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest); // 조건부 필터링 조회
-
+public interface FindMembersWithFilterUsecase {
+    Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest);
 }

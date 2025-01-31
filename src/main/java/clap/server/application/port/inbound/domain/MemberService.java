@@ -1,23 +1,18 @@
 package clap.server.application.port.inbound.domain;
 
-import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
-import clap.server.application.port.inbound.management.FindAllMemberUsecase;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.task.Task;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService implements FindAllMemberUsecase {
+public class MemberService {
     private final LoadMemberPort loadMemberPort;
 
     public Member findById(Long memberId) {
@@ -61,13 +56,4 @@ public class MemberService implements FindAllMemberUsecase {
         return loadMemberPort.findReviewers();
     }
 
-    @Override
-    public Page<Member> findAllMembers(Pageable pageable) {
-        return loadMemberPort.findAllMembers(pageable);
-    }
-
-    @Override
-    public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest) {
-        return loadMemberPort.findMembersWithFilter(pageable, filterRequest);
-    }
 }
