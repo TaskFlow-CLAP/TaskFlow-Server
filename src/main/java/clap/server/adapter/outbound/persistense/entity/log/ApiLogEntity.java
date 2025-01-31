@@ -60,7 +60,7 @@ public abstract class ApiLogEntity extends BaseTimeEntity {
     private LogTypeEnum logType;
 
     @Version
-    private Long version; // 낙관적 락 관리를 위한 버전
+    private Long version;
 
     protected ApiLog.ApiLogBuilder toCommonDomainBuilder() {
         return ApiLog.builder()
@@ -78,5 +78,5 @@ public abstract class ApiLogEntity extends BaseTimeEntity {
                 .logType(logType);
     }
 
-    public abstract ApiLog toDomain();
+//    public abstract ApiLog toDomain();
 }

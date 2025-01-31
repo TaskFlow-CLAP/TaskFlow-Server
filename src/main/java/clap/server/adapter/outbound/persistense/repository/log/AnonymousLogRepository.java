@@ -8,6 +8,4 @@ import java.util.List;
 
 @Repository
 public interface AnonymousLogRepository extends JpaRepository<AnonymousLogEntity, Long> {
-    // 비회원 로그
-    List<AnonymousLogEntity> findByLogType(String logType);
 }

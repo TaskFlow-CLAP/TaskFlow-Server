@@ -2,53 +2,47 @@ package clap.server.application.service.log;
 
 import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
 import clap.server.adapter.inbound.web.dto.admin.MemberLogResponse;
-import clap.server.application.mapper.AnonymousLogMapper;
-import clap.server.application.mapper.MemberLogMapper;
+import clap.server.adapter.outbound.persistense.ApiLogPersistenceAdapter;
+import clap.server.application.mapper.response.LogMapper;
 import clap.server.application.port.inbound.domain.LoginDomainService;
 import clap.server.application.port.inbound.log.FindApiLogsUsecase;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.log.ApiLog;
+import clap.server.domain.model.log.MemberLog;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @ApplicationService
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FindApiLogsService implements FindApiLogsUsecase {
 
-    private final ApiLogRepositoryPort apiLogRepositoryPort;
+    private final ApiLogPersistenceAdapter apiLogPersistenceAdapter;
     private final LoginDomainService loginDomainService;
 
     @Override
     public List<AnonymousLogResponse> getAnonymousLogs() {
-        // 비회원 로그에서 '로그인 시도' 로그를 조회하여 DTO로 변환
-        return apiLogRepositoryPort.findAnonymousLogs("로그인 시도").stream()
-                .map(entity -> {
-                    ApiLog log = entity.toDomain(); // 엔티티를 도메인 객체로 변환
-                    int failedAttempts = loginDomainService.getFailedAttemptCount(log.getMemberId());
-                    return AnonymousLogMapper.toDto(log, failedAttempts);
+        return apiLogPersistenceAdapter.findAnonymousLogs().stream()
+                .map(anonymousLog -> {
+                    int failedAttempts = loginDomainService.getFailedAttemptCount(anonymousLog.getLoginNickname());
+                    return LogMapper.toAnonymounsLogResponse(anonymousLog, failedAttempts);
                 })
                 .toList();
     }
 
+    //TODO: Paging으로 수정
     @Override
     public List<MemberLogResponse> getMemberLogs() {
-        // 회원 로그를 조회하여 DTO로 변환
-        return apiLogRepositoryPort.findMemberLogs().stream()
-                .map(entity -> {
-                    ApiLog log = entity.toDomain(); // 엔티티를 도메인 객체로 변환
-                    return MemberLogMapper.toDto(log);
-                })
+        return apiLogPersistenceAdapter.findMemberLogs().stream()
+                .map(LogMapper::toMemberLogResponse)
                 .toList();
     }
 
+    //테스트용
     @Override
     public List<ApiLog> getApiLogs() {
-        // 모든 로그 조회
-        return apiLogRepositoryPort.findAllLogs();
-    }
-
-    public void save(ApiLog apiLog) {
-        apiLogRepositoryPort.save(apiLog);
+        return apiLogPersistenceAdapter.findAllLogs();
     }
 }

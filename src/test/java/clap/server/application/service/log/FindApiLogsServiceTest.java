@@ -1,12 +1,12 @@
-package clap.server.application.mapper;
+package clap.server.application.service.log;
 
 import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
 import clap.server.adapter.inbound.web.dto.admin.MemberLogResponse;
+import clap.server.adapter.outbound.persistense.ApiLogPersistenceAdapter;
 import clap.server.adapter.outbound.persistense.entity.log.AnonymousLogEntity;
 import clap.server.adapter.outbound.persistense.entity.log.MemberLogEntity;
 import clap.server.adapter.outbound.persistense.entity.log.constant.ApiHttpMethod;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
-import clap.server.application.service.log.FindApiLogsService;
 import clap.server.application.port.inbound.domain.LoginDomainService;
 import clap.server.domain.model.log.ApiLog;
 import org.junit.jupiter.api.Test;
@@ -17,11 +17,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-class RetrieveApiLogsUsecaseTest {
+class FindApiLogsServiceTest {
 
-    private final ApiLogRepositoryPort apiLogRepositoryPort = mock(ApiLogRepositoryPort.class);
+    private final ApiLogPersistenceAdapter apiLogPersistenceAdapter = mock(ApiLogPersistenceAdapter.class);
     private final LoginDomainService loginDomainService = mock(LoginDomainService.class);
-    private final FindApiLogsService usecase = new FindApiLogsService(apiLogRepositoryPort, loginDomainService);
+    private final FindApiLogsService findApiLogsService = new FindApiLogsService(apiLogPersistenceAdapter, loginDomainService);
 
     @Test
     void getMemberLogs_ShouldReturnConvertedResponses() {
@@ -46,10 +46,10 @@ class RetrieveApiLogsUsecaseTest {
         System.out.println("DEBUG: Created mockEntity - Member ID: " + mockEntity.getMember().getMemberId());
 
         // Mock 리포지토리 설정
-        when(apiLogRepositoryPort.findMemberLogs()).thenReturn(List.of(mockEntity));
+        when(apiLogPersistenceAdapter.findMemberLogs()).thenReturn(List.of(mockEntity));
 
         // 테스트 실행
-        List<MemberLogResponse> responses = usecase.getMemberLogs();
+        List<MemberLogResponse> responses = findApiLogsService.getMemberLogs();
 
         // 디버깅: 반환된 responses 확인
         // 결과 검증
@@ -57,7 +57,7 @@ class RetrieveApiLogsUsecaseTest {
         MemberLogResponse response = responses.get(0);
         assertThat(response.logId()).isEqualTo(mockEntity.getLogId()); // logId 검증
         assertThat(response.memberId()).isEqualTo(5L); // memberId 검증
-        verify(apiLogRepositoryPort, times(1)).findMemberLogs(); // 리포지토리 호출 검증
+        verify(apiLogPersistenceAdapter, times(1)).findMemberLogs(); // 리포지토리 호출 검증
     }
 
     @Test
@@ -78,11 +78,11 @@ class RetrieveApiLogsUsecaseTest {
         System.out.println("DEBUG: Created mockEntity - Login Nickname: " + mockEntity.getLoginNickname());
 
         // Mock 서비스 설정
-        when(apiLogRepositoryPort.findAnonymousLogs("로그인 시도")).thenReturn(List.of(mockEntity));
+        when(apiLogPersistenceAdapter.findAnonymousLogs("로그인 시도")).thenReturn(List.of(mockEntity));
         when(loginDomainService.getFailedAttemptCount("testUser")).thenReturn(3); // 실패 시도 수 설정
 
         // 테스트 실행
-        List<AnonymousLogResponse> responses = usecase.getAnonymousLogs();
+        List<AnonymousLogResponse> responses = findApiLogsService.getAnonymousLogs();
 
         // 디버깅: 반환된 responses 확인
         System.out.println("DEBUG: Received responses: " + responses);
@@ -92,7 +92,7 @@ class RetrieveApiLogsUsecaseTest {
         AnonymousLogResponse response = responses.get(0);
         assertThat(response.logId()).isEqualTo(mockEntity.getLogId()); // logId 검증
         assertThat(response.failedAttempts()).isEqualTo(3); // 실패 시도 검증
-        verify(apiLogRepositoryPort, times(1)).findAnonymousLogs("로그인 시도");
+        verify(apiLogPersistenceAdapter, times(1)).findAnonymousLogs("로그인 시도");
         verify(loginDomainService, times(1)).getFailedAttemptCount("testUser");
     }
 
@@ -131,10 +131,10 @@ class RetrieveApiLogsUsecaseTest {
         System.out.println("DEBUG: Created memberLogEntity - Member ID: " + memberLogEntity.getMember().getMemberId());
 
         // Mock 리포지토리 설정
-        when(apiLogRepositoryPort.findAllLogs()).thenReturn(List.of(anonymousLogEntity.toDomain(), memberLogEntity.toDomain()));
+        when(apiLogPersistenceAdapter.findAllLogs()).thenReturn(List.of(anonymousLogEntity.toDomain(), memberLogEntity.toDomain()));
 
         // 테스트 실행
-        List<ApiLog> logs = usecase.getApiLogs();
+        List<ApiLog> logs = findApiLogsService.getApiLogs();
 
         // 디버깅: 반환된 logs 확인
         System.out.println("DEBUG: Received logs: " + logs);
@@ -143,6 +143,6 @@ class RetrieveApiLogsUsecaseTest {
         assertThat(logs).hasSize(2);
         assertThat(logs.get(0).getLogId()).isEqualTo(1L); // AnonymousLogEntity 검증
         assertThat(logs.get(1).getLogId()).isEqualTo(2L); // MemberLogEntity 검증
-        verify(apiLogRepositoryPort, times(1)).findAllLogs();
+        verify(apiLogPersistenceAdapter, times(1)).findAllLogs();
     }
 }

@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MemberLogRepository extends JpaRepository<MemberLogEntity, Long> {
-    // 회원
     List<MemberLogEntity> findAll();
 }
