@@ -26,4 +26,8 @@ public class Comment extends BaseTime {
                 .isModified(false)
                 .build();
     }
+
+    public void softDelete() {
+        this.isDeleted = true;
+    }
 }
