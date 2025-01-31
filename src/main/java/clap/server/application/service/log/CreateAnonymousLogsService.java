@@ -18,8 +18,8 @@ public class CreateAnonymousLogsService implements CreateAnonymousLogsUsecase {
     private final ApiLogPersistenceAdapter apiLogPersistenceAdapter;
 
     @Override
-    public void createAnonymousLog(HttpServletRequest request, HttpServletResponse response, Object result, LocalDateTime responseAt, LogStatus logType, String customCode, String body, String nickName) {
-        AnonymousLog anonymousLog = AnonymousLog.createAnonymousLog(request, response, result, responseAt, logType, customCode, body, nickName);
+    public void createAnonymousLog(HttpServletRequest request, HttpServletResponse response, Object result, LogStatus logType, String customCode, String body, String nickName) {
+        AnonymousLog anonymousLog = AnonymousLog.createAnonymousLog(request, response, result,  logType, customCode, body, nickName);
         apiLogPersistenceAdapter.saveAnonymousLog(anonymousLog);
     }
 }

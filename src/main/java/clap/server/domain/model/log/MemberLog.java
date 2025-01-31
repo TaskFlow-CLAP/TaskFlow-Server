@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 public class MemberLog extends ApiLog {
     private Member member;
 
-    public static MemberLog createMemberLog(HttpServletRequest request, HttpServletResponse response, Object responseResult,
-                                            LocalDateTime responseAt, LogStatus logStatus, String customCode, String requestBody, Member member) {
+    public static MemberLog createMemberLog(HttpServletRequest request, HttpServletResponse response, Object responseResult, LogStatus logStatus, String customCode, String requestBody, Member member) {
         return MemberLog.builder()
                 .clientIp(request.getRemoteAddr())
                 .requestUrl(request.getRequestURI())
@@ -27,7 +26,6 @@ public class MemberLog extends ApiLog {
                 .requestBody(requestBody)
                 .responseBody(responseResult != null ? responseResult.toString() : "UNKNOWN")
                 .requestAt(LocalDateTime.now())
-                .responseAt(responseAt)
                 .logStatus(logStatus)
                 .member(member)
                 .build();

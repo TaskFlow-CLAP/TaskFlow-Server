@@ -49,9 +49,6 @@ public abstract class ApiLogEntity extends BaseTimeEntity {
     private LocalDateTime requestAt;
 
     @Column(nullable = false)
-    private LocalDateTime responseAt;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private LogStatus logStatus;
 

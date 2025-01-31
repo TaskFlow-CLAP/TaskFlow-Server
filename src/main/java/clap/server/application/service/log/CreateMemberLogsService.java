@@ -23,10 +23,9 @@ public class CreateMemberLogsService implements CreateMemberLogsUsecase {
 
     @Override
     @Transactional
-    public void createMemberLog(HttpServletRequest request, HttpServletResponse response, Object result,
-                                LocalDateTime responseAt, LogStatus logType, String customCode, String body, Long userId) {
+    public void createMemberLog(HttpServletRequest request, HttpServletResponse response, Object result, LogStatus logType, String customCode, String body, Long userId) {
         Member member = memberService.findById(userId);
-        MemberLog memberLog = MemberLog.createMemberLog(request, response, result, responseAt, logType, customCode, body, member);
+        MemberLog memberLog = MemberLog.createMemberLog(request, response, result, logType, customCode, body, member);
         apiLogPersistenceAdapter.saveMemberLog(memberLog);
     }
 }

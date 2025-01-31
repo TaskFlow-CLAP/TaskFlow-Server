@@ -11,7 +11,7 @@ public record MemberLogResponse(
         Long logId,
         LogStatus logStatus,
         @NotBlank
-        LocalDateTime requestAt,
+        LocalDateTime responseAt,
         String nickName,
         String clientIp,
         @NotBlank
