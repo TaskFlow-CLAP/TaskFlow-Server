@@ -1,8 +1,7 @@
 package clap.server.adapter.outbound.persistense.repository.log;
 
-
 import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
-import clap.server.adapter.outbound.persistense.entity.log.MemberLogEntity;
+import clap.server.adapter.outbound.persistense.entity.log.AnonymousLogEntity;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -14,44 +13,40 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static clap.server.adapter.outbound.persistense.entity.log.QMemberLogEntity.memberLogEntity;
-import static clap.server.adapter.outbound.persistense.entity.member.QMemberEntity.memberEntity;
-
+import static clap.server.adapter.outbound.persistense.entity.log.QAnonymousLogEntity.anonymousLogEntity;
 
 @Repository
 @RequiredArgsConstructor
-public class MemberLogCustomRepositoryImpl implements MemberLogCustomRepository{
+public class AnonymousLogCustomRepositoryImpl implements AnonymousLogCustomRepository{
 
     private final JPAQueryFactory queryFactory;
-
     @Override
-    public Page<MemberLogEntity> filterMemberLogs(FilterLogRequest request, Pageable pageable) {
+    public Page<AnonymousLogEntity> filterAnonymousLogs(FilterLogRequest request, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (request.term() != null) {
             LocalDateTime fromDate = LocalDateTime.now().minusHours(request.term());
-            builder.and(memberLogEntity.createdAt.after(fromDate));
+            builder.and(anonymousLogEntity.createdAt.after(fromDate));
         }
         if (!request.logStatus().isEmpty()) {
-            builder.and(memberLogEntity.logStatus.in(request.logStatus()));
+            builder.and(anonymousLogEntity.logStatus.in(request.logStatus()));
         }
         if (!request.nickName().isEmpty()) {
-            builder.and(memberEntity.nickname.contains(request.nickName()));
+            builder.and(anonymousLogEntity.loginNickname.contains(request.nickName()));
         }
         if (!request.ipAddress().isEmpty()) {
-            builder.and(memberLogEntity.serverIp.eq(request.ipAddress()));
+            builder.and(anonymousLogEntity.serverIp.eq(request.ipAddress()));
         }
 
-        List<MemberLogEntity> result = queryFactory
-                .selectFrom(memberLogEntity)
+        List<AnonymousLogEntity> result = queryFactory
+                .selectFrom(anonymousLogEntity)
                 .where(builder)
-                .leftJoin(memberLogEntity.member, memberEntity)
-                .orderBy(memberLogEntity.createdAt.desc())
+                .orderBy(anonymousLogEntity.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         long total = queryFactory
-                .selectFrom(memberLogEntity)
+                .selectFrom(anonymousLogEntity)
                 .where(builder)
                 .fetch().size();
         return new PageImpl<>(result, pageable, total);

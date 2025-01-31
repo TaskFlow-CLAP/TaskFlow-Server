@@ -1,9 +1,9 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.log.MemberLogRequest;
+import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
+import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
 
 import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
-import clap.server.adapter.outbound.persistense.entity.log.MemberLogEntity;
 import clap.server.adapter.outbound.persistense.mapper.ApiLogPersistenceMapper;
 import clap.server.adapter.outbound.persistense.mapper.MemberPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.log.AnonymousLogRepository;
@@ -40,7 +40,7 @@ public class ApiLogPersistenceAdapter implements CommandLogPort, LoadLogPort {
     }
 
     @Override
-    public void saveAnonymousLog(AnonymousLog anonymousLog){
+    public void saveAnonymousLog(AnonymousLog anonymousLog) {
         apiLogRepository.save(apiLogPersistenceMapper.mapAnonymousLogToEntity(anonymousLog, anonymousLog.getLoginNickname()));
     }
 
@@ -52,16 +52,15 @@ public class ApiLogPersistenceAdapter implements CommandLogPort, LoadLogPort {
     }
 
     @Override
-    public List<AnonymousLog> findAnonymousLogs() {
-        return anonymousLogRepository.findAll().stream()
-                .map(apiLogPersistenceMapper::mapAnonymousLogEntityToDomain)
-                .toList();
-    }
-
-    @Override
-    public Page<MemberLogResponse> filterMemberLogs(MemberLogRequest memberLogRequest, Pageable pageable) {
+    public Page<MemberLogResponse> filterMemberLogs(FilterLogRequest memberLogRequest, Pageable pageable) {
         Page<MemberLog> memberLogs = memberLogRepository.filterMemberLogs(memberLogRequest, pageable)
                 .map(apiLogPersistenceMapper::mapMemberLogEntityToDomain);
         return memberLogs.map(LogMapper::toMemberLogResponse);
+    }
+
+    @Override
+    public Page<AnonymousLog> filterAnonymousLogs(FilterLogRequest anonymousLogRequest, Pageable pageable) {
+        return anonymousLogRepository.filterAnonymousLogs(anonymousLogRequest, pageable)
+                .map(apiLogPersistenceMapper::mapAnonymousLogEntityToDomain);
     }
 }

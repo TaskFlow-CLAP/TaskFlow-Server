@@ -2,9 +2,8 @@ package clap.server.adapter.inbound.web.log;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
-import clap.server.adapter.inbound.web.dto.log.MemberLogRequest;
+import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
 import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
 import clap.server.application.port.inbound.log.FindApiLogsUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +26,13 @@ public class LogController {
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/login")
-    public List<AnonymousLogResponse> getLoginAttempts() {
-        return findApiLogsUsecase.getAnonymousLogs();
+    public Page<AnonymousLogResponse> getLoginAttempts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int pageSize,
+            @ModelAttribute FilterLogRequest anonymousLogRequest,
+            @AuthenticationPrincipal SecurityUserDetails userInfo) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return findApiLogsUsecase.filterAnonymousLogs(anonymousLogRequest, pageable);
     }
 
     @Secured({"ROLE_ADMIN"})
@@ -36,7 +40,7 @@ public class LogController {
     public Page<MemberLogResponse> getApiCalls(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @ModelAttribute MemberLogRequest memberLogRequest,
+            @ModelAttribute FilterLogRequest memberLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
         Pageable pageable = PageRequest.of(page, pageSize);
         return findApiLogsUsecase.filterMemberLogs(memberLogRequest, pageable);
