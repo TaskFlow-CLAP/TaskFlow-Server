@@ -57,7 +57,7 @@ public class LoggingAspect {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             LogStatus logType = getLogType(methodSignature);
             String customCode = getCustomCode(response);
-
+            //TODO: ipv4 형식으로 변환
             if (logType != null) {
                 if (LogStatus.LOGIN.equals(logType)) {
                     createAnonymousLogsUsecase.createAnonymousLog(request, response, result, logType, customCode, getRequestBody(request), getNicknameFromRequestBody(request));
@@ -84,11 +84,13 @@ public class LoggingAspect {
         }
     }
 
+    //TODO: 로그인 시도에 대한 에러 잡도록 수정
     private String getCustomCode(HttpServletResponse response) {
         String customCode = ErrorContext.getCustomCode();
         return customCode != null ? customCode : "CUSTOM" + (response != null ? response.getStatus() : 500);
     }
 
+    //TODO: 로그인 시도 시 닉네임 파싱하도록 수정
     private String getNicknameFromRequestBody(HttpServletRequest request) {
         try {
             String requestBody = getRequestBody(request);
@@ -99,6 +101,7 @@ public class LoggingAspect {
         }
     }
 
+    //TODO: 제거
     private String getRequestBody(HttpServletRequest request) {
         try {
             ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper) request;
