@@ -1,5 +1,6 @@
 package clap.server.domain.model.task;
 
+import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
 import lombok.AccessLevel;
