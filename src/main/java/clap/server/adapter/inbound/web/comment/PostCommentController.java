@@ -30,7 +30,7 @@ public class PostCommentController {
     @Parameter(name = "labelId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
     @PostMapping("/{taskId}")
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
-    public void createTask(
+    public void createComment(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @PathVariable Long taskId,
             @RequestBody(required = true) PostAndEditCommentRequest request){
@@ -41,7 +41,7 @@ public class PostCommentController {
     @Parameter(name = "labelId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
     @PostMapping("/attachment/{taskId}")
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
-    public void createAttachmentTask(
+    public void createAttachmentComment(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @PathVariable Long taskId,
             @RequestPart(name = "attachment") @NotNull List<MultipartFile> attachments) {
