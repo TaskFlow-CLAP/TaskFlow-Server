@@ -1,7 +1,6 @@
 package clap.server.adapter.inbound.web.comment;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.task.DeleteCommentRequest;
 import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
 import clap.server.application.port.inbound.comment.CommandCommentUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
@@ -40,9 +39,8 @@ public class CommandCommentController {
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public void deleteComment(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @PathVariable Long commentId,
-            @RequestBody DeleteCommentRequest request) {
-        commandCommentUsecase.deleteComment(userInfo.getUserId(), commentId, request);
+            @PathVariable Long commentId) {
+        commandCommentUsecase.deleteComment(userInfo.getUserId(), commentId);
     }
 
 }

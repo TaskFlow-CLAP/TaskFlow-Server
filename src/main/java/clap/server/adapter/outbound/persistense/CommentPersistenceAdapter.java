@@ -31,8 +31,7 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CommandCommen
     }
 
     @Override
-    public Comment saveComment(Comment comment) {
-        CommentEntity commentEntity = commentRepository.save(commentPersistenceMapper.toEntity(comment));
-        return commentPersistenceMapper.toDomain(commentEntity);
+    public void deleteComment(Comment comment) {
+        commentRepository.delete(commentPersistenceMapper.toEntity(comment));
     }
 }
