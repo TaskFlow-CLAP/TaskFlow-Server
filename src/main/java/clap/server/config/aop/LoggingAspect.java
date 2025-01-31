@@ -79,7 +79,7 @@ public class LoggingAspect {
 
     private LogStatus getLogType(MethodSignature methodSignature) {
         if (methodSignature.getMethod().isAnnotationPresent(LogType.class)) {
-            return LogStatus.valueOf(methodSignature.getMethod().getAnnotation(LogType.class).value());
+            return methodSignature.getMethod().getAnnotation(LogType.class).value();
         } else {
             return null;
         }
