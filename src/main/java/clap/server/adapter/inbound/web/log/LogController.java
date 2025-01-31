@@ -1,6 +1,7 @@
 package clap.server.adapter.inbound.web.log;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
 import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
 import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,23 +28,23 @@ public class LogController {
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/login")
-    public Page<AnonymousLogResponse> getLoginAttempts(
+    public ResponseEntity<PageResponse<AnonymousLogResponse>> getLoginAttempts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
             @ModelAttribute FilterLogRequest anonymousLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return findApiLogsUsecase.filterAnonymousLogs(anonymousLogRequest, pageable);
+        return ResponseEntity.ok(findApiLogsUsecase.filterAnonymousLogs(anonymousLogRequest, pageable));
     }
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/general")
-    public Page<MemberLogResponse> getApiCalls(
+    public ResponseEntity<PageResponse<MemberLogResponse>> getApiCalls(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
             @ModelAttribute FilterLogRequest memberLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return findApiLogsUsecase.filterMemberLogs(memberLogRequest, pageable);
+        return ResponseEntity.ok(findApiLogsUsecase.filterMemberLogs(memberLogRequest, pageable));
     }
 }
