@@ -1,6 +1,5 @@
 package clap.server.domain.model.task;
 
-import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
 import lombok.AccessLevel;
@@ -27,7 +26,7 @@ public class Comment extends BaseTime {
                 .isModified(false)
                 .build();
     }
-    
+
     public void updateComment(String content) {
         this.content = content;
         if(!this.isModified) {
