@@ -12,6 +12,7 @@
     import clap.server.exception.code.MemberErrorCode;
     import lombok.RequiredArgsConstructor;
     import org.springframework.stereotype.Service;
+    import org.springframework.transaction.annotation.Transactional;
 
     @Service
     @RequiredArgsConstructor
@@ -21,13 +22,14 @@
         private final SendEmailPort sendEmailPort;
 
         @Override
+        @Transactional
         public void sendInvitation(SendInvitationRequest request) {
             // 회원 조회
             Member member = loadMemberPort.findById(request.memberId())
                     .orElseThrow(() -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
 
             // 회원 상태를 PENDING으로 변경
-            member.setStatusPending();
+            member.changeStatusToPending();
 
             // 변경된 회원 저장
             commandMemberPort.save(member);

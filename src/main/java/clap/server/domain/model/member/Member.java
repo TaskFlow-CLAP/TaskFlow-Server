@@ -57,7 +57,7 @@ public class Member extends BaseTime {
         return this.memberInfo != null && this.memberInfo.isReviewer();
     }
 
-    public void setStatusPending() {
+    public void changeStatusToPending() {
         this.status = MemberStatus.PENDING;
     }
 }
