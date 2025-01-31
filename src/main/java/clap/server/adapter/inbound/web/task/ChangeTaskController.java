@@ -18,7 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
-@Tag(name = "02. Task[검토자]")
+@Tag(name = "02. Task [검토자]")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor

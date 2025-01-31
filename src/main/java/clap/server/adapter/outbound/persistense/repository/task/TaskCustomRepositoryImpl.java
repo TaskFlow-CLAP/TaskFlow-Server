@@ -26,6 +26,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
+
     @Override
     public Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         BooleanBuilder builder = createFilter(filterTaskListRequest);
@@ -39,13 +40,13 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
     @Override
     public Page<TaskEntity> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
-        BooleanBuilder whereClause = createFilter(filterTaskListRequest);
+        BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            whereClause.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
+            builder.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
         }
-        whereClause.and(taskEntity.processor.memberId.eq(processorId));
+        builder.and(taskEntity.processor.memberId.eq(processorId));
 
-        return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+        return getTasksPage(pageable, builder, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
     }
 
     @Override
