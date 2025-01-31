@@ -3,7 +3,8 @@ package clap.server.adapter.inbound.web.admin;
 import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
 import clap.server.adapter.inbound.web.dto.admin.RetrieveAllMemberResponse;
 import clap.server.application.mapper.RetrieveAllMemberMapper;
-import clap.server.application.port.inbound.management.FindAllMemberUsecase;
+import clap.server.application.port.inbound.management.FindAllMembersUsecase;
+import clap.server.application.port.inbound.management.FindMembersWithFilterUsecase;
 import clap.server.domain.model.member.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +21,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/managements")
 @RequiredArgsConstructor
 public class FindMemberController {
-    private final FindAllMemberUsecase findAllMemberUsecase;
+    private final FindAllMembersUsecase findAllMembersUsecase;
+    private final FindMembersWithFilterUsecase findMembersWithFilterUsecase;
     private final RetrieveAllMemberMapper retrieveAllMemberMapper;
 
     @Tag(name = "05. Admin")
@@ -44,10 +46,11 @@ public class FindMemberController {
 
         if (filterRequest.getName() != null || filterRequest.getEmail() != null || filterRequest.getNickname() != null ||
                 filterRequest.getDepartmentId() != null || filterRequest.getRole() != null) {
-            members = findAllMemberUsecase.findMembersWithFilter(pageable, filterRequest);
+            members = findMembersWithFilterUsecase.findMembersWithFilter(pageable, filterRequest);
         } else {
-            members = findAllMemberUsecase.findAllMembers(pageable);
+            members = findAllMembersUsecase.findAllMembers(pageable);
         }
+
 
         Page<RetrieveAllMemberResponse> response = members.map(retrieveAllMemberMapper::toResponse);
         return ResponseEntity.ok(response);
