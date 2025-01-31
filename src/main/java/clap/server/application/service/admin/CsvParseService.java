@@ -1,11 +1,15 @@
 package clap.server.application.service.admin;
 
-import clap.server.adapter.inbound.web.dto.admin.RegisterMemberRequest;
+import clap.server.application.port.outbound.member.LoadDepartmentPort;
+import clap.server.domain.model.member.Department;
+import clap.server.domain.model.member.Member;
+import clap.server.domain.model.member.MemberInfo;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.exception.ApplicationException;
+import clap.server.exception.code.DepartmentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,12 +19,18 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static clap.server.application.mapper.MemberInfoMapper.toMemberInfo;
+import static clap.server.application.mapper.MemberMapper.toMember;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CsvParseService {
 
-    public List<RegisterMemberRequest> parse(MultipartFile file) {
-        List<RegisterMemberRequest> memberRequests = new ArrayList<>();
+    private final LoadDepartmentPort loadDepartmentPort;
+
+    public List<Member> parse(MultipartFile file) {
+        List<Member> members = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -28,23 +38,30 @@ public class CsvParseService {
                 if (fields.length != 7) {
                     throw ApplicationException.from(MemberErrorCode.INVALID_CSV_FORMAT);
                 }
-                memberRequests.add(mapToRegisterMemberRequest(fields));
+                members.add(mapToMember(fields));
             }
         } catch (IOException e) {
             throw ApplicationException.from(MemberErrorCode.CSV_PARSING_ERROR);
         }
-        return memberRequests;
+        return members;
     }
 
-    private RegisterMemberRequest mapToRegisterMemberRequest(String[] fields) {
-        return new RegisterMemberRequest(
+    private Member mapToMember(String[] fields) {
+        // 부서 ID로 Department 객체 조회
+        Long departmentId = Long.parseLong(fields[2].trim());
+        Department department = loadDepartmentPort.findById(departmentId)
+                .orElseThrow(() -> new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
+
+        MemberInfo memberInfo = toMemberInfo(
                 fields[0].trim(), // name
                 fields[4].trim(), // email
                 fields[1].trim(), // nickname
                 Boolean.parseBoolean(fields[6].trim()), // isReviewer
-                Long.parseLong(fields[2].trim()), // departmentId
+                department, // department
                 MemberRole.valueOf(fields[5].trim()), // role
                 fields[3].trim() // departmentRole
         );
+
+        return toMember(memberInfo);
     }
 }

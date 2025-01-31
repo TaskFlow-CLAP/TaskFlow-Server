@@ -28,7 +28,7 @@ public class RegisterMemberService implements RegisterMemberUsecase {
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
     private final PasswordEncoder passwordEncoder;
-    private final CsvParseService csvParser; // CsvParseService 주입
+    private final CsvParseService csvParser;
 
     @Override
     @Transactional
@@ -56,8 +56,12 @@ public class RegisterMemberService implements RegisterMemberUsecase {
     @Override
     @Transactional
     public int registerMembersFromCsv(Long adminId, MultipartFile file) {
-        List<RegisterMemberRequest> memberRequests = csvParser.parse(file);
-        memberRequests.forEach(request -> registerMember(adminId, request));
-        return memberRequests.size();
+        List<Member> members = csvParser.parse(file);
+        Member admin = memberService.findActiveMember(adminId);
+        members.forEach(member -> {
+            member.register(admin);
+            commandMemberPort.save(member);
+        });
+        return members.size();
     }
 }
