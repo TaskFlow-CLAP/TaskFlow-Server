@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Task;
 import org.springframework.data.domain.Page;
@@ -32,4 +33,6 @@ public interface LoadTaskPort {
     Optional<Task> findPrevOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder);
 
     Optional<Task> findNextOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder);
+
+    Slice<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request, Pageable pageable);
 }
