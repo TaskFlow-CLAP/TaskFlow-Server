@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.dto.admin;
+package clap.server.adapter.inbound.web.dto.log;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

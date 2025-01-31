@@ -2,8 +2,7 @@ package clap.server.adapter.outbound.persistense.entity.log;
 
 import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.log.constant.ApiHttpMethod;
-import clap.server.adapter.outbound.persistense.entity.log.constant.LogTypeEnum;
-import clap.server.domain.model.log.ApiLog;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -57,26 +56,8 @@ public abstract class ApiLogEntity extends BaseTimeEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private LogTypeEnum logType;
+    private LogStatus logStatus;
 
     @Version
     private Long version;
-
-    protected ApiLog.ApiLogBuilder toCommonDomainBuilder() {
-        return ApiLog.builder()
-                .logId(logId)
-                .serverIp(serverIp)
-                .clientIp(clientIp)
-                .requestUrl(requestUrl)
-                .requestMethod(requestMethod.name())
-                .statusCode(statusCode)
-                .customStatusCode(customStatusCode)
-                .request(request)
-                .response(response)
-                .requestAt(requestAt)
-                .responseAt(responseAt)
-                .logType(logType);
-    }
-
-//    public abstract ApiLog toDomain();
 }

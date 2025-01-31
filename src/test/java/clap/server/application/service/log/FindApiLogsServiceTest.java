@@ -1,7 +1,7 @@
 package clap.server.application.service.log;
 
-import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
-import clap.server.adapter.inbound.web.dto.admin.MemberLogResponse;
+import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
+import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
 import clap.server.adapter.outbound.persistense.ApiLogPersistenceAdapter;
 import clap.server.adapter.outbound.persistense.entity.log.AnonymousLogEntity;
 import clap.server.adapter.outbound.persistense.entity.log.MemberLogEntity;

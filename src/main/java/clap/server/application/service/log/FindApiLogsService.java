@@ -1,14 +1,13 @@
 package clap.server.application.service.log;
 
-import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
-import clap.server.adapter.inbound.web.dto.admin.MemberLogResponse;
+import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
+import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
 import clap.server.adapter.outbound.persistense.ApiLogPersistenceAdapter;
 import clap.server.application.mapper.response.LogMapper;
 import clap.server.application.port.inbound.domain.LoginDomainService;
 import clap.server.application.port.inbound.log.FindApiLogsUsecase;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.log.ApiLog;
-import clap.server.domain.model.log.MemberLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 

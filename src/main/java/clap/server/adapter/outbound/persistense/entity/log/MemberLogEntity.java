@@ -18,11 +18,4 @@ public class MemberLogEntity extends ApiLogEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
     private MemberEntity member;
-
-//    @Override
-//    public ApiLog toDomain() {
-//        return toCommonDomainBuilder()
-//                .userId(member != null ? String.valueOf(member.getMemberId()) : null)
-//                .build();
-//    }
 }

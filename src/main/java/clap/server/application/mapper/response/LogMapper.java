@@ -1,7 +1,7 @@
 package clap.server.application.mapper.response;
 
-import clap.server.adapter.inbound.web.dto.admin.AnonymousLogResponse;
-import clap.server.adapter.inbound.web.dto.admin.MemberLogResponse;
+import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
+import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
 import clap.server.domain.model.log.AnonymousLog;
 import clap.server.domain.model.log.MemberLog;
 
@@ -22,13 +22,11 @@ public class LogMapper {
     public static MemberLogResponse toMemberLogResponse(MemberLog memberLog) {
         return new MemberLogResponse(
                 memberLog.getLogId(),
-                memberLog.getMember().getMemberId(),
+                memberLog.getLogStatus(),
                 memberLog.getRequestAt(),
-                memberLog.getResponseAt(),
-                memberLog.getRequestUrl(),
-                memberLog.getRequestMethod(),
-                memberLog.getStatusCode(),
-                memberLog.getCustomStatusCode()
+                memberLog.getMember().getNickname(),
+                memberLog.getServerIp(),
+                memberLog.getStatusCode()
         );
     }
 }

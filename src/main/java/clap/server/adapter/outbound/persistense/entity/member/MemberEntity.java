@@ -58,7 +58,4 @@ public class MemberEntity extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
     private MemberEntity admin;
-
-    @Version
-    private Long version; // 낙관적 락을 위한 버전 관리
 }
