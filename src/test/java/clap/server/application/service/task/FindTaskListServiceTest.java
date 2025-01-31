@@ -1,5 +1,6 @@
 package clap.server.application.service.task;
 
+import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.OrderTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
@@ -66,17 +67,17 @@ class FindTaskListServiceTest {
                 .thenReturn(expectedResponse);
 
         // when
-        Page<FilterPendingApprovalResponse> result = findTaskListService.findPendingApprovalTasks(managerId, pageable, filterTaskListRequest);
+        PageResponse<FilterPendingApprovalResponse> result = findTaskListService.findPendingApprovalTasks(managerId, pageable, filterTaskListRequest);
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getTotalElements()).isEqualTo(2);
+        assertThat(result.totalElements()).isEqualTo(2);
 
-        assertThat(result.getContent()).hasSize(2)
+        assertThat(result.content()).hasSize(2)
                 .extracting(FilterPendingApprovalResponse::taskId)
                 .containsExactly(1L, 2L);
 
-        assertThat(result.getContent().get(0))
+        assertThat(result.content().get(0))
                 .extracting(FilterPendingApprovalResponse::taskId, FilterPendingApprovalResponse::taskCode,
                         FilterPendingApprovalResponse::requestedAt, FilterPendingApprovalResponse::mainCategoryName,
                         FilterPendingApprovalResponse::categoryName, FilterPendingApprovalResponse::title,
@@ -84,7 +85,7 @@ class FindTaskListServiceTest {
                 .containsExactly(1L, "TC001", LocalDateTime.of(2025, 1, 24, 12, 30),
                         "메인 카테고리", "서브 카테고리", "작업 제목", "atom.park");
 
-        assertThat(result.getContent().get(1))
+        assertThat(result.content().get(1))
                 .extracting(FilterPendingApprovalResponse::taskId, FilterPendingApprovalResponse::taskCode,
                         FilterPendingApprovalResponse::requestedAt, FilterPendingApprovalResponse::mainCategoryName,
                         FilterPendingApprovalResponse::categoryName, FilterPendingApprovalResponse::title,
