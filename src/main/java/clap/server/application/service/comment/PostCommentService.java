@@ -76,7 +76,6 @@ public class PostCommentService implements PostCommentUsecase {
 
         if (Member.checkCommenter(task, member)) {
             Comment comment = Comment.createComment(member, task, null);
-            Comment comment = Comment.createComment(member, task, "Attachment");
             Comment savedComment = commandCommentPort.saveComment(comment);
             saveAttachment(files, task, savedComment);
 
