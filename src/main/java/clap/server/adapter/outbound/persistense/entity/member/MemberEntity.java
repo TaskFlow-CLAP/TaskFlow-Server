@@ -52,8 +52,14 @@ public class MemberEntity extends BaseTimeEntity {
     @Column
     private String imageUrl;
 
-    @Column
-    private Boolean notificationEnabled;
+    @Column(name = "kakaowork_notification_enabled")
+    private Boolean kakaoworkNotificationEnabled = Boolean.TRUE;;
+
+    @Column(name = "agit_notification_enabled")
+    private Boolean agitNotificationEnabled = Boolean.TRUE;;
+
+    @Column(name = "email_notification_enabled")
+    private Boolean emailNotificationEnabled = Boolean.TRUE;;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
