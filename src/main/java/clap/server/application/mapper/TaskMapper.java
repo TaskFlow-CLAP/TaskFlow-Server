@@ -4,6 +4,8 @@ package clap.server.application.mapper;
 import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TaskItemResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
+import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Task;
@@ -128,7 +130,7 @@ public class TaskMapper {
         );
     }
 
-    private static TaskItemResponse toTaskItemResponse(Task task) {
+    public static TaskItemResponse toTaskItemResponse(Task task) {
         return new TaskItemResponse(
                 task.getTaskId(),
                 task.getTaskCode(),

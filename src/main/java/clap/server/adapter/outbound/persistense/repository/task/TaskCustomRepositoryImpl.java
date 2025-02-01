@@ -1,13 +1,19 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
+
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
+import clap.server.adapter.inbound.web.dto.task.response.TaskItemResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,7 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
 import static com.querydsl.core.types.Order.*;
@@ -25,7 +33,7 @@ import static com.querydsl.core.types.Order.*;
 public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
     private final JPAQueryFactory queryFactory;
-
+    private final EntityManager entityManager;
 
     @Override
     public Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
@@ -47,6 +55,99 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         builder.and(taskEntity.processor.memberId.eq(processorId));
 
         return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
+    }
+    @Override
+    public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable) {
+        // Build the query string using a separate method
+        String queryStr = buildQueryString(filter);
+
+        TypedQuery<TaskEntity> query = entityManager.createQuery(queryStr, TaskEntity.class)
+                .setParameter("memberId", memberId);
+
+        // Set the parameters
+        setQueryParameters(query, filter);
+
+        // Apply pagination
+        query.setMaxResults(pageable.getPageSize())
+                .setFirstResult((int) pageable.getOffset());
+
+        List<TaskEntity> taskEntities = query.getResultList();
+
+        return taskEntities.stream()
+                .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId()))
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    List<TaskItemResponse> taskResponses = entry.getValue().stream()
+                            .map(taskEntity -> new TaskItemResponse(
+                                    taskEntity.getTaskId(),
+                                    taskEntity.getTaskCode(),
+                                    taskEntity.getTitle(),
+                                    taskEntity.getCategory().getMainCategory().getName(),
+                                    taskEntity.getCategory().getName(),
+                                    taskEntity.getRequester().getNickname(),
+                                    taskEntity.getRequester().getImageUrl(),
+                                    taskEntity.getRequester().getDepartment().getName(),
+                                    taskEntity.getProcessorOrder(),
+                                    taskEntity.getTaskStatus(),
+                                    taskEntity.getCreatedAt()
+                            )).collect(Collectors.toList());
+
+                    return new TeamMemberTaskResponse(
+                            entry.getKey(),
+                            entry.getValue().get(0).getProcessor().getNickname(),
+                            entry.getValue().get(0).getProcessor().getImageUrl(),
+                            entry.getValue().get(0).getProcessor().getDepartment().getName(),
+                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count(),
+                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.PENDING_COMPLETED).count(),
+                            entry.getValue().size(),
+                            taskResponses
+                    );
+                })
+                .sorted("기여도순".equals(filter.sortBy()) ?
+                        Comparator.comparingInt((TeamMemberTaskResponse t) -> t.inProgressTaskCount() + t.pendingTaskCount()).reversed() :
+                        Comparator.comparing(TeamMemberTaskResponse::nickname))
+                .collect(Collectors.toList());
+    }
+
+    private String buildQueryString(FilterTeamStatusRequest filter) {
+        StringBuilder queryStr = new StringBuilder("SELECT t FROM TaskEntity t " +
+                "JOIN FETCH t.processor p " +
+                "WHERE (:memberId IS NULL OR p.memberId = :memberId) ");
+
+        if (!filter.taskTitle().isEmpty()) {
+            queryStr.append("AND t.title LIKE :title ");
+        }
+        if (!filter.mainCategoryIds().isEmpty()) {
+            queryStr.append("AND t.category.mainCategory.id IN :mainCategories ");
+        }
+        if (!filter.categoryIds().isEmpty()) {
+            queryStr.append("AND t.category.id IN :categories ");
+        }
+
+        if ("기여도순".equals(filter.sortBy())) {
+            queryStr.append("ORDER BY (SELECT COUNT(te) FROM TaskEntity te WHERE te.processor = p AND te.taskStatus IN ('IN_PROGRESS', 'PENDING_COMPLETED')) DESC");
+        } else {
+            queryStr.append("ORDER BY p.nickname ASC");
+        }
+
+        return queryStr.toString();
+    }
+
+    private boolean isValidTitle(FilterTeamStatusRequest filter) {
+        return filter.taskTitle() != null && !filter.taskTitle().isEmpty();
+    }
+
+    private void setQueryParameters(TypedQuery<TaskEntity> query, FilterTeamStatusRequest filter) {
+        if (isValidTitle(filter)) {
+            query.setParameter("title", "%" + filter.taskTitle() + "%");
+        }
+        if (!filter.mainCategoryIds().isEmpty()) {
+            query.setParameter("mainCategories", filter.mainCategoryIds());
+        }
+        if (!filter.categoryIds().isEmpty()) {
+            query.setParameter("categories", filter.categoryIds());
+        }
     }
 
     @Override

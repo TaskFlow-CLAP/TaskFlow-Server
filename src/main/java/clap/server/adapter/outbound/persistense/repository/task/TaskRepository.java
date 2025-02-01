@@ -45,6 +45,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
     Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderDesc(
             Long processorId, TaskStatus taskStatus, Long processorOrder);
 
+
 }
 
 
