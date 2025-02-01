@@ -35,7 +35,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         }
         builder.and(taskEntity.requester.memberId.eq(requesterId));
 
-        return getTasksPage(pageable, builder, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+        return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
     }
 
     @Override
@@ -46,7 +46,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         }
         builder.and(taskEntity.processor.memberId.eq(processorId));
 
-        return getTasksPage(pageable, builder, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+        return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
             builder.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
         }
         builder.and(taskEntity.taskStatus.eq(TaskStatus.REQUESTED));
-        return getTasksPage(pageable, builder, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+        return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
     }
 
     @Override
@@ -68,7 +68,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                             .or(taskEntity.processor.nickname.eq(filterTaskListRequest.nickName()))
             );
         }
-        return getTasksPage(pageable, builder, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+        return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
     }
 
     @Override
