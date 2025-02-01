@@ -51,9 +51,6 @@ public class LoggingAspect {
         try {
             result = joinPoint.proceed();
         } catch (Exception ex) {
-            log.error("Exception occurred: {}", ex.getMessage());
-            log.info("response.getStatus()={}",response.getStatus());
-            log.info("getRequestBody()={}", getRequestBody(request));
             throw ex;
         } finally {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -61,10 +58,6 @@ public class LoggingAspect {
             String customCode = getCustomCode(response);
             if (logType != null) {
                 if (LogStatus.LOGIN.equals(logType)) {
-                    log.info("result={}",result);
-                    log.info("response.getStatus()={}",response.getStatus());
-                    log.info("getRequestBody()={}", getRequestBody(request));
-                    log.info("getNicknameFromRequestBody()={}", getNicknameFromRequestBody(request));
                     createAnonymousLogsUsecase.createAnonymousLog(request, response, result, logType, customCode, getRequestBody(request), getNicknameFromRequestBody(request));
                 } else {
                     if (!isUserAuthenticated()) {

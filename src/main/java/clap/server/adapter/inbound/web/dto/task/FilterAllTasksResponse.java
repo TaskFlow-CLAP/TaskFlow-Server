@@ -12,7 +12,9 @@ public record FilterAllTasksResponse(
         String categoryName,
         String title,
         String processorName,
+        String processorUrl,
         String requesterName,
+        String requesterUrl,
         TaskStatus taskStatus,
         LocalDateTime finishedAt
 ) {
