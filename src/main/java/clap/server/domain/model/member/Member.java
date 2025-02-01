@@ -82,7 +82,6 @@ public class Member extends BaseTime {
     public void setStatusDeleted() {
         this.status = MemberStatus.DELETED;
     }
-    
     public void updateKaKaoEnabled() {
         if (!this.kakaoworkNotificationEnabled) {
             this.kakaoworkNotificationEnabled = true;
@@ -91,7 +90,6 @@ public class Member extends BaseTime {
             this.kakaoworkNotificationEnabled = false;
         }
     }
-
     public void updateAgitEnabled() {
         if (!this.agitNotificationEnabled) {
             this.agitNotificationEnabled = true;
@@ -100,7 +98,6 @@ public class Member extends BaseTime {
             this.agitNotificationEnabled = false;
         }
     }
-
     public void updateEmailEnabled() {
         if (!this.emailNotificationEnabled) {
             this.emailNotificationEnabled = true;
