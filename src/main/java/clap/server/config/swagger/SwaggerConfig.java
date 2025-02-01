@@ -92,7 +92,7 @@ public class SwaggerConfig {
         Map<Integer, List<ErrorExampleHolder>> statusWithExampleHolders = Arrays.stream(errorCodes)
                 .map(errorCode -> ErrorExampleHolder.builder()
                         .example(getSwaggerExample(errorCode))
-                        .name(errorCode.name())
+                        .customCode(errorCode.getCustomCode())
                         .code(errorCode.getHttpStatus().value())
                         .build())
                 .collect(groupingBy(ErrorExampleHolder::getCode));
@@ -119,7 +119,7 @@ public class SwaggerConfig {
 
                     v.forEach(
                             exampleHolder -> mediaType.addExamples(
-                                    exampleHolder.getName(),
+                                    exampleHolder.getCustomCode(),
                                     exampleHolder.getExample()
                             )
                     );
@@ -138,7 +138,7 @@ public class SwaggerConfig {
      * @return
      */
     private Example getSwaggerExample(BaseErrorCode errorCode) {
-        ErrorExample errorExample = new ErrorExample(errorCode.getHttpStatus().value(), errorCode.getCustomCode(), errorCode.getMessage());
+        ErrorExample errorExample = new ErrorExample(errorCode.getHttpStatus().value(), errorCode.name(), errorCode.getMessage());
         Example example = new Example();
         example.setValue(errorExample);
 

@@ -8,6 +8,6 @@ import lombok.Getter;
 @Builder
 public class ErrorExampleHolder {
 	private Example example;
-	private String name;
+	private String customCode;
 	private int code;
 }
