@@ -122,9 +122,11 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
         attachmentsToDelete.forEach(Attachment::softDelete);
 
-        List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePathConstants.TASK_IMAGE, files);
-        List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
-        commandAttachmentPort.saveAll(attachments);
+        if(files != null) {
+            List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePathConstants.TASK_IMAGE, files);
+            List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
+            commandAttachmentPort.saveAll(attachments);
+        }
     }
 
     private List<Attachment> validateAndGetAttachments(List<Long> attachmentIdsToDelete, Task task) {

@@ -55,7 +55,10 @@ public class CreateTaskService implements CreateTaskUsecase {
         savedTask.setInitialProcessorOrder();
         commandTaskPort.save(savedTask);
 
-        saveAttachments(files, savedTask);
+        if (files != null) {
+            saveAttachments(files, savedTask);
+        }
+
         publishNotification(savedTask);
         return TaskMapper.toCreateTaskResponse(savedTask);
     }
@@ -66,7 +69,7 @@ public class CreateTaskService implements CreateTaskUsecase {
         commandAttachmentPort.saveAll(attachments);
     }
 
-    private void publishNotification(Task task){
+    private void publishNotification(Task task) {
         List<Member> reviewers = memberService.findReviewers();
 
         // 검토자들 각각에 대한 알림 생성 후 event 발행
@@ -88,7 +91,6 @@ public class CreateTaskService implements CreateTaskUsecase {
                     task, null, null);
         }
     }
-
 
 
 }
