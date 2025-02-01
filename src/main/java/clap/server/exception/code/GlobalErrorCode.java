@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum CommonErrorCode implements BaseErrorCode {
+public enum GlobalErrorCode implements BaseErrorCode {
 
     /**
      * Common Error

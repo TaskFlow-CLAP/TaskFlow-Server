@@ -2,7 +2,7 @@ package clap.server.exception;
 
 import clap.server.exception.code.AuthErrorCode;
 import clap.server.exception.code.BaseErrorCode;
-import clap.server.exception.code.CommonErrorCode;
+import clap.server.exception.code.GlobalErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -48,7 +48,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         return handleExceptionInternalArgs(
                 e,
                 HttpHeaders.EMPTY,
-                CommonErrorCode.BAD_REQUEST,
+                GlobalErrorCode.BAD_REQUEST,
                 request,
                 errors
         );
@@ -61,7 +61,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("ConstraintViolationException Error"));
 
-        return handleExceptionInternalConstraint(e, CommonErrorCode.valueOf(errorMessage), HttpHeaders.EMPTY, request);
+        return handleExceptionInternalConstraint(e, GlobalErrorCode.valueOf(errorMessage), HttpHeaders.EMPTY, request);
     }
 
     @ExceptionHandler
@@ -70,9 +70,9 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternalFalse(
                 e,
-                CommonErrorCode.INTERNAL_SERVER_ERROR,
+                GlobalErrorCode.INTERNAL_SERVER_ERROR,
                 HttpHeaders.EMPTY,
-                CommonErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus(),
+                GlobalErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus(),
                 request,
                 e.getMessage()
         );
