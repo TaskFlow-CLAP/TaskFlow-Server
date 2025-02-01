@@ -12,6 +12,7 @@ public record FilterRequestedTasksResponse(
         String categoryName,
         String title,
         String processorName,
+        String processorUrl,
         TaskStatus taskStatus,
         LocalDateTime finishedAt
 ) {
