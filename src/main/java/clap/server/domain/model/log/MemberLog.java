@@ -25,7 +25,7 @@ public class MemberLog extends ApiLog {
                 .statusCode(response.getStatus())
                 .customStatusCode(customCode)
                 .requestBody(requestBody)
-                .responseBody(responseResult != null ? responseResult.toString() : "UNKNOWN")
+                .responseBody(responseResult != null ? responseResult.toString() : "일반 실패")
                 .requestAt(LocalDateTime.now())
                 .logStatus(logStatus)
                 .member(member)

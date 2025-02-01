@@ -45,9 +45,6 @@ public class LoggingAspect {
     public Object logApiRequests(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        if (!(request instanceof ContentCachingRequestWrapper)) {
-            request = new ContentCachingRequestWrapper(request);
-        }
         HttpServletResponse response = attributes.getResponse();
 
         Object result = null;
@@ -98,7 +95,6 @@ public class LoggingAspect {
         return customCode != null ? customCode : "CUSTOM" + (response != null ? response.getStatus() : 500);
     }
 
-    //TODO: 로그인 시도 시 닉네임 파싱하도록 수정
     private String getNicknameFromRequestBody(HttpServletRequest request) {
         try {
             String requestBody = getRequestBody(request);
@@ -109,14 +105,13 @@ public class LoggingAspect {
         }
     }
 
-    //TODO: 제거
     private String getRequestBody(HttpServletRequest request) {
         try {
             ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper) request;
             byte[] content = cachingRequest.getContentAsByteArray();
             return new String(content, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            return "ERROR: Unable to read request body";
+            return "요청 바디의 내용을 읽을 수 없음";
         }
     }
 
