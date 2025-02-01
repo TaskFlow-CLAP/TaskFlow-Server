@@ -26,7 +26,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 
 @Slf4j
 @Aspect
@@ -82,7 +81,6 @@ public class LoggingAspect {
         }
     }
 
-    //TODO: 로그인 시도에 대한 에러 잡도록 수정
     private String getCustomCode(HttpServletResponse response) {
         String customCode = ErrorContext.getCustomCode();
         return customCode != null ? customCode : "CUSTOM" + (response != null ? response.getStatus() : 500);
