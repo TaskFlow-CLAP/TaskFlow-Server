@@ -82,6 +82,7 @@ public class Member extends BaseTime {
     public void setStatusDeleted() {
         this.status = MemberStatus.DELETED;
     }
+    
     public void updateKaKaoEnabled() {
         if (!this.kakaoworkNotificationEnabled) {
             this.kakaoworkNotificationEnabled = true;
@@ -90,6 +91,7 @@ public class Member extends BaseTime {
             this.kakaoworkNotificationEnabled = false;
         }
     }
+    
     public void updateAgitEnabled() {
         if (!this.agitNotificationEnabled) {
             this.agitNotificationEnabled = true;
@@ -98,6 +100,7 @@ public class Member extends BaseTime {
             this.agitNotificationEnabled = false;
         }
     }
+    
     public void updateEmailEnabled() {
         if (!this.emailNotificationEnabled) {
             this.emailNotificationEnabled = true;
@@ -106,6 +109,7 @@ public class Member extends BaseTime {
             this.emailNotificationEnabled = false;
         }
     }
+    
     public static Boolean checkCommenter(Task task, Member member) {
         // 일반 회원일 경우 => 요청자인지 확인
         // 담당자일 경우 => 처리자인지 확인
