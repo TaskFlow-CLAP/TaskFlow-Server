@@ -44,8 +44,8 @@ public class PostCommentController {
     public void createAttachmentComment(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @PathVariable Long taskId,
-            @RequestPart(name = "attachment") @NotNull List<MultipartFile> attachments) {
-        postCommentUsecase.saveCommentAttachment(userInfo.getUserId(), taskId, attachments);
+            @RequestPart(name = "attachment") @NotNull MultipartFile attachment) {
+        postCommentUsecase.saveCommentAttachment(userInfo.getUserId(), taskId, attachment);
     }
 
 }
