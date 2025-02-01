@@ -1,4 +1,4 @@
-package clap.server.application.service.notification;
+package clap.server.application.service.webhook;
 
 import clap.server.application.port.inbound.notification.SubscribeSseUsecase;
 import clap.server.application.port.outbound.notification.CommandSsePort;
@@ -7,7 +7,6 @@ import clap.server.exception.ApplicationException;
 import clap.server.exception.code.NotificationErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import java.io.IOException;
 
 @ApplicationService
 @RequiredArgsConstructor
