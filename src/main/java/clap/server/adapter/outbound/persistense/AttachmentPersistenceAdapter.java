@@ -54,11 +54,9 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
     }
 
     @Override
-    public List<Attachment> findAllyByTaskIdAndCommentIdAndAttachmentId(Long taskId, Long commentId, List<Long> attachmentIds) {
-        List<AttachmentEntity> attachmentEntities = attachmentRepository.findActiveAttachmentsByTask_TaskIdAndComment_CommentIdAndAttachmentIdIn(taskId, commentId, attachmentIds);
-        return attachmentEntities.stream()
-                .map(attachmentPersistenceMapper::toDomain)
-                .collect(Collectors.toList());
+    public Optional<Attachment> findByCommentId(Long commentId) {
+        Optional<AttachmentEntity> attachmentEntity = attachmentRepository.findByComment_CommentIdAndIsDeletedFalse(commentId);
+        return attachmentEntity.map(attachmentPersistenceMapper::toDomain);
     }
 
     @Override
@@ -67,5 +65,10 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
         return attachmentEntities.stream()
                 .map(attachmentPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean exitsByCommentId(Long commentId) {
+        return attachmentRepository.existsByComment_CommentId(commentId);
     }
 }

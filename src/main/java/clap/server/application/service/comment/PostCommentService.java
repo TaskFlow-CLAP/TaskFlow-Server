@@ -2,7 +2,6 @@ package clap.server.application.service.comment;
 
 import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
-import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.port.inbound.comment.PostCommentUsecase;
@@ -18,8 +17,6 @@ import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Comment;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
-import clap.server.exception.ApplicationException;
-import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +42,7 @@ public class PostCommentService implements PostCommentUsecase {
 
         // 일반 회원일 경우 => 요청자인지 확인
         // 담당자일 경우 => 처리자인지 확인
-        if (checkCommenter(task, member)) {
+        if (Member.checkCommenter(task, member)) {
             Comment comment = Comment.createComment(member, task, request.content());
             Comment savedComment = commandCommentPort.saveComment(comment);
 
@@ -60,7 +57,7 @@ public class PostCommentService implements PostCommentUsecase {
         Task task = taskService.findById(taskId);
         Member member = memberService.findActiveMember(userId);
 
-        if (checkCommenter(task, member)) {
+        if (Member.checkCommenter(task, member)) {
             Comment comment = Comment.createComment(member, task, "Attachment");
             Comment savedComment = commandCommentPort.saveComment(comment);
             saveAttachment(files, task, savedComment);
@@ -74,23 +71,5 @@ public class PostCommentService implements PostCommentUsecase {
         List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePathConstants.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toCommentAttachments(task, comment, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
-    }
-
-    public Boolean checkCommenter(Task task, Member member) {
-        // 일반 회원일 경우 => 요청자인지 확인
-        // 담당자일 경우 => 처리자인지 확인
-        if ((member.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER)
-                && !(member.getMemberId() == task.getProcessor().getMemberId())) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
-        }
-
-        else if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
-                && !(member.getMemberId() == task.getRequester().getMemberId())) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
-        }
-        else {
-            return true;
-        }
-
     }
 }

@@ -1,7 +1,11 @@
 package clap.server.domain.model.member;
 
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
+import clap.server.domain.model.task.Task;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.MemberErrorCode;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -77,5 +81,23 @@ public class Member extends BaseTime {
     }
     public void setStatusDeleted() {
         this.status = MemberStatus.DELETED;
+    }
+
+    public static Boolean checkCommenter(Task task, Member member) {
+        // 일반 회원일 경우 => 요청자인지 확인
+        // 담당자일 경우 => 처리자인지 확인
+        if ((member.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER)
+                && !(member.getMemberId() == task.getProcessor().getMemberId())) {
+            throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
+        }
+
+        else if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
+                && !(member.getMemberId() == task.getRequester().getMemberId())) {
+            throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
+        }
+        else {
+            return true;
+        }
+
     }
 }
