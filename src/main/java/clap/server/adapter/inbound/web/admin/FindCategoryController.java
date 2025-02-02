@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@Tag(name = "카테고리 조회")
+@Tag(name = "02. Task [카테고리]", description = "카테고리 조회 API")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api")

@@ -1,6 +1,5 @@
 package clap.server.application.port.inbound.admin;
 
-public interface AddCategoryUsecase {
-    void addMainCategory(Long adminId, String code, String name);
+public interface AddSubCategoryUsecase {
     void addSubCategory(Long adminId, Long mainCategoryId, String code, String name);
 }
