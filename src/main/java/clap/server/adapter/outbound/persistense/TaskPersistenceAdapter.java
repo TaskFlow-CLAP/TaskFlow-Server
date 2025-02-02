@@ -47,24 +47,21 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public Page<FilterRequestedTasksResponse> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
-        Page<Task> taskList = taskRepository.findTasksRequestedByUser(requesterId, pageable, filterTaskListRequest)
+    public Page<Task> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        return taskRepository.findTasksRequestedByUser(requesterId, pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
-        return taskList.map(TaskMapper::toFilterRequestedTasksResponse);
     }
 
     @Override
-    public Page<FilterAssignedTaskListResponse> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
-        Page<Task> taskList = taskRepository.findTasksAssignedByManager(processorId, pageable, filterTaskListRequest)
+    public Page<Task> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        return taskRepository.findTasksAssignedByManager(processorId, pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
-        return taskList.map(TaskMapper::toFilterAssignedTaskListResponse);
     }
 
     @Override
-    public Page<FilterPendingApprovalResponse> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
-        Page<Task> taskList = taskRepository.findPendingApprovalTasks(pageable, filterTaskListRequest)
+    public Page<Task> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        return taskRepository.findPendingApprovalTasks(pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
-        return taskList.map(TaskMapper::toFilterPendingApprovalTasksResponse);
     }
 
     @Override
@@ -86,10 +83,9 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public Page<FilterAllTasksResponse> findAllTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
-        Page<Task> taskList = taskRepository.findAllTasks(pageable, filterTaskListRequest)
+    public Page<Task> findAllTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        return taskRepository.findAllTasks(pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
-        return taskList.map(TaskMapper::toFilterAllTasksResponse);
     }
 
     @Override

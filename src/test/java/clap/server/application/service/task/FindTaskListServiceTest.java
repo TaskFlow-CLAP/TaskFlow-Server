@@ -3,6 +3,7 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
+import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +39,8 @@ class FindTaskListServiceTest {
 
     private FilterTaskListRequest filterTaskListRequest;
     private Pageable pageable;
-    private Page<FilterPendingApprovalResponse> expectedResponse;
+    private PageResponse<FilterPendingApprovalResponse> expectedResponse;
+    private Page<FilterPendingApprovalResponse> pageResponse;
 
     @BeforeEach
     void setUp() {
@@ -54,7 +58,9 @@ class FindTaskListServiceTest {
                 2L, "TC002", LocalDateTime.of(2025, 1, 15, 14, 30),
                 "메인 카테고리2", "서브 카테고리2", "다른 작업 제목", "john.doe"
         );
-        expectedResponse = new PageImpl<>(List.of(response, response2), pageable, 1);
+        pageResponse = new PageImpl<>(List.of(response, response2), pageable, 2);
+        expectedResponse = PageResponse.from(pageResponse);
+
     }
 
     @Test
@@ -62,9 +68,8 @@ class FindTaskListServiceTest {
     void findPendingApprovalTasks_ReturnFilteredTasks() {
         // given
         Long managerId = 1L;
-        when(loadTaskPort.findPendingApprovalTasks(pageable, filterTaskListRequest))
+        when(findTaskListService.findPendingApprovalTasks(managerId, eq(pageable), eq(filterTaskListRequest)))
                 .thenReturn(expectedResponse);
-
         // when
         PageResponse<FilterPendingApprovalResponse> result = findTaskListService.findPendingApprovalTasks(managerId, pageable, filterTaskListRequest);
 
