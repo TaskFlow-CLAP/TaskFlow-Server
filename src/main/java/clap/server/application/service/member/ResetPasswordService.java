@@ -1,7 +1,8 @@
 package clap.server.application.service.member;
 
-import clap.server.application.port.inbound.auth.ResetPasswordUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
+import clap.server.application.port.inbound.member.ResetInitialPasswordUsecase;
+import clap.server.application.port.inbound.member.ResetPasswordUsecase;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-class ResetPasswordService implements ResetPasswordUsecase {
+class ResetPasswordService implements ResetPasswordUsecase, ResetInitialPasswordUsecase {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
     private final CommandMemberPort commandMemberPort;

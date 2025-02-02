@@ -23,5 +23,6 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long>, Jpa
 
     List<MemberEntity> findByIsReviewerTrue();
 
+    Optional<MemberEntity> findByMemberIdAndIsReviewerTrue(Long memberId);
 }
 

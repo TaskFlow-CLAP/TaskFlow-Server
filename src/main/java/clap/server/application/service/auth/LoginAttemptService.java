@@ -47,10 +47,11 @@ public class LoginAttemptService {
             LocalDateTime now = LocalDateTime.now();
 
             long minutesSinceLastAttempt = ChronoUnit.MINUTES.between(lastAttemptAt, now);
-
-            if (minutesSinceLastAttempt <= LOCK_TIME_DURATION) {
+            long minutesSinceLastAttemptInMillis = minutesSinceLastAttempt * 60 * 1000;
+            if (minutesSinceLastAttemptInMillis <= LOCK_TIME_DURATION) {
                 throw new AuthException(AuthErrorCode.ACCOUNT_IS_LOCKED);
             }
+            commandLoginLogPort.deleteById(sessionId);
         }
     }
 

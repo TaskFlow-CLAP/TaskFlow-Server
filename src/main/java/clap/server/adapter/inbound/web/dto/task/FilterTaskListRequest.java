@@ -32,8 +32,12 @@ public record FilterTaskListRequest(
         @NotNull
         List<TaskStatus> taskStatus,
 
-        @Schema(description = "정렬 기준", implementation = OrderRequest.class)
+        @Schema(description = "정렬 기준", example = "REQUESTED_AT")
         @NotNull
-        OrderRequest orderRequest
+        String sortBy,
+
+        @Schema(description = "정렬 방향 (ASC/DESC)", example = "ASC")
+        @NotNull
+        String sortDirection
 ) {
 }

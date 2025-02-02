@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "task")
@@ -44,8 +42,8 @@ public class TaskEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
 
-    @Column(nullable = false)
-    private int processorOrder;
+    @Column
+    private Long processorOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id")
@@ -63,5 +61,5 @@ public class TaskEntity extends BaseTimeEntity {
     private LocalDateTime dueDate;
 
     @Column
-    private LocalDateTime completedAt;
+    private LocalDateTime finishedAt;
 }

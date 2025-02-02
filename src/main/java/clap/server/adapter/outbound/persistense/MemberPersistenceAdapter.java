@@ -2,7 +2,6 @@ package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
-import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.adapter.outbound.persistense.mapper.MemberPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.member.MemberRepository;
@@ -26,7 +25,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static clap.server.adapter.outbound.persistense.entity.member.QMemberEntity.memberEntity;
 
@@ -38,6 +39,7 @@ import static clap.server.adapter.outbound.persistense.entity.member.QMemberEnti
     private final TaskRepository taskRepository;
     private final TaskPersistenceMapper taskPersistenceMapper;
     private final JPAQueryFactory jpaQueryFactory;
+
 
     @Override
     public Optional<Member> findById(final Long id) {
@@ -67,32 +69,15 @@ import static clap.server.adapter.outbound.persistense.entity.member.QMemberEnti
     }
 
     @Override
+    public Optional<Member> findReviewerById(Long id) {
+        Optional<MemberEntity> memberEntity =  memberRepository.findByMemberIdAndIsReviewerTrue(id);
+        return memberEntity.map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
     public void save(final Member member) {
         MemberEntity memberEntity = memberPersistenceMapper.toEntity(member);
         memberRepository.save(memberEntity);
-    }
-
-    @Override
-    public List<Member> findActiveManagers() {
-        List<MemberEntity> memberEntities = memberRepository.findByRoleAndStatus(MemberRole.valueOf("ROLE_MANAGER"), MemberStatus.ACTIVE);
-        return memberEntities.stream()
-                .map(memberPersistenceMapper::toDomain)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public int getRemainingTasks(Long memberId) {
-        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.PENDING_COMPLETED);
-        return findTasksByMemberIdAndStatus(memberId, targetStatuses).size();
-    }
-
-
-    @Override
-    public List<Task> findTasksByMemberIdAndStatus(Long memberId, List<TaskStatus> taskStatuses) {
-        List<TaskEntity> taskEntities = taskRepository.findByProcessor_MemberIdAndTaskStatusIn(memberId, taskStatuses);
-        return taskEntities.stream()
-                .map(taskPersistenceMapper::toDomain)
-                .collect(Collectors.toList());
     }
 
     @Override
