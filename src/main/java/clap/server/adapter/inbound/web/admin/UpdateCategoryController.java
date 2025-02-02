@@ -6,6 +6,7 @@ import clap.server.application.port.inbound.admin.UpdateCategoryUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,7 +26,7 @@ public class UpdateCategoryController {
     @PatchMapping("/categories/{categoryId}")
     @Secured("ROLE_ADMIN")
     public void updateCategory(@AuthenticationPrincipal SecurityUserDetails userInfo, @PathVariable Long categoryId,
-                               @RequestBody UpdateCategoryRequest updateCategoryRequest) {
+                               @Valid @RequestBody UpdateCategoryRequest updateCategoryRequest) {
         updateCategoryUsecase.updateCategory(userInfo.getUserId(), categoryId, updateCategoryRequest.name(), updateCategoryRequest.code());
     }
 }
