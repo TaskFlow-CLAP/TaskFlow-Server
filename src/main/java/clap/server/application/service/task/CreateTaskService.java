@@ -1,9 +1,7 @@
 package clap.server.application.service.task;
 
-import clap.server.adapter.inbound.web.dto.notification.SseRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
-
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.mapper.AttachmentMapper;
@@ -13,24 +11,17 @@ import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
-
-import clap.server.application.service.notification.SendWebhookService;
 import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.notification.Notification;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
-import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
-import static clap.server.domain.model.notification.Notification.createTaskNotification;
 
 
 @ApplicationService
@@ -42,8 +33,7 @@ public class CreateTaskService implements CreateTaskUsecase {
     private final CommandTaskPort commandTaskPort;
     private final CommandAttachmentPort commandAttachmentPort;
     private final S3UploadAdapter s3UploadAdapter;
-    private final SendWebhookService sendWebhookService;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final PublishNotificationService publishNotificationService;
 
     @Override
     @Transactional
@@ -59,7 +49,8 @@ public class CreateTaskService implements CreateTaskUsecase {
             saveAttachments(files, savedTask);
         }
 
-        publishNotification(savedTask);
+        List<Member> reviewers = memberService.findReviewers();
+        publishNotificationService.publishNotification(reviewers, savedTask, NotificationType.TASK_REQUESTED);
         return TaskMapper.toCreateTaskResponse(savedTask);
     }
 
@@ -68,29 +59,5 @@ public class CreateTaskService implements CreateTaskUsecase {
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }
-
-    private void publishNotification(Task task) {
-        List<Member> reviewers = memberService.findReviewers();
-
-        // 검토자들 각각에 대한 알림 생성 후 event 발행
-        for (Member reviewer : reviewers) {
-            // 알림 저장
-            Notification notification = createTaskNotification(task, reviewer, NotificationType.TASK_REQUESTED);
-            applicationEventPublisher.publishEvent(notification);
-
-            // SSE 실시간 알림 전송
-            SseRequest sseRequest = new SseRequest(
-                    notification.getTask().getTitle(),
-                    notification.getType(),
-                    reviewer.getMemberId(),
-                    null
-            );
-            applicationEventPublisher.publishEvent(sseRequest);
-
-            sendWebhookService.sendWebhookNotification(reviewer, NotificationType.TASK_REQUESTED,
-                    task, null, null);
-        }
-    }
-
 
 }

@@ -1,6 +1,5 @@
 package clap.server.application.service.task;
 
-import clap.server.adapter.inbound.web.dto.notification.SseRequest;
 import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
@@ -17,11 +16,9 @@ import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
-import clap.server.application.service.notification.SendWebhookService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.notification.Notification;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Label;
@@ -30,14 +27,10 @@ import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static clap.server.domain.model.notification.Notification.createTaskNotification;
 
 
 @ApplicationService
@@ -48,8 +41,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final MemberService memberService;
     private final CategoryService categoryService;
     private final TaskService taskService;
-    private final ApplicationEventPublisher applicationEventPublisher;
-    private final SendWebhookService sendWebhookService;
+    private final PublishNotificationService publishNotificationService;
 
     private final CommandTaskPort commandTaskPort;
     private final LoadAttachmentPort loadAttachmentPort;
@@ -80,9 +72,8 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         Task task = taskService.findById(taskId);
         task.updateTaskStatus(updateTaskStatusRequest.taskStatus());
         Task updateTask = commandTaskPort.save(task);
-        List<Member> receiver = new ArrayList<>();
-        receiver.add(task.getRequester());
-        publishNotification(receiver, updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
+
+        publishNotificationService.publishTaskUpdatedNotification(List.of(task.getRequester()), updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
         return TaskMapper.toUpdateTaskResponse(updateTask);
     }
 
@@ -96,11 +87,9 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         task.updateProcessor(processor);
         Task updateTask = commandTaskPort.save(task);
 
-        List<Member> receivers = new ArrayList<>();
-        receivers.add(updateTask.getRequester());
-        receivers.add(updateTask.getProcessor());
+        List<Member> receivers = List.of(processor, task.getRequester());
 
-        publishNotification(receivers, updateTask, NotificationType.PROCESSOR_CHANGED, updateTask.getProcessor().getNickname());
+        publishNotificationService.publishTaskUpdatedNotification(receivers, updateTask, NotificationType.PROCESSOR_CHANGED, updateTask.getProcessor().getNickname());
         return TaskMapper.toUpdateTaskResponse(updateTask);
     }
 
@@ -115,8 +104,6 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         Task updatetask = commandTaskPort.save(task);
         return TaskMapper.toUpdateTaskResponse(updatetask);
     }
-
-
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
         List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
@@ -135,25 +122,5 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             throw new ApplicationException(TaskErrorCode.TASK_ATTACHMENT_NOT_FOUND);
         }
         return attachmentsOfTask;
-    }
-
-    private void publishNotification(List<Member> receivers, Task task, NotificationType notificationType, String message){
-        for (Member receiver : receivers) {
-            // 알림 저장
-            Notification notification = createTaskNotification(task, receiver, notificationType);
-            applicationEventPublisher.publishEvent(notification);
-
-            // SSE 실시간 알림 전송
-            SseRequest sseRequest = new SseRequest(
-                    notification.getTask().getTitle(),
-                    notification.getType(),
-                    receiver.getMemberId(),
-                    message
-            );
-            applicationEventPublisher.publishEvent(sseRequest);
-
-            sendWebhookService.sendWebhookNotification(receiver, notificationType,
-                    task, message, null);
-        }
     }
 }
