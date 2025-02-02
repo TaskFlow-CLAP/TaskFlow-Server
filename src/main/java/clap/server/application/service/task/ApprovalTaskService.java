@@ -13,6 +13,7 @@ import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
+import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Category;
@@ -36,8 +37,8 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     private final LabelService labelService;
     private final CommandTaskPort commandTaskPort;
     private final RequestedTaskUpdatePolicy requestedTaskUpdatePolicy;
-    private final PublishNotificationService publishNotificationService;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
+    private final SendNotificationService sendNotificationService;
 
     @Override
     @Transactional
@@ -54,7 +55,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         commandTaskHistoryPort.save(taskHistory);
 
         List<Member> receivers = List.of(reviewer, processor);
-        publishNotificationService.publishNotification(receivers, task, NotificationType.PROCESSOR_ASSIGNED);
+        publishNotification(receivers, task);
 
         return TaskMapper.toApprovalTaskResponse(commandTaskPort.save(task));
     }
@@ -65,6 +66,13 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         Task task = taskService.findById(taskId);
         requestedTaskUpdatePolicy.validateTaskRequested(task);
         return TaskMapper.toFindApprovalFormResponse(task);
+    }
+
+    private void publishNotification(List<Member> receivers, Task task){
+        receivers.forEach(receiver -> {
+            sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
+                    task, task.getProcessor().getNickname(), null);
+        });
     }
 
 }
