@@ -6,7 +6,7 @@ import clap.server.exception.DomainException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
 
-import static clap.server.domain.model.task.constants.TaskProcessorOrderPolicy.DEFAULT_PROCESSOR_ORDER_GAP;
+import static clap.server.domain.model.task.policy.TaskOrderGapPolicy.DEFAULT_PROCESSOR_ORDER_GAP;
 
 @RequiredArgsConstructor
 @Policy
