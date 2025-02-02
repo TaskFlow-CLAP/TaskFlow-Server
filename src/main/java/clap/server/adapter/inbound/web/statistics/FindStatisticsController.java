@@ -32,8 +32,8 @@ public class FindStatisticsController {
 
 
     @Operation(summary = "기본 통계 API")
-    @Parameter(name = "periodType", description = "day, week, month", required = true, in = QUERY)
-    @Parameter(name = "statisticsType", description = "request-by-period, process-by-period, request-by-category, process-by-manager", required = true, in = QUERY)
+    @Parameter(name = "periodType", required = true, in = QUERY)
+    @Parameter(name = "statisticsType", required = true, in = QUERY)
     @GetMapping
     @Secured("ROLE_MANAGER")
     public ResponseEntity<List<StatisticsResponse>> aggregateTaskStatistics(@RequestParam PeriodType periodType, @RequestParam StatisticsType statisticsType) {
