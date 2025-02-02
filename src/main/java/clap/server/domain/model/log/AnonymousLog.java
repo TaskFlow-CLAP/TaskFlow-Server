@@ -16,15 +16,15 @@ import java.time.LocalDateTime;
 public class AnonymousLog extends ApiLog {
     private String loginNickname;
 
-    public static AnonymousLog createAnonymousLog(HttpServletRequest request, HttpServletResponse response, Object responseResult, LogStatus logStatus, String customCode, String requestBody, String nickName) {
+    public static AnonymousLog createAnonymousLog(HttpServletRequest request, int statusCode,  LogStatus logStatus, Object responseBody, String requestBody, String nickName) {
         return AnonymousLog.builder()
                 .clientIp(ClientIpParseUtil.getClientIp(request))
                 .requestUrl(request.getRequestURI())
                 .requestMethod(request.getMethod())
-                .statusCode(response.getStatus())
-                .customStatusCode(customCode)
+                .statusCode(statusCode)
+                .customStatusCode("")
                 .requestBody(requestBody)
-                .responseBody(responseResult != null ? responseResult.toString() : "로그인 실패")
+                .responseBody(responseBody != null ? responseBody.toString() : "로그인 실패")
                 .requestAt(LocalDateTime.now())
                 .logStatus(logStatus)
                 .loginNickname(nickName)
