@@ -41,17 +41,17 @@ public class FindMemberController {
     public ResponseEntity<Page<RetrieveAllMemberResponse>> getAllMembers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @ModelAttribute FindMemberRequest filterRequest) {
+            @RequestBody FindMemberRequest filterRequest) {
 
-        if (filterRequest.getName() != null && filterRequest.getName().trim().isEmpty()) {
+        if (filterRequest.name() != null && filterRequest.name().trim().isEmpty()) {
             throw ApplicationException.from(MemberErrorCode.NAME_CANNOT_BE_EMPTY);
         }
 
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Member> members;
 
-        if (filterRequest.getName() != null || filterRequest.getEmail() != null || filterRequest.getNickName() != null ||
-                filterRequest.getDepartmentName() != null || filterRequest.getRole() != null) {
+        if (filterRequest.name() != null || filterRequest.email() != null || filterRequest.nickName() != null ||
+                filterRequest.departmentName() != null || filterRequest.role() != null) {
             members = findMembersWithFilterUsecase.findMembersWithFilter(pageable, filterRequest);
         } else {
             members = findAllMembersUsecase.findAllMembers(pageable);
