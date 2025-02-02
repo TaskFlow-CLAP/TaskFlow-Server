@@ -7,6 +7,8 @@ import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
 import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
 import clap.server.application.port.inbound.log.FindApiLogsUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,14 +20,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "05. Admin")
 @WebAdapter
 @RestController
-@RequestMapping("/api/logs")
+@RequestMapping("/api/managements/logs")
 @RequiredArgsConstructor
 public class LogController {
 
     private final FindApiLogsUsecase findApiLogsUsecase;
 
+    @Operation(summary = "로그인 로그 목록 조회")
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/login")
     public ResponseEntity<PageResponse<AnonymousLogResponse>> getLoginAttempts(
@@ -37,6 +41,7 @@ public class LogController {
         return ResponseEntity.ok(findApiLogsUsecase.filterAnonymousLogs(anonymousLogRequest, pageable));
     }
 
+    @Operation(summary = "작업 로그 목록 조회")
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/general")
     public ResponseEntity<PageResponse<MemberLogResponse>> getApiCalls(
