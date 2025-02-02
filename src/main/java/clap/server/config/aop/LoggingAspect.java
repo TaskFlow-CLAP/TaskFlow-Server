@@ -6,6 +6,7 @@ import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.log.CreateAnonymousLogsUsecase;
 import clap.server.application.port.inbound.log.CreateMemberLogsUsecase;
 import clap.server.config.annotation.LogType;
+import clap.server.exception.BaseException;
 import clap.server.exception.ErrorContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,15 +19,18 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 
 @Slf4j
 @Aspect
@@ -36,6 +40,7 @@ public class LoggingAspect {
     private final ObjectMapper objectMapper;
     private final CreateAnonymousLogsUsecase createAnonymousLogsUsecase;
     private final CreateMemberLogsUsecase createMemberLogsUsecase;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Pointcut("execution(* clap.server.adapter.inbound.web..*Controller.*(..))")
     public void controllerMethods() {
@@ -45,37 +50,41 @@ public class LoggingAspect {
     public Object logApiRequests(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        if (!(request instanceof ContentCachingRequestWrapper)) {
-            request = new ContentCachingRequestWrapper(request);
-        }
         HttpServletResponse response = attributes.getResponse();
 
         Object result = null;
+        Exception capturedException = null;
         try {
             result = joinPoint.proceed();
         } catch (Exception ex) {
-            log.error("Exception occurred: {}", ex.getMessage());
-            log.info("response.getStatus()={}",response.getStatus());
-            log.info("getRequestBody()={}", getRequestBody(request));
+            capturedException = ex;
             throw ex;
         } finally {
-            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-            LogStatus logType = getLogType(methodSignature);
-            String customCode = getCustomCode(response);
-            if (logType != null) {
-                if (LogStatus.LOGIN.equals(logType)) {
-                    log.info("result={}",result);
-                    log.info("response.getStatus()={}",response.getStatus());
-                    log.info("getRequestBody()={}", getRequestBody(request));
-                    log.info("getNicknameFromRequestBody()={}", getNicknameFromRequestBody(request));
-                    createAnonymousLogsUsecase.createAnonymousLog(request, response, result, logType, customCode, getRequestBody(request), getNicknameFromRequestBody(request));
+            LogStatus logStatus = getLogType((MethodSignature) joinPoint.getSignature());
+            int statusCode;
+            String customCode = null;
+            if (capturedException != null) {
+                if (capturedException instanceof BaseException e) {
+                    statusCode = e.getCode().getHttpStatus().value();
+                    customCode = e.getCode().getCustomCode();
+                } else {
+                    ModelAndView modelAndView = handlerExceptionResolver.resolveException(request, response, null, capturedException);
+                    statusCode = modelAndView.getStatus().value();
+                }
+            } else {
+                statusCode = response.getStatus();
+            }
+
+            if (logStatus != null) {
+                if (LogStatus.LOGIN.equals(logStatus)) {
+                    createAnonymousLogsUsecase.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
                 } else {
                     if (!isUserAuthenticated()) {
                         log.error("로그인 시도 로그를 기록할 수 없음");
                     } else {
                         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                         if (principal instanceof SecurityUserDetails userDetails) {
-                            createMemberLogsUsecase.createMemberLog(request, response, result, logType, customCode, getRequestBody(request), userDetails.getUserId());
+                            createMemberLogsUsecase.createMemberLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), userDetails.getUserId());
                         }
                     }
                 }
@@ -92,13 +101,6 @@ public class LoggingAspect {
         }
     }
 
-    //TODO: 로그인 시도에 대한 에러 잡도록 수정
-    private String getCustomCode(HttpServletResponse response) {
-        String customCode = ErrorContext.getCustomCode();
-        return customCode != null ? customCode : "CUSTOM" + (response != null ? response.getStatus() : 500);
-    }
-
-    //TODO: 로그인 시도 시 닉네임 파싱하도록 수정
     private String getNicknameFromRequestBody(HttpServletRequest request) {
         try {
             String requestBody = getRequestBody(request);
@@ -109,14 +111,13 @@ public class LoggingAspect {
         }
     }
 
-    //TODO: 제거
     private String getRequestBody(HttpServletRequest request) {
         try {
             ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper) request;
             byte[] content = cachingRequest.getContentAsByteArray();
             return new String(content, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            return "ERROR: Unable to read request body";
+            return "요청 바디의 내용을 읽을 수 없음";
         }
     }
 

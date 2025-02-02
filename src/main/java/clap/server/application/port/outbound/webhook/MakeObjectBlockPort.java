@@ -1,16 +1,16 @@
 package clap.server.application.port.outbound.webhook;
 
-import clap.server.adapter.outbound.api.dto.SendKakaoWorkRequest;
+import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
 
 public interface MakeObjectBlockPort {
 
-    String makeTaskRequestBlock(SendKakaoWorkRequest request);
+    String makeTaskRequestBlock(SendWebhookRequest request);
 
-    String makeNewProcessorBlock(SendKakaoWorkRequest request);
+    String makeNewProcessorBlock(SendWebhookRequest request);
 
-    String makeProcessorChangeBlock(SendKakaoWorkRequest request);
+    String makeProcessorChangeBlock(SendWebhookRequest request);
 
-    String makeCommentBlock(SendKakaoWorkRequest request);
+    String makeCommentBlock(SendWebhookRequest request);
 
-    String makeTaskStatusBlock(SendKakaoWorkRequest request);
+    String makeTaskStatusBlock(SendWebhookRequest request);
 }

@@ -12,6 +12,7 @@ public record FilterAssignedTaskListResponse(
         String categoryName,
         String title,
         String requesterName,
+        String requesterUrl,
         TaskStatus taskStatus,
         LocalDateTime finishedAt
 ) {}
