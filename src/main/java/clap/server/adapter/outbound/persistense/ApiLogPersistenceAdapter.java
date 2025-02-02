@@ -44,12 +44,6 @@ public class ApiLogPersistenceAdapter implements CommandLogPort, LoadLogPort {
         apiLogRepository.save(apiLogPersistenceMapper.mapAnonymousLogToEntity(anonymousLog, anonymousLog.getLoginNickname()));
     }
 
-    @Override
-    public List<ApiLog> findAllLogs() {
-        return apiLogRepository.findAll().stream()
-                .map(apiLogPersistenceMapper::mapLogEntityToDomain)
-                .toList();
-    }
 
     @Override
     public Page<MemberLog> filterMemberLogs(FilterLogRequest memberLogRequest, Pageable pageable) {
