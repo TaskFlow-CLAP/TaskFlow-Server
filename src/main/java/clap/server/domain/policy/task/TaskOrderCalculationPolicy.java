@@ -5,7 +5,7 @@ import clap.server.domain.model.task.Task;
 import clap.server.exception.DomainException;
 import clap.server.exception.code.TaskErrorCode;
 
-import static clap.server.domain.policy.task.TaskOrderGapPolicy.DEFAULT_PROCESSOR_ORDER_GAP;
+import static clap.server.domain.policy.task.TaskValuePolicy.DEFAULT_PROCESSOR_ORDER_GAP;
 
 @Policy
 public class TaskOrderCalculationPolicy {

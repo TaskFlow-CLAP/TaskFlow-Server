@@ -34,7 +34,7 @@ class GetTaskBoardService implements GetTaskBoardUsecase, FilterTaskBoardUsecase
     public TaskBoardResponse getTaskBoards(Long processorId, LocalDate untilDate, Pageable pageable) {
         memberService.findActiveMember(processorId);
         LocalDateTime untilDateTime = untilDate == null ? LocalDate.now().plusDays(1).atStartOfDay() : untilDate.plusDays(1).atStartOfDay();
-        Slice<Task> tasks = loadTaskPort.findByProcessorAndStatus(processorId, List.of(TaskValuePolicy.TASK_BOARD_STATUS_FILTER), untilDateTime, pageable);
+        Slice<Task> tasks = loadTaskPort.findByProcessorAndStatus(processorId, TaskValuePolicy.TASK_BOARD_STATUS_FILTER, untilDateTime, pageable);
         return TaskMapper.toSliceTaskItemResponse(tasks);
     }
 
@@ -42,7 +42,7 @@ class GetTaskBoardService implements GetTaskBoardUsecase, FilterTaskBoardUsecase
     public TaskBoardResponse getTaskBoardByFilter(Long processorId, LocalDate untilDate, FilterTaskBoardRequest request, Pageable pageable) {
         memberService.findActiveMember(processorId);
         LocalDateTime untilDateTime = untilDate == null ? LocalDate.now().plusDays(1).atStartOfDay() : untilDate.plusDays(1).atStartOfDay();
-        Slice<Task> tasks = loadTaskPort.findTaskBoardByFilter(processorId, List.of(TaskValuePolicy.TASK_BOARD_STATUS_FILTER), untilDateTime, request, pageable);
+        Slice<Task> tasks = loadTaskPort.findTaskBoardByFilter(processorId, TaskValuePolicy.TASK_BOARD_STATUS_FILTER, untilDateTime, request, pageable);
         return TaskMapper.toSliceTaskItemResponse(tasks);
     }
 }
