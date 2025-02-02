@@ -17,15 +17,15 @@ import java.time.LocalDateTime;
 public class MemberLog extends ApiLog {
     private Member member;
 
-    public static MemberLog createMemberLog(HttpServletRequest request, int statusCode, LogStatus logStatus, Object responseBody, String requestBody, Member member) {
+    public static MemberLog createMemberLog(HttpServletRequest request, int statusCode, String customCode, LogStatus logStatus, Object responseBody, String requestBody, Member member) {
         return MemberLog.builder()
                 .clientIp(ClientIpParseUtil.getClientIp(request))
                 .requestUrl(request.getRequestURI())
                 .requestMethod(request.getMethod())
                 .statusCode(statusCode)
-                .customStatusCode("")
+                .customStatusCode(customCode != null ? customCode : "")
                 .requestBody(requestBody)
-                .responseBody(responseBody != null ? responseBody.toString() : "일반 실패")
+                .responseBody(responseBody != null ? responseBody.toString() : logStatus.getDescription() + " 실패")
                 .requestAt(LocalDateTime.now())
                 .logStatus(logStatus)
                 .member(member)

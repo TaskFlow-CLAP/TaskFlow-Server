@@ -62,9 +62,11 @@ public class LoggingAspect {
         } finally {
             LogStatus logStatus = getLogType((MethodSignature) joinPoint.getSignature());
             int statusCode;
+            String customCode = null;
             if (capturedException != null) {
                 if (capturedException instanceof BaseException e) {
                     statusCode = e.getCode().getHttpStatus().value();
+                    customCode = e.getCode().getCustomCode();
                 } else {
                     ModelAndView modelAndView = handlerExceptionResolver.resolveException(request, response, null, capturedException);
                     statusCode = modelAndView.getStatus().value();
@@ -75,14 +77,14 @@ public class LoggingAspect {
 
             if (logStatus != null) {
                 if (LogStatus.LOGIN.equals(logStatus)) {
-                    createAnonymousLogsUsecase.createAnonymousLog(request, statusCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
+                    createAnonymousLogsUsecase.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
                 } else {
                     if (!isUserAuthenticated()) {
                         log.error("로그인 시도 로그를 기록할 수 없음");
                     } else {
                         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                         if (principal instanceof SecurityUserDetails userDetails) {
-                            createMemberLogsUsecase.createMemberLog(request, statusCode, logStatus, result, getRequestBody(request), userDetails.getUserId());
+                            createMemberLogsUsecase.createMemberLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), userDetails.getUserId());
                         }
                     }
                 }
