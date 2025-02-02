@@ -36,8 +36,7 @@ public class EmailClient implements SendEmailPort {
                 context.setVariable("title", request.taskName());
 
                 body = templateEngine.process("task-request", context);
-            }
-            else if (request.notificationType() == NotificationType.STATUS_SWITCHED) {
+            } else if (request.notificationType() == NotificationType.STATUS_SWITCHED) {
                 helper.setTo(request.email());
                 helper.setSubject("[TaskFlow 알림] 작업 상태가 변경되었습니다.");
 
@@ -45,9 +44,7 @@ public class EmailClient implements SendEmailPort {
                 context.setVariable("title", request.taskName());
 
                 body = templateEngine.process("status-switch", context);
-            }
-
-            else if (request.notificationType() == NotificationType.PROCESSOR_CHANGED) {
+            } else if (request.notificationType() == NotificationType.PROCESSOR_CHANGED) {
                 helper.setTo(request.email());
                 helper.setSubject("[TaskFlow 알림] 작업 담당자가 변경되었습니다.");
 
@@ -55,9 +52,7 @@ public class EmailClient implements SendEmailPort {
                 context.setVariable("title", request.taskName());
 
                 body = templateEngine.process("processor-change", context);
-            }
-
-            else if (request.notificationType() == NotificationType.PROCESSOR_ASSIGNED) {
+            } else if (request.notificationType() == NotificationType.PROCESSOR_ASSIGNED) {
                 helper.setTo(request.email());
                 helper.setSubject("[TaskFlow 알림] 작업 담당자가 지정되었습니다.");
 
@@ -65,9 +60,7 @@ public class EmailClient implements SendEmailPort {
                 context.setVariable("title", request.taskName());
 
                 body = templateEngine.process("processor-assign", context);
-            }
-
-            else if (request.notificationType() == NotificationType.INVITATION) {
+            } else if (request.notificationType() == NotificationType.INVITATION) {
                 helper.setTo(request.email());
                 helper.setSubject("[TaskFlow 초대] 회원가입을 환영합니다.");
 
@@ -76,9 +69,7 @@ public class EmailClient implements SendEmailPort {
                 context.setVariable("receiverName", request.senderName());
 
                 body = templateEngine.process("invitation", context);
-            }
-
-            else {
+            } else {
                 helper.setTo(request.email());
                 helper.setSubject("[TaskFlow 알림] 댓글이 작성되었습니다.");
 
@@ -89,6 +80,28 @@ public class EmailClient implements SendEmailPort {
             }
 
             helper.setText(body, true);
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            throw new ApplicationException(NotificationErrorCode.EMAIL_SEND_FAILED);
+        }
+    }
+
+    public void sendInvitationEmail(String memberEmail, String receiverName, String initialPassword) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            helper.setTo(memberEmail);
+            helper.setSubject("[TaskFlow 초대] 회원가입을 환영합니다.");
+
+            Context context = new Context();
+            context.setVariable("invitationLink", "https://example.com/reset-password"); // TODO: 비밀번호 재설정 링크로 변경
+            context.setVariable("initialPassword", initialPassword);
+            context.setVariable("receiverName", receiverName);
+
+            String body = templateEngine.process("invitation", context);
+            helper.setText(body, true);
+
             mailSender.send(mimeMessage);
         } catch (Exception e) {
             throw new ApplicationException(NotificationErrorCode.EMAIL_SEND_FAILED);

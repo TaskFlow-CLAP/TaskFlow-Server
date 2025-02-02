@@ -2,9 +2,9 @@ package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.SendInvitationRequest;
 import clap.server.application.port.inbound.admin.SendInvitationUsecase;
-import clap.server.application.port.outbound.email.SendInvitationEmailPort;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
+import clap.server.application.port.outbound.webhook.SendEmailPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.common.utils.InitialPasswordGenerator;
 import clap.server.domain.model.member.Member;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SendInvitationService implements SendInvitationUsecase {
     private final LoadMemberPort loadMemberPort;
     private final CommandMemberPort commandMemberPort;
-    private final SendInvitationEmailPort sendInvitationEmailPort;
+    private final SendEmailPort sendEmailPort;
     private final InitialPasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
 
@@ -41,7 +41,7 @@ public class SendInvitationService implements SendInvitationUsecase {
         // 회원 상태를 APPROVAL_REQUEST으로 변경
         member.changeStatusToAPPROVAL_REQUEST();
 
-        sendInvitationEmailPort.sendInvitationEmail(
+        sendEmailPort.sendInvitationEmail(
                 member.getMemberInfo().getEmail(),
                 member.getMemberInfo().getName(),
                 initialPassword
