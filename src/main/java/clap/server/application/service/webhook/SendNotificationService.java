@@ -17,7 +17,7 @@ import static clap.server.domain.model.notification.Notification.createTaskNotif
 
 @ApplicationService
 @RequiredArgsConstructor
-public class SendPushNotificationService {
+public class SendNotificationService {
 
     private final SendSseService sendSseService;
     private final SendAgitService sendAgitService;
