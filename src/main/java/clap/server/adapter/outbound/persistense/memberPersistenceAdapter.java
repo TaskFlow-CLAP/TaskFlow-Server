@@ -1,5 +1,6 @@
 package clap.server.adapter.outbound.persistense;
 
+import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
@@ -17,9 +18,16 @@ import java.util.stream.Collectors;
 import java.util.List;
 
 import clap.server.domain.model.member.Member;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
+
+import static clap.server.adapter.outbound.persistense.entity.member.QMemberEntity.memberEntity;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -28,7 +36,7 @@ import java.util.Optional;
     private final MemberPersistenceMapper memberPersistenceMapper;
     private final TaskRepository taskRepository;
     private final TaskPersistenceMapper taskPersistenceMapper;
-
+    private final JPAQueryFactory jpaQueryFactory;
 
 
     @Override
@@ -92,6 +100,63 @@ import java.util.Optional;
                 .collect(Collectors.toList());
     }
 
-}
+    @Override
+    public Page<Member> findAllMembers(Pageable pageable) {
+        return executeQueryWithPageable(pageable, new BooleanBuilder().and(memberEntity.status.ne(MemberStatus.DELETED)));
+    }
 
+    @Override
+    public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest) {
+        BooleanBuilder whereClause = createMemberFilter(filterRequest);
+        return executeQueryWithPageable(pageable, whereClause);
+    }
+
+    // 공통 쿼리 처리
+    private Page<Member> executeQueryWithPageable(Pageable pageable, BooleanBuilder whereClause) {
+        List<MemberEntity> entities = jpaQueryFactory
+                .selectFrom(memberEntity)
+                .where(whereClause)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = jpaQueryFactory
+                .select(memberEntity.count())
+                .from(memberEntity)
+                .where(whereClause)
+                .fetchOne();
+
+        return new PageImpl<>(
+                entities.stream()
+                        .map(memberPersistenceMapper::toDomain)
+                        .toList(),
+                pageable,
+                total
+        );
+    }
+
+    // 필터 조건 생성
+    private BooleanBuilder createMemberFilter(FindMemberRequest filterRequest) {
+        BooleanBuilder whereClause = new BooleanBuilder();
+        whereClause.and(memberEntity.status.ne(MemberStatus.DELETED));
+
+        if (filterRequest.getName() != null) {
+            whereClause.and(memberEntity.name.containsIgnoreCase(filterRequest.getName()));
+        }
+        if (filterRequest.getEmail() != null) {
+            whereClause.and(memberEntity.email.containsIgnoreCase(filterRequest.getEmail()));
+        }
+        if (filterRequest.getNickname() != null) {
+            whereClause.and(memberEntity.nickname.containsIgnoreCase(filterRequest.getNickname()));
+        }
+        if (filterRequest.getDepartmentId() != null) {
+            whereClause.and(memberEntity.department.departmentId.eq(filterRequest.getDepartmentId()));
+        }
+        if (filterRequest.getRole() != null) {
+            whereClause.and(memberEntity.role.eq(filterRequest.getRole()));
+        }
+
+        return whereClause;
+    }
+}
 

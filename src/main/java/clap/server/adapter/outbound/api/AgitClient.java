@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.api;
 
-import clap.server.adapter.outbound.api.dto.SendAgitRequest;
+import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.webhook.SendAgitPort;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
@@ -20,7 +20,7 @@ public class AgitClient implements SendAgitPort {
     private String AGIT_WEBHOOK_URL;
 
     @Override
-    public void sendAgit(SendAgitRequest request) {
+    public void sendAgit(SendWebhookRequest request) {
         RestTemplate restTemplate = new RestTemplate();
 
         String message = null;

@@ -41,5 +41,19 @@ public class MemberMapper {
                 member.getEmailNotificationEnabled(),
                 member.getKakaoworkNotificationEnabled()
         );
+
     }
+    public static Member toMember(MemberInfo memberInfo) {
+        return Member.builder()
+                .memberInfo(memberInfo)
+                .agitNotificationEnabled(null)
+                .emailNotificationEnabled(null)
+                .kakaoworkNotificationEnabled(null)
+                .admin(null)
+                .imageUrl(null)
+                .status(null)
+                .password(null)
+                .build();
+    }
+
 }

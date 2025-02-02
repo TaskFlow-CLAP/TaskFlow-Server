@@ -14,5 +14,4 @@ import java.util.List;
 public interface FindApiLogsUsecase {
     PageResponse<AnonymousLogResponse> filterAnonymousLogs(FilterLogRequest anonymousLogsRequest, Pageable pageable);
     PageResponse<MemberLogResponse> filterMemberLogs(FilterLogRequest memberLogRequest, Pageable pageable);
-    List<ApiLog> getApiLogs();
 }

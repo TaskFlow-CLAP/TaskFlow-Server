@@ -7,6 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 
 public interface CreateAnonymousLogsUsecase {
-    void createAnonymousLog(HttpServletRequest request, HttpServletResponse response, Object result,  LogStatus logType, String customCode, String requestBody, String nicknameFromRequestBody);
+    void createAnonymousLog(HttpServletRequest request, int statusCode, String customCode, LogStatus logStatus,  Object responseBody, String requestBody, String nickName);
 
 }

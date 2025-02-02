@@ -9,5 +9,5 @@ public interface PostCommentUsecase {
 
     void save(Long userId, Long taskId, PostAndEditCommentRequest request);
 
-    void saveCommentAttachment(Long userId, Long taskId, List<MultipartFile> files);
+    void saveCommentAttachment(Long userId, Long taskId, MultipartFile file);
 }

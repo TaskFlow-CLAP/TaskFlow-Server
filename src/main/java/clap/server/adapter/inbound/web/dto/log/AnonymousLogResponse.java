@@ -17,8 +17,6 @@ public record AnonymousLogResponse(
         String clientIp,
         @NotBlank
         Integer statusCode,
-        @NotNull
-        String customStatusCode,
         int failedAttempts
 ) {
 }

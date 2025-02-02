@@ -14,7 +14,6 @@ public class LogMapper {
                 anonymousLog.getLoginNickname(),
                 anonymousLog.getClientIp(),
                 anonymousLog.getStatusCode(),
-                anonymousLog.getCustomStatusCode(),
                 failedAttempts
         );
     }

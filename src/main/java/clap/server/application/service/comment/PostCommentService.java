@@ -1,6 +1,5 @@
 package clap.server.application.service.comment;
 
-import clap.server.adapter.inbound.web.dto.notification.SseRequest;
 import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
@@ -13,23 +12,21 @@ import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandCommentPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
-import clap.server.application.service.notification.SendWebhookService;
+import clap.server.application.service.webhook.SendPushNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.notification.Notification;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Comment;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static clap.server.domain.model.notification.Notification.createTaskNotification;
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -41,8 +38,7 @@ public class PostCommentService implements PostCommentUsecase {
     private final S3UploadAdapter s3UploadAdapter;
     private final CommandAttachmentPort commandAttachmentPort;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
-    private final ApplicationEventPublisher applicationEventPublisher;
-    private final SendWebhookService sendWebhookService;
+    private final SendPushNotificationService sendPushNotificationService;
 
     @Transactional
     @Override
@@ -70,13 +66,15 @@ public class PostCommentService implements PostCommentUsecase {
 
     @Transactional
     @Override
-    public void saveCommentAttachment(Long userId, Long taskId, List<MultipartFile> files) {
+    public void saveCommentAttachment(Long userId, Long taskId, MultipartFile file) {
         Task task = taskService.findById(taskId);
         Member member = memberService.findActiveMember(userId);
 
         if (Member.checkCommenter(task, member)) {
             Comment comment = Comment.createComment(member, task, null);
             Comment savedComment = commandCommentPort.saveComment(comment);
+            List<MultipartFile> files = new ArrayList<>();
+            files.add(file);
             saveAttachment(files, task, savedComment);
 
             TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, task, null, member, savedComment);
@@ -98,19 +96,6 @@ public class PostCommentService implements PostCommentUsecase {
     }
 
     private void publishNotification(Member receiver, Task task, String message, String commenterName){
-            // 알림 저장
-        Notification notification = createTaskNotification(task, receiver, NotificationType.COMMENT);
-        applicationEventPublisher.publishEvent(notification);
-
-            // SSE 실시간 알림 전송
-        SseRequest sseRequest = new SseRequest(
-                notification.getTask().getTitle(),
-                notification.getType(),
-                receiver.getMemberId(),
-                message
-        );
-        applicationEventPublisher.publishEvent(sseRequest);
-
-        sendWebhookService.sendWebhookNotification(receiver, NotificationType.COMMENT, task, message, commenterName);
+        sendPushNotificationService.sendPushNotification(receiver, NotificationType.COMMENT, task, message, commenterName);
     }
 }

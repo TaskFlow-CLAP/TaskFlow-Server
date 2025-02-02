@@ -11,6 +11,7 @@ public record FilterPendingApprovalResponse(
         String mainCategoryName,
         String categoryName,
         String title,
-        String requesterName
+        String requesterName,
+        String requesterUrl
 ) {
 }

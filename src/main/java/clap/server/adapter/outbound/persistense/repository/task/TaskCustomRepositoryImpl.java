@@ -31,7 +31,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     public Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            builder.and(taskEntity.processor.nickname.eq(filterTaskListRequest.nickName()));
+            builder.and(taskEntity.processor.nickname.contains(filterTaskListRequest.nickName()));
         }
         builder.and(taskEntity.requester.memberId.eq(requesterId));
 
@@ -42,7 +42,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     public Page<TaskEntity> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            builder.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
+            builder.and(taskEntity.requester.nickname.contains(filterTaskListRequest.nickName()));
         }
         builder.and(taskEntity.processor.memberId.eq(processorId));
 
@@ -53,7 +53,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     public Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            builder.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
+            builder.and(taskEntity.requester.nickname.contains(filterTaskListRequest.nickName()));
         }
         builder.and(taskEntity.taskStatus.eq(TaskStatus.REQUESTED));
         return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
@@ -64,8 +64,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
             builder.and(
-                    taskEntity.requester.nickname.eq(filterTaskListRequest.nickName())
-                            .or(taskEntity.processor.nickname.eq(filterTaskListRequest.nickName()))
+                    taskEntity.requester.nickname.contains(filterTaskListRequest.nickName())
+                            .or(taskEntity.processor.nickname.contains(filterTaskListRequest.nickName()))
             );
         }
         return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
@@ -137,6 +137,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
         List<TaskEntity> result = queryFactory
                 .selectFrom(taskEntity)
+                .leftJoin(taskEntity.processor).fetchJoin()
+                .leftJoin(taskEntity.requester).fetchJoin()
                 .where(builder)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
@@ -144,6 +146,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 .fetch();
         long total = queryFactory
                 .selectFrom(taskEntity)
+                .leftJoin(taskEntity.processor).fetchJoin()
+                .leftJoin(taskEntity.requester).fetchJoin()
                 .where(builder)
                 .fetch().size();
         return new PageImpl<>(result, pageable, total);
