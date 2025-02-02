@@ -1,8 +1,8 @@
 package clap.server.application.service.task;
 
-import clap.server.adapter.inbound.web.dto.task.ApprovalTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.ApprovalTaskResponse;
-import clap.server.adapter.inbound.web.dto.task.FindApprovalFormResponse;
+import clap.server.adapter.inbound.web.dto.task.request.ApprovalTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.response.ApprovalTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.FindApprovalFormResponse;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.application.mapper.TaskMapper;

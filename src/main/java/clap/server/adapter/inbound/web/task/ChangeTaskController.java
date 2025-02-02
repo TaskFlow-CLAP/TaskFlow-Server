@@ -1,7 +1,12 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.task.*;
+import clap.server.adapter.inbound.web.dto.task.request.ApprovalTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskLabelRequest;
+import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskProcessorRequest;
+import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskStatusRequest;
+import clap.server.adapter.inbound.web.dto.task.response.ApprovalTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskLabelUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskProcessorUsecase;

@@ -1,8 +1,11 @@
 package clap.server.application.port.inbound.task;
 
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
-import clap.server.adapter.inbound.web.dto.task.*;
-import org.springframework.data.domain.Page;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.response.FilterAllTasksResponse;
+import clap.server.adapter.inbound.web.dto.task.response.FilterAssignedTaskListResponse;
+import clap.server.adapter.inbound.web.dto.task.response.FilterPendingApprovalResponse;
+import clap.server.adapter.inbound.web.dto.task.response.FilterRequestedTasksResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface FindTaskListUsecase {

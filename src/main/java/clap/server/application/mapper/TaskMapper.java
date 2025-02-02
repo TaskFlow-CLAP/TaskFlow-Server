@@ -1,9 +1,7 @@
 package clap.server.application.mapper;
 
 
-import clap.server.adapter.inbound.web.dto.task.*;
-import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
-import clap.server.adapter.inbound.web.dto.task.response.TaskItemResponse;
+import clap.server.adapter.inbound.web.dto.task.response.*;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Task;

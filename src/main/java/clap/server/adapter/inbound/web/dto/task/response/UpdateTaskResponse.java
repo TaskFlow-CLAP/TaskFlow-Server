@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.dto.task;
+package clap.server.adapter.inbound.web.dto.task.response;
 
 public record UpdateTaskResponse(
     Long taskId,
