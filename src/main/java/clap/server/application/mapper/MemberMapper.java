@@ -4,6 +4,7 @@ package clap.server.application.mapper;
 import clap.server.adapter.inbound.web.dto.member.MemberDetailInfoResponse;
 import clap.server.adapter.inbound.web.dto.member.MemberProfileResponse;
 import clap.server.domain.model.member.Member;
+import clap.server.domain.model.member.MemberInfo;
 
 public class MemberMapper {
     private MemberMapper() {
@@ -40,5 +41,19 @@ public class MemberMapper {
                 member.getEmailNotificationEnabled(),
                 member.getKakaoworkNotificationEnabled()
         );
+
     }
+    public static Member toMember(MemberInfo memberInfo) {
+        return Member.builder()
+                .memberInfo(memberInfo)
+                .agitNotificationEnabled(null)
+                .emailNotificationEnabled(null)
+                .kakaoworkNotificationEnabled(null)
+                .admin(null)
+                .imageUrl(null)
+                .status(null)
+                .password(null)
+                .build();
+    }
+
 }
