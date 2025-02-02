@@ -33,7 +33,7 @@ public class LogController {
     public ResponseEntity<PageResponse<AnonymousLogResponse>> getLoginAttempts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @RequestParam(defaultValue = "timestamp") String sortBy,
+            @RequestParam(defaultValue = "requestedAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection,
             @ModelAttribute FilterLogRequest anonymousLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
@@ -51,7 +51,7 @@ public class LogController {
     public ResponseEntity<PageResponse<MemberLogResponse>> getApiCalls(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @RequestParam(defaultValue = "timestamp") String sortBy,
+            @RequestParam(defaultValue = "requestedAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection,
             @ModelAttribute FilterLogRequest memberLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
