@@ -136,4 +136,8 @@ public class Member extends BaseTime {
             throw new DomainException(MemberErrorCode.PASSWORD_VERIFY_FAILED);
         }
     }
+
+    public void register(Member admin) {
+        this.admin = admin; // 관리자 설정
+    }
 }

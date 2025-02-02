@@ -16,16 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "05. Admin")
 @WebAdapter
-@RequiredArgsConstructor
 @RequestMapping("/api/managements")
+@RequiredArgsConstructor
 public class RegisterMemberController {
+
     private final RegisterMemberUsecase registerMemberUsecase;
 
     @Operation(summary = "단일 회원 등록 API")
     @PostMapping("/members")
     @Secured("ROLE_ADMIN")
     public void registerMember(@AuthenticationPrincipal SecurityUserDetails userInfo,
-                               @RequestBody @Valid RegisterMemberRequest request){
+                               @RequestBody @Valid RegisterMemberRequest request) {
         registerMemberUsecase.registerMember(userInfo.getUserId(), request);
     }
 }
