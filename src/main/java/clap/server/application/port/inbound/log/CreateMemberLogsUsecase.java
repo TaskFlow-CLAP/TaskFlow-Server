@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 
 public interface CreateMemberLogsUsecase {
 
-    void createMemberLog(HttpServletRequest request, int statusCode, LogStatus logStatus, Object responseBody, String requestBody, Long userId);
+    void createMemberLog(HttpServletRequest request, int statusCode,String customCode, LogStatus logStatus, Object responseBody, String requestBody, Long userId);
 }
