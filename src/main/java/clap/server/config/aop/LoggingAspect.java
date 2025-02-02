@@ -6,6 +6,7 @@ import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.log.CreateAnonymousLogsUsecase;
 import clap.server.application.port.inbound.log.CreateMemberLogsUsecase;
 import clap.server.config.annotation.LogType;
+import clap.server.exception.BaseException;
 import clap.server.exception.ErrorContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,9 +19,13 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -35,6 +40,7 @@ public class LoggingAspect {
     private final ObjectMapper objectMapper;
     private final CreateAnonymousLogsUsecase createAnonymousLogsUsecase;
     private final CreateMemberLogsUsecase createMemberLogsUsecase;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Pointcut("execution(* clap.server.adapter.inbound.web..*Controller.*(..))")
     public void controllerMethods() {
@@ -47,24 +53,36 @@ public class LoggingAspect {
         HttpServletResponse response = attributes.getResponse();
 
         Object result = null;
+        Exception capturedException = null;
         try {
             result = joinPoint.proceed();
         } catch (Exception ex) {
+            capturedException = ex;
             throw ex;
         } finally {
-            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-            LogStatus logType = getLogType(methodSignature);
-            String customCode = getCustomCode(response);
-            if (logType != null) {
-                if (LogStatus.LOGIN.equals(logType)) {
-                    createAnonymousLogsUsecase.createAnonymousLog(request, response, result, logType, customCode, getRequestBody(request), getNicknameFromRequestBody(request));
+            LogStatus logStatus = getLogType((MethodSignature) joinPoint.getSignature());
+            int statusCode;
+            if (capturedException != null) {
+                if (capturedException instanceof BaseException e) {
+                    statusCode = e.getCode().getHttpStatus().value();
+                } else {
+                    ModelAndView modelAndView = handlerExceptionResolver.resolveException(request, response, null, capturedException);
+                    statusCode = modelAndView.getStatus().value();
+                }
+            } else {
+                statusCode = response.getStatus();
+            }
+
+            if (logStatus != null) {
+                if (LogStatus.LOGIN.equals(logStatus)) {
+                    createAnonymousLogsUsecase.createAnonymousLog(request, statusCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
                 } else {
                     if (!isUserAuthenticated()) {
                         log.error("로그인 시도 로그를 기록할 수 없음");
                     } else {
                         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                         if (principal instanceof SecurityUserDetails userDetails) {
-                            createMemberLogsUsecase.createMemberLog(request, response, result, logType, customCode, getRequestBody(request), userDetails.getUserId());
+                            createMemberLogsUsecase.createMemberLog(request, statusCode, logStatus, result, getRequestBody(request), userDetails.getUserId());
                         }
                     }
                 }
@@ -79,11 +97,6 @@ public class LoggingAspect {
         } else {
             return null;
         }
-    }
-
-    private String getCustomCode(HttpServletResponse response) {
-        String customCode = ErrorContext.getCustomCode();
-        return customCode != null ? customCode : "CUSTOM" + (response != null ? response.getStatus() : 500);
     }
 
     private String getNicknameFromRequestBody(HttpServletRequest request) {
