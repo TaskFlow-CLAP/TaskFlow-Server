@@ -13,10 +13,10 @@ public class FindMemberRequest {
     private String email;
 
     @Schema(description = "회원 닉네임", example = "leo.sh")
-    private String nickname;
+    private String nickName;
 
-    @Schema(description = "부서 ID", example = "1")
-    private Long departmentId;
+    @Schema(description = "부서 이름", example = "1")
+    private String departmentName;
 
     @Schema(description = "회원 역할", example = "ROLE_USER")
     private MemberRole role;

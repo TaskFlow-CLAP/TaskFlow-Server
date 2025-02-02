@@ -126,11 +126,11 @@ import static clap.server.adapter.outbound.persistense.entity.member.QMemberEnti
         if (filterRequest.getEmail() != null) {
             whereClause.and(memberEntity.email.containsIgnoreCase(filterRequest.getEmail()));
         }
-        if (filterRequest.getNickname() != null) {
-            whereClause.and(memberEntity.nickname.containsIgnoreCase(filterRequest.getNickname()));
+        if (filterRequest.getNickName() != null) {
+            whereClause.and(memberEntity.nickname.containsIgnoreCase(filterRequest.getNickName()));
         }
-        if (filterRequest.getDepartmentId() != null) {
-            whereClause.and(memberEntity.department.departmentId.eq(filterRequest.getDepartmentId()));
+        if (filterRequest.getDepartmentName() != null) {
+            whereClause.and(memberEntity.department.name.containsIgnoreCase(filterRequest.getDepartmentName()));
         }
         if (filterRequest.getRole() != null) {
             whereClause.and(memberEntity.role.eq(filterRequest.getRole()));
