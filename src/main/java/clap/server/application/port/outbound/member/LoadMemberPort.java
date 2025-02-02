@@ -15,11 +15,7 @@ public interface LoadMemberPort {
 
     Optional<Member> findActiveMemberById(Long id);
 
-    List<Member> findActiveManagers();
-
-    List<Task> findTasksByMemberIdAndStatus(Long memberId, List<TaskStatus> taskStatuses);
-
-    int getRemainingTasks(Long memberId);
+    Optional<Member> findReviewerById(Long id);
 
     Optional<Member> findByNickname(String nickname);
 

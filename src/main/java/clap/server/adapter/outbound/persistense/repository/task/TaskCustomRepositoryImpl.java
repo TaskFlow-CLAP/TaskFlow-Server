@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
-import static com.querydsl.core.types.Order.*;
+import static com.querydsl.core.types.Order.ASC;
+import static com.querydsl.core.types.Order.DESC;
 
 @Repository
 @RequiredArgsConstructor
