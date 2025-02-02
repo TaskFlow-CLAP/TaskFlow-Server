@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "02. Task", description = "작업 생성/수정 API")
+@Tag(name = "02. Task [생성/수정]", description = "작업 생성/수정 API")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
