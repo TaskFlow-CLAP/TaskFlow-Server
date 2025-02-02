@@ -9,7 +9,7 @@ import clap.server.application.port.inbound.task.UpdateTaskOrderAndStatusUsecase
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.domain.model.task.policy.TaskOrderCalculationPolicy;
-import clap.server.domain.model.task.policy.TaskOrderRequestPolicy;
+import clap.server.domain.model.task.policy.ProcessorValidationPolicy;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;
@@ -28,7 +28,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     private final LoadTaskPort loadTaskPort;
     private final CommandTaskPort commandTaskPort;
     private final TaskOrderCalculationPolicy taskOrderCalculationPolicy;
-    private final TaskOrderRequestPolicy taskOrderRequestPolicy;
+    private final ProcessorValidationPolicy processorValidationPolicy;
 
     private Task findByIdAndStatus(Long taskId, TaskStatus status) {
         return loadTaskPort.findByIdAndStatus(taskId, status).orElseThrow(() -> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
@@ -47,7 +47,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
         validateRequest(request, null);
         Member processor = memberService.findActiveMember(processorId);
         Task targetTask = taskService.findById(request.targetTaskId());
-        taskOrderRequestPolicy.validateProcessor(processorId, targetTask);
+        processorValidationPolicy.validateProcessor(processorId, targetTask);
 
         // 가장 상위로 이동
         if (request.prevTaskId() == 0) {
@@ -96,7 +96,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
         validateRequest(request, targetStatus);
         Member processor = memberService.findActiveMember(processorId);
         Task targetTask = taskService.findById(request.targetTaskId());
-        taskOrderRequestPolicy.validateProcessor(processorId, targetTask);
+        processorValidationPolicy.validateProcessor(processorId, targetTask);
 
         if (request.prevTaskId() == 0) {
             Task nextTask = findByIdAndStatus(request.targetTaskId(), targetStatus);

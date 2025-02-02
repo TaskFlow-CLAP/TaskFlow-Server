@@ -8,8 +8,7 @@ import clap.server.exception.code.TaskErrorCode;
 import java.util.Objects;
 
 @Policy
-public class TaskOrderRequestPolicy {
-
+public class ProcessorValidationPolicy {
     public void validateProcessor(Long processorId, Task targetTask) {
         if (!Objects.equals(processorId, targetTask.getProcessor().getMemberId())) {
             throw new ApplicationException(TaskErrorCode.NOT_A_PROCESSOR);
