@@ -1,5 +1,6 @@
 package clap.server.application.service.notification;
 
+import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.notification.UpdateNotificationUsecase;
 import clap.server.application.port.outbound.notification.CommandNotificationPort;
 import clap.server.application.port.outbound.notification.LoadNotificationPort;
@@ -16,13 +17,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReadNotificationService implements UpdateNotificationUsecase {
 
+    private final MemberService memberService;
     private final LoadNotificationPort loadNotificationPort;
     private final CommandNotificationPort commandNotificationPort;
 
 
     @Transactional
     @Override
-    public void updateNotification(Long notificationId) {
+    public void updateNotification(Long userId, Long notificationId) {
+
+        memberService.findActiveMember(userId);
         Notification notification = loadNotificationPort.findById(notificationId)
                 .orElseThrow(() -> new ApplicationException(NotificationErrorCode.NOTIFICATION_NOT_FOUND));
         notification.updateNotificationIsRead();
@@ -32,6 +36,7 @@ public class ReadNotificationService implements UpdateNotificationUsecase {
     @Transactional
     @Override
     public void updateAllNotification(Long memberId) {
+        memberService.findActiveMember(memberId);
         List<Notification> notificationList = loadNotificationPort.findNotificationsByMemberId(memberId);
         for (Notification notification : notificationList) {
             notification.updateNotificationIsRead();

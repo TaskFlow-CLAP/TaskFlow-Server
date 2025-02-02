@@ -47,8 +47,8 @@ public class MemberInfo {
                 .build();
     }
 
-    public void updateMemberInfo(String name, String email, boolean isReviewer,
-                                 Department department, MemberRole role, String departmentRole) {
+    public void updateMemberInfoByAdmin(String name, String email, boolean isReviewer,
+                                        Department department, MemberRole role, String departmentRole) {
         assertReviewerIsManager(isReviewer, role);
         this.name = name;
         this.email = email;
@@ -56,6 +56,10 @@ public class MemberInfo {
         this.department = department;
         this.role = role;
         this.departmentRole = departmentRole;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
     }
 
     public static void assertReviewerIsManager(boolean isReviewer, MemberRole role) {

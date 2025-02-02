@@ -6,7 +6,7 @@ import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.FindTaskHistoriesUsecase;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
 
-import clap.server.application.port.outbound.task.LoadTaskHistoryPort;
+import clap.server.application.port.outbound.taskhistory.LoadTaskHistoryPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.task.Attachment;

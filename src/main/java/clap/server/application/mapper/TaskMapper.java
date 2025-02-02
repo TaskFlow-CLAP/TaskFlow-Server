@@ -42,7 +42,19 @@ public class TaskMapper {
                 task.getFinishedAt() != null ? task.getFinishedAt() : null
         );
     }
-
+    public static FilterAssignedTaskListResponse toFilterAssignedTaskListResponse(Task task) {
+        return new FilterAssignedTaskListResponse(
+                task.getTaskId(),
+                task.getTaskCode(),
+                task.getUpdatedAt(),
+                task.getCategory().getMainCategory().getName(),
+                task.getCategory().getName(),
+                task.getTitle(),
+                task.getRequester() != null ? task.getRequester().getMemberInfo().getNickname() : "",
+                task.getTaskStatus(),
+                task.getFinishedAt() != null ? task.getFinishedAt() : null
+        );
+    }
     public static FilterPendingApprovalResponse toFilterPendingApprovalTasksResponse(Task task) {
         return new FilterPendingApprovalResponse(
                 task.getTaskId(),
@@ -120,6 +132,7 @@ public class TaskMapper {
         return new TaskItemResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
+                task.getTitle(),
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getRequester().getNickname(),

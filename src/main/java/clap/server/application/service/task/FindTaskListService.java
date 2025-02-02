@@ -1,10 +1,8 @@
 package clap.server.application.service.task;
 
-import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
+import clap.server.adapter.inbound.web.dto.common.PageResponse;
+import clap.server.adapter.inbound.web.dto.task.*;
 
-import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
 import clap.server.application.port.inbound.domain.MemberService;
 
 import clap.server.application.port.inbound.task.FindTaskListUsecase;
@@ -30,20 +28,30 @@ public class FindTaskListService implements FindTaskListUsecase {
 
 
     @Override
-    public Page<FilterRequestedTasksResponse> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest) {
+    public PageResponse<FilterRequestedTasksResponse> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest) {
         Member requester = memberService.findActiveMember(requesterId);
-        return loadTaskPort.findTasksRequestedByUser(requester.getMemberId(), pageable, findTaskListRequest);
+        Page<FilterRequestedTasksResponse> filterRequestedTasksResponses = loadTaskPort.findTasksRequestedByUser(requester.getMemberId(), pageable, findTaskListRequest);
+        return PageResponse.from(filterRequestedTasksResponses);
     }
 
     @Override
-    public Page<FilterPendingApprovalResponse> findPendingApprovalTasks(Long managerId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
-        memberService.findActiveMember(managerId);
-        return loadTaskPort.findPendingApprovalTasks(pageable, filterTaskListRequest);
+    public PageResponse<FilterAssignedTaskListResponse> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest findTaskListRequest) {
+        Member processor = memberService.findActiveMember(processorId);
+        Page<FilterAssignedTaskListResponse> filterAssignedTaskListResponses = loadTaskPort.findTasksAssignedByManager(processor.getMemberId(), pageable, findTaskListRequest);
+        return PageResponse.from(filterAssignedTaskListResponses);
     }
 
     @Override
-    public Page<FilterAllTasksResponse> findAllTasks(Long managerId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+    public PageResponse<FilterPendingApprovalResponse> findPendingApprovalTasks(Long managerId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         memberService.findActiveMember(managerId);
-        return loadTaskPort.findAllTasks(pageable, filterTaskListRequest);
+        Page<FilterPendingApprovalResponse> filterPendingApprovalResponses = loadTaskPort.findPendingApprovalTasks(pageable, filterTaskListRequest);
+        return PageResponse.from(filterPendingApprovalResponses);
+    }
+
+    @Override
+    public PageResponse<FilterAllTasksResponse> findAllTasks(Long managerId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        memberService.findActiveMember(managerId);
+        Page<FilterAllTasksResponse> filterAllTasksResponses = loadTaskPort.findAllTasks(pageable, filterTaskListRequest);
+        return PageResponse.from(filterAllTasksResponses);
     }
 }

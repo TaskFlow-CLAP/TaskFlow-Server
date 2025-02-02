@@ -40,6 +40,17 @@ public class Attachment extends BaseTime {
                 .build();
     }
 
+    public static Attachment createCommentAttachment(Task task, Comment comment, String originalName, String fileUrl, long fileSize) {
+        return Attachment.builder()
+                .task(task)
+                .comment(comment)
+                .originalName(originalName)
+                .fileUrl(fileUrl)
+                .fileSize(formatFileSize(fileSize))
+                .isDeleted(false)
+                .build();
+    }
+
     public void softDelete() {
         this.isDeleted = true;
     }

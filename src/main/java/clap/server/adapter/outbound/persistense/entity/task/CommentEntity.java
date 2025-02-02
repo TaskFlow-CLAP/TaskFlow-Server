@@ -7,12 +7,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "comment")
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE Comment SET is_Deleted = true WHERE comment_id = ?")
 public class CommentEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +34,7 @@ public class CommentEntity extends BaseTimeEntity {
 
     @Column(name = "is_modified", nullable = false)
     private boolean isModified;
+
+    @Column(name="is_deleted", nullable = false)
+    private boolean isDeleted = Boolean.FALSE;
 }
