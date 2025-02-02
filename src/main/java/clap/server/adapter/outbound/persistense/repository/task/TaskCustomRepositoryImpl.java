@@ -1,6 +1,7 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -25,73 +26,129 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
+
     @Override
     public Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
-        BooleanBuilder whereClause = createFilter(filterTaskListRequest);
+        BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            whereClause.and(taskEntity.processor.nickname.eq(filterTaskListRequest.nickName()));
+            builder.and(taskEntity.processor.nickname.contains(filterTaskListRequest.nickName()));
         }
-        whereClause.and(taskEntity.requester.memberId.eq(requesterId));
+        builder.and(taskEntity.requester.memberId.eq(requesterId));
 
-        return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+        return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
+    }
+
+    @Override
+    public Page<TaskEntity> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+        BooleanBuilder builder = createFilter(filterTaskListRequest);
+        if (!filterTaskListRequest.nickName().isEmpty()) {
+            builder.and(taskEntity.requester.nickname.contains(filterTaskListRequest.nickName()));
+        }
+        builder.and(taskEntity.processor.memberId.eq(processorId));
+
+        return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
     }
 
     @Override
     public Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
-        BooleanBuilder whereClause = createFilter(filterTaskListRequest);
+        BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            whereClause.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
+            builder.and(taskEntity.requester.nickname.contains(filterTaskListRequest.nickName()));
         }
-        whereClause.and(taskEntity.taskStatus.eq(TaskStatus.REQUESTED));
-        return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+        builder.and(taskEntity.taskStatus.eq(TaskStatus.REQUESTED));
+        return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
     }
 
     @Override
     public Page<TaskEntity> findAllTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
-        BooleanBuilder whereClause = createFilter(filterTaskListRequest);
+        BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            whereClause.and(
-                    taskEntity.requester.nickname.eq(filterTaskListRequest.nickName())
-                            .or(taskEntity.processor.nickname.eq(filterTaskListRequest.nickName()))
+            builder.and(
+                    taskEntity.requester.nickname.contains(filterTaskListRequest.nickName())
+                            .or(taskEntity.processor.nickname.contains(filterTaskListRequest.nickName()))
             );
         }
-        return getTasksPage(pageable, whereClause, filterTaskListRequest.orderRequest().sortBy(), filterTaskListRequest.orderRequest().sortDirection());
+        return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
+    }
+
+    @Override
+    public List<TaskEntity> findTasksByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request, Pageable pageable) {
+        BooleanBuilder builder = createTaskBoardFilter(processorId, statuses, untilDateTime, request);
+        return queryFactory
+                .selectFrom(taskEntity)
+                .where(builder)
+                .orderBy(taskEntity.processorOrder.asc())
+                .limit(pageable.getPageSize() + 1)
+                .offset(pageable.getOffset())
+                .fetch();
+    }
+
+    private BooleanBuilder createTaskBoardFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        builder.and(taskEntity.processor.memberId.eq(processorId));
+        builder.and(taskEntity.taskStatus.in(statuses));
+        builder.and(taskEntity.finishedAt.isNull().or(taskEntity.finishedAt.loe(untilDateTime)));
+
+        if (request.labelId() != null) {
+            builder.and(taskEntity.label.labelId.eq(request.labelId()));
+        }
+        if (request.mainCategoryId() != null) {
+            builder.and(taskEntity.category.mainCategory.categoryId.eq(request.mainCategoryId()));
+        }
+        if (request.subCategoryId() != null) {
+            builder.and(taskEntity.category.categoryId.eq(request.subCategoryId()));
+        }
+        if (request.title() != null && !request.title().isEmpty()) {
+            String titleFilter = "%" + request.title() + "%";
+            builder.and(taskEntity.title.like(titleFilter));
+        }
+        if (request.requesterNickname() != null && !request.requesterNickname().isEmpty()) {
+            String nicknameFilter = "%" + request.requesterNickname().toLowerCase() + "%";
+            builder.and(taskEntity.requester.nickname.lower().like(nicknameFilter));
+
+        }
+        return builder;
     }
 
     private BooleanBuilder createFilter(FilterTaskListRequest request) {
-        BooleanBuilder whereClause = new BooleanBuilder();
+        BooleanBuilder builder = new BooleanBuilder();
         if (request.term() != null) {
             LocalDateTime fromDate = LocalDateTime.now().minusHours(request.term());
-            whereClause.and(taskEntity.createdAt.after(fromDate));
+            builder.and(taskEntity.createdAt.after(fromDate));
         }
         if (!request.categoryIds().isEmpty()) {
-            whereClause.and(taskEntity.category.categoryId.in(request.categoryIds()));
+            builder.and(taskEntity.category.categoryId.in(request.categoryIds()));
         }
         if (!request.mainCategoryIds().isEmpty()) {
-            whereClause.and(taskEntity.category.mainCategory.categoryId.in(request.mainCategoryIds()));
+            builder.and(taskEntity.category.mainCategory.categoryId.in(request.mainCategoryIds()));
         }
         if (!request.title().isEmpty()) {
-            whereClause.and(taskEntity.title.containsIgnoreCase(request.title()));
+            builder.and(taskEntity.title.containsIgnoreCase(request.title()));
         }
         if (!request.taskStatus().isEmpty()) {
-            whereClause.and(taskEntity.taskStatus.in(request.taskStatus()));
+            builder.and(taskEntity.taskStatus.in(request.taskStatus()));
         }
-        return whereClause;
+        return builder;
     }
 
-    private Page<TaskEntity> getTasksPage(Pageable pageable, BooleanBuilder whereClause, String sortBy, String sortDirection) {
+    private Page<TaskEntity> getTasksPage(Pageable pageable, BooleanBuilder builder, String sortBy, String sortDirection) {
         OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortBy, sortDirection);
 
         List<TaskEntity> result = queryFactory
                 .selectFrom(taskEntity)
-                .where(whereClause)
+                .leftJoin(taskEntity.processor).fetchJoin()
+                .leftJoin(taskEntity.requester).fetchJoin()
+                .where(builder)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         long total = queryFactory
                 .selectFrom(taskEntity)
-                .where(whereClause)
+                .leftJoin(taskEntity.processor).fetchJoin()
+                .leftJoin(taskEntity.requester).fetchJoin()
+                .where(builder)
                 .fetch().size();
         return new PageImpl<>(result, pageable, total);
     }

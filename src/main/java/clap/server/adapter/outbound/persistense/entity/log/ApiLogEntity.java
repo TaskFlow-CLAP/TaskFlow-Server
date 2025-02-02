@@ -2,6 +2,7 @@ package clap.server.adapter.outbound.persistense.entity.log;
 
 import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.log.constant.ApiHttpMethod;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,14 +17,11 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "DTYPE")
-public class ApiLogEntity extends BaseTimeEntity {
+@DiscriminatorColumn
+public abstract class ApiLogEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long logId;
-
-    @Column(nullable = false)
-    private String serverIp;
 
     @Column(nullable = false)
     private String clientIp;
@@ -42,15 +40,18 @@ public class ApiLogEntity extends BaseTimeEntity {
     private String customStatusCode;
 
     @Column(length = 4096, nullable = false)
-    private String request;
+    private String requestBody;
 
     @Column(length = 4096, nullable = false)
-    private String response;
+    private String responseBody;
 
     @Column(nullable = false)
     private LocalDateTime requestAt;
 
     @Column(nullable = false)
-    private LocalDateTime responseAt;
+    @Enumerated(EnumType.STRING)
+    private LogStatus logStatus;
 
+    @Version
+    private Long version;
 }

@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 
-@Tag(name = "02. Task", description = "작업 생성/수정 API")
+@Tag(name = "02. Task [생성/수정]", description = "작업 생성/수정 API")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class ManagementTaskController {
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public ResponseEntity<CreateTaskResponse> createTask(
             @RequestPart(name = "taskInfo") @Valid CreateTaskRequest createTaskRequest,
-            @RequestPart(name = "attachment") @NotNull  List<MultipartFile> attachments,
+            @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo
             ){
             return ResponseEntity.ok(createTaskUsecase.createTask(userInfo.getUserId(), createTaskRequest, attachments));
@@ -46,7 +46,7 @@ public class ManagementTaskController {
     public ResponseEntity<UpdateTaskResponse> updateTask(
             @PathVariable @NotNull Long taskId,
             @RequestPart(name = "taskInfo") @Valid UpdateTaskRequest updateTaskRequest,
-            @RequestPart(name = "attachment") @NotNull  List<MultipartFile> attachments,
+            @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         return ResponseEntity.ok(updateTaskUsecase.updateTask(userInfo.getUserId(), taskId, updateTaskRequest, attachments));
     }
