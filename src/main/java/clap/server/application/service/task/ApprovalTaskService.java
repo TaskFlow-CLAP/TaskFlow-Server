@@ -22,6 +22,7 @@ import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
+import clap.server.domain.model.task.policy.RequestedTaskUpdatePolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final SendWebhookService sendWebhookService;
+    private final RequestedTaskUpdatePolicy requestedTaskUpdatePolicy;
 
     @Override
     @Transactional
@@ -54,6 +56,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         Category category = categoryService.findById(approvalTaskRequest.categoryId());
         Label label = labelService.findById(approvalTaskRequest.labelId());
 
+        requestedTaskUpdatePolicy.validateTaskRequested(task);
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_ASSIGNED, task, null, processor,null);
         commandTaskHistoryPort.save(taskHistory);
@@ -70,7 +73,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     public FindApprovalFormResponse findApprovalForm(Long managerId, Long taskId) {
         memberService.findActiveMember(managerId);
         Task task = taskService.findById(taskId);
-        task.validateTaskRequested();
+        requestedTaskUpdatePolicy.validateTaskRequested(task);
         return TaskMapper.toFindApprovalFormResponse(task);
     }
 
