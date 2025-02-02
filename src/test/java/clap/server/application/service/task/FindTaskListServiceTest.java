@@ -68,7 +68,7 @@ class FindTaskListServiceTest {
     void findPendingApprovalTasks_ReturnFilteredTasks() {
         // given
         Long managerId = 1L;
-        when(findTaskListService.findPendingApprovalTasks(managerId, eq(pageable), eq(filterTaskListRequest)))
+        when(findTaskListService.findPendingApprovalTasks(eq(managerId), eq(pageable), eq(filterTaskListRequest)))
                 .thenReturn(expectedResponse);
         // when
         PageResponse<FilterPendingApprovalResponse> result = findTaskListService.findPendingApprovalTasks(managerId, pageable, filterTaskListRequest);
