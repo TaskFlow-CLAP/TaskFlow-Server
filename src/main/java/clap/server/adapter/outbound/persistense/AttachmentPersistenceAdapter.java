@@ -38,15 +38,37 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
     }
 
     @Override
-    public List<Attachment> findAllByTaskId(final Long taskId) {
-        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskId(taskId);
+    public List<Attachment> findAllByTaskIdAndCommentIsNull(final Long taskId) {
+        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNullAndIsDeletedIsFalse(taskId);
         return attachmentEntities.stream()
                 .map(attachmentPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteByIds(List<Long> attachmentIds) {
-        attachmentRepository.deleteAllByAttachmentIdIn(attachmentIds);
+    public List<Attachment> findAllByTaskIdAndCommentIsNullAndAttachmentId(final Long taskId, final List<Long> attachmentIds) {
+        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNullAndIsDeletedIsFalseAndAttachmentIdIn(taskId, attachmentIds);
+        return attachmentEntities.stream()
+                .map(attachmentPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Attachment> findByCommentId(Long commentId) {
+        Optional<AttachmentEntity> attachmentEntity = attachmentRepository.findByComment_CommentIdAndIsDeletedFalse(commentId);
+        return attachmentEntity.map(attachmentPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<Attachment> findAllByTaskIdAndCommentIsNotNull(final Long taskId) {
+        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNotNullAndIsDeletedIsFalse(taskId);
+        return attachmentEntities.stream()
+                .map(attachmentPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean exitsByCommentId(Long commentId) {
+        return attachmentRepository.existsByComment_CommentId(commentId);
     }
 }

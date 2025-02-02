@@ -14,6 +14,7 @@ public interface MemberPersistenceMapper {
     @Mapping(source = "role", target = "memberInfo.role")
     @Mapping(source = "departmentRole", target = "memberInfo.departmentRole")
     @Mapping(source = "department", target = "memberInfo.department")
+    @Mapping(source = "reviewer", target = "memberInfo.isReviewer")
     @Mapping(source = "admin", target = "admin")
     Member toDomain(MemberEntity entity);
 
@@ -23,15 +24,12 @@ public interface MemberPersistenceMapper {
     @Mapping(source = "memberInfo.role", target = "role")
     @Mapping(source = "memberInfo.departmentRole", target = "departmentRole")
     @Mapping(source = "memberInfo.department", target = "department")
+    @Mapping(source = "memberInfo.reviewer", target = "isReviewer")
     @Mapping(target = "admin", source = "admin")
     MemberEntity toEntity(Member member);
 
-    default boolean mapIsReviewer(Member member) {
-        return member.getMemberInfo().isReviewer();
-    }
-
-    default boolean mapIsReviewer(MemberEntity entity) {
-        return entity.isReviewer();
+    default boolean mapReviewer(boolean reviewer) {
+        return reviewer;
     }
 }
 

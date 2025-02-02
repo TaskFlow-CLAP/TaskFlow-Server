@@ -14,8 +14,30 @@ spring:
     hibernate:
       ddl-auto: create
 
-  elasticsearch:
-    uris: ${ELASTIC_URI:127.0.0.1:9200}  # 기본 URL로 localhost 사용
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: leegd120@gmail.com
+    password: znlictzarqurxlla
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  testcontainers:
+    beans:
+      startup: parallel
+server:
+  domain:
+    local: 127.0.0.1:8080
+    service: 127.0.0.1:8080
+
+web:
+  domain:
+    local: 127.0.0.1:3O00
+    service: 127.0.0.1:3000
 
 swagger:
   server:
@@ -34,4 +56,5 @@ jwt:
 password:
   policy:
     length: 12
-    characters: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+"
+    characters: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+
+

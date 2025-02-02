@@ -1,7 +1,9 @@
 package clap.server.application.port.inbound.statistics;
 
-import java.util.Map;
+import clap.server.adapter.inbound.web.dto.statistics.StatisticsResponse;
+
+import java.util.List;
 
 public interface FindSubCategoryTaskRequestUsecase {
-    Map<String, Long> aggregateSubCategoryTaskRequest(String period, String mainCategory);
+    List<StatisticsResponse> aggregateSubCategoryTaskRequest(String period, String mainCategory);
 }

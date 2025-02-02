@@ -2,7 +2,7 @@ package clap.server.adapter.inbound.security.filter;
 import clap.server.exception.JwtException;
 import clap.server.exception.code.AuthErrorCode;
 import clap.server.exception.code.BaseErrorCode;
-import clap.server.exception.code.CommonErrorCode;
+import clap.server.exception.code.GlobalErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -36,7 +36,7 @@ public class JwtErrorCodeUtil {
     public static JwtException determineAuthErrorException(Exception exception) {
         return findAuthErrorException(exception).orElseGet(
                 () -> {
-                    BaseErrorCode errorCode = determineErrorCode(exception, CommonErrorCode.INTERNAL_SERVER_ERROR);
+                    BaseErrorCode errorCode = determineErrorCode(exception, GlobalErrorCode.INTERNAL_SERVER_ERROR);
                     log.debug(exception.getMessage(), exception);
                     return new JwtException(errorCode);
                 }

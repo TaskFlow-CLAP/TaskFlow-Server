@@ -1,7 +1,7 @@
 package clap.server.domain.model.task;
 
-import clap.server.adapter.outbound.persistense.entity.task.LabelEntity;
-import clap.server.adapter.outbound.persistense.entity.task.constant.LabelType;
+import clap.server.adapter.inbound.web.dto.label.AddAndEditLabelRequest;
+import clap.server.adapter.outbound.persistense.entity.task.constant.LabelColor;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
 import lombok.AccessLevel;
@@ -15,6 +15,25 @@ import lombok.experimental.SuperBuilder;
 public class Label extends BaseTime {
     private Long labelId;
     private Member admin;
-    private LabelType labelType;
+    private String labelName;
+    private LabelColor labelColor;
     private boolean isDeleted;
+
+    public static Label addLabel(Member admin, AddAndEditLabelRequest request) {
+        return Label.builder()
+                .admin(admin)
+                .labelName(request.labelName())
+                .labelColor(request.labelColor())
+                .isDeleted(false)
+                .build();
+    }
+
+    public void updateLabel(AddAndEditLabelRequest request) {
+        this.labelName = request.labelName();
+        this.labelColor = request.labelColor();
+    }
+
+    public void deleteLabel() {
+        this.isDeleted = true;
+    }
 }

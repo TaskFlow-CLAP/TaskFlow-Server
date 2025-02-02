@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Notion Notification</title>
+  <style>
+    /* CSS 스타일 */
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    .email-container {
+      max-width: 500px;
+      margin: 20px auto;
+      background: #ffffff;
+      border: 1px solid #eaeaea;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      background-color: #0052cc;
+      color: #ffffff;
+      padding: 15px;
+      text-align: center;
+    }
+    .content {
+      padding: 20px;
+      color: #333333;
+    }
+    .content p {
+      margin: 10px 0;
+    }
+    .cta-button {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .cta-button a {
+      background-color: #0052cc;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .cta-button a:hover {
+      background-color: #0041a7;
+    }
+    .footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9em;
+      color: #777777;
+      background-color: #f4f4f4;
+      border-top: 1px solid #eaeaea;
+    }
+    .footer .taskflow {
+      font-size: 1.2em; /* 글자 크기 조정 */
+      font-weight: bold; /* 글자 굵게 */
+    }
+  </style>
+</head>
+<body>
+<div class="email-container">
+  <div class="header">
+    TaskFlow 알림 서비스
+  </div>
+  <div class="content">
+    <p><strong th:text="${title}"></strong> 작업 상태가 변경되었습니다.</p>
+    <ul>
+      <li>작업 상태: <span th:text="${status}"></span></li>
+    </ul>
+    <div class="cta-button">
+      <a href="https://www.notion.so" target="_blank">확인하기</a>
+    </div>
+  </div>
+  <div class="footer">
+    <span class="taskflow">TaskFlow</span><br>
+    업무 관리의 혁신을 이끄는<br>
+    "스마트한 서비스"
+  </div>
+</div>
+</body>
+</html>

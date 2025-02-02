@@ -4,6 +4,8 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;  // Task 클래스 임포트 확인
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus; // TaskStatus 임포트
 import java.util.List;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface LoadMemberPort {
@@ -18,5 +20,10 @@ public interface LoadMemberPort {
     int getRemainingTasks(Long memberId);
 
     Optional<Member> findByNickname(String nickname);
+
+
+    List<Member> findReviewers();
+
+    Optional<Member> findReviewerById(Long id);
 
 }

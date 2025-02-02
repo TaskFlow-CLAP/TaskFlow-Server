@@ -50,7 +50,7 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
         PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
 
         NativeQuery query = buildCategoryTaskRequestQuery(periodConfig);
-        return getCategoryTaskResults(executeQuery(query));
+        return getNonPeriodTaskResults(executeQuery(query), "category_task");
     }
 
     @Override
@@ -58,7 +58,7 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
         PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
 
         NativeQuery query = buildSubCategoryTaskRequestQuery(periodConfig, mainCategory);
-        return getCategoryTaskResults(executeQuery(query));
+        return getNonPeriodTaskResults(executeQuery(query), "category_task");
     }
 
     @Override
@@ -66,7 +66,7 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
         PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
 
         NativeQuery query = buildManagerTaskProcessQuery(periodConfig);
-        return getManagerTaskResults(executeQuery(query));
+        return getNonPeriodTaskResults(executeQuery(query), "manager_task");
     }
 
     private NativeQuery buildPeriodTaskRequestQuery(PeriodConfig config) {
@@ -188,25 +188,9 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
         );
     }
 
-    private Map<String, Long> getCategoryTaskResults(ElasticsearchAggregations aggregations) {
+    private Map<String, Long> getNonPeriodTaskResults(ElasticsearchAggregations aggregations, String name) {
         return new TreeMap<>(
-                aggregations.get("category_task")
-                        .aggregation()
-                        .getAggregate()
-                        .sterms()
-                        .buckets()
-                        .array()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                bucket -> bucket.key().stringValue(),
-                                MultiBucketBase::docCount
-                        ))
-        );
-    }
-
-    private Map<String, Long> getManagerTaskResults(ElasticsearchAggregations aggregations) {
-        return new TreeMap<>(
-                aggregations.get("manager_task")
+                aggregations.get(name)
                         .aggregation()
                         .getAggregate()
                         .sterms()
