@@ -40,12 +40,12 @@ public class TaskBoardController {
 
     @Operation(summary = "작업 보드 조회 API")
     @Secured({"ROLE_MANAGER"})
-    @PostMapping
+    @GetMapping
     public ResponseEntity<TaskBoardResponse> getTaskBoard(@RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "20") int pageSize,
-                                                          @Parameter(description = "완료 일자 조회 기준, yyyy-mm-dd 형식으로 입력합니다.") @RequestParam(required = false)
+                                                          @Parameter(description = "작업 완료 일자 조회 기준, yyyy-mm-dd 형식으로 입력합니다.") @RequestParam(required = false)
                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate untilDate,
-                                                          @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "필터링 조회 request") @RequestBody(required = false) FilterTaskBoardRequest request,
+                                                          @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "필터링 조회 request") @ModelAttribute FilterTaskBoardRequest request,
                                                           @AuthenticationPrincipal SecurityUserDetails userInfo) {
         Pageable pageable = PageRequest.of(page, pageSize);
         if (request != null) {
