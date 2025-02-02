@@ -1,7 +1,6 @@
 package clap.server.adapter.outbound.api;
 
-
-import clap.server.adapter.outbound.api.dto.SendKakaoWorkRequest;
+import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
 import clap.server.adapter.outbound.persistense.repository.notification.NotificationRepository;
 import clap.server.application.port.outbound.webhook.MakeObjectBlockPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
@@ -19,7 +18,7 @@ public class ObjectBlockService implements MakeObjectBlockPort {
     private final NotificationRepository notificationRepository;
 
     @Override
-    public String makeTaskRequestBlock(SendKakaoWorkRequest request) {
+    public String makeTaskRequestBlock(SendWebhookRequest request) {
         // Blocks 데이터 생성
         Object[] blocks = new Object[]{
                 // Header 블록
@@ -92,7 +91,7 @@ public class ObjectBlockService implements MakeObjectBlockPort {
     }
 
     @Override
-    public String makeNewProcessorBlock(SendKakaoWorkRequest request) {
+    public String makeNewProcessorBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -148,7 +147,7 @@ public class ObjectBlockService implements MakeObjectBlockPort {
         try {
             payload = "{" +
                         "\"email\":\"" + request.email() + "\"," +
-                        "\"text\":\"작업 담당자 할당 알림\"," + // fallback 메시지
+                        "\"text\":\"작업 담당자 선정 알림\"," + // fallback 메시지
                         "\"blocks\":" + objectMapper.writeValueAsString(blocks) +
                         "}";
         } catch (JsonProcessingException e) {
@@ -159,7 +158,7 @@ public class ObjectBlockService implements MakeObjectBlockPort {
     }
 
     @Override
-    public String makeProcessorChangeBlock(SendKakaoWorkRequest request) {
+    public String makeProcessorChangeBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -227,7 +226,7 @@ public class ObjectBlockService implements MakeObjectBlockPort {
     }
 
     @Override
-    public String makeCommentBlock(SendKakaoWorkRequest request) {
+    public String makeCommentBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -305,7 +304,7 @@ public class ObjectBlockService implements MakeObjectBlockPort {
     }
 
     @Override
-    public String makeTaskStatusBlock(SendKakaoWorkRequest request) {
+    public String makeTaskStatusBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
