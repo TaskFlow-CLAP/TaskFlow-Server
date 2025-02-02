@@ -12,7 +12,8 @@ public enum LabelColor {
     GREEN("초록"),
     BLUE("파랑"),
     PURPLE("보라"),
-    GREY("회색");
+    GREY("회색"),
+    INDIGO("인디고");
 
     private final String description;
 }
