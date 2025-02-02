@@ -4,11 +4,9 @@ import clap.server.common.annotation.architecture.Policy;
 import clap.server.domain.model.task.Task;
 import clap.server.exception.DomainException;
 import clap.server.exception.code.TaskErrorCode;
-import lombok.RequiredArgsConstructor;
 
 import static clap.server.domain.policy.task.TaskOrderGapPolicy.DEFAULT_PROCESSOR_ORDER_GAP;
 
-@RequiredArgsConstructor
 @Policy
 public class TaskOrderCalculationPolicy {
 
