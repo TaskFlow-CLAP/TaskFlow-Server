@@ -16,11 +16,4 @@ public enum TaskStatus {
     TERMINATED("종료");
 
     private final String description;
-
-    public static List<TaskStatus> getTaskBoardStatusList() {
-        return List.of(
-                TaskStatus.IN_PROGRESS,
-                TaskStatus.PENDING_COMPLETED,
-                TaskStatus.COMPLETED);
-    }
 }
