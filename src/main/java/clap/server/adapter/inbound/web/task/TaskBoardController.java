@@ -8,6 +8,7 @@ import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.port.inbound.task.FilterTaskBoardUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskBoardUsecase;
 import clap.server.application.port.inbound.task.GetTaskBoardUsecase;
+import clap.server.application.port.inbound.task.UpdateTaskOrderAndStatusUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,6 +36,7 @@ public class TaskBoardController {
     private final GetTaskBoardUsecase getTaskBoardUsecase;
     private final FilterTaskBoardUsecase filterTaskBoardUsecase;
     private final UpdateTaskBoardUsecase updateTaskBoardUsecase;
+    private final UpdateTaskOrderAndStatusUsecase updateTaskOrderAndStatus;
 
     @Operation(summary = "작업 보드 조회 API")
     @Secured({"ROLE_MANAGER"})
@@ -62,7 +64,7 @@ public class TaskBoardController {
         if (status == null) {
             updateTaskBoardUsecase.updateTaskOrder(userInfo.getUserId(), request);
         } else {
-            updateTaskBoardUsecase.updateTaskOrderAndStatus(userInfo.getUserId(), request, status);
+            updateTaskOrderAndStatus.updateTaskOrderAndStatus(userInfo.getUserId(), request, status);
         }
     }
 
