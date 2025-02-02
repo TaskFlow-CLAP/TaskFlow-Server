@@ -37,7 +37,9 @@ public class FindStatisticsController {
     @GetMapping
     @Secured("ROLE_MANAGER")
     public ResponseEntity<List<StatisticsResponse>> aggregateTaskStatistics(@RequestParam PeriodType periodType, @RequestParam StatisticsType statisticsType) {
-        switch (statisticsType) {
+        System.out.println("periodType = " + periodType);
+        System.out.println("statisticsType = " + statisticsType);
+        return switch (statisticsType) {
             case REQUEST_BY_PERIOD ->
                     ResponseEntity.ok(findTaskProcessUsecase.aggregatePeriodTaskRequest(periodType.getType()));
             case PROCESS_BY_PERIOD -> ResponseEntity.ok(findTaskProcessUsecase
@@ -46,8 +48,8 @@ public class FindStatisticsController {
                     ResponseEntity.ok(findTaskProcessUsecase.aggregateCategoryTaskRequest(periodType.getType()));
             case PROCESS_BY_MANAGER -> ResponseEntity.ok(findTaskProcessUsecase
                     .aggregateManagerTaskProcess(periodType.getType()));
-        }
-        throw new StatisticsException(STATISTICS_BAD_REQUEST);
+            default -> throw new StatisticsException(STATISTICS_BAD_REQUEST);
+        };
     }
 
     @Operation(summary = "1차 카테고리 하위 2차 카테고리별 통계 API")
