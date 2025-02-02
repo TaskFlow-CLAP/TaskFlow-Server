@@ -22,7 +22,7 @@ import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
-import clap.server.domain.model.task.policy.RequestedTaskUpdatePolicy;
+import clap.server.domain.policy.task.RequestedTaskUpdatePolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
