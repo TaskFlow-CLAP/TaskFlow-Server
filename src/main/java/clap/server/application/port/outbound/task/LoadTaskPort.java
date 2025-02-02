@@ -21,13 +21,13 @@ public interface LoadTaskPort {
 
     List<Task> findYesterdayTaskByDate(LocalDateTime now);
 
-    Page<FilterRequestedTasksResponse> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
+    Page<Task> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
 
-    Page<FilterAssignedTaskListResponse> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest);
+    Page<Task> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 
-    Page<FilterPendingApprovalResponse> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest);
+    Page<Task> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 
-    Page<FilterAllTasksResponse> findAllTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
+    Page<Task> findAllTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
 
     Slice<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, Pageable pageable);
 
