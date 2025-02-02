@@ -10,6 +10,7 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Category;
 import clap.server.exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ public class AddCategoryService implements AddMainCategoryUsecase, AddSubCategor
     private final LoadMemberPort loadMemberPort;
 
     @Override
+    @Transactional
     public void addMainCategory(Long adminId, String code, String name) {
         Optional<Member> activeMember = loadMemberPort.findActiveMemberById(adminId);
         Category mainCategory = Category.createMainCategory(
@@ -33,6 +35,7 @@ public class AddCategoryService implements AddMainCategoryUsecase, AddSubCategor
     }
 
     @Override
+    @Transactional
     public void addSubCategory(Long adminId, Long mainCategoryId, String code, String name) {
         Optional<Member> activeMember = loadMemberPort.findActiveMemberById(adminId);
         Optional<Category> mainCategory = loadCategoryPort.findById(mainCategoryId);
