@@ -45,8 +45,8 @@ public class FindTaskListService implements FindTaskListUsecase {
     @Override
     public PageResponse<FilterPendingApprovalResponse> findPendingApprovalTasks(Long managerId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         memberService.findActiveMember(managerId);
-        return PageResponse.from(loadTaskPort.findPendingApprovalTasks(pageable, filterTaskListRequest)
-                .map(TaskMapper::toFilterPendingApprovalTasksResponse));
+        Page<Task> taskList = loadTaskPort.findPendingApprovalTasks(pageable, filterTaskListRequest);
+        return PageResponse.from(taskList.map(TaskMapper::toFilterPendingApprovalTasksResponse));
     }
 
     @Override
