@@ -1,8 +1,12 @@
 package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
-import clap.server.adapter.inbound.web.dto.task.*;
 
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.response.FilterAllTasksResponse;
+import clap.server.adapter.inbound.web.dto.task.response.FilterAssignedTaskListResponse;
+import clap.server.adapter.inbound.web.dto.task.response.FilterPendingApprovalResponse;
+import clap.server.adapter.inbound.web.dto.task.response.FilterRequestedTasksResponse;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 

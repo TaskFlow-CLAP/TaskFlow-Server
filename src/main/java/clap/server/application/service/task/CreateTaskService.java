@@ -1,7 +1,7 @@
 package clap.server.application.service.task;
 
-import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.request.CreateTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.response.CreateTaskResponse;
 
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
