@@ -1,6 +1,6 @@
-package clap.server.application.service.member;
+package clap.server.application.service.admin;
 
-import clap.server.application.port.inbound.management.FindAllMembersUsecase;
+import clap.server.application.port.inbound.admin.FindAllMembersUsecase;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.domain.model.member.Member;
 import lombok.RequiredArgsConstructor;
