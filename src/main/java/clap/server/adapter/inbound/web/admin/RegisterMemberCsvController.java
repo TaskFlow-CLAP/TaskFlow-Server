@@ -1,7 +1,7 @@
 package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.application.port.inbound.management.RegisterMemberUsecase;
+import clap.server.application.port.inbound.admin.RegisterMemberUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
