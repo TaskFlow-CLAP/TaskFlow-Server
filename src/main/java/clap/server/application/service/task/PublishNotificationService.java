@@ -20,6 +20,8 @@ public class PublishNotificationService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final SendWebhookService sendWebhookService;
 
+    //TODO: NotificationType에 따라 메세지 템플릿을 생성하는 로직 추가 필요
+
     public void publishNotification(List<Member> receivers, Task task, NotificationType type) {
         receivers.forEach(receiver -> {
             Notification notification = createTaskNotification(task, receiver, type);
