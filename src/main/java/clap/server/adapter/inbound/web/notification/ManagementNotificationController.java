@@ -1,10 +1,7 @@
 package clap.server.adapter.inbound.web.notification;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.application.port.inbound.notification.EnableAgitUsecase;
-import clap.server.application.port.inbound.notification.EnableEmailUsecase;
-import clap.server.application.port.inbound.notification.EnableKakaoUsecase;
-import clap.server.application.port.inbound.notification.UpdateNotificationUsecase;
+import clap.server.application.port.inbound.notification.*;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ManagementNotificationController {
 
     private final UpdateNotificationUsecase updateNotificationUsecase;
+    private final UpdateAllNotificationUsecase updateAllNotificationUsecase;
     private final EnableKakaoUsecase enableKakaoUsecase;
     private final EnableAgitUsecase enableAgitUsecase;
     private final EnableEmailUsecase enableEmailUsecase;
@@ -40,7 +38,7 @@ public class ManagementNotificationController {
     @Operation(summary = "알림 목록에서 전체 읽음 버튼을 눌렀을 때 전체 읽음 처리")
     @PatchMapping
     public void updateAllNotificationIsRead(@AuthenticationPrincipal SecurityUserDetails userInfo) {
-        updateNotificationUsecase.updateAllNotification(userInfo.getUserId());
+        updateAllNotificationUsecase.updateAllNotification(userInfo.getUserId());
     }
 
     @Operation(summary = "카카오 푸시 알림 활성화/비활성화 API", description = "알림 거부였을 시 -> 승인으로 변경, 알림 승인이였을 시 -> 거부로 변경")
