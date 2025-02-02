@@ -1,4 +1,4 @@
-package clap.server.domain.model.task.policy;
+package clap.server.domain.policy.task;
 
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.common.annotation.architecture.Policy;
