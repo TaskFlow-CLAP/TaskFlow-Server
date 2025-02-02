@@ -14,7 +14,6 @@ import org.testcontainers.utility.DockerImageName;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@DataElasticsearchTest
 @Testcontainers
 @SpringBootTest
 class TaskflowApplicationTests {
