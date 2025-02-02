@@ -1,8 +1,8 @@
 package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.RegisterMemberRequest;
+import clap.server.application.port.inbound.admin.RegisterMemberUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
-import clap.server.application.port.inbound.management.RegisterMemberUsecase;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadDepartmentPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -18,12 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static clap.server.application.mapper.MemberInfoMapper.toMemberInfo;
-import static clap.server.application.mapper.MemberMapper.toMember;
-
 @ApplicationService
 @RequiredArgsConstructor
-public class RegisterMemberService implements RegisterMemberUsecase {
+class RegisterMemberService implements RegisterMemberUsecase {
     private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
@@ -37,19 +34,10 @@ public class RegisterMemberService implements RegisterMemberUsecase {
         Department department = loadDepartmentPort.findById(request.departmentId())
                 .orElseThrow(() -> new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
-        MemberInfo memberInfo = toMemberInfo(
-                request.name(),
-                request.email(),
-                request.nickname(),
-                request.isReviewer(),
-                department,
-                request.role(),
-                request.departmentRole()
-        );
-
-        Member member = toMember(memberInfo);
-        member.register(admin);
-
+        // TODO: 인프라팀만 담당자가 될 수 있도록 수정해야함
+        MemberInfo memberInfo = MemberInfo.toMemberInfo(request.name(), request.email(), request.nickname(), request.isReviewer(),
+                department, request.role(), request.departmentRole());
+        Member member = Member.createMember(admin, memberInfo);
         commandMemberPort.save(member);
     }
 

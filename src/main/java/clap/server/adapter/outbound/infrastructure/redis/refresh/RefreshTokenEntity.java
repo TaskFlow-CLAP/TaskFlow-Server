@@ -1,5 +1,6 @@
 package clap.server.adapter.outbound.infrastructure.redis.refresh;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @RedisHash("refreshToken")
+@Builder
 @ToString(of = {"memberId", "token", "ttl"})
 @EqualsAndHashCode(of = {"memberId", "token"})
 public class RefreshTokenEntity {

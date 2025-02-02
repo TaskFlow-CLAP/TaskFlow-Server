@@ -1,23 +1,47 @@
 spring:
-  # H2 Setting Info (H2 Console에 접속하기 위한 설정정보 입력)
+  # H2 설정 정보 (H2 Console에 접속하기 위한 설정)
   h2:
     console:
       enabled: false  # H2 Console을 사용할지 여부 (H2 Console은 H2 Database를 UI로 제공해주는 기능)
       path: /h2  # H2 Console의 Path
-  # Database Setting Info (Database를 H2로 사용하기 위해 H2연결 정보 입력)
+  # Database 설정 정보 (H2 연동 정보)
   datasource:
-    driver-class-name: org.h2.Driver  # Database를 H2로 사용하겠다.
+    driver-class-name: org.h2.Driver  # H2 Database 사용
     url: jdbc:h2:mem:testdb  # H2 접속 정보
-    username: taskflow  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
-    password:  # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
+    username: taskflow  # H2 접속 시 입력할 username 정보
+    password:  # H2 접속 시 입력할 password 정보
   jpa:
     hibernate:
       ddl-auto: create
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: leegd120@gmail.com
+    password: znlictzarqurxlla
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  testcontainers:
+    beans:
+      startup: parallel
+server:
+  domain:
+    local: 127.0.0.1:8080
+    service: 127.0.0.1:8080
+
+web:
+  domain:
+    local: 127.0.0.1:3O00
+    service: 127.0.0.1:3000
+
 swagger:
   server:
     url: http://localhost:8080
-
 
 jwt:
   secret-key:
@@ -32,4 +56,5 @@ jwt:
 password:
   policy:
     length: 12
-    characters: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+"
+    characters: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+
+

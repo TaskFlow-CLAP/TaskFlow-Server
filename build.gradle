@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter'
 
@@ -91,8 +92,20 @@ dependencies {
     // Email Sender
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+    // Thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
     // Spring aop
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // S3
+    implementation platform('software.amazon.awssdk:bom:2.23.7')
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'ch.qos.logback:logback-classic:1.4.12'
+
+    // Apache Tika
+    implementation 'org.apache.tika:tika-core:2.9.0'
+    implementation 'org.apache.tika:tika-parsers:2.9.0'
 
 }
 

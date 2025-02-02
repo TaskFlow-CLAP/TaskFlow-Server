@@ -1,37 +1,44 @@
 package clap.server.domain.model.task;
 
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
+
 import clap.server.domain.model.common.BaseTime;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import clap.server.domain.model.member.Member;
+
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TaskHistory extends BaseTime {
-    private Long historyId;
+    private Long taskHistoryId;
     private TaskHistoryType type;
     private TaskModificationInfo taskModificationInfo;
     private Comment comment;
 
     @Getter
+    @Builder
+    @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class TaskModificationInfo {
-        private Long taskId;
-        private String modifiedField;
-        private Long modifiedMemberId;
-        private String newValue;
+        private Task task;
+        private Member modifiedMember;
+        private String modifiedStatus;
+    }
 
-        @Builder
-        public TaskModificationInfo(Long taskId, String modifiedField, Long modifiedMemberId, String newValue) {
-            this.taskId = taskId;
-            this.modifiedField = modifiedField;
-            this.modifiedMemberId = modifiedMemberId;
-            this.newValue = newValue;
-        }
+    public static TaskHistory createTaskHistory(TaskHistoryType type, Task task, String statusDescription, Member member, Comment comment) {
+        return TaskHistory.builder()
+                .type(type)
+                .taskModificationInfo(
+                        TaskModificationInfo.builder()
+                                .task(task)
+                                .modifiedMember(member)
+                                .modifiedStatus(statusDescription)
+                                .build()
+                )
+                .comment(comment)
+                .build();
     }
 }
 

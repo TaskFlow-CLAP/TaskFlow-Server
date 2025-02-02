@@ -2,7 +2,7 @@ package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.admin.RegisterMemberRequest;
-import clap.server.application.port.inbound.management.RegisterMemberUsecase;
+import clap.server.application.port.inbound.admin.RegisterMemberUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "회원 관리 - 등록")
+@Tag(name = "05. Admin")
 @WebAdapter
 @RequestMapping("/api/managements")
 @RequiredArgsConstructor

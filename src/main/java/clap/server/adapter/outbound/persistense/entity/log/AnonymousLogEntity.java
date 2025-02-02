@@ -13,7 +13,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("ANONYMOUS")
 @SuperBuilder
-public class AnonymousLogEntity extends ApiLogEntity{
+public class AnonymousLogEntity extends ApiLogEntity {
+
     @Column
     private String loginNickname;
 }

@@ -10,7 +10,8 @@ public enum NotificationType {
     TASK_REQUESTED("작업 요청"),
     STATUS_SWITCHED("상태 전환"),
     PROCESSOR_ASSIGNED("처리자 할당"),
-    PROCESSOR_CHANGED("처리자 변경");
+    PROCESSOR_CHANGED("처리자 변경"),
+    INVITATION("회원가입 초대");
 
     private final String description;
 }

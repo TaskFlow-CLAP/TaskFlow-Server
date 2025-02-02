@@ -50,7 +50,7 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
         PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
 
         NativeQuery query = buildCategoryTaskRequestQuery(periodConfig);
-        return getCategoryTaskResults(executeQuery(query));
+        return getNonPeriodTaskResults(executeQuery(query), "category_task");
     }
 
     @Override
@@ -58,7 +58,15 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
         PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
 
         NativeQuery query = buildSubCategoryTaskRequestQuery(periodConfig, mainCategory);
-        return getCategoryTaskResults(executeQuery(query));
+        return getNonPeriodTaskResults(executeQuery(query), "category_task");
+    }
+
+    @Override
+    public Map<String, Long> findManagerTaskProcessByPeriod(String period) {
+        PeriodConfig periodConfig = PeriodConfig.valueOf(period.toUpperCase());
+
+        NativeQuery query = buildManagerTaskProcessQuery(periodConfig);
+        return getNonPeriodTaskResults(executeQuery(query), "manager_task");
     }
 
     private NativeQuery buildPeriodTaskRequestQuery(PeriodConfig config) {
@@ -141,6 +149,20 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
                 .build();
     }
 
+    private NativeQuery buildManagerTaskProcessQuery(PeriodConfig config) {
+        return NativeQuery.builder()
+                .withQuery(q -> q
+                        .range(r -> r
+                                .date(d -> d
+                                        .field("created_at")
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract()))))))
+                .withAggregation("manager_task", AggregationBuilders.terms()
+                        .field("processor")
+                        .build()._toAggregation())
+                .withMaxResults(0)
+                .build();
+    }
+
     private ElasticsearchAggregations executeQuery(NativeQuery query) {
         return (ElasticsearchAggregations) elasticsearchOperations
                 .search(query, TaskDocument.class)
@@ -166,9 +188,9 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
         );
     }
 
-    private Map<String, Long> getCategoryTaskResults(ElasticsearchAggregations aggregations) {
+    private Map<String, Long> getNonPeriodTaskResults(ElasticsearchAggregations aggregations, String name) {
         return new TreeMap<>(
-                aggregations.get("category_task")
+                aggregations.get(name)
                         .aggregation()
                         .getAggregate()
                         .sterms()

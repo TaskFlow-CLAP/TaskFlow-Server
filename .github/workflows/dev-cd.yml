@@ -62,4 +62,7 @@ jobs:
           script: |
             docker rm -f taskflow
             docker image rm ${{ secrets.DOCKER_REPO }} -f
-            docker run --name taskflow --network host -d -p 9090:9090 ${{ secrets.DOCKER_REPO }} --restart on-failure
+            docker run --name taskflow -d -p 9090:9090 \
+              --env-file /home/ubuntu/.env \
+              ${{ secrets.DOCKER_REPO }} \
+              --restart on-failure
