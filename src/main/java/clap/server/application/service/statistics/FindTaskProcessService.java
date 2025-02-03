@@ -31,7 +31,7 @@ class FindTaskProcessService implements FindTaskProcessUsecase {
     @Override
     public List<StatisticsResponse> aggregatePeriodTaskProcess(String period) {
         if (period.equals("week") || period.equals("month")) {
-            return FindTaskStatisticsMapper.toStatisticsResponse( taskStatisticsPolicy.transformToWeekdayStatistics(taskDocumentPort.findPeriodTaskProcessByPeriod(period)));
+            return FindTaskStatisticsMapper.toStatisticsResponse( taskStatisticsPolicy.filterAndFormatWeekdayStatistics(taskDocumentPort.findPeriodTaskProcessByPeriod(period)));
         }
         return FindTaskStatisticsMapper.toStatisticsResponse(taskDocumentPort.findPeriodTaskProcessByPeriod(period));
     }
@@ -39,7 +39,7 @@ class FindTaskProcessService implements FindTaskProcessUsecase {
     @Override
     public List<StatisticsResponse> aggregatePeriodTaskRequest(String period) {
         if (period.equals("week") || period.equals("month")) {
-            return FindTaskStatisticsMapper.toStatisticsResponse(taskStatisticsPolicy.transformToWeekdayStatistics(taskDocumentPort.findPeriodTaskRequestByPeriod(period)));
+            return FindTaskStatisticsMapper.toStatisticsResponse(taskStatisticsPolicy.filterAndFormatWeekdayStatistics(taskDocumentPort.findPeriodTaskRequestByPeriod(period)));
         }
         return FindTaskStatisticsMapper.toStatisticsResponse(taskDocumentPort.findPeriodTaskRequestByPeriod(period));
     }
