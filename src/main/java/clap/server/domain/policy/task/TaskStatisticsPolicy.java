@@ -4,24 +4,34 @@ import clap.server.common.annotation.architecture.Policy;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Policy
 public class TaskStatisticsPolicy {
+    private static final String DISPLAY_FORMAT = "MM월 dd일";
 
-    public Map<String, Long> transformToWeekdayStatistics(Map<String, Long> statistics) {
-        TreeMap<String, Long> result = new TreeMap<>();
+    public Map<String, Long> filterAndFormatWeekdayStatistics(Map<String, Long> statistics) {
+        return statistics.entrySet().stream()
+                .filter(this::isWeekday)
+                .collect(Collectors.toMap(
+                        entry -> formatDate(entry.getKey()),
+                        Entry::getValue,
+                        (v1, v2) -> v1,
+                        TreeMap::new
+                ));
+    }
 
-        for (Entry<String, Long> statistic : statistics.entrySet()) {
-            String stringDate = statistic.getKey();
-            LocalDate date = LocalDate.parse(stringDate);
+    private boolean isWeekday(Entry<String, Long> entry) {
+        LocalDate date = LocalDate.parse(entry.getKey());
+        return !(date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY);
+    }
 
-            if (!(date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-                result.put(stringDate.substring(6, 10).replace("-", "월 ") + "일", statistic.getValue());
-            }
-        }
-        return result;
+    private String formatDate(String dateString) {
+        LocalDate date = LocalDate.parse(dateString);
+        return date.format(DateTimeFormatter.ofPattern(DISPLAY_FORMAT));
     }
 }
