@@ -5,6 +5,7 @@ import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TaskItemResponse;
 import clap.server.adapter.inbound.web.dto.task.response.*;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
+import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Task;
 import org.springframework.data.domain.Slice;
@@ -176,6 +177,15 @@ public class TaskResponseMapper {
                 task.getCategory().getCategoryId(),
                 task.getCategory().getName(),
                 task.getCategory().getMainCategory().getName()
+        );
+    }
+
+    public static FindManagersResponse toFindManagersResponse(Member manager, int remainingTasks) {
+        return new FindManagersResponse(
+                manager.getMemberId(),
+                manager.getNickname(),
+                manager.getImageUrl(),
+                remainingTasks
         );
     }
 }
