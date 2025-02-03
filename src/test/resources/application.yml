@@ -59,4 +59,3 @@ password:
   policy:
     length: 12
     characters: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+
-
