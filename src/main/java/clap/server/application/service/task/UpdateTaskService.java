@@ -85,7 +85,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Transactional
     @Override
     public UpdateTaskResponse updateTaskProcessor(Long taskId, Long userId, UpdateTaskProcessorRequest request) {
-        memberService.findReviewer(userId);
+        memberService.findActiveMember(userId);
         Member processor = memberService.findById(request.processorId());
 
         Task task = taskService.findById(taskId);
@@ -99,7 +99,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Transactional
     @Override
     public UpdateTaskResponse updateTaskLabel(Long taskId, Long userId, UpdateTaskLabelRequest request) {
-        Member reviewer = memberService.findReviewer(userId);
+        memberService.findActiveMember(userId);
         Task task = taskService.findById(taskId);
         Label label = labelService.findById(request.labelId());
 
@@ -133,5 +133,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             sendNotificationService.sendPushNotification(receiver, notificationType,
                     task, message, null);
         });
+        sendNotificationService.sendAgitNotification(notificationType,
+                task, message, null);
     }
 }
