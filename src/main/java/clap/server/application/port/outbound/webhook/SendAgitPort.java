@@ -1,7 +1,7 @@
 package clap.server.application.port.outbound.webhook;
 
-import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
+import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 
 public interface SendAgitPort {
-    void sendAgit(SendWebhookRequest request);
+    void sendAgit(PushNotificationTemplate request);
 }

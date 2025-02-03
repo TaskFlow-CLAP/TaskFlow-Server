@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.outbound.api.dto.EmailTemplate;
-import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
+import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
@@ -12,7 +12,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 public class EmailTemplateBuilder {
     private final SpringTemplateEngine templateEngine;
 
-    public EmailTemplate createWebhookTemplate(SendWebhookRequest request) {
+    public EmailTemplate createWebhookTemplate(PushNotificationTemplate request) {
         Context context = new Context();
         String templateName = "";
         String subject = "";

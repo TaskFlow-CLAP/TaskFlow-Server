@@ -2,8 +2,9 @@ package clap.server.adapter.outbound.api.dto;
 
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 
-public record SendWebhookRequest(
+public record PushNotificationTemplate(
 
+        Long taskId,
         String email,
         NotificationType notificationType,
         String taskName,
