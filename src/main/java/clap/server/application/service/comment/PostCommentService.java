@@ -1,10 +1,11 @@
 package clap.server.application.service.comment;
 
-import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
+import clap.server.adapter.inbound.web.dto.comment.CreateCommentRequest;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
-import clap.server.application.port.inbound.comment.PostCommentUsecase;
+import clap.server.application.port.inbound.comment.SaveCommentAttachmentUsecase;
+import clap.server.application.port.inbound.comment.SaveCommentUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.outbound.s3.S3UploadPort;
