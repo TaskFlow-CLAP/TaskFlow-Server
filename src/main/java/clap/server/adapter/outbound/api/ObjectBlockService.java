@@ -1,23 +1,19 @@
 package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
-import clap.server.adapter.outbound.persistense.repository.notification.NotificationRepository;
-import clap.server.application.port.outbound.webhook.MakeObjectBlockPort;
-import clap.server.common.annotation.architecture.PersistenceAdapter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@PersistenceAdapter
+@Component
 @RequiredArgsConstructor
-public class ObjectBlockService implements MakeObjectBlockPort {
+public class ObjectBlockService {
 
     private final ObjectMapper objectMapper;
-    private final NotificationRepository notificationRepository;
 
-    @Override
     public String makeTaskRequestBlock(SendWebhookRequest request) {
         // Blocks 데이터 생성
         Object[] blocks = new Object[]{
@@ -90,7 +86,6 @@ public class ObjectBlockService implements MakeObjectBlockPort {
         return payload;
     }
 
-    @Override
     public String makeNewProcessorBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
@@ -157,7 +152,6 @@ public class ObjectBlockService implements MakeObjectBlockPort {
         return payload;
     }
 
-    @Override
     public String makeProcessorChangeBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
@@ -225,7 +219,6 @@ public class ObjectBlockService implements MakeObjectBlockPort {
         return payload;
     }
 
-    @Override
     public String makeCommentBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
@@ -303,7 +296,6 @@ public class ObjectBlockService implements MakeObjectBlockPort {
         return payload;
     }
 
-    @Override
     public String makeTaskStatusBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
