@@ -1,6 +1,5 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
-
 import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
@@ -56,23 +55,16 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
         return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
     }
-    @Override
-    public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable) {
-        // Build the query string using a separate method
-        String queryStr = buildQueryString(filter);
 
+    @Override
+    public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+        String queryStr = buildQueryString(filter);
         TypedQuery<TaskEntity> query = entityManager.createQuery(queryStr, TaskEntity.class)
                 .setParameter("memberId", memberId);
 
-        // Set the parameters
         setQueryParameters(query, filter);
 
-        // Apply pagination
-        query.setMaxResults(pageable.getPageSize())
-                .setFirstResult((int) pageable.getOffset());
-
         List<TaskEntity> taskEntities = query.getResultList();
-
         return taskEntities.stream()
                 .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId()))
                 .entrySet()
