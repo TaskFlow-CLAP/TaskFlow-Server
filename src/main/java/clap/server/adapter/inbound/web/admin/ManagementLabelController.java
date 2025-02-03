@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "05. Admin")
 @WebAdapter
 @RequiredArgsConstructor
-@RequestMapping("/api/management/labels")
+@RequestMapping("/api/managements/labels")
 public class ManagementLabelController {
 
     private final AddLabelUsecase addLabelUsecase;
