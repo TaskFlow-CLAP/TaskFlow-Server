@@ -3,13 +3,13 @@ package clap.server.adapter.outbound.infrastructure.sse;
 import clap.server.adapter.outbound.infrastructure.sse.repository.EmitterRepository;
 import clap.server.application.port.outbound.notification.CommandSsePort;
 import clap.server.application.port.outbound.notification.LoadSsePort;
-import clap.server.common.annotation.architecture.PersistenceAdapter;
+import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-@PersistenceAdapter
+@InfrastructureAdapter
 @RequiredArgsConstructor
-public class SsePersistenceAdapter implements LoadSsePort, CommandSsePort {
+public class SseAdapter implements LoadSsePort, CommandSsePort {
 
     private final EmitterRepository emitterRepository;
 
