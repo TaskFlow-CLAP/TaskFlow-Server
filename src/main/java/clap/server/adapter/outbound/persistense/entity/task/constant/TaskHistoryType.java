@@ -10,7 +10,8 @@ public enum TaskHistoryType {
     COMMENT_FILE("댓글 첨부파일"),
     STATUS_SWITCHED("상태 전환"),
     PROCESSOR_ASSIGNED("처리자 할당"),
-    PROCESSOR_CHANGED("처리자 변경");
+    PROCESSOR_CHANGED("처리자 변경"),
+    TASK_TERMINATED("작업 종료됨");
 
     private final String description;
 }
