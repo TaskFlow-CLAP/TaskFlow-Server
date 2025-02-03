@@ -120,20 +120,20 @@ import static clap.server.adapter.outbound.persistense.entity.member.QMemberEnti
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(memberEntity.status.ne(MemberStatus.DELETED));
 
-        if (filterRequest.getName() != null) {
-            whereClause.and(memberEntity.name.containsIgnoreCase(filterRequest.getName()));
+        if (filterRequest.name() != null) {
+            whereClause.and(memberEntity.name.containsIgnoreCase(filterRequest.name()));
         }
-        if (filterRequest.getEmail() != null) {
-            whereClause.and(memberEntity.email.containsIgnoreCase(filterRequest.getEmail()));
+        if (filterRequest.email() != null) {
+            whereClause.and(memberEntity.email.containsIgnoreCase(filterRequest.email()));
         }
-        if (filterRequest.getNickname() != null) {
-            whereClause.and(memberEntity.nickname.containsIgnoreCase(filterRequest.getNickname()));
+        if (filterRequest.nickName() != null) {
+            whereClause.and(memberEntity.nickname.containsIgnoreCase(filterRequest.nickName()));
         }
-        if (filterRequest.getDepartmentId() != null) {
-            whereClause.and(memberEntity.department.departmentId.eq(filterRequest.getDepartmentId()));
+        if (filterRequest.departmentName() != null) {
+            whereClause.and(memberEntity.department.name.containsIgnoreCase(filterRequest.departmentName()));
         }
-        if (filterRequest.getRole() != null) {
-            whereClause.and(memberEntity.role.eq(filterRequest.getRole()));
+        if (filterRequest.role() != null) {
+            whereClause.and(memberEntity.role.eq(filterRequest.role()));
         }
 
         return whereClause;
