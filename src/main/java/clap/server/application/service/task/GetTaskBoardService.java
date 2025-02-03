@@ -2,8 +2,7 @@ package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
-import clap.server.application.mapper.TaskMapper;
+import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.FilterTaskBoardUsecase;
 import clap.server.application.port.inbound.task.GetTaskBoardUsecase;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @ApplicationService
@@ -35,7 +33,7 @@ class GetTaskBoardService implements GetTaskBoardUsecase, FilterTaskBoardUsecase
         memberService.findActiveMember(processorId);
         LocalDateTime untilDateTime = untilDate == null ? LocalDate.now().plusDays(1).atStartOfDay() : untilDate.plusDays(1).atStartOfDay();
         Slice<Task> tasks = loadTaskPort.findByProcessorAndStatus(processorId, TaskValuePolicy.TASK_BOARD_STATUS_FILTER, untilDateTime, pageable);
-        return TaskMapper.toSliceTaskItemResponse(tasks);
+        return TaskResponseMapper.toSliceTaskItemResponse(tasks);
     }
 
     @Override
@@ -43,6 +41,6 @@ class GetTaskBoardService implements GetTaskBoardUsecase, FilterTaskBoardUsecase
         memberService.findActiveMember(processorId);
         LocalDateTime untilDateTime = untilDate == null ? LocalDate.now().plusDays(1).atStartOfDay() : untilDate.plusDays(1).atStartOfDay();
         Slice<Task> tasks = loadTaskPort.findTaskBoardByFilter(processorId, TaskValuePolicy.TASK_BOARD_STATUS_FILTER, untilDateTime, request, pageable);
-        return TaskMapper.toSliceTaskItemResponse(tasks);
+        return TaskResponseMapper.toSliceTaskItemResponse(tasks);
     }
 }

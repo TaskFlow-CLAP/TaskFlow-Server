@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static clap.server.application.mapper.MemberMapper.toMember;
+import static clap.server.application.mapper.MemberResponseMapper.toMember;
 import static clap.server.domain.model.member.MemberInfo.toMemberInfo;
 
 

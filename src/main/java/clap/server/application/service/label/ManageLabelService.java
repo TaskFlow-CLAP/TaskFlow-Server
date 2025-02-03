@@ -1,6 +1,6 @@
 package clap.server.application.service.label;
 
-import clap.server.adapter.inbound.web.dto.label.EditLabelRequest;
+import clap.server.adapter.inbound.web.dto.label.request.EditLabelRequest;
 import clap.server.application.port.inbound.admin.DeleteLabelUsecase;
 import clap.server.application.port.inbound.label.UpdateLabelUsecase;
 import clap.server.application.port.inbound.domain.MemberService;

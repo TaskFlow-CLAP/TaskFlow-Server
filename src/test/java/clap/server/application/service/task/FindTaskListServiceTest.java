@@ -3,7 +3,7 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.response.FilterPendingApprovalResponse;
-import clap.server.application.mapper.TaskMapper;
+import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.domain.model.task.Task;
@@ -59,7 +59,7 @@ class FindTaskListServiceTest {
 
 
         pageResponse = new PageImpl<>(List.of(task1, task2), pageable, 2);
-        expectedResponse = PageResponse.from(pageResponse.map(TaskMapper::toFilterPendingApprovalTasksResponse));
+        expectedResponse = PageResponse.from(pageResponse.map(TaskResponseMapper::toFilterPendingApprovalTasksResponse));
     }
 
     //@Test

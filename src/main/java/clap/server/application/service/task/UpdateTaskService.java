@@ -7,7 +7,7 @@ import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.mapper.AttachmentMapper;
-import clap.server.application.mapper.TaskMapper;
+import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.LabelService;
 import clap.server.application.port.inbound.domain.MemberService;
@@ -22,7 +22,7 @@ import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.common.constants.FilePathConstants;
+import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
@@ -67,7 +67,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         if (!updateTaskRequest.attachmentsToDelete().isEmpty()) {
             updateAttachments(updateTaskRequest.attachmentsToDelete(), files, task);
         }
-        return TaskMapper.toUpdateTaskResponse(updatedTask);
+        return TaskResponseMapper.toUpdateTaskResponse(updatedTask);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         Task updateTask = commandTaskPort.save(task);
 
         publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
-        return TaskMapper.toUpdateTaskResponse(updateTask);
+        return TaskResponseMapper.toUpdateTaskResponse(updateTask);
     }
 
     @Transactional
@@ -93,7 +93,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         Task updateTask = commandTaskPort.save(task);
 
         publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, updateTask.getProcessor().getNickname());
-        return TaskMapper.toUpdateTaskResponse(updateTask);
+        return TaskResponseMapper.toUpdateTaskResponse(updateTask);
     }
 
     @Transactional
@@ -105,7 +105,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
         task.updateLabel(label);
         Task updatetask = commandTaskPort.save(task);
-        return TaskMapper.toUpdateTaskResponse(updatetask);
+        return TaskResponseMapper.toUpdateTaskResponse(updatetask);
     }
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
@@ -113,7 +113,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         attachmentsToDelete.forEach(Attachment::softDelete);
 
         if (files != null) {
-            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_IMAGE, files);
+            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicy.TASK_IMAGE, files);
             List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
             commandAttachmentPort.saveAll(attachments);
         }

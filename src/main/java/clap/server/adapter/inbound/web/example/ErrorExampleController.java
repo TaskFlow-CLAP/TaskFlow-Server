@@ -2,7 +2,7 @@ package clap.server.adapter.inbound.web.example;
 
 import clap.server.common.annotation.architecture.WebAdapter;
 import clap.server.common.annotation.swagger.ApiErrorCodes;
-import clap.server.common.annotation.architecture.DevelopOnlyApi;
+import clap.server.common.annotation.swagger.DevelopOnlyApi;
 import clap.server.exception.code.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

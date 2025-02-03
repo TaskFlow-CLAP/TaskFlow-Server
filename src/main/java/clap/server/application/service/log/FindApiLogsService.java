@@ -1,24 +1,20 @@
 package clap.server.application.service.log;
 
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
-import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
-import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
-import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
-import clap.server.adapter.outbound.persistense.ApiLogPersistenceAdapter;
-import clap.server.application.mapper.response.LogMapper;
+import clap.server.adapter.inbound.web.dto.log.response.AnonymousLogResponse;
+import clap.server.adapter.inbound.web.dto.log.request.FilterLogRequest;
+import clap.server.adapter.inbound.web.dto.log.response.MemberLogResponse;
+import clap.server.application.mapper.LogMapper;
 import clap.server.application.port.inbound.domain.LoginDomainService;
 import clap.server.application.port.inbound.log.FindApiLogsUsecase;
 import clap.server.application.port.outbound.log.LoadLogPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.log.AnonymousLog;
-import clap.server.domain.model.log.ApiLog;
 import clap.server.domain.model.log.MemberLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @ApplicationService
 @RequiredArgsConstructor

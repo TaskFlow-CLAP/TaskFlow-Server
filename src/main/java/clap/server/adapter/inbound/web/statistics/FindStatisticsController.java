@@ -37,8 +37,6 @@ public class FindStatisticsController {
     @GetMapping
     @Secured("ROLE_MANAGER")
     public ResponseEntity<List<StatisticsResponse>> aggregateTaskStatistics(@RequestParam PeriodType periodType, @RequestParam StatisticsType statisticsType) {
-        System.out.println("periodType = " + periodType);
-        System.out.println("statisticsType = " + statisticsType);
         return switch (statisticsType) {
             case REQUEST_BY_PERIOD ->
                     ResponseEntity.ok(findTaskProcessUsecase.aggregatePeriodTaskRequest(periodType.getType()));

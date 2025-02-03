@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
-import clap.server.adapter.inbound.web.dto.notification.FindNotificationListResponse;
+import clap.server.adapter.inbound.web.dto.notification.response.FindNotificationListResponse;
 import clap.server.adapter.outbound.persistense.mapper.NotificationPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.notification.NotificationRepository;
 import clap.server.application.mapper.NotificationMapper;

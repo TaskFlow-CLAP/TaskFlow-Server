@@ -1,7 +1,7 @@
 package clap.server.domain.model.task;
 
-import clap.server.adapter.inbound.web.dto.label.CreateLabelRequest;
-import clap.server.adapter.inbound.web.dto.label.EditLabelRequest;
+import clap.server.adapter.inbound.web.dto.label.request.CreateLabelRequest;
+import clap.server.adapter.inbound.web.dto.label.request.EditLabelRequest;
 import clap.server.adapter.outbound.persistense.entity.task.constant.LabelColor;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
@@ -20,11 +20,11 @@ public class Label extends BaseTime {
     private LabelColor labelColor;
     private boolean isDeleted;
 
-    public static Label addLabel(Member admin, CreateLabelRequest request) {
+    public static Label addLabel(Member admin, String labelName, LabelColor labelColor) {
         return Label.builder()
                 .admin(admin)
-                .labelName(request.labelName())
-                .labelColor(request.labelColor())
+                .labelName(labelName)
+                .labelColor(labelColor)
                 .isDeleted(false)
                 .build();
     }
