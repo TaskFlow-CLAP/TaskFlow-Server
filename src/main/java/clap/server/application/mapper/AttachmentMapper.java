@@ -28,18 +28,6 @@ public class AttachmentMapper {
                 .toList();
     }
 
-    public static List<Attachment> toCommentAttachments(Task task, Comment comment, List<MultipartFile> files, List<String> fileUrls) {
-        return IntStream.range(0, files.size())
-                .mapToObj(i -> createCommentAttachment(
-                        task,
-                        comment,
-                        files.get(i).getOriginalFilename(),
-                        fileUrls.get(i),
-                        files.get(i).getSize()
-                ))
-                .toList();
-    }
-
 
     public static List<AttachmentResponse> toAttachmentResponseList(List<Attachment> attachments) {
         return attachments.stream()

@@ -8,38 +8,20 @@ import clap.server.adapter.outbound.persistense.repository.member.MemberReposito
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
-import clap.server.domain.model.task.Task;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus ;
-import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
-import clap.server.adapter.outbound.persistense.repository.task.TaskRepository;
-import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
-
-import java.util.stream.Collectors;
-import java.util.List;
-
 import clap.server.domain.model.member.Member;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static clap.server.adapter.outbound.persistense.entity.member.QMemberEntity.memberEntity;
-
 @PersistenceAdapter
 @RequiredArgsConstructor
-    public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
+public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
     private final MemberRepository memberRepository;
     private final MemberPersistenceMapper memberPersistenceMapper;
-    private final TaskRepository taskRepository;
-    private final TaskPersistenceMapper taskPersistenceMapper;
-    private final JPAQueryFactory jpaQueryFactory;
-
 
     @Override
     public Optional<Member> findById(final Long id) {
@@ -82,61 +64,13 @@ import static clap.server.adapter.outbound.persistense.entity.member.QMemberEnti
 
     @Override
     public Page<Member> findAllMembers(Pageable pageable) {
-        return executeQueryWithPageable(pageable, new BooleanBuilder().and(memberEntity.status.ne(MemberStatus.DELETED)));
+        return memberRepository.findAllMembers(pageable).map(memberPersistenceMapper::toDomain);
     }
 
     @Override
     public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest) {
-        BooleanBuilder whereClause = createMemberFilter(filterRequest);
-        return executeQueryWithPageable(pageable, whereClause);
-    }
+        return memberRepository.findMembersWithFilter(pageable, filterRequest).map(memberPersistenceMapper::toDomain);
 
-    // 공통 쿼리 처리
-    private Page<Member> executeQueryWithPageable(Pageable pageable, BooleanBuilder whereClause) {
-        List<MemberEntity> entities = jpaQueryFactory
-                .selectFrom(memberEntity)
-                .where(whereClause)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        long total = jpaQueryFactory
-                .select(memberEntity.count())
-                .from(memberEntity)
-                .where(whereClause)
-                .fetchOne();
-
-        return new PageImpl<>(
-                entities.stream()
-                        .map(memberPersistenceMapper::toDomain)
-                        .toList(),
-                pageable,
-                total
-        );
-    }
-
-    // 필터 조건 생성
-    private BooleanBuilder createMemberFilter(FindMemberRequest filterRequest) {
-        BooleanBuilder whereClause = new BooleanBuilder();
-        whereClause.and(memberEntity.status.ne(MemberStatus.DELETED));
-
-        if (filterRequest.name() != null) {
-            whereClause.and(memberEntity.name.containsIgnoreCase(filterRequest.name()));
-        }
-        if (filterRequest.email() != null) {
-            whereClause.and(memberEntity.email.containsIgnoreCase(filterRequest.email()));
-        }
-        if (filterRequest.nickName() != null) {
-            whereClause.and(memberEntity.nickname.containsIgnoreCase(filterRequest.nickName()));
-        }
-        if (filterRequest.departmentName() != null) {
-            whereClause.and(memberEntity.department.name.containsIgnoreCase(filterRequest.departmentName()));
-        }
-        if (filterRequest.role() != null) {
-            whereClause.and(memberEntity.role.eq(filterRequest.role()));
-        }
-
-        return whereClause;
     }
 }
 
