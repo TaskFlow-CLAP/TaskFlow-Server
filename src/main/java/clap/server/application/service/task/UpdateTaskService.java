@@ -3,9 +3,9 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskLabelRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskProcessorRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
@@ -18,7 +18,6 @@ import clap.server.application.port.inbound.task.UpdateTaskStatusUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
-import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -28,6 +27,7 @@ import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
+import clap.server.domain.policy.task.TaskValuePolicy;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,6 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final TaskService taskService;
     private final SendNotificationService sendNotificationService;
 
-    private final CommandTaskPort commandTaskPort;
     private final LoadAttachmentPort loadAttachmentPort;
     private final LabelService labelService;
     private final CommandAttachmentPort commandAttachmentPort;
@@ -62,7 +61,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         Task task = taskService.findById(taskId);
 
         task.updateTask(requesterId, category, updateTaskRequest.title(), updateTaskRequest.description());
-        Task updatedTask = commandTaskPort.save(task);
+        Task updatedTask = taskService.upsert(task);
 
         if (!updateTaskRequest.attachmentsToDelete().isEmpty()) {
             updateAttachments(updateTaskRequest.attachmentsToDelete(), files, task);
@@ -72,11 +71,14 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Override
     @Transactional
-    public UpdateTaskResponse updateTaskState(Long memberId, Long taskId, UpdateTaskStatusRequest updateTaskStatusRequest) {
+    public UpdateTaskResponse updateTaskStatus(Long memberId, Long taskId, TaskStatus taskStatus) {
         memberService.findActiveMember(memberId);
+        if(!TaskValuePolicy.TASK_UPDATABLE_STATUS.contains(taskStatus)){
+            throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
+        }
         Task task = taskService.findById(taskId);
-        task.updateTaskStatus(updateTaskStatusRequest.taskStatus());
-        Task updateTask = commandTaskPort.save(task);
+        task.updateTaskStatus(taskStatus);
+        Task updateTask = taskService.upsert(task);
 
         publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
         return TaskResponseMapper.toUpdateTaskResponse(updateTask);
@@ -90,7 +92,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
         Task task = taskService.findById(taskId);
         task.updateProcessor(processor);
-        Task updateTask = commandTaskPort.save(task);
+        Task updateTask = taskService.upsert(task);
 
         publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, updateTask.getProcessor().getNickname());
         return TaskResponseMapper.toUpdateTaskResponse(updateTask);
@@ -104,7 +106,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         Label label = labelService.findById(request.labelId());
 
         task.updateLabel(label);
-        Task updatetask = commandTaskPort.save(task);
+        Task updatetask = taskService.upsert(task);
         return TaskResponseMapper.toUpdateTaskResponse(updatetask);
     }
 
