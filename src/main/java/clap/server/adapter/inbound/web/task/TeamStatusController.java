@@ -6,7 +6,9 @@ import clap.server.adapter.inbound.web.dto.task.response.TeamStatusResponse;
 import clap.server.application.service.task.TeamStatusService;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +22,8 @@ public class TeamStatusController {
     private final TeamStatusService teamStatusService;
 
     @GetMapping("/filter")
-    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@ModelAttribute FilterTeamStatusRequest filter) {
-        TeamStatusResponse response = teamStatusService.filterTeamStatus(filter);
+    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@Valid@ModelAttribute FilterTeamStatusRequest filter, Pageable pageable) {
+        TeamStatusResponse response = teamStatusService.filterTeamStatus(filter, pageable);
         return ResponseEntity.ok(response);
     }
 }

@@ -9,6 +9,7 @@ import clap.server.application.port.inbound.task.FilterTeamStatusUsecase;
 import clap.server.application.port.inbound.task.LoadTeamStatusUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +26,14 @@ public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatu
 
     @Override
     public TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable) {
-        List<TeamMemberTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter); // 페이징 없음
-        return new TeamStatusResponse(members);
+        Page<TeamMemberTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter, pageable); // 페이징 처리
+        return new TeamStatusResponse(members.getContent()); // Page에서 List로 변환
     }
 
     @Override
-    public TeamStatusResponse filterTeamStatus(FilterTeamStatusRequest filter) {
-        List<TeamMemberTaskResponse> members = loadTaskPort.findTeamStatus(null, filter);
-        return new TeamStatusResponse(members);
+    public TeamStatusResponse filterTeamStatus(FilterTeamStatusRequest filter, Pageable pageable) {
+        Page<TeamMemberTaskResponse> members = loadTaskPort.findTeamStatus(null, filter, pageable);
+        return new TeamStatusResponse(members.getContent());
     }
 
 }

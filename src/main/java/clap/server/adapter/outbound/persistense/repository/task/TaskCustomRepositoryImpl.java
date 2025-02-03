@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,18 +56,33 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     }
 
     @Override
-    public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
-        String queryStr = buildQueryString(filter);
-        TypedQuery<TaskEntity> query = entityManager.createQuery(queryStr, TaskEntity.class)
-                .setParameter("memberId", memberId);
+    public Page<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable) {
+        // 1. 담당자 목록을 먼저 페이징해서 가져옴
+        List<Long> processorIds = queryFactory
+                .select(taskEntity.processor.memberId)
+                .from(taskEntity)
+                .groupBy(taskEntity.processor.memberId)
+                .orderBy("기여도순".equals(filter.sortBy()) ?
+                        taskEntity.taskId.count().desc() :
+                        taskEntity.processor.nickname.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        setQueryParameters(query, filter);
+        if (processorIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
 
-        List<TaskEntity> taskEntities = query.getResultList();
-        return taskEntities.stream()
+        // 2. 담당자별 작업 조회
+        List<TaskEntity> taskEntities = queryFactory
+                .selectFrom(taskEntity)
+                .where(taskEntity.processor.memberId.in(processorIds))
+                .fetch();
+
+        // 3. 담당자별 그룹핑
+        List<TeamMemberTaskResponse> teamResponses = taskEntities.stream()
                 .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId()))
-                .entrySet()
-                .stream()
+                .entrySet().stream()
                 .map(entry -> {
                     List<TaskItemResponse> taskResponses = entry.getValue().stream()
                             .map(taskEntity -> new TaskItemResponse(
@@ -95,12 +109,18 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                             entry.getValue().size(),
                             taskResponses
                     );
-                })
-                .sorted("기여도순".equals(filter.sortBy()) ?
-                        Comparator.comparingInt((TeamMemberTaskResponse t) -> t.inProgressTaskCount() + t.pendingTaskCount()).reversed() :
-                        Comparator.comparing(TeamMemberTaskResponse::nickname))
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
+
+        long total = queryFactory
+                .select(taskEntity.processor.memberId)
+                .from(taskEntity)
+                .groupBy(taskEntity.processor.memberId)
+                .fetchCount();
+
+        return new PageImpl<>(teamResponses, pageable, total);
     }
+
+
 
     private String buildQueryString(FilterTeamStatusRequest filter) {
         StringBuilder queryStr = new StringBuilder("SELECT t FROM TaskEntity t " +
