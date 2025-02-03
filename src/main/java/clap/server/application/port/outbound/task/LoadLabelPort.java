@@ -14,9 +14,5 @@ public interface LoadLabelPort {
 
     List<Label> findLabelList();
 
-    SliceResponse<FindLabelListResponse> findLabelListBySlice(Pageable pageable);
-
-
-
 
 }
