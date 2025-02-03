@@ -1,9 +1,9 @@
-package clap.server.adapter.inbound.web.task;
+package clap.server.adapter.inbound.web.history;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.task.response.FindTaskHistoryResponse;
+import clap.server.adapter.inbound.web.dto.history.response.FindTaskHistoryResponse;
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
-import clap.server.application.port.inbound.task.FindTaskHistoriesUsecase;
+import clap.server.application.port.inbound.history.FindTaskHistoriesUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import clap.server.config.annotation.LogType;
 import io.swagger.v3.oas.annotations.Operation;

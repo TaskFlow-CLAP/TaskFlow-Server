@@ -1,9 +1,9 @@
-package clap.server.application.service.task;
+package clap.server.application.service.history;
 
-import clap.server.adapter.inbound.web.dto.task.response.FindTaskHistoryResponse;
+import clap.server.adapter.inbound.web.dto.history.response.FindTaskHistoryResponse;
 import clap.server.application.mapper.TaskHistoryMapper;
 import clap.server.application.port.inbound.domain.MemberService;
-import clap.server.application.port.inbound.task.FindTaskHistoriesUsecase;
+import clap.server.application.port.inbound.history.FindTaskHistoriesUsecase;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
 
 import clap.server.application.port.outbound.taskhistory.LoadTaskHistoryPort;

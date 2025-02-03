@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.dto.task.response;
+package clap.server.adapter.inbound.web.dto.history.response;
 
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 

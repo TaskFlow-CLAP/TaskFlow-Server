@@ -1,4 +1,4 @@
-package clap.server.application.port.inbound.comment;
+package clap.server.application.port.inbound.history;
 
 public interface DeleteCommentUsecase {
 

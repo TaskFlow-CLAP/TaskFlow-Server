@@ -1,9 +1,9 @@
-package clap.server.adapter.inbound.web.comment;
+package clap.server.adapter.inbound.web.history;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.comment.CreateCommentRequest;
-import clap.server.application.port.inbound.comment.SaveCommentAttachmentUsecase;
-import clap.server.application.port.inbound.comment.SaveCommentUsecase;
+import clap.server.adapter.inbound.web.dto.history.CreateCommentRequest;
+import clap.server.application.port.inbound.history.SaveCommentAttachmentUsecase;
+import clap.server.application.port.inbound.history.SaveCommentUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

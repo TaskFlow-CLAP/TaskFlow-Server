@@ -1,6 +1,6 @@
 package clap.server.application.mapper;
 
-import clap.server.adapter.inbound.web.dto.task.response.FindTaskHistoryResponse;
+import clap.server.adapter.inbound.web.dto.history.response.FindTaskHistoryResponse;
 
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.TaskHistory;
