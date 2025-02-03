@@ -1,17 +1,14 @@
 package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
-import clap.server.adapter.inbound.web.dto.label.FindLabelListResponse;
-import clap.server.adapter.inbound.web.dto.notification.FindNotificationListResponse;
+import clap.server.adapter.inbound.web.dto.label.response.FindLabelListResponse;
 import clap.server.adapter.outbound.persistense.entity.task.LabelEntity;
 import clap.server.adapter.outbound.persistense.mapper.LabelPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.task.LabelRepository;
 import clap.server.application.mapper.LabelMapper;
-import clap.server.application.mapper.NotificationMapper;
 import clap.server.application.port.outbound.task.CommandLabelPort;
 import clap.server.application.port.outbound.task.LoadLabelPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
-import clap.server.domain.model.notification.Notification;
 import clap.server.domain.model.task.Label;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,7 @@
 package clap.server.application.mapper.response;
 
-import clap.server.adapter.inbound.web.dto.log.AnonymousLogResponse;
-import clap.server.adapter.inbound.web.dto.log.MemberLogResponse;
+import clap.server.adapter.inbound.web.dto.log.response.AnonymousLogResponse;
+import clap.server.adapter.inbound.web.dto.log.response.MemberLogResponse;
 import clap.server.domain.model.log.AnonymousLog;
 import clap.server.domain.model.log.MemberLog;
 

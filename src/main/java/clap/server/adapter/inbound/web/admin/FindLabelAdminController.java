@@ -1,10 +1,8 @@
 package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.common.SliceResponse;
-import clap.server.adapter.inbound.web.dto.label.FindLabelListResponse;
+import clap.server.adapter.inbound.web.dto.label.response.FindLabelListResponse;
 import clap.server.application.port.inbound.label.FindLabelListAdminUsecase;
-import clap.server.application.port.inbound.label.FindLabelListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

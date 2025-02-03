@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.dto.notification;
+package clap.server.adapter.inbound.web.dto.notification.request;
 
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 

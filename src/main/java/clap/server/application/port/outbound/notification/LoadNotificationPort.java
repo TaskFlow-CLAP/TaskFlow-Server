@@ -1,7 +1,7 @@
 package clap.server.application.port.outbound.notification;
 
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
-import clap.server.adapter.inbound.web.dto.notification.FindNotificationListResponse;
+import clap.server.adapter.inbound.web.dto.notification.response.FindNotificationListResponse;
 import clap.server.domain.model.notification.Notification;
 import org.springframework.data.domain.Pageable;
 import java.util.List;

@@ -1,6 +1,6 @@
 package clap.server.application.service.member;
 
-import clap.server.adapter.inbound.web.dto.member.UpdateMemberInfoRequest;
+import clap.server.adapter.inbound.web.dto.member.request.UpdateMemberInfoRequest;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.member.UpdateMemberInfoUsecase;
 import clap.server.application.port.outbound.s3.S3UploadPort;

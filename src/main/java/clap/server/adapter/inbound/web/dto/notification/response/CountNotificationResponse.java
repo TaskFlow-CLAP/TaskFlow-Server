@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.dto.notification;
+package clap.server.adapter.inbound.web.dto.notification.response;
 
 public record CountNotificationResponse(
         Long memberId,

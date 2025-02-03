@@ -1,8 +1,8 @@
 package clap.server.application.mapper;
 
 
-import clap.server.adapter.inbound.web.dto.member.MemberDetailInfoResponse;
-import clap.server.adapter.inbound.web.dto.member.MemberProfileResponse;
+import clap.server.adapter.inbound.web.dto.member.response.MemberDetailInfoResponse;
+import clap.server.adapter.inbound.web.dto.member.response.MemberProfileResponse;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
 

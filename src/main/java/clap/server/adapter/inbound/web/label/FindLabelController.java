@@ -2,7 +2,7 @@ package clap.server.adapter.inbound.web.label;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
-import clap.server.adapter.inbound.web.dto.label.FindLabelListResponse;
+import clap.server.adapter.inbound.web.dto.label.response.FindLabelListResponse;
 import clap.server.application.port.inbound.label.FindLabelListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Tag(name = "02. Task [검토자]")
 @WebAdapter

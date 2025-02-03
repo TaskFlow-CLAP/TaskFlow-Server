@@ -1,7 +1,7 @@
 package clap.server.application.service.member;
 
-import clap.server.adapter.inbound.web.dto.member.MemberDetailInfoResponse;
-import clap.server.adapter.inbound.web.dto.member.MemberProfileResponse;
+import clap.server.adapter.inbound.web.dto.member.response.MemberDetailInfoResponse;
+import clap.server.adapter.inbound.web.dto.member.response.MemberProfileResponse;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.member.MemberDetailInfoUsecase;
 import clap.server.application.port.inbound.member.MemberProfileUsecase;

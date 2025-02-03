@@ -1,7 +1,7 @@
 package clap.server.application.port.outbound.task;
 
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
-import clap.server.adapter.inbound.web.dto.label.FindLabelListResponse;
+import clap.server.adapter.inbound.web.dto.label.response.FindLabelListResponse;
 import clap.server.domain.model.task.Label;
 import org.springframework.data.domain.Pageable;
 

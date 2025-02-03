@@ -1,6 +1,6 @@
 package clap.server.application.service.label;
 
-import clap.server.adapter.inbound.web.dto.label.CreateLabelRequest;
+import clap.server.adapter.inbound.web.dto.label.request.CreateLabelRequest;
 import clap.server.application.port.inbound.label.AddLabelUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.CommandLabelPort;
@@ -21,7 +21,7 @@ public class AddLabelService implements AddLabelUsecase {
     @Override
     public void addLabel(Long adminId, CreateLabelRequest request) {
         Member admin = memberService.findActiveMember(adminId);
-        Label label = Label.addLabel(admin, request);
+        Label label = Label.addLabel(admin, request.labelName(), request.labelColor());
         commandLabelPort.save(label);
     }
 }

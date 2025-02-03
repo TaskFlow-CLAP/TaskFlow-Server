@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
+import clap.server.adapter.inbound.web.dto.log.request.FilterLogRequest;
 
 import clap.server.adapter.outbound.persistense.mapper.ApiLogPersistenceMapper;
 import clap.server.adapter.outbound.persistense.mapper.MemberPersistenceMapper;

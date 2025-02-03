@@ -1,8 +1,7 @@
-package clap.server.adapter.inbound.web.dto.log;
+package clap.server.adapter.inbound.web.dto.log.response;
 
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 

@@ -1,8 +1,7 @@
 package clap.server.application.mapper;
 
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
-import clap.server.adapter.inbound.web.dto.label.FindLabelListResponse;
-import clap.server.adapter.inbound.web.dto.notification.FindNotificationListResponse;
+import clap.server.adapter.inbound.web.dto.label.response.FindLabelListResponse;
 import clap.server.domain.model.task.Label;
 import org.springframework.data.domain.Slice;
 
