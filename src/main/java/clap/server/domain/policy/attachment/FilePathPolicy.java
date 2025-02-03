@@ -1,11 +1,11 @@
-package clap.server.common.constants;
+package clap.server.domain.policy.attachment;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum FilePathConstants {
+public enum FilePathPolicy {
     TASK_IMAGE("task/image"),
     TASK_DOCUMENT("task/docs"),
     TASK_COMMENT("task/comments"),

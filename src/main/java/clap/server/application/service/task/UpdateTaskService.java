@@ -22,7 +22,7 @@ import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.common.constants.FilePathConstants;
+import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
@@ -113,7 +113,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         attachmentsToDelete.forEach(Attachment::softDelete);
 
         if (files != null) {
-            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_IMAGE, files);
+            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicy.TASK_IMAGE, files);
             List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
             commandAttachmentPort.saveAll(attachments);
         }

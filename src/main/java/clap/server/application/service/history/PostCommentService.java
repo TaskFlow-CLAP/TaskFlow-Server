@@ -14,7 +14,7 @@ import clap.server.application.port.outbound.task.CommandCommentPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.common.constants.FilePathConstants;
+import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Comment;
@@ -82,7 +82,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
     }
 
     private void saveAttachment(MultipartFile file, Task task, Comment comment) {
-        String fileUrl = s3UploadPort.uploadSingleFile(FilePathConstants.TASK_COMMENT, file);
+        String fileUrl = s3UploadPort.uploadSingleFile(FilePathPolicy.TASK_COMMENT, file);
         Attachment attachment = Attachment.createCommentAttachment(task, comment, file.getOriginalFilename(), fileUrl, file.getSize());
         commandAttachmentPort.save(attachment);
     }
