@@ -35,6 +35,7 @@ public class EmailClient implements SendEmailPort {
         }
     }
 
+    @Override
     public void sendInvitationEmail(String memberEmail, String receiverName, String initialPassword) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
