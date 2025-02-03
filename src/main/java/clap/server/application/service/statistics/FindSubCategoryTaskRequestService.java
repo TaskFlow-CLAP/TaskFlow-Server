@@ -1,4 +1,4 @@
-package clap.server.application.statistics;
+package clap.server.application.service.statistics;
 
 import clap.server.adapter.inbound.web.dto.statistics.StatisticsResponse;
 import clap.server.application.mapper.response.FindTaskStatisticsMapper;
@@ -8,7 +8,6 @@ import clap.server.common.annotation.architecture.ApplicationService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 
 @ApplicationService
 @RequiredArgsConstructor
