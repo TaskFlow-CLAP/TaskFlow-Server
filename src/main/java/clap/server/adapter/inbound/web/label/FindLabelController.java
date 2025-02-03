@@ -1,6 +1,6 @@
 package clap.server.adapter.inbound.web.label;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.label.response.FindLabelListResponse;
 import clap.server.application.port.inbound.label.FindLabelListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;

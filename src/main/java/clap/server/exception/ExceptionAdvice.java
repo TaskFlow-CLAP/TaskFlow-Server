@@ -35,8 +35,9 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request
     ) {
-        Map<String, String> errors = new LinkedHashMap<>();
+        log.error("Validation error occurred: {}", e.getMessage(), e); // 로그 추가
 
+        Map<String, String> errors = new LinkedHashMap<>();
         e.getBindingResult()
                 .getFieldErrors()
                 .forEach(fieldError -> {
@@ -49,7 +50,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         return handleExceptionInternalArgs(
                 e,
                 HttpHeaders.EMPTY,
-                GlobalErrorCode.BAD_REQUEST, // GlobalErrorCode 사용
+                GlobalErrorCode.INTERNAL_SERVER_ERROR,
                 request,
                 errors
         );
@@ -57,6 +58,8 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> validation(ConstraintViolationException e, WebRequest request) {
+        log.error("ConstraintViolationException occurred: {}", e.getMessage(), e); // 로그 추가
+
         String errorMessage = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .findFirst()
@@ -64,7 +67,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternalConstraint(
                 e,
-                GlobalErrorCode.valueOf(errorMessage), // GlobalErrorCode 사용
+                GlobalErrorCode.valueOf(errorMessage),
                 HttpHeaders.EMPTY,
                 request
         );
@@ -72,26 +75,16 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> exception(Exception e, WebRequest request) {
-        e.printStackTrace();
+        log.error("Unhandled exception occurred: {}", e.getMessage(), e); // 로그 추가
 
         return handleExceptionInternalFalse(
                 e,
-                GlobalErrorCode.INTERNAL_SERVER_ERROR, // GlobalErrorCode 사용
+                GlobalErrorCode.INTERNAL_SERVER_ERROR,
                 HttpHeaders.EMPTY,
                 GlobalErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus(),
                 request,
                 e.getMessage()
         );
-    }
-
-    @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<Object> handleApplicationException(ApplicationException e, WebRequest request) {
-        // CSV 관련 에러 처리 유지
-        if (e.getCode() == MemberErrorCode.CSV_PARSING_ERROR || e.getCode() == MemberErrorCode.INVALID_CSV_FORMAT) {
-            log.error("CSV Parsing Error: {}", e.getCode().getMessage());
-            return buildErrorResponse(e.getCode());
-        }
-        return buildErrorResponse(e.getCode());
     }
 
     @ExceptionHandler(value = { BaseException.class })
@@ -183,13 +176,5 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 request,
                 AuthErrorCode.FORBIDDEN.getMessage()
         );
-    }
-
-    private ResponseEntity<Object> buildErrorResponse(BaseErrorCode errorCode) {
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(Map.of(
-                        "code", errorCode.getCustomCode(),
-                        "message", errorCode.getMessage()
-                ));
     }
 }

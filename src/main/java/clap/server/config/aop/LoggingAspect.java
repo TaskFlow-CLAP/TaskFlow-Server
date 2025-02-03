@@ -1,6 +1,6 @@
 package clap.server.config.aop;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.log.CreateAnonymousLogsUsecase;

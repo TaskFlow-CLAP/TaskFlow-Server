@@ -2,7 +2,7 @@ package clap.server.config.security;
 
 import clap.server.adapter.inbound.security.handler.JwtAccessDeniedHandler;
 import clap.server.adapter.inbound.security.handler.JwtAuthenticationEntryPoint;
-import clap.server.adapter.inbound.security.SecurityUserDetailsService;
+import clap.server.adapter.inbound.security.service.SecurityUserDetailsService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
