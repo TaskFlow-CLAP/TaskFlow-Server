@@ -2,7 +2,8 @@ package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
-import clap.server.adapter.inbound.web.dto.task.*;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.response.*;
 import clap.server.application.port.inbound.task.FindTaskDetailsUsecase;
 import clap.server.application.port.inbound.task.FindTaskListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

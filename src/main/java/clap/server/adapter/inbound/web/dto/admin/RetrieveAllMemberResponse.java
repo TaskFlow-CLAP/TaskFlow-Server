@@ -16,8 +16,8 @@ public record RetrieveAllMemberResponse(
         @Schema(description = "승인 권한 여부", example = "true")
         Boolean isReviewer,
 
-        @Schema(description = "부서 ID", example = "1")
-        Long departmentId,
+        @Schema(description = "부서 이름", example = "개발팀")
+        String departmentName,
 
         @Schema(description = "회원 역할", example = "ROLE_USER")
         MemberRole role,

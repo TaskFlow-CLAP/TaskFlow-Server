@@ -1,7 +1,7 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.task.FindApprovalFormResponse;
+import clap.server.adapter.inbound.web.dto.task.response.FindApprovalFormResponse;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;

@@ -10,6 +10,7 @@ import clap.server.application.port.inbound.task.GetTaskBoardUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.task.Task;
+import clap.server.domain.policy.task.TaskValuePolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 class GetTaskBoardService implements GetTaskBoardUsecase, FilterTaskBoardUsecase {
-    private final static List<TaskStatus> VIEWABLE_STATUSES = TaskStatus.getTaskBoardStatusList();
 
     private final MemberService memberService;
     private final LoadTaskPort loadTaskPort;
@@ -34,7 +34,7 @@ class GetTaskBoardService implements GetTaskBoardUsecase, FilterTaskBoardUsecase
     public TaskBoardResponse getTaskBoards(Long processorId, LocalDate untilDate, Pageable pageable) {
         memberService.findActiveMember(processorId);
         LocalDateTime untilDateTime = untilDate == null ? LocalDate.now().plusDays(1).atStartOfDay() : untilDate.plusDays(1).atStartOfDay();
-        Slice<Task> tasks = loadTaskPort.findByProcessorAndStatus(processorId, VIEWABLE_STATUSES, untilDateTime, pageable);
+        Slice<Task> tasks = loadTaskPort.findByProcessorAndStatus(processorId, TaskValuePolicy.TASK_BOARD_STATUS_FILTER, untilDateTime, pageable);
         return TaskMapper.toSliceTaskItemResponse(tasks);
     }
 
@@ -42,7 +42,7 @@ class GetTaskBoardService implements GetTaskBoardUsecase, FilterTaskBoardUsecase
     public TaskBoardResponse getTaskBoardByFilter(Long processorId, LocalDate untilDate, FilterTaskBoardRequest request, Pageable pageable) {
         memberService.findActiveMember(processorId);
         LocalDateTime untilDateTime = untilDate == null ? LocalDate.now().plusDays(1).atStartOfDay() : untilDate.plusDays(1).atStartOfDay();
-        Slice<Task> tasks = loadTaskPort.findTaskBoardByFilter(processorId, VIEWABLE_STATUSES, untilDateTime, request, pageable);
+        Slice<Task> tasks = loadTaskPort.findTaskBoardByFilter(processorId, TaskValuePolicy.TASK_BOARD_STATUS_FILTER, untilDateTime, request, pageable);
         return TaskMapper.toSliceTaskItemResponse(tasks);
     }
 }

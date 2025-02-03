@@ -1,7 +1,10 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.task.*;
+import clap.server.adapter.inbound.web.dto.task.request.CreateTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.response.CreateTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
 import clap.server.application.port.inbound.task.*;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;

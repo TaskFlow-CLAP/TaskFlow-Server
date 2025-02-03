@@ -29,7 +29,7 @@ public class ErrorExampleController {
     @GetMapping("/auth")
     @DevelopOnlyApi
     @Operation(summary = "인증 및 인가 관련 에러 코드 나열")
-    @ApiErrorCodes(MemberErrorCode.class)
+    @ApiErrorCodes(AuthErrorCode.class)
     public void getAuthErrorCode() {}
 
     @GetMapping("/task")

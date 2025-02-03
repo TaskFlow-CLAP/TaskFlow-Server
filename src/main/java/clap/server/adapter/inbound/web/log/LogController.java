@@ -9,18 +9,18 @@ import clap.server.application.port.inbound.log.FindApiLogsUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-@Tag(name = "05. Admin")
+@Tag(name = "05. Admin [로깅]")
 @WebAdapter
 @RestController
 @RequestMapping("/api/managements/logs")
@@ -35,10 +35,11 @@ public class LogController {
     public ResponseEntity<PageResponse<AnonymousLogResponse>> getLoginAttempts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @ModelAttribute FilterLogRequest anonymousLogRequest,
+            @RequestParam(defaultValue = "DESC") String sortDirection,
+            @ModelAttribute @Valid FilterLogRequest anonymousLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return ResponseEntity.ok(findApiLogsUsecase.filterAnonymousLogs(anonymousLogRequest, pageable));
+        return ResponseEntity.ok(findApiLogsUsecase.filterAnonymousLogs(anonymousLogRequest, pageable, sortDirection));
     }
 
     @Operation(summary = "작업 로그 목록 조회")
@@ -47,9 +48,10 @@ public class LogController {
     public ResponseEntity<PageResponse<MemberLogResponse>> getApiCalls(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @ModelAttribute FilterLogRequest memberLogRequest,
+            @RequestParam(defaultValue = "DESC") String sortDirection,
+            @ModelAttribute @Valid FilterLogRequest memberLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return ResponseEntity.ok(findApiLogsUsecase.filterMemberLogs(memberLogRequest, pageable));
+        return ResponseEntity.ok(findApiLogsUsecase.filterMemberLogs(memberLogRequest, pageable, sortDirection));
     }
 }

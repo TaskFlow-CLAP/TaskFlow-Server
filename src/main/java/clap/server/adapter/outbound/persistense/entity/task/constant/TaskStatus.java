@@ -1,10 +1,7 @@
 package clap.server.adapter.outbound.persistense.entity.task.constant;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -16,11 +13,4 @@ public enum TaskStatus {
     TERMINATED("종료");
 
     private final String description;
-
-    public static List<TaskStatus> getTaskBoardStatusList() {
-        return List.of(
-                TaskStatus.IN_PROGRESS,
-                TaskStatus.PENDING_COMPLETED,
-                TaskStatus.COMPLETED);
-    }
 }

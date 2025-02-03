@@ -3,6 +3,7 @@ package clap.server.adapter.inbound.web.admin;
 import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
 import clap.server.adapter.inbound.web.dto.label.FindLabelListResponse;
+import clap.server.application.port.inbound.label.FindLabelListAdminUsecase;
 import clap.server.application.port.inbound.label.FindLabelListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,13 +23,13 @@ import java.util.List;
 @RequestMapping("/api/managements/labels")
 public class FindLabelAdminController {
 
-    private final FindLabelListUsecase findLabelListUsecase;
+    private final FindLabelListAdminUsecase findLabelListAdminUsecase;
 
     @Operation(summary = "구분 목록 조회 API")
     @Secured({"ROLE_ADMIN"})
     @GetMapping
     public ResponseEntity<List<FindLabelListResponse>> findLabelList(
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
-        return ResponseEntity.ok(findLabelListUsecase.findLabelListAdmin(userInfo.getUserId()));
+        return ResponseEntity.ok(findLabelListAdminUsecase.findLabelListAdmin(userInfo.getUserId()));
     }
 }

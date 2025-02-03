@@ -1,15 +1,17 @@
 package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.label.AddAndEditLabelRequest;
-import clap.server.application.port.inbound.admin.AddLabelUsecase;
+import clap.server.adapter.inbound.web.dto.label.CreateLabelRequest;
+import clap.server.adapter.inbound.web.dto.label.EditLabelRequest;
+import clap.server.application.port.inbound.label.AddLabelUsecase;
 import clap.server.application.port.inbound.admin.DeleteLabelUsecase;
-import clap.server.application.port.inbound.admin.UpdateLabelUsecase;
+import clap.server.application.port.inbound.label.UpdateLabelUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "05. Admin")
 @WebAdapter
 @RequiredArgsConstructor
-@RequestMapping("/api/management/labels")
+@RequestMapping("/api/managements/labels")
 public class ManagementLabelController {
 
     private final AddLabelUsecase addLabelUsecase;
@@ -29,7 +31,7 @@ public class ManagementLabelController {
     @PostMapping
     @Secured({"ROLE_ADMIN"})
     public void addLabel(@AuthenticationPrincipal SecurityUserDetails userInfo,
-                         @RequestBody AddAndEditLabelRequest request) {
+                         @Valid @RequestBody CreateLabelRequest request) {
         addLabelUsecase.addLabel(userInfo.getUserId(), request);
     }
 
@@ -39,7 +41,7 @@ public class ManagementLabelController {
     @Secured({"ROLE_ADMIN"})
     public void updateLabel(@AuthenticationPrincipal SecurityUserDetails userInfo,
                             @PathVariable Long labelId,
-                            @RequestBody AddAndEditLabelRequest request) {
+                            @Valid @RequestBody EditLabelRequest request) {
         updateLabelUsecase.editLabel(userInfo.getUserId(), labelId, request);
 
     }
