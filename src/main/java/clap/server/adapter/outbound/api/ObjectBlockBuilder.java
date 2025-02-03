@@ -1,6 +1,7 @@
 package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
+import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +11,31 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class ObjectBlockService {
+public class ObjectBlockBuilder {
 
     private final ObjectMapper objectMapper;
 
-    public String makeTaskRequestBlock(SendWebhookRequest request) {
+    public String makeObjectBlock(SendWebhookRequest request){
+        String payload;
+        if (request.notificationType() == NotificationType.TASK_REQUESTED) {
+            payload = makeTaskRequestBlock(request);
+        }
+        else if (request.notificationType() == NotificationType.PROCESSOR_ASSIGNED) {
+            payload = makeNewProcessorBlock(request);
+        }
+        else if (request.notificationType() == NotificationType.PROCESSOR_CHANGED) {
+            payload = makeProcessorChangeBlock(request);
+        }
+        else if (request.notificationType() == NotificationType.STATUS_SWITCHED) {
+            payload = makeTaskStatusBlock(request);
+        }
+        else {
+            payload = makeCommentBlock(request);
+        }
+        return payload;
+    }
+
+    private String makeTaskRequestBlock(SendWebhookRequest request) {
         // Blocks 데이터 생성
         Object[] blocks = new Object[]{
                 // Header 블록
@@ -86,7 +107,7 @@ public class ObjectBlockService {
         return payload;
     }
 
-    public String makeNewProcessorBlock(SendWebhookRequest request) {
+    private String makeNewProcessorBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -152,7 +173,7 @@ public class ObjectBlockService {
         return payload;
     }
 
-    public String makeProcessorChangeBlock(SendWebhookRequest request) {
+    private String makeProcessorChangeBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -219,7 +240,7 @@ public class ObjectBlockService {
         return payload;
     }
 
-    public String makeCommentBlock(SendWebhookRequest request) {
+    private String makeCommentBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -296,7 +317,7 @@ public class ObjectBlockService {
         return payload;
     }
 
-    public String makeTaskStatusBlock(SendWebhookRequest request) {
+    private String makeTaskStatusBlock(SendWebhookRequest request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
