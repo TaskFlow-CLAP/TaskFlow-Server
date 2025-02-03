@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @ApplicationService
 @RequiredArgsConstructor
-public class PostCommentService implements PostCommentUsecase {
+public class PostCommentService implements SaveCommentUsecase, SaveCommentAttachmentUsecase {
 
     private final MemberService memberService;
     private final TaskService taskService;
@@ -37,7 +37,7 @@ public class PostCommentService implements PostCommentUsecase {
 
     @Transactional
     @Override
-    public void save(Long userId, Long taskId, PostAndEditCommentRequest request) {
+    public void save(Long userId, Long taskId, CreateCommentRequest request) {
         Task task = taskService.findById(taskId);
         Member member = memberService.findActiveMember(userId);
 

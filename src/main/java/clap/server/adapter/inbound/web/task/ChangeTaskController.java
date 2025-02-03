@@ -47,7 +47,7 @@ public class ChangeTaskController {
     public ResponseEntity<UpdateTaskResponse> updateTaskProcessor(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestBody UpdateTaskProcessorRequest updateTaskProcessorRequest) {
+            @Valid @RequestBody UpdateTaskProcessorRequest updateTaskProcessorRequest) {
         return ResponseEntity.ok(updateTaskProcessorUsecase.updateTaskProcessor(taskId, userInfo.getUserId(), updateTaskProcessorRequest));
     }
 
@@ -57,7 +57,7 @@ public class ChangeTaskController {
     public ResponseEntity<UpdateTaskResponse> updateTaskLabel(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestBody UpdateTaskLabelRequest updateTaskLabelRequest) {
+            @Valid @RequestBody UpdateTaskLabelRequest updateTaskLabelRequest) {
         return ResponseEntity.ok(updateTaskLabelUsecase.updateTaskLabel(taskId, userInfo.getUserId(), updateTaskLabelRequest));
     }
 
@@ -67,7 +67,7 @@ public class ChangeTaskController {
     public ResponseEntity<ApprovalTaskResponse> approvalTask(
             @RequestBody @Valid ApprovalTaskRequest approvalTaskRequest,
             @PathVariable Long taskId,
-            @AuthenticationPrincipal SecurityUserDetails userInfo){
+            @Valid @AuthenticationPrincipal SecurityUserDetails userInfo){
         return ResponseEntity.ok(approvalTaskUsecase.approvalTaskByReviewer(userInfo.getUserId(), taskId, approvalTaskRequest));
     }
 }

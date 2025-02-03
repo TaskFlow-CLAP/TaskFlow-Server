@@ -1,8 +1,8 @@
 package clap.server.application.service.label;
 
-import clap.server.adapter.inbound.web.dto.label.AddAndEditLabelRequest;
+import clap.server.adapter.inbound.web.dto.label.EditLabelRequest;
 import clap.server.application.port.inbound.admin.DeleteLabelUsecase;
-import clap.server.application.port.inbound.admin.UpdateLabelUsecase;
+import clap.server.application.port.inbound.label.UpdateLabelUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.CommandLabelPort;
 import clap.server.application.port.outbound.task.LoadLabelPort;
@@ -23,7 +23,7 @@ public class ManageLabelService implements UpdateLabelUsecase, DeleteLabelUsecas
 
     @Transactional
     @Override
-    public void editLabel(Long adminId, Long labelId, AddAndEditLabelRequest request) {
+    public void editLabel(Long adminId, Long labelId, EditLabelRequest request) {
         memberService.findActiveMember(adminId);
 
         Label label = loadLabelPort.findById(labelId)

@@ -20,7 +20,7 @@ public class RetrieveAllMemberMapper {
                 member.getMemberInfo().getEmail(),
                 member.getMemberInfo().getNickname(),
                 member.getMemberInfo().isReviewer(),
-                member.getMemberInfo().getDepartment().getDepartmentId(),
+                member.getMemberInfo().getDepartment().getName(),
                 member.getMemberInfo().getRole(),
                 member.getMemberInfo().getDepartmentRole()
         );
