@@ -25,7 +25,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class FindApiLogsService implements FindApiLogsUsecase {
 
-    private final ApiLogPersistenceAdapter apiLogPersistenceAdapter;
     private final LoginDomainService loginDomainService;
     private final LoadLogPort loadLogPort;
 
@@ -44,11 +43,5 @@ public class FindApiLogsService implements FindApiLogsUsecase {
         Page<MemberLog> memberLogs = loadLogPort.filterMemberLogs(memberLogRequest, pageable);
         Page<MemberLogResponse> memberLogResponses = memberLogs.map(LogMapper::toMemberLogResponse);
         return PageResponse.from(memberLogResponses);
-    }
-
-    //테스트용
-    @Override
-    public List<ApiLog> getApiLogs() {
-        return apiLogPersistenceAdapter.findAllLogs();
     }
 }

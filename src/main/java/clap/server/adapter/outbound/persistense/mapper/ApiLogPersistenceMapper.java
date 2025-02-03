@@ -78,19 +78,4 @@ public class ApiLogPersistenceMapper {
                         : null)
                 .build();
     }
-
-    public ApiLog mapLogEntityToDomain(ApiLogEntity logEntity) {
-        return ApiLog.builder()
-                .logId(logEntity.getLogId())
-                .clientIp(logEntity.getClientIp())
-                .requestUrl(logEntity.getRequestUrl())
-                .requestMethod(logEntity.getRequestMethod().name())
-                .statusCode(logEntity.getStatusCode())
-                .customStatusCode(logEntity.getCustomStatusCode())
-                .requestBody(logEntity.getRequestBody())
-                .responseBody(logEntity.getResponseBody())
-                .requestAt(logEntity.getRequestAt())
-                .logStatus(logEntity.getLogStatus())
-                .build();
-    }
 }

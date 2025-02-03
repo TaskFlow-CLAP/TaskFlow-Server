@@ -1,6 +1,7 @@
 package clap.server.application.service.notification;
 
 import clap.server.application.port.inbound.domain.MemberService;
+import clap.server.application.port.inbound.notification.UpdateAllNotificationUsecase;
 import clap.server.application.port.inbound.notification.UpdateNotificationUsecase;
 import clap.server.application.port.outbound.notification.CommandNotificationPort;
 import clap.server.application.port.outbound.notification.LoadNotificationPort;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @ApplicationService
 @RequiredArgsConstructor
-public class ReadNotificationService implements UpdateNotificationUsecase {
+public class ReadNotificationService implements UpdateNotificationUsecase, UpdateAllNotificationUsecase {
 
     private final MemberService memberService;
     private final LoadNotificationPort loadNotificationPort;
