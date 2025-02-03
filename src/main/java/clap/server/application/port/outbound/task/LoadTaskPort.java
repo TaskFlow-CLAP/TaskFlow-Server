@@ -41,5 +41,5 @@ public interface LoadTaskPort {
 
     Slice<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request, Pageable pageable);
 
-    Page<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable);
+    List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter);
 }

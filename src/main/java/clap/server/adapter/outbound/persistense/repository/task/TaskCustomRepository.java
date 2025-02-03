@@ -15,7 +15,7 @@ import java.util.List;
 public interface TaskCustomRepository {
 
     Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
-    Page<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable);
+    List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter);
     Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
     Page<TaskEntity> findAllTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
     List<TaskEntity> findTasksByFilter(Long processorId, List<TaskStatus> statuses,  LocalDateTime localDateTime, FilterTaskBoardRequest request, Pageable pageable);

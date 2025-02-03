@@ -121,8 +121,8 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public Page<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable) {
-        return taskRepository.findTeamStatus(memberId, filter, pageable);
+    public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+        return taskRepository.findTeamStatus(memberId, filter);
     }
 
 

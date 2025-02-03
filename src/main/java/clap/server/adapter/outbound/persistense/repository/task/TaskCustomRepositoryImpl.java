@@ -56,8 +56,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     }
 
     @Override
-    public Page<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable) {
-        // 1. 담당자 목록을 먼저 페이징해서 가져옴
+    public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+        // 1. 담당자 목록을 가져옴 (페이징 제거)
         List<Long> processorIds = queryFactory
                 .select(taskEntity.processor.memberId)
                 .from(taskEntity)
@@ -65,22 +65,20 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 .orderBy("기여도순".equals(filter.sortBy()) ?
                         taskEntity.taskId.count().desc() :
                         taskEntity.processor.nickname.asc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetch();
 
         if (processorIds.isEmpty()) {
-            return Page.empty(pageable);
+            return List.of(); // 결과가 없으면 빈 리스트 반환
         }
 
-        // 2. 담당자별 작업 조회
+        // 2. 담당자별 작업 조회 (페이징 제거)
         List<TaskEntity> taskEntities = queryFactory
                 .selectFrom(taskEntity)
                 .where(taskEntity.processor.memberId.in(processorIds))
                 .fetch();
 
         // 3. 담당자별 그룹핑
-        List<TeamMemberTaskResponse> teamResponses = taskEntities.stream()
+        return taskEntities.stream()
                 .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId()))
                 .entrySet().stream()
                 .map(entry -> {
@@ -110,14 +108,6 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                             taskResponses
                     );
                 }).collect(Collectors.toList());
-
-        long total = queryFactory
-                .select(taskEntity.processor.memberId)
-                .from(taskEntity)
-                .groupBy(taskEntity.processor.memberId)
-                .fetchCount();
-
-        return new PageImpl<>(teamResponses, pageable, total);
     }
 
 

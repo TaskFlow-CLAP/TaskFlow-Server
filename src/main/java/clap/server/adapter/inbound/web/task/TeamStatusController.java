@@ -22,8 +22,8 @@ public class TeamStatusController {
     private final TeamStatusService teamStatusService;
 
     @GetMapping("/filter")
-    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@Valid@ModelAttribute FilterTeamStatusRequest filter, Pageable pageable) {
-        TeamStatusResponse response = teamStatusService.filterTeamStatus(filter, pageable);
+    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@Valid@ModelAttribute FilterTeamStatusRequest filter) {
+        TeamStatusResponse response = teamStatusService.filterTeamStatus(filter);
         return ResponseEntity.ok(response);
     }
 }
