@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface AnonymousLogCustomRepository {
-    Page<AnonymousLogEntity> filterAnonymousLogs(FilterLogRequest anonymousLogRequest, Pageable pageable);
+    Page<AnonymousLogEntity> filterAnonymousLogs(FilterLogRequest anonymousLogRequest, Pageable pageable, String sortDirection);
 }

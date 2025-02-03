@@ -24,7 +24,7 @@ public class AnonymousLogCustomRepositoryImpl implements AnonymousLogCustomRepos
 
     private final JPAQueryFactory queryFactory;
     @Override
-    public Page<AnonymousLogEntity> filterAnonymousLogs(FilterLogRequest request, Pageable pageable) {
+    public Page<AnonymousLogEntity> filterAnonymousLogs(FilterLogRequest request, Pageable pageable, String sortDirection) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (request.term() != null) {
@@ -40,11 +40,14 @@ public class AnonymousLogCustomRepositoryImpl implements AnonymousLogCustomRepos
         if (!request.clientIp().isEmpty()) {
             builder.and(anonymousLogEntity.clientIp.contains(request.clientIp()));
         }
+        OrderSpecifier<LocalDateTime> orderSpecifier = sortDirection.equalsIgnoreCase("ASC")
+                ? anonymousLogEntity.requestAt.asc()
+                : anonymousLogEntity.requestAt.desc();
 
         List<AnonymousLogEntity> result = queryFactory
                 .selectFrom(anonymousLogEntity)
                 .where(builder)
-                .orderBy(getOrderSpecifiers(pageable))
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -53,22 +56,5 @@ public class AnonymousLogCustomRepositoryImpl implements AnonymousLogCustomRepos
                 .where(builder)
                 .fetch().size();
         return new PageImpl<>(result, pageable, total);
-    }
-
-    // Pageable의 Sort 조건을 확인하여 동적으로 OrderSpecifier를 생성
-    private OrderSpecifier<?>[] getOrderSpecifiers(Pageable pageable) {
-        if (!pageable.getSort().isSorted()) {
-            // 정렬 조건이 없으면 requestAt 내림차순
-            return new OrderSpecifier[]{ anonymousLogEntity.requestAt.desc() };
-        }
-        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
-        pageable.getSort().forEach(order -> {
-            if ("requestAt".equalsIgnoreCase(order.getProperty())) {
-                orderSpecifiers.add(order.isAscending()
-                        ? anonymousLogEntity.requestAt.asc()
-                        : anonymousLogEntity.requestAt.desc());
-            }
-        });
-        return orderSpecifiers.toArray(new OrderSpecifier[0]);
     }
 }
