@@ -1,7 +1,6 @@
 package clap.server.adapter.outbound.api;
 
-import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
-import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
+import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,27 +14,18 @@ public class KakaoWorkBlockBuilder {
 
     private final ObjectMapper objectMapper;
 
-    public String makeObjectBlock(SendWebhookRequest request){
-        String payload;
-        if (request.notificationType() == NotificationType.TASK_REQUESTED) {
-            payload = makeTaskRequestBlock(request);
-        }
-        else if (request.notificationType() == NotificationType.PROCESSOR_ASSIGNED) {
-            payload = makeNewProcessorBlock(request);
-        }
-        else if (request.notificationType() == NotificationType.PROCESSOR_CHANGED) {
-            payload = makeProcessorChangeBlock(request);
-        }
-        else if (request.notificationType() == NotificationType.STATUS_SWITCHED) {
-            payload = makeTaskStatusBlock(request);
-        }
-        else {
-            payload = makeCommentBlock(request);
-        }
-        return payload;
+    public String makeObjectBlock(PushNotificationTemplate request){
+        return switch (request.notificationType()) {
+            case TASK_REQUESTED -> makeTaskRequestBlock(request);
+            case STATUS_SWITCHED -> makeTaskStatusBlock(request);
+            case PROCESSOR_CHANGED -> makeProcessorChangeBlock(request);
+            case PROCESSOR_ASSIGNED -> makeNewProcessorBlock(request);
+            case COMMENT -> makeCommentBlock(request);
+            default -> null;
+        };
     }
 
-    private String makeTaskRequestBlock(SendWebhookRequest request) {
+    private String makeTaskRequestBlock(PushNotificationTemplate request) {
         // Blocks 데이터 생성
         Object[] blocks = new Object[]{
                 // Header 블록
@@ -107,7 +97,7 @@ public class KakaoWorkBlockBuilder {
         return payload;
     }
 
-    private String makeNewProcessorBlock(SendWebhookRequest request) {
+    private String makeNewProcessorBlock(PushNotificationTemplate request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -173,7 +163,7 @@ public class KakaoWorkBlockBuilder {
         return payload;
     }
 
-    private String makeProcessorChangeBlock(SendWebhookRequest request) {
+    private String makeProcessorChangeBlock(PushNotificationTemplate request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -240,7 +230,7 @@ public class KakaoWorkBlockBuilder {
         return payload;
     }
 
-    private String makeCommentBlock(SendWebhookRequest request) {
+    private String makeCommentBlock(PushNotificationTemplate request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -317,7 +307,7 @@ public class KakaoWorkBlockBuilder {
         return payload;
     }
 
-    private String makeTaskStatusBlock(SendWebhookRequest request) {
+    private String makeTaskStatusBlock(PushNotificationTemplate request) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
