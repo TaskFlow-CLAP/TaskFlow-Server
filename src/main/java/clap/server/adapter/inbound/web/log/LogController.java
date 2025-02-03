@@ -37,6 +37,7 @@ public class LogController {
             @RequestParam(defaultValue = "20") int pageSize,
             @RequestParam(defaultValue = "requestAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection,
+            @ModelAttribute @Valid FilterLogRequest anonymousLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
         Pageable pageable = PageRequest.of(
                 page,
