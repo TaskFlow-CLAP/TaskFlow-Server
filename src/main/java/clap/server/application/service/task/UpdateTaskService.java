@@ -27,7 +27,7 @@ import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
-import clap.server.domain.policy.task.TaskValuePolicy;
+import clap.server.domain.policy.task.TaskPolicyConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +73,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Transactional
     public UpdateTaskResponse updateTaskStatus(Long memberId, Long taskId, TaskStatus taskStatus) {
         memberService.findActiveMember(memberId);
-        if(!TaskValuePolicy.TASK_UPDATABLE_STATUS.contains(taskStatus)){
+        if(!TaskPolicyConstants.TASK_UPDATABLE_STATUS.contains(taskStatus)){
             throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
         }
         Task task = taskService.findById(taskId);

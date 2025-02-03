@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-import static clap.server.domain.policy.task.TaskValuePolicy.DEFAULT_PROCESSOR_ORDER_GAP;
+import static clap.server.domain.policy.task.TaskPolicyConstants.DEFAULT_PROCESSOR_ORDER_GAP;
 
 @Getter
 @SuperBuilder

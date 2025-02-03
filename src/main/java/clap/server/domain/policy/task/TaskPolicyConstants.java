@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class TaskValuePolicy {
+public class TaskPolicyConstants {
     public static final long DEFAULT_PROCESSOR_ORDER_GAP = (long) Math.pow(2, 6);
 
     public static final List<TaskStatus> TASK_BOARD_STATUS_FILTER = List.of(
