@@ -24,7 +24,7 @@ public record FindTaskHistoryResponse(
     ) {}
 
     public static record TaskDetails(
-            String newValue
+            String value
     ) {}
 
     public static record CommentDetails(

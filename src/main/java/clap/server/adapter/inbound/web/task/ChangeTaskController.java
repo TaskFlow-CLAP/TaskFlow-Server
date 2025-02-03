@@ -4,15 +4,17 @@ import clap.server.adapter.inbound.security.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.request.ApprovalTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskLabelRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskProcessorRequest;
-import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.ApprovalTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskLabelUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskProcessorUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskStatusUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -41,9 +43,11 @@ public class ChangeTaskController {
     public ResponseEntity<UpdateTaskResponse> updateTaskState(
             @PathVariable @NotNull Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestBody UpdateTaskStatusRequest updateTaskStatusRequest) {
+            @Parameter(description = "변경하고 싶은 작업 상태",
+                    schema = @Schema(allowableValues = {"IN_PROGRESS", "PENDING_COMPLETED", "COMPLETED"}))
+            @RequestBody TaskStatus taskStatus) {
 
-        return ResponseEntity.ok(updateTaskStatusUsecase.updateTaskState(userInfo.getUserId(), taskId, updateTaskStatusRequest));
+        return ResponseEntity.ok(updateTaskStatusUsecase.updateTaskStatus(userInfo.getUserId(), taskId, taskStatus));
     }
 
     @Operation(summary = "작업 처리자 변경")
