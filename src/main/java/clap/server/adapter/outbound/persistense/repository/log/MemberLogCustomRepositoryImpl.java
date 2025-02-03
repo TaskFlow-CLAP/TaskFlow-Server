@@ -27,7 +27,7 @@ public class MemberLogCustomRepositoryImpl implements MemberLogCustomRepository{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<MemberLogEntity> filterMemberLogs(FilterLogRequest request, Pageable pageable) {
+    public Page<MemberLogEntity> filterMemberLogs(FilterLogRequest request, Pageable pageable, String sortDirection) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (request.term() != null) {
@@ -43,12 +43,15 @@ public class MemberLogCustomRepositoryImpl implements MemberLogCustomRepository{
         if (!request.clientIp().isEmpty()) {
             builder.and(memberLogEntity.clientIp.contains(request.clientIp()));
         }
+        OrderSpecifier<LocalDateTime> orderSpecifier = sortDirection.equalsIgnoreCase("ASC")
+                ? memberLogEntity.requestAt.asc()
+                : memberLogEntity.requestAt.desc();
 
         List<MemberLogEntity> result = queryFactory
                 .selectFrom(memberLogEntity)
                 .where(builder)
                 .leftJoin(memberLogEntity.member, memberEntity)
-                .orderBy(getOrderSpecifiers(pageable))
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -57,22 +60,5 @@ public class MemberLogCustomRepositoryImpl implements MemberLogCustomRepository{
                 .where(builder)
                 .fetch().size();
         return new PageImpl<>(result, pageable, total);
-    }
-
-    // Pageable의 Sort 조건을 확인하여 동적으로 OrderSpecifier를 생성
-    private OrderSpecifier<?>[] getOrderSpecifiers(Pageable pageable) {
-        if (!pageable.getSort().isSorted()) {
-            // 정렬 조건이 없으면 requestAt 내림차순
-            return new OrderSpecifier[]{ memberLogEntity.requestAt.desc() };
-        }
-        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
-        pageable.getSort().forEach(order -> {
-            if ("requestAt".equalsIgnoreCase(order.getProperty())) {
-                orderSpecifiers.add(order.isAscending()
-                        ? memberLogEntity.requestAt.asc()
-                        : memberLogEntity.requestAt.desc());
-            }
-        });
-        return orderSpecifiers.toArray(new OrderSpecifier[0]);
     }
 }

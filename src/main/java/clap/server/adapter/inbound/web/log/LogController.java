@@ -35,16 +35,11 @@ public class LogController {
     public ResponseEntity<PageResponse<AnonymousLogResponse>> getLoginAttempts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @RequestParam(defaultValue = "requestAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection,
+            @RequestParam(defaultValue = "DESC") String sortDirection,
             @ModelAttribute @Valid FilterLogRequest anonymousLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
-        Pageable pageable = PageRequest.of(
-                page,
-                pageSize,
-                "asc".equalsIgnoreCase(sortDirection) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
-        );
-        return ResponseEntity.ok(findApiLogsUsecase.filterAnonymousLogs(anonymousLogRequest, pageable));
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return ResponseEntity.ok(findApiLogsUsecase.filterAnonymousLogs(anonymousLogRequest, pageable, sortDirection));
     }
 
     @Operation(summary = "작업 로그 목록 조회")
@@ -53,15 +48,10 @@ public class LogController {
     public ResponseEntity<PageResponse<MemberLogResponse>> getApiCalls(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @RequestParam(defaultValue = "requestAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection,
+            @RequestParam(defaultValue = "DESC") String sortDirection,
             @ModelAttribute @Valid FilterLogRequest memberLogRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
-        Pageable pageable = PageRequest.of(
-                page,
-                pageSize,
-                "asc".equalsIgnoreCase(sortDirection) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
-        );
-        return ResponseEntity.ok(findApiLogsUsecase.filterMemberLogs(memberLogRequest, pageable));
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return ResponseEntity.ok(findApiLogsUsecase.filterMemberLogs(memberLogRequest, pageable, sortDirection));
     }
 }
