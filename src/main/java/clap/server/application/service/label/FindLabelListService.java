@@ -18,19 +18,13 @@ import java.util.List;
 @ApplicationService
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class FindLabelListService implements FindLabelListUsecase, FindLabelListAdminUsecase {
+public class FindLabelListService implements FindLabelListUsecase {
 
     private final LoadLabelPort loadLabelPort;
     private final MemberService memberService;
 
     @Override
-    public SliceResponse<FindLabelListResponse> findLabelList(Long memberId, Pageable pageable) {
-        Member member = memberService.findReviewer(memberId);
-        return loadLabelPort.findLabelListBySlice(pageable);
-    }
-
-    @Override
-    public List<FindLabelListResponse> findLabelListAdmin(Long userId) {
+    public List<FindLabelListResponse> findLabelList(Long userId) {
         memberService.findActiveMember(userId);
         return loadLabelPort.findLabelList()
                 .stream()
