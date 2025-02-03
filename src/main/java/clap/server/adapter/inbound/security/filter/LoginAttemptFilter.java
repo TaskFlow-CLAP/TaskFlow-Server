@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.security;
+package clap.server.adapter.inbound.security.filter;
 
 import clap.server.application.service.auth.LoginAttemptService;
 import clap.server.exception.AuthException;
@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static clap.server.adapter.inbound.security.WebSecurityUrl.LOGIN_ENDPOINT;
 import static clap.server.common.constants.AuthConstants.SESSION_ID;
 
 
@@ -24,13 +25,11 @@ import static clap.server.common.constants.AuthConstants.SESSION_ID;
 @Slf4j
 public class LoginAttemptFilter extends OncePerRequestFilter {
 
-    private static final String LOGIN_ENDPOINT = "/api/auths/login";
     private final LoginAttemptService loginAttemptService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
         String sessionId = request.getHeader(SESSION_ID.getValue().toLowerCase());
 
         if (request.getRequestURI().equals(LOGIN_ENDPOINT)) {
