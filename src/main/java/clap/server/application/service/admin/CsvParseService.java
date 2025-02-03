@@ -1,6 +1,7 @@
 package clap.server.application.service.admin;
 
 import clap.server.application.port.outbound.member.LoadDepartmentPort;
+import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
@@ -10,7 +11,6 @@ import clap.server.exception.code.DepartmentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -24,7 +24,7 @@ import static clap.server.domain.model.member.MemberInfo.toMemberInfo;
 
 
 @Slf4j
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class CsvParseService {
 
