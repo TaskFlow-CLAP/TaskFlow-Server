@@ -1,11 +1,11 @@
-package clap.server.adapter.inbound.web.dto.task;
+package clap.server.adapter.inbound.web.dto.task.response;
 
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record FindTaskDetailsForManagerResponse(
+public record FindTaskDetailsResponse(
         Long taskId,
         String taskCode,
         LocalDateTime requestedAt,
@@ -19,7 +19,6 @@ public record FindTaskDetailsForManagerResponse(
         String categoryName,
         String title,
         String description,
-        LocalDateTime dueDate,
-        String labelName,
         List<AttachmentResponse> attachmentResponses
+
 ) implements TaskDetailsResponse {}

@@ -1,16 +1,11 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
-import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.task.TaskRepository;
-import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
