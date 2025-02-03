@@ -27,7 +27,7 @@ import java.util.Optional;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
+public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort  {
     private final MemberRepository memberRepository;
     private final MemberPersistenceMapper memberPersistenceMapper;
     private final TaskRepository taskRepository;
