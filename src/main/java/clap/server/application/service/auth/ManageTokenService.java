@@ -11,14 +11,14 @@ import clap.server.domain.model.auth.RefreshToken;
 import clap.server.domain.model.member.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-@Component
+@Service
 @Slf4j
 class ManageTokenService {
     private final JwtProvider accessTokenProvider;

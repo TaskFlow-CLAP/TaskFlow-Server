@@ -1,19 +1,15 @@
 package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
-import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.response.FilterPendingApprovalResponse;
 import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.domain.model.task.Task;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;

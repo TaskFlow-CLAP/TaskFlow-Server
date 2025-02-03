@@ -1,7 +1,7 @@
 package clap.server.application.service.task;
 
-import clap.server.adapter.inbound.web.dto.task.CreateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.CreateTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.request.CreateTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.response.CreateTaskResponse;
 
 import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
@@ -10,23 +10,22 @@ import clap.server.application.mapper.TaskMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
+import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
-
-import clap.server.application.service.webhook.SendPushNotificationService;
+import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
-import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -36,9 +35,8 @@ public class CreateTaskService implements CreateTaskUsecase {
     private final CategoryService categoryService;
     private final CommandTaskPort commandTaskPort;
     private final CommandAttachmentPort commandAttachmentPort;
-    private final S3UploadAdapter s3UploadAdapter;
-    private final SendPushNotificationService sendPushNotificationService;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final S3UploadPort s3UploadPort;
+    private final SendNotificationService sendNotificationService;
 
     @Override
     @Transactional
@@ -51,29 +49,21 @@ public class CreateTaskService implements CreateTaskUsecase {
         commandTaskPort.save(savedTask);
 
         if (files != null) {
-            saveAttachments(files, savedTask);
-        }
-
+            saveAttachments(files, savedTask);}
         publishNotification(savedTask);
         return TaskMapper.toCreateTaskResponse(savedTask);
     }
 
     private void saveAttachments(List<MultipartFile> files, Task task) {
-        List<String> fileUrls = s3UploadAdapter.uploadFiles(FilePathConstants.TASK_IMAGE, files);
+        List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }
 
     private void publishNotification(Task task) {
         List<Member> reviewers = memberService.findReviewers();
+        reviewers.forEach(reviewer -> {sendNotificationService.sendPushNotification(reviewer, NotificationType.TASK_REQUESTED,
+                task, null, null);});
 
-        // 검토자들 각각에 대한 알림 생성 후 event 발행
-        for (Member reviewer : reviewers) {
-
-            sendPushNotificationService.sendPushNotification(reviewer, NotificationType.TASK_REQUESTED,
-                    task, null, null);
-        }
     }
-
-
 }

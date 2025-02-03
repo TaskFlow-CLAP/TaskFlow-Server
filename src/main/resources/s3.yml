@@ -6,4 +6,4 @@ cloud:
       endpoint: ${KAKAO_OBJECT_STORAGE_ENDPOINT}
       access-key: ${KAKAO_OBJECT_STORAGE_ACCESS_KEY}
       secret-key: ${KAKAO_OBJECT_STORAGE_SECRET_KEY}
-      bucketName: ${KAKAO_OBJECT_STORAGE_BUCKET_NAME}
+      bucket-name: ${KAKAO_OBJECT_STORAGE_BUCKET_NAME}

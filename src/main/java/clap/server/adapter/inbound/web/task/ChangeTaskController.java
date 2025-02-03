@@ -1,7 +1,12 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.task.*;
+import clap.server.adapter.inbound.web.dto.task.request.ApprovalTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskLabelRequest;
+import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskProcessorRequest;
+import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskStatusRequest;
+import clap.server.adapter.inbound.web.dto.task.response.ApprovalTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskLabelUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskProcessorUsecase;
@@ -47,7 +52,7 @@ public class ChangeTaskController {
     public ResponseEntity<UpdateTaskResponse> updateTaskProcessor(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestBody UpdateTaskProcessorRequest updateTaskProcessorRequest) {
+            @Valid @RequestBody UpdateTaskProcessorRequest updateTaskProcessorRequest) {
         return ResponseEntity.ok(updateTaskProcessorUsecase.updateTaskProcessor(taskId, userInfo.getUserId(), updateTaskProcessorRequest));
     }
 
@@ -57,7 +62,7 @@ public class ChangeTaskController {
     public ResponseEntity<UpdateTaskResponse> updateTaskLabel(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestBody UpdateTaskLabelRequest updateTaskLabelRequest) {
+            @Valid @RequestBody UpdateTaskLabelRequest updateTaskLabelRequest) {
         return ResponseEntity.ok(updateTaskLabelUsecase.updateTaskLabel(taskId, userInfo.getUserId(), updateTaskLabelRequest));
     }
 
@@ -67,7 +72,7 @@ public class ChangeTaskController {
     public ResponseEntity<ApprovalTaskResponse> approvalTask(
             @RequestBody @Valid ApprovalTaskRequest approvalTaskRequest,
             @PathVariable Long taskId,
-            @AuthenticationPrincipal SecurityUserDetails userInfo){
+            @Valid @AuthenticationPrincipal SecurityUserDetails userInfo){
         return ResponseEntity.ok(approvalTaskUsecase.approvalTaskByReviewer(userInfo.getUserId(), taskId, approvalTaskRequest));
     }
 }

@@ -1,13 +1,11 @@
 package clap.server.domain.model.task;
 
-import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.SQLDelete;
 
 @Getter
 @SuperBuilder

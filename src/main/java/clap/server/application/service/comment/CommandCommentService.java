@@ -1,7 +1,8 @@
 package clap.server.application.service.comment;
 
-import clap.server.adapter.inbound.web.dto.task.PostAndEditCommentRequest;
-import clap.server.application.port.inbound.comment.CommandCommentUsecase;
+import clap.server.adapter.inbound.web.dto.comment.EditCommentRequest;
+import clap.server.application.port.inbound.comment.DeleteCommentUsecase;
+import clap.server.application.port.inbound.comment.EditCommentUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandCommentPort;
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @ApplicationService
 @RequiredArgsConstructor
-public class CommandCommentService implements CommandCommentUsecase {
+public class CommandCommentService implements EditCommentUsecase, DeleteCommentUsecase {
 
     private final MemberService memberService;
     private final LoadCommentPort loadCommentPort;
@@ -28,7 +29,7 @@ public class CommandCommentService implements CommandCommentUsecase {
 
     @Transactional
     @Override
-    public void updateComment(Long userId, Long commentId, PostAndEditCommentRequest request) {
+    public void editComment(Long userId, Long commentId, EditCommentRequest request) {
 
         Member member = memberService.findActiveMember(userId);
 
