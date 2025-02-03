@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.security;
+package clap.server.adapter.inbound.security.service;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.security;
+package clap.server.adapter.inbound.security.service;
 
 import clap.server.adapter.outbound.persistense.repository.member.MemberRepository;
 import clap.server.exception.AuthException;

@@ -1,6 +1,6 @@
 package clap.server.adapter.inbound.web.auth;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.auth.LoginRequest;
 import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
