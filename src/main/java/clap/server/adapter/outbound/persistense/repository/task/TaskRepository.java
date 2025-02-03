@@ -1,8 +1,12 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
+
+import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
+import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -49,5 +53,10 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
 
     Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderDesc(
             Long processorId, TaskStatus taskStatus, Long processorOrder);
+
+    @Query("SELECT t FROM TaskEntity t JOIN FETCH t.processor p WHERE (:memberId IS NULL OR p.memberId = :memberId) ")
+    Page<TeamMemberTaskResponse> findTeamStatus(@Param("memberId") Long memberId, FilterTeamStatusRequest filter, Pageable pageable);
+
+
 
 }

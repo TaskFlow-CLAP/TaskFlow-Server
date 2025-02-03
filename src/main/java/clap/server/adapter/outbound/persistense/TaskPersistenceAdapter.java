@@ -2,6 +2,8 @@ package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
+import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
@@ -107,6 +109,11 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
             taskList.remove(taskList.size() - 1);
         }
         return new SliceImpl<>(taskList, pageable, hasNext);
+    }
+
+    @Override
+    public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+        return taskRepository.findTeamStatus(memberId, filter);
     }
 
 
