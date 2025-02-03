@@ -17,7 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Tag(name = "02. Task [생성/수정]", description = "작업 생성/수정 API")
+@Tag(name = "03. Task History")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor

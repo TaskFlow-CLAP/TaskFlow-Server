@@ -15,7 +15,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "02. Task [생성/수정]", description = "작업 생성/수정 API")
+@Tag(name = "03. Task History", description = "히스토리 및 댓글 관련 API")
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
