@@ -74,6 +74,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Transactional
     public UpdateTaskResponse updateTaskState(Long memberId, Long taskId, UpdateTaskStatusRequest updateTaskStatusRequest) {
         memberService.findActiveMember(memberId);
+        memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
         task.updateTaskStatus(updateTaskStatusRequest.taskStatus());
         Task updateTask = commandTaskPort.save(task);
@@ -86,6 +87,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Override
     public UpdateTaskResponse updateTaskProcessor(Long taskId, Long userId, UpdateTaskProcessorRequest request) {
         memberService.findActiveMember(userId);
+        memberService.findReviewer(userId);
         Member processor = memberService.findById(request.processorId());
 
         Task task = taskService.findById(taskId);
@@ -100,6 +102,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Override
     public UpdateTaskResponse updateTaskLabel(Long taskId, Long userId, UpdateTaskLabelRequest request) {
         memberService.findActiveMember(userId);
+        memberService.findReviewer(userId);
         Task task = taskService.findById(taskId);
         Label label = labelService.findById(request.labelId());
 
