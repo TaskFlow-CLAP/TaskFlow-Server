@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "05. Admin")
+@Tag(name = "05. Admin [로깅]")
 @WebAdapter
 @RestController
 @RequestMapping("/api/managements/logs")
