@@ -14,7 +14,7 @@ import java.util.List;
 @ApplicationService
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class FindTaskProcessService implements FindTaskProcessUsecase {
+public class FindTaskProcessService implements FindTaskProcessUsecase {
     private final TaskDocumentPort taskDocumentPort;
     private final TaskStatisticsPolicy taskStatisticsPolicy;
 
