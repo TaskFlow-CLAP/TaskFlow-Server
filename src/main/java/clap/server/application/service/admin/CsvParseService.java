@@ -33,6 +33,11 @@ public class CsvParseService {
     public List<Member> parse(MultipartFile file) {
         List<Member> members = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            // 첫 번째 줄은 헤더로 간주하고 다음 줄부터 파싱
+            String headerLine = reader.readLine();
+            if (headerLine == null) {
+                throw ApplicationException.from(MemberErrorCode.INVALID_CSV_FORMAT);
+            }
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
