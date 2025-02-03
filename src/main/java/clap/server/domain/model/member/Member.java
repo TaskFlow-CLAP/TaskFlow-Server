@@ -4,7 +4,7 @@ import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRol
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.task.Task;
-import clap.server.exception.ApplicationException;
+import clap.server.exception.DomainException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -70,6 +70,9 @@ public class Member extends BaseTime {
         return this.memberInfo != null && this.memberInfo.isReviewer();
     }
 
+    public void changeStatusToAPPROVAL_REQUEST() {
+        this.status = MemberStatus.APPROVAL_REQUEST;
+    }
     public void updateMemberInfo(String name, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoWorkNotificationEnabled, String imageUrl) {
         this.memberInfo.updateName(name);
         this.agitNotificationEnabled = agitNotificationEnabled;
@@ -115,16 +118,26 @@ public class Member extends BaseTime {
         // 담당자일 경우 => 처리자인지 확인
         if ((member.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER)
                 && !(member.getMemberId() == task.getProcessor().getMemberId())) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
+            throw new DomainException(MemberErrorCode.NOT_A_COMMENTER);
         }
 
         else if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
                 && !(member.getMemberId() == task.getRequester().getMemberId())) {
-            throw new ApplicationException(MemberErrorCode.NOT_A_COMMENTER);
+            throw new DomainException(MemberErrorCode.NOT_A_COMMENTER);
         }
         else {
             return true;
         }
 
+    }
+
+    public void verifyPassword(String encodedPassword) {
+        if(!encodedPassword.equals(this.password)) {
+            throw new DomainException(MemberErrorCode.PASSWORD_VERIFY_FAILED);
+        }
+    }
+
+    public void register(Member admin) {
+        this.admin = admin; // 관리자 설정
     }
 }

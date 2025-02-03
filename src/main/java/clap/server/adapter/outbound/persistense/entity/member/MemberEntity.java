@@ -5,6 +5,7 @@ import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRol
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -53,12 +54,15 @@ public class MemberEntity extends BaseTimeEntity {
     private String imageUrl;
 
     @Column(name = "kakaowork_notification_enabled")
+    @Builder.Default
     private Boolean kakaoworkNotificationEnabled = Boolean.TRUE;;
 
     @Column(name = "agit_notification_enabled")
+    @Builder.Default
     private Boolean agitNotificationEnabled = Boolean.TRUE;;
 
     @Column(name = "email_notification_enabled")
+    @Builder.Default
     private Boolean emailNotificationEnabled = Boolean.TRUE;;
 
     @ManyToOne(fetch = FetchType.LAZY)

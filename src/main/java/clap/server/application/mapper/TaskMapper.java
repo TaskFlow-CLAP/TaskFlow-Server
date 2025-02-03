@@ -1,11 +1,9 @@
 package clap.server.application.mapper;
 
 
-import clap.server.adapter.inbound.web.dto.task.*;
 import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TaskItemResponse;
-import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
-import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
+import clap.server.adapter.inbound.web.dto.task.response.*;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Task;
@@ -40,6 +38,7 @@ public class TaskMapper {
                 task.getCategory().getName(),
                 task.getTitle(),
                 task.getProcessor() != null ? task.getProcessor().getMemberInfo().getNickname() : "",
+                task.getProcessor() != null ? task.getProcessor().getImageUrl() : "",
                 task.getTaskStatus(),
                 task.getFinishedAt() != null ? task.getFinishedAt() : null
         );
@@ -53,6 +52,7 @@ public class TaskMapper {
                 task.getCategory().getName(),
                 task.getTitle(),
                 task.getRequester() != null ? task.getRequester().getMemberInfo().getNickname() : "",
+                task.getRequester() != null ? task.getRequester().getImageUrl() : "",
                 task.getTaskStatus(),
                 task.getFinishedAt() != null ? task.getFinishedAt() : null
         );
@@ -65,7 +65,8 @@ public class TaskMapper {
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getTitle(),
-                task.getRequester().getMemberInfo().getNickname()
+                task.getRequester() != null ? task.getRequester().getMemberInfo().getNickname() : "",
+                task.getRequester() != null ? task.getRequester().getImageUrl() : ""
         );
     }
 
@@ -108,8 +109,10 @@ public class TaskMapper {
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getTitle(),
-                task.getRequester().getMemberInfo().getNickname(),
                 task.getProcessor() != null ? task.getProcessor().getMemberInfo().getNickname() : "",
+                task.getProcessor() != null ? task.getProcessor().getImageUrl() : "",
+                task.getRequester() != null ? task.getRequester().getMemberInfo().getNickname() : "",
+                task.getRequester() != null ? task.getRequester().getImageUrl() : "",
                 task.getTaskStatus(),
                 task.getFinishedAt() != null ? task.getFinishedAt() : null
         );

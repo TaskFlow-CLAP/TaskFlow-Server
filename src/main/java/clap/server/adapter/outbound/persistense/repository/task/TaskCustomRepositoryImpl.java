@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TaskItemResponse;
@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
-import static com.querydsl.core.types.Order.*;
+import static com.querydsl.core.types.Order.ASC;
+import static com.querydsl.core.types.Order.DESC;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     public Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            builder.and(taskEntity.processor.nickname.eq(filterTaskListRequest.nickName()));
+            builder.and(taskEntity.processor.nickname.contains(filterTaskListRequest.nickName()));
         }
         builder.and(taskEntity.requester.memberId.eq(requesterId));
 
@@ -48,7 +49,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     public Page<TaskEntity> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            builder.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
+            builder.and(taskEntity.requester.nickname.contains(filterTaskListRequest.nickName()));
         }
         builder.and(taskEntity.processor.memberId.eq(processorId));
 
@@ -156,7 +157,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     public Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
         BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
-            builder.and(taskEntity.requester.nickname.eq(filterTaskListRequest.nickName()));
+            builder.and(taskEntity.requester.nickname.contains(filterTaskListRequest.nickName()));
         }
         builder.and(taskEntity.taskStatus.eq(TaskStatus.REQUESTED));
         return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
@@ -167,8 +168,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         BooleanBuilder builder = createFilter(filterTaskListRequest);
         if (!filterTaskListRequest.nickName().isEmpty()) {
             builder.and(
-                    taskEntity.requester.nickname.eq(filterTaskListRequest.nickName())
-                            .or(taskEntity.processor.nickname.eq(filterTaskListRequest.nickName()))
+                    taskEntity.requester.nickname.contains(filterTaskListRequest.nickName())
+                            .or(taskEntity.processor.nickname.contains(filterTaskListRequest.nickName()))
             );
         }
         return getTasksPage(pageable, builder, filterTaskListRequest.sortBy(), filterTaskListRequest.sortDirection());
@@ -240,6 +241,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
         List<TaskEntity> result = queryFactory
                 .selectFrom(taskEntity)
+                .leftJoin(taskEntity.processor).fetchJoin()
+                .leftJoin(taskEntity.requester).fetchJoin()
                 .where(builder)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
@@ -247,6 +250,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 .fetch();
         long total = queryFactory
                 .selectFrom(taskEntity)
+                .leftJoin(taskEntity.processor).fetchJoin()
+                .leftJoin(taskEntity.requester).fetchJoin()
                 .where(builder)
                 .fetch().size();
         return new PageImpl<>(result, pageable, total);

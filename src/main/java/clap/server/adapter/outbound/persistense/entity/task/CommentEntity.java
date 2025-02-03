@@ -4,6 +4,7 @@ import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -36,5 +37,6 @@ public class CommentEntity extends BaseTimeEntity {
     private boolean isModified;
 
     @Column(name="is_deleted", nullable = false)
+    @Builder.Default
     private boolean isDeleted = Boolean.FALSE;
 }

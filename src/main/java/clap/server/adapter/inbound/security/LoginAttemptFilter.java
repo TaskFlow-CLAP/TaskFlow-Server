@@ -2,7 +2,7 @@ package clap.server.adapter.inbound.security;
 
 import clap.server.application.service.auth.LoginAttemptService;
 import clap.server.exception.AuthException;
-import clap.server.exception.code.CommonErrorCode;
+import clap.server.exception.code.GlobalErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ public class LoginAttemptFilter extends OncePerRequestFilter {
 
         if (request.getRequestURI().equals(LOGIN_ENDPOINT)) {
             if (sessionId == null) {
-                throw new AuthException(CommonErrorCode.BAD_REQUEST);
+                throw new AuthException(GlobalErrorCode.BAD_REQUEST);
             }
             loginAttemptService.checkAccountIsLocked(sessionId);
         }

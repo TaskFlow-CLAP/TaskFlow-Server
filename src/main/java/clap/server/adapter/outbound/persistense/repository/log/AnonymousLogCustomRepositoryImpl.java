@@ -3,6 +3,7 @@ package clap.server.adapter.outbound.persistense.repository.log;
 import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
 import clap.server.adapter.outbound.persistense.entity.log.AnonymousLogEntity;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,9 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static clap.server.adapter.outbound.persistense.entity.log.QAnonymousLogEntity.anonymousLogEntity;
+import static clap.server.adapter.outbound.persistense.entity.log.QMemberLogEntity.memberLogEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,12 +24,12 @@ public class AnonymousLogCustomRepositoryImpl implements AnonymousLogCustomRepos
 
     private final JPAQueryFactory queryFactory;
     @Override
-    public Page<AnonymousLogEntity> filterAnonymousLogs(FilterLogRequest request, Pageable pageable) {
+    public Page<AnonymousLogEntity> filterAnonymousLogs(FilterLogRequest request, Pageable pageable, String sortDirection) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (request.term() != null) {
             LocalDateTime fromDate = LocalDateTime.now().minusHours(request.term());
-            builder.and(anonymousLogEntity.createdAt.after(fromDate));
+            builder.and(anonymousLogEntity.requestAt.after(fromDate));
         }
         if (!request.logStatus().isEmpty()) {
             builder.and(anonymousLogEntity.logStatus.in(request.logStatus()));
@@ -35,13 +38,16 @@ public class AnonymousLogCustomRepositoryImpl implements AnonymousLogCustomRepos
             builder.and(anonymousLogEntity.loginNickname.contains(request.nickName()));
         }
         if (!request.clientIp().isEmpty()) {
-            builder.and(anonymousLogEntity.clientIp.eq(request.clientIp()));
+            builder.and(anonymousLogEntity.clientIp.contains(request.clientIp()));
         }
+        OrderSpecifier<LocalDateTime> orderSpecifier = sortDirection.equalsIgnoreCase("ASC")
+                ? anonymousLogEntity.requestAt.asc()
+                : anonymousLogEntity.requestAt.desc();
 
         List<AnonymousLogEntity> result = queryFactory
                 .selectFrom(anonymousLogEntity)
                 .where(builder)
-                .orderBy(anonymousLogEntity.createdAt.desc())
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

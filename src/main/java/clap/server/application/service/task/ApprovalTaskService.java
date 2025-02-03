@@ -1,9 +1,8 @@
 package clap.server.application.service.task;
 
-import clap.server.adapter.inbound.web.dto.notification.SseRequest;
-import clap.server.adapter.inbound.web.dto.task.ApprovalTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.ApprovalTaskResponse;
-import clap.server.adapter.inbound.web.dto.task.FindApprovalFormResponse;
+import clap.server.adapter.inbound.web.dto.task.request.ApprovalTaskRequest;
+import clap.server.adapter.inbound.web.dto.task.response.ApprovalTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.FindApprovalFormResponse;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.application.mapper.TaskMapper;
@@ -14,22 +13,18 @@ import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
-import clap.server.application.service.notification.SendWebhookService;
+import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.notification.Notification;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
+import clap.server.domain.policy.task.RequestedTaskUpdatePolicy;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static clap.server.domain.model.notification.Notification.createTaskNotification;
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -41,9 +36,9 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     private final CategoryService categoryService;
     private final LabelService labelService;
     private final CommandTaskPort commandTaskPort;
+    private final RequestedTaskUpdatePolicy requestedTaskUpdatePolicy;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
-    private final ApplicationEventPublisher applicationEventPublisher;
-    private final SendWebhookService sendWebhookService;
+    private final SendNotificationService sendNotificationService;
 
     @Override
     @Transactional
@@ -54,15 +49,14 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         Category category = categoryService.findById(approvalTaskRequest.categoryId());
         Label label = labelService.findById(approvalTaskRequest.labelId());
 
+        requestedTaskUpdatePolicy.validateTaskRequested(task);
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_ASSIGNED, task, null, processor,null);
         commandTaskHistoryPort.save(taskHistory);
 
-        List<Member> receivers = new ArrayList<>();
-        receivers.add(task.getRequester());
-        receivers.add(task.getProcessor());
-
+        List<Member> receivers = List.of(reviewer, processor);
         publishNotification(receivers, task);
+
         return TaskMapper.toApprovalTaskResponse(commandTaskPort.save(task));
     }
 
@@ -70,27 +64,15 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     public FindApprovalFormResponse findApprovalForm(Long managerId, Long taskId) {
         memberService.findActiveMember(managerId);
         Task task = taskService.findById(taskId);
-        task.validateTaskRequested();
+        requestedTaskUpdatePolicy.validateTaskRequested(task);
         return TaskMapper.toFindApprovalFormResponse(task);
     }
 
     private void publishNotification(List<Member> receivers, Task task){
-        for (Member receiver : receivers) {
-            // 알림 저장
-            Notification notification = createTaskNotification(task, receiver, NotificationType.PROCESSOR_ASSIGNED);
-            applicationEventPublisher.publishEvent(notification);
-
-            // SSE 실시간 알림 전송
-            SseRequest sseRequest = new SseRequest(
-                    notification.getTask().getTitle(),
-                    notification.getType(),
-                    receiver.getMemberId(),
-                    task.getProcessor().getNickname()
-            );
-            applicationEventPublisher.publishEvent(sseRequest);
-
-            sendWebhookService.sendWebhookNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
+        receivers.forEach(receiver -> {
+            sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
                     task, task.getProcessor().getNickname(), null);
-        }
+        });
     }
+
 }

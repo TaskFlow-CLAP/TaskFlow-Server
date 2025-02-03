@@ -5,7 +5,7 @@ import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import clap.server.config.s3.KakaoS3Config;
 import clap.server.common.constants.FilePathConstants;
 import clap.server.exception.S3Exception;
-import clap.server.exception.code.AttachmentErrorcode;
+import clap.server.exception.code.FileErrorcode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +39,7 @@ public class S3UploadAdapter implements S3UploadPort {
             Files.delete(filePath);
             return getFileUrl(objectKey);
         } catch (IOException e) {
-            throw new S3Exception(AttachmentErrorcode.FILE_UPLOAD_REQUEST_FAILED);
+            throw new S3Exception(FileErrorcode.FILE_UPLOAD_REQUEST_FAILED);
         }
     }
 

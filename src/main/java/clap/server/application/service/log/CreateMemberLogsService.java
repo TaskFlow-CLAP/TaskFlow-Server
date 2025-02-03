@@ -4,6 +4,7 @@ import clap.server.adapter.outbound.persistense.ApiLogPersistenceAdapter;
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.log.CreateMemberLogsUsecase;
+import clap.server.application.port.outbound.log.CommandLogPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.log.MemberLog;
 import clap.server.domain.model.member.Member;
@@ -18,14 +19,14 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class CreateMemberLogsService implements CreateMemberLogsUsecase {
 
-    private final ApiLogPersistenceAdapter apiLogPersistenceAdapter;
+    private final CommandLogPort commandLogPort;
     private final MemberService memberService;
 
     @Override
     @Transactional
-    public void createMemberLog(HttpServletRequest request, HttpServletResponse response, Object result, LogStatus logType, String customCode, String body, Long userId) {
+    public void createMemberLog(HttpServletRequest request, int statusCode, String customCode,LogStatus logStatus, Object responseBody, String requestBody, Long userId) {
         Member member = memberService.findById(userId);
-        MemberLog memberLog = MemberLog.createMemberLog(request, response, result, logType, customCode, body, member);
-        apiLogPersistenceAdapter.saveMemberLog(memberLog);
+        MemberLog memberLog = MemberLog.createMemberLog(request, statusCode, customCode, logStatus,  responseBody, requestBody, member);
+        commandLogPort.saveMemberLog(memberLog);
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
+public interface MemberRepository extends JpaRepository<MemberEntity, Long>,  MemberCustomRepository {
 
 
     List<MemberEntity> findByRoleAndStatus(MemberRole role, MemberStatus status);
@@ -21,6 +21,9 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     Optional<MemberEntity> findByNickname(String nickname);
 
     List<MemberEntity> findByIsReviewerTrue();
+
+    List<MemberEntity> findAll(); // 전체 회원 조회
+
 
     Optional<MemberEntity> findByMemberIdAndIsReviewerTrue(Long memberId);
 }

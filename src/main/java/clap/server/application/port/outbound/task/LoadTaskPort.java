@@ -1,10 +1,6 @@
 package clap.server.application.port.outbound.task;
 
-import clap.server.adapter.inbound.web.dto.task.*;
-import clap.server.adapter.inbound.web.dto.task.FilterAllTasksResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterPendingApprovalResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterRequestedTasksResponse;
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
@@ -23,13 +19,13 @@ public interface LoadTaskPort {
 
     List<Task> findYesterdayTaskByDate(LocalDateTime now);
 
-    Page<FilterRequestedTasksResponse> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
+    Page<Task> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
 
-    Page<FilterAssignedTaskListResponse> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest);
+    Page<Task> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 
-    Page<FilterPendingApprovalResponse> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest);
+    Page<Task> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 
-    Page<FilterAllTasksResponse> findAllTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
+    Page<Task> findAllTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
 
     Slice<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, Pageable pageable);
 

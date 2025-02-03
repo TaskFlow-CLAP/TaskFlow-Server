@@ -1,6 +1,6 @@
 package clap.server.application.mapper;
 
-import clap.server.adapter.inbound.web.dto.task.AttachmentResponse;
+import clap.server.adapter.inbound.web.dto.task.response.AttachmentResponse;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Comment;
 import clap.server.domain.model.task.Task;
@@ -21,18 +21,6 @@ public class AttachmentMapper {
         return IntStream.range(0, files.size())
                 .mapToObj(i -> createAttachment(
                         task,
-                        files.get(i).getOriginalFilename(),
-                        fileUrls.get(i),
-                        files.get(i).getSize()
-                ))
-                .toList();
-    }
-
-    public static List<Attachment> toCommentAttachments(Task task, Comment comment, List<MultipartFile> files, List<String> fileUrls) {
-        return IntStream.range(0, files.size())
-                .mapToObj(i -> createCommentAttachment(
-                        task,
-                        comment,
                         files.get(i).getOriginalFilename(),
                         fileUrls.get(i),
                         files.get(i).getSize()

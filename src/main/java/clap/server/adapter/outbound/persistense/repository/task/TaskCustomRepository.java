@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
-import clap.server.adapter.inbound.web.dto.task.FilterTaskListRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;

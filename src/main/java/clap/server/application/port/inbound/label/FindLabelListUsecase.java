@@ -9,5 +9,4 @@ import java.util.List;
 public interface FindLabelListUsecase {
 
     SliceResponse<FindLabelListResponse> findLabelList(Long memberId, Pageable pageable);
-    List<FindLabelListResponse> findLabelListAdmin(Long memberId);
 }

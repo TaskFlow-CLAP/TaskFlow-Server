@@ -2,7 +2,8 @@ package clap.server.exception;
 
 import clap.server.exception.code.AuthErrorCode;
 import clap.server.exception.code.BaseErrorCode;
-import clap.server.exception.code.CommonErrorCode;
+import clap.server.exception.code.GlobalErrorCode;
+import clap.server.exception.code.MemberErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -48,7 +49,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         return handleExceptionInternalArgs(
                 e,
                 HttpHeaders.EMPTY,
-                CommonErrorCode.BAD_REQUEST,
+                GlobalErrorCode.BAD_REQUEST, // GlobalErrorCode 사용
                 request,
                 errors
         );
@@ -57,11 +58,16 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<Object> validation(ConstraintViolationException e, WebRequest request) {
         String errorMessage = e.getConstraintViolations().stream()
-            .map(ConstraintViolation::getMessage)
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("ConstraintViolationException Error"));
+                .map(ConstraintViolation::getMessage)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("ConstraintViolationException Error"));
 
-        return handleExceptionInternalConstraint(e, CommonErrorCode.valueOf(errorMessage), HttpHeaders.EMPTY, request);
+        return handleExceptionInternalConstraint(
+                e,
+                GlobalErrorCode.valueOf(errorMessage), // GlobalErrorCode 사용
+                HttpHeaders.EMPTY,
+                request
+        );
     }
 
     @ExceptionHandler
@@ -70,20 +76,28 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternalFalse(
                 e,
-                CommonErrorCode.INTERNAL_SERVER_ERROR,
+                GlobalErrorCode.INTERNAL_SERVER_ERROR, // GlobalErrorCode 사용
                 HttpHeaders.EMPTY,
-                CommonErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus(),
+                GlobalErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus(),
                 request,
                 e.getMessage()
         );
     }
 
-    @ExceptionHandler(value = { BaseException.class })
-    public ResponseEntity<Object> onThrowException(
-            BaseException exception,
-            HttpServletRequest request) {
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<Object> handleApplicationException(ApplicationException e, WebRequest request) {
+        // CSV 관련 에러 처리 유지
+        if (e.getCode() == MemberErrorCode.CSV_PARSING_ERROR || e.getCode() == MemberErrorCode.INVALID_CSV_FORMAT) {
+            log.error("CSV Parsing Error: {}", e.getCode().getMessage());
+            return buildErrorResponse(e.getCode());
+        }
+        return buildErrorResponse(e.getCode());
+    }
 
+    @ExceptionHandler(value = { BaseException.class })
+    public ResponseEntity<Object> onThrowException(BaseException exception, HttpServletRequest request) {
         BaseErrorCode baseErrorCode = exception.getCode();
+        log.error("BaseException occurred: {}", baseErrorCode.getMessage());
         return handleExceptionInternal(exception, baseErrorCode, null, request);
     }
 
@@ -169,5 +183,13 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 request,
                 AuthErrorCode.FORBIDDEN.getMessage()
         );
+    }
+
+    private ResponseEntity<Object> buildErrorResponse(BaseErrorCode errorCode) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(Map.of(
+                        "code", errorCode.getCustomCode(),
+                        "message", errorCode.getMessage()
+                ));
     }
 }

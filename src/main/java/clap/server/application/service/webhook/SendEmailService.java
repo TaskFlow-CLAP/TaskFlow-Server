@@ -12,6 +12,6 @@ public class SendEmailService {
     private final SendEmailPort port;
 
     public void sendEmail(SendWebhookRequest request) {
-        port.sendEmail(request);
+        port.sendWebhookEmail(request);
     }
 }

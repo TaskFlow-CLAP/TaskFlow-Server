@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface FindApiLogsUsecase {
-    PageResponse<AnonymousLogResponse> filterAnonymousLogs(FilterLogRequest anonymousLogsRequest, Pageable pageable);
-    PageResponse<MemberLogResponse> filterMemberLogs(FilterLogRequest memberLogRequest, Pageable pageable);
-    List<ApiLog> getApiLogs();
+    PageResponse<AnonymousLogResponse> filterAnonymousLogs(FilterLogRequest anonymousLogsRequest, Pageable pageable, String sortDirection);
+    PageResponse<MemberLogResponse> filterMemberLogs(FilterLogRequest memberLogRequest, Pageable pageable, String sortDirection);
 }

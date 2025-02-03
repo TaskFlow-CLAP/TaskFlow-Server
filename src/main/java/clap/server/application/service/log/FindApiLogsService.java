@@ -25,13 +25,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class FindApiLogsService implements FindApiLogsUsecase {
 
-    private final ApiLogPersistenceAdapter apiLogPersistenceAdapter;
     private final LoginDomainService loginDomainService;
     private final LoadLogPort loadLogPort;
 
     @Override
-    public PageResponse<AnonymousLogResponse> filterAnonymousLogs(FilterLogRequest anonymousLogRequest, Pageable pageable) {
-        Page<AnonymousLog> anonymousLogs = loadLogPort.filterAnonymousLogs(anonymousLogRequest, pageable);
+    public PageResponse<AnonymousLogResponse> filterAnonymousLogs(FilterLogRequest anonymousLogRequest, Pageable pageable, String sortDirection) {
+        Page<AnonymousLog> anonymousLogs = loadLogPort.filterAnonymousLogs(anonymousLogRequest, pageable, sortDirection);
         Page<AnonymousLogResponse> anonymousLogResponses = anonymousLogs.map(anonymousLog -> {
             int failedAttempts = loginDomainService.getFailedAttemptCount(anonymousLog.getLoginNickname());
             return LogMapper.toAnonymousLogResponse(anonymousLog, failedAttempts);
@@ -40,15 +39,9 @@ public class FindApiLogsService implements FindApiLogsUsecase {
     }
 
     @Override
-    public PageResponse<MemberLogResponse> filterMemberLogs(FilterLogRequest memberLogRequest, Pageable pageable) {
-        Page<MemberLog> memberLogs = loadLogPort.filterMemberLogs(memberLogRequest, pageable);
+    public PageResponse<MemberLogResponse> filterMemberLogs(FilterLogRequest memberLogRequest, Pageable pageable, String sortDirection) {
+        Page<MemberLog> memberLogs = loadLogPort.filterMemberLogs(memberLogRequest, pageable, sortDirection);
         Page<MemberLogResponse> memberLogResponses = memberLogs.map(LogMapper::toMemberLogResponse);
         return PageResponse.from(memberLogResponses);
-    }
-
-    //테스트용
-    @Override
-    public List<ApiLog> getApiLogs() {
-        return apiLogPersistenceAdapter.findAllLogs();
     }
 }
