@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.dto.admin;
+package clap.server.adapter.inbound.web.dto.admin.response;
 
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import io.swagger.v3.oas.annotations.media.Schema;

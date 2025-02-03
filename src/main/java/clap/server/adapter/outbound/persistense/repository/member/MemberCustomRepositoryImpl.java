@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.persistense.repository.member;
 
-import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
+import clap.server.adapter.inbound.web.dto.admin.request.FindMemberRequest;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -46,17 +46,17 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(memberEntity.status.ne(MemberStatus.DELETED));
 
-        if (filterRequest.name() != null) {
+        if (!filterRequest.name().isBlank()) {
             whereClause.and(memberEntity.name.containsIgnoreCase(filterRequest.name()));
         }
-        if (filterRequest.email() != null) {
+        if (!filterRequest.email().isBlank()) {
             whereClause.and(memberEntity.email.containsIgnoreCase(filterRequest.email()));
         }
-        if (filterRequest.nickName() != null) {
+        if (!filterRequest.nickName().isBlank()) {
             whereClause.and(memberEntity.nickname.containsIgnoreCase(filterRequest.nickName()));
         }
-        if (filterRequest.departmentName() != null) {
-            whereClause.and(memberEntity.department.name.eq(filterRequest.departmentName()));
+        if (!filterRequest.departmentName().isBlank()) {
+            whereClause.and(memberEntity.department.name.contains(filterRequest.departmentName()));
         }
         if (filterRequest.role() != null) {
             whereClause.and(memberEntity.role.eq(filterRequest.role()));
