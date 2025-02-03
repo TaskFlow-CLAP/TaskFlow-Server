@@ -73,6 +73,8 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
             sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
                     task, task.getProcessor().getNickname(), null);
         });
+        sendNotificationService.sendAgitNotification(NotificationType.PROCESSOR_CHANGED,
+                task, task.getProcessor().getNickname(), null);
     }
 
 }
