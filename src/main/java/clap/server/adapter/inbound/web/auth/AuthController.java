@@ -7,7 +7,7 @@ import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.auth.LoginUsecase;
 import clap.server.application.port.inbound.auth.LogoutUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
-import clap.server.config.annotation.LogType;
+import clap.server.common.annotation.log.LogType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

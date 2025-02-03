@@ -3,10 +3,9 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.task.request.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.response.CreateTaskResponse;
 
-import clap.server.adapter.outbound.infrastructure.s3.S3UploadAdapter;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.mapper.AttachmentMapper;
-import clap.server.application.mapper.TaskMapper;
+import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
@@ -15,7 +14,7 @@ import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.common.constants.FilePathConstants;
+import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
@@ -51,11 +50,11 @@ public class CreateTaskService implements CreateTaskUsecase {
         if (files != null) {
             saveAttachments(files, savedTask);}
         publishNotification(savedTask);
-        return TaskMapper.toCreateTaskResponse(savedTask);
+        return TaskResponseMapper.toCreateTaskResponse(savedTask);
     }
 
     private void saveAttachments(List<MultipartFile> files, Task task) {
-        List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_IMAGE, files);
+        List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicy.TASK_IMAGE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }

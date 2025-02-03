@@ -1,6 +1,6 @@
 package clap.server.application.service.notification;
 
-import clap.server.adapter.inbound.web.dto.notification.CountNotificationResponse;
+import clap.server.adapter.inbound.web.dto.notification.response.CountNotificationResponse;
 import clap.server.application.mapper.NotificationMapper;
 import clap.server.application.port.inbound.notification.CountNotificationUseCase;
 import clap.server.application.port.outbound.notification.LoadNotificationPort;

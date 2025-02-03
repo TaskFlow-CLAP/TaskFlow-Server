@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.persistense.repository.log;
 
-import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
+import clap.server.adapter.inbound.web.dto.log.request.FilterLogRequest;
 import clap.server.adapter.outbound.persistense.entity.log.AnonymousLogEntity;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
@@ -12,11 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static clap.server.adapter.outbound.persistense.entity.log.QAnonymousLogEntity.anonymousLogEntity;
-import static clap.server.adapter.outbound.persistense.entity.log.QMemberLogEntity.memberLogEntity;
 
 @Repository
 @RequiredArgsConstructor

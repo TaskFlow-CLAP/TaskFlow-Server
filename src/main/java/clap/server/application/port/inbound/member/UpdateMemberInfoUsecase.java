@@ -1,6 +1,6 @@
 package clap.server.application.port.inbound.member;
 
-import clap.server.adapter.inbound.web.dto.member.UpdateMemberInfoRequest;
+import clap.server.adapter.inbound.web.dto.member.request.UpdateMemberInfoRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
