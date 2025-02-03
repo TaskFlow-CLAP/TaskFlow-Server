@@ -6,14 +6,13 @@ import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.UpdateTaskBoardUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskOrderAndStatusUsecase;
-import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.domain.policy.task.TaskOrderCalculationPolicy;
 import clap.server.domain.policy.task.ProcessorValidationPolicy;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;
-import clap.server.domain.policy.task.TaskValuePolicy;
+import clap.server.domain.policy.task.TaskPolicyConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     private final MemberService memberService;
     private final TaskService taskService;
     private final LoadTaskPort loadTaskPort;
-    private final CommandTaskPort commandTaskPort;
+    
     private final TaskOrderCalculationPolicy taskOrderCalculationPolicy;
     private final ProcessorValidationPolicy processorValidationPolicy;
 
@@ -81,7 +80,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
      */
     private void updateNewTaskOrder(Task targetTask, Long newOrder) {
         targetTask.updateProcessorOrder(newOrder);
-        commandTaskPort.save(targetTask);
+        taskService.upsert(targetTask);
     }
 
     /**
@@ -125,7 +124,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     private void updateNewTaskOrderAndStatus(TaskStatus targetStatus, Task targetTask, long newOrder) {
         targetTask.updateProcessorOrder(newOrder);
         targetTask.updateTaskStatus(targetStatus);
-        commandTaskPort.save(targetTask);
+        taskService.upsert(targetTask);
     }
 
     /**
@@ -138,7 +137,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
         }
 
         // 타겟 상태가 유효한지 검증
-        if (targetStatus != null && !TaskValuePolicy.TASK_BOARD_STATUS_FILTER.contains(targetStatus)) {
+        if (targetStatus != null && !TaskPolicyConstants.TASK_BOARD_STATUS_FILTER.contains(targetStatus)) {
             throw new ApplicationException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
         }
     }

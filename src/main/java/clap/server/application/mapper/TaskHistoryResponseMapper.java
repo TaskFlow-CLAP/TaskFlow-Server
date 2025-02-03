@@ -26,7 +26,7 @@ public class TaskHistoryResponseMapper {
                                         null,
                                         null
                                 );
-                                case STATUS_SWITCHED -> new FindTaskHistoryResponse.Details(
+                                case STATUS_SWITCHED, TASK_TERMINATED -> new FindTaskHistoryResponse.Details(
                                         new FindTaskHistoryResponse.TaskDetails(
                                                 taskHistory.getTaskModificationInfo().getModifiedStatus()
                                         ),
