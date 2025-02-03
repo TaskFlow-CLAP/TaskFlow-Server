@@ -1,4 +1,4 @@
-package clap.server.common.annotation.architecture;
+package clap.server.common.annotation.swagger;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

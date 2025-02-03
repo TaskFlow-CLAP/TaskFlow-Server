@@ -5,7 +5,7 @@ import clap.server.adapter.inbound.web.dto.history.response.FindTaskHistoryRespo
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.history.FindTaskHistoriesUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
-import clap.server.config.annotation.LogType;
+import clap.server.common.annotation.log.LogType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

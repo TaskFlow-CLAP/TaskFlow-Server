@@ -1,4 +1,4 @@
-package clap.server.config.annotation;
+package clap.server.common.annotation.log;
 
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 
