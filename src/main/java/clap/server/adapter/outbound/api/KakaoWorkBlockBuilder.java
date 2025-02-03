@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class ObjectBlockBuilder {
+public class KakaoWorkBlockBuilder {
 
     private final ObjectMapper objectMapper;
 

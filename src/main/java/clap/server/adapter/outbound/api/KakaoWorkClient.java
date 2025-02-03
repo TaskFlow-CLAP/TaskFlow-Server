@@ -22,14 +22,14 @@ public class KakaoWorkClient implements SendKaKaoWorkPort {
     @Value("${webhook.kakaowork.auth}")
     private String kakaworkAuth;
 
-    private final ObjectBlockBuilder objectBlockBuilder;
+    private final KakaoWorkBlockBuilder kakaoWorkBlockBuilder;
 
     @Override
     public void sendKakaoWork(SendWebhookRequest request) {
         RestTemplate restTemplate = new RestTemplate();
 
         // Payload 생성
-        String payload = objectBlockBuilder.makeObjectBlock(request);
+        String payload = kakaoWorkBlockBuilder.makeObjectBlock(request);
 
         // HTTP 요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();
