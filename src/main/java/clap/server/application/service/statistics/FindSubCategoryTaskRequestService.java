@@ -1,7 +1,7 @@
 package clap.server.application.service.statistics;
 
 import clap.server.adapter.inbound.web.dto.statistics.StatisticsResponse;
-import clap.server.application.mapper.response.FindTaskStatisticsMapper;
+import clap.server.application.mapper.FindTaskStatisticsMapper;
 import clap.server.application.port.inbound.statistics.FindSubCategoryTaskRequestUsecase;
 import clap.server.application.port.outbound.task.TaskDocumentPort;
 import clap.server.common.annotation.architecture.ApplicationService;

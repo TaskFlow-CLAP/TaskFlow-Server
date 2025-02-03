@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 
 import static clap.server.application.mapper.AttachmentMapper.toAttachmentResponseList;
 
-public class TaskMapper {
-    private TaskMapper() {
+public class TaskResponseMapper {
+    private TaskResponseMapper() {
         throw new IllegalArgumentException();
     }
 
@@ -120,7 +120,7 @@ public class TaskMapper {
 
     public static TaskBoardResponse toSliceTaskItemResponse(Slice<Task> tasks) {
         Map<TaskStatus, List<TaskItemResponse>> tasksByStatus =tasks.getContent().stream()
-                .map(TaskMapper::toTaskItemResponse)
+                .map(TaskResponseMapper::toTaskItemResponse)
                 .collect(Collectors.groupingBy(TaskItemResponse::taskStatus));
 
         return new TaskBoardResponse(

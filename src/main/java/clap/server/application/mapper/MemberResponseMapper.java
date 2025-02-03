@@ -6,8 +6,8 @@ import clap.server.adapter.inbound.web.dto.member.response.MemberProfileResponse
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
 
-public class MemberMapper {
-    private MemberMapper() {
+public class MemberResponseMapper {
+    private MemberResponseMapper() {
         throw new IllegalArgumentException();
     }
 

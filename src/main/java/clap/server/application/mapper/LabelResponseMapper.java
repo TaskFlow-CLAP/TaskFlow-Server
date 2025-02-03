@@ -1,11 +1,11 @@
 package clap.server.application.mapper;
 
-import clap.server.adapter.inbound.web.dto.label.FindLabelListResponse;
+import clap.server.adapter.inbound.web.dto.label.response.FindLabelListResponse;
 import clap.server.domain.model.task.Label;
 
-public class LabelMapper {
+public class LabelResponseMapper {
 
-    private LabelMapper() {
+    private LabelResponseMapper() {
         throw new IllegalArgumentException();
     }
 

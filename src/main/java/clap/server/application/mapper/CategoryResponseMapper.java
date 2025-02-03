@@ -1,4 +1,4 @@
-package clap.server.application.mapper.response;
+package clap.server.application.mapper;
 
 import clap.server.adapter.inbound.web.dto.admin.FindAllCategoryResponse;
 import clap.server.adapter.inbound.web.dto.admin.FindMainCategoryResponse;

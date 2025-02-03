@@ -1,7 +1,7 @@
 package clap.server.application.service.history;
 
 import clap.server.adapter.inbound.web.dto.history.response.FindTaskHistoryResponse;
-import clap.server.application.mapper.TaskHistoryMapper;
+import clap.server.application.mapper.TaskHistoryResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.history.FindTaskHistoriesUsecase;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
@@ -35,6 +35,6 @@ public class FindTaskHistoriesService implements FindTaskHistoriesUsecase {
                 .orElseThrow(()-> new DomainException(TaskErrorCode.TASK_NOT_FOUND));
         List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNotNull(task.getTaskId());
         List<TaskHistory> taskHistories = loadTaskHistoryPort.findAllTaskHistoriesByTaskId(task.getTaskId());
-        return TaskHistoryMapper.toFindTaskHistoryResponse(taskHistories, attachments);
+        return TaskHistoryResponseMapper.toFindTaskHistoryResponse(taskHistories, attachments);
     }
 }

@@ -2,7 +2,6 @@ package clap.server.application.mapper;
 
 import clap.server.adapter.inbound.web.dto.admin.FindManagersResponse;
 import clap.server.domain.model.member.Member;
-import clap.server.application.port.inbound.domain.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,17 +9,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ManagersMapper {
 
-    private final MemberService memberService;
-
-    public FindManagersResponse mapToFindManagersResponse(Member manager) {
-        int remainingTasks = memberService.getRemainingTasks(manager.getMemberId());
-        String nickname = memberService.getMemberNickname(manager.getMemberId());
-        String imageUrl = memberService.getMemberImageUrl(manager.getMemberId());
-
+    public static FindManagersResponse toFindManagersResponse(Member manager, int remainingTasks) {
         return new FindManagersResponse(
                 manager.getMemberId(),
-                nickname,
-                imageUrl,
+                manager.getNickname(),
+                manager.getImageUrl(),
                 remainingTasks
         );
     }

@@ -1,4 +1,4 @@
-package clap.server.application.mapper.response;
+package clap.server.application.mapper;
 
 import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
 import clap.server.adapter.inbound.web.dto.auth.MemberInfoResponse;

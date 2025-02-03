@@ -8,9 +8,9 @@ import clap.server.domain.model.task.TaskHistory;
 import java.util.List;
 
 
-public class TaskHistoryMapper {
+public class TaskHistoryResponseMapper {
 
-    private TaskHistoryMapper() {
+    private TaskHistoryResponseMapper() {
         throw new IllegalArgumentException();
     }
 

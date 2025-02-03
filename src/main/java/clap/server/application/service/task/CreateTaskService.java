@@ -5,7 +5,7 @@ import clap.server.adapter.inbound.web.dto.task.response.CreateTaskResponse;
 
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.mapper.AttachmentMapper;
-import clap.server.application.mapper.TaskMapper;
+import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
@@ -50,7 +50,7 @@ public class CreateTaskService implements CreateTaskUsecase {
         if (files != null) {
             saveAttachments(files, savedTask);}
         publishNotification(savedTask);
-        return TaskMapper.toCreateTaskResponse(savedTask);
+        return TaskResponseMapper.toCreateTaskResponse(savedTask);
     }
 
     private void saveAttachments(List<MultipartFile> files, Task task) {

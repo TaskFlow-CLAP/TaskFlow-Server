@@ -4,7 +4,7 @@ import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.adapter.inbound.web.dto.log.response.AnonymousLogResponse;
 import clap.server.adapter.inbound.web.dto.log.request.FilterLogRequest;
 import clap.server.adapter.inbound.web.dto.log.response.MemberLogResponse;
-import clap.server.application.mapper.response.LogMapper;
+import clap.server.application.mapper.LogMapper;
 import clap.server.application.port.inbound.domain.LoginDomainService;
 import clap.server.application.port.inbound.log.FindApiLogsUsecase;
 import clap.server.application.port.outbound.log.LoadLogPort;

@@ -5,7 +5,7 @@ import clap.server.adapter.inbound.web.dto.task.response.ApprovalTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.FindApprovalFormResponse;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
-import clap.server.application.mapper.TaskMapper;
+import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.LabelService;
 import clap.server.application.port.inbound.domain.MemberService;
@@ -57,7 +57,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         List<Member> receivers = List.of(reviewer, processor);
         publishNotification(receivers, task);
 
-        return TaskMapper.toApprovalTaskResponse(commandTaskPort.save(task));
+        return TaskResponseMapper.toApprovalTaskResponse(commandTaskPort.save(task));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         memberService.findActiveMember(managerId);
         Task task = taskService.findById(taskId);
         requestedTaskUpdatePolicy.validateTaskRequested(task);
-        return TaskMapper.toFindApprovalFormResponse(task);
+        return TaskResponseMapper.toFindApprovalFormResponse(task);
     }
 
     private void publishNotification(List<Member> receivers, Task task){

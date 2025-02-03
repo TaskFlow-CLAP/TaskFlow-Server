@@ -2,7 +2,7 @@ package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.response.FindTaskDetailsForManagerResponse;
 import clap.server.adapter.inbound.web.dto.task.response.FindTaskDetailsResponse;
-import clap.server.application.mapper.TaskMapper;
+import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.FindTaskDetailsUsecase;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
@@ -32,7 +32,7 @@ public class FindTaskDetailsService implements FindTaskDetailsUsecase {
         Task task = loadTaskPort.findById(taskId)
                 .orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
         List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNull(taskId);
-        return TaskMapper.toFindTaskDetailResponse(task, attachments);
+        return TaskResponseMapper.toFindTaskDetailResponse(task, attachments);
     }
 
     @Override
@@ -41,6 +41,6 @@ public class FindTaskDetailsService implements FindTaskDetailsUsecase {
         Task task = loadTaskPort.findById(taskId)
                 .orElseThrow(() -> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
         List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNull(taskId);
-        return TaskMapper.toFindTaskDetailForManagerResponse(task, attachments);
+        return TaskResponseMapper.toFindTaskDetailForManagerResponse(task, attachments);
     }
 }
