@@ -1,8 +1,8 @@
-package clap.server.config.security;
+package clap.server.adapter.inbound.security;
 
-import clap.server.adapter.inbound.security.LoginAttemptFilter;
 import clap.server.adapter.inbound.security.filter.JwtAuthenticationFilter;
 import clap.server.adapter.inbound.security.filter.JwtExceptionFilter;
+import clap.server.adapter.inbound.security.filter.LoginAttemptFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -24,7 +24,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import static clap.server.config.security.WebSecurityUrl.*;
+import static clap.server.adapter.inbound.security.WebSecurityUrl.*;
 
 
 @Configuration
