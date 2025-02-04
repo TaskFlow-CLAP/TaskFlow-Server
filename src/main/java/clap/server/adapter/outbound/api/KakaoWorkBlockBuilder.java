@@ -1,7 +1,6 @@
 package clap.server.adapter.outbound.api;
 
-import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
-import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
+import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,36 +14,25 @@ public class KakaoWorkBlockBuilder {
 
     private final ObjectMapper objectMapper;
 
-    public String makeObjectBlock(SendWebhookRequest request){
-        String payload;
-        if (request.notificationType() == NotificationType.TASK_REQUESTED) {
-            payload = makeTaskRequestBlock(request);
-        }
-        else if (request.notificationType() == NotificationType.PROCESSOR_ASSIGNED) {
-            payload = makeNewProcessorBlock(request);
-        }
-        else if (request.notificationType() == NotificationType.PROCESSOR_CHANGED) {
-            payload = makeProcessorChangeBlock(request);
-        }
-        else if (request.notificationType() == NotificationType.STATUS_SWITCHED) {
-            payload = makeTaskStatusBlock(request);
-        }
-        else {
-            payload = makeCommentBlock(request);
-        }
-        return payload;
+    public String makeObjectBlock(PushNotificationTemplate request){
+        String taskDetailUrl = "https://www.naver.com";
+        return switch (request.notificationType()) {
+            case TASK_REQUESTED -> makeTaskRequestBlock(request, taskDetailUrl);
+            case STATUS_SWITCHED -> makeTaskStatusBlock(request, taskDetailUrl);
+            case PROCESSOR_CHANGED -> makeProcessorChangeBlock(request, taskDetailUrl);
+            case PROCESSOR_ASSIGNED -> makeNewProcessorBlock(request, taskDetailUrl);
+            case COMMENT -> makeCommentBlock(request, taskDetailUrl);
+            default -> null;
+        };
     }
 
-    private String makeTaskRequestBlock(SendWebhookRequest request) {
-        // Blocks 데이터 생성
+    private String makeTaskRequestBlock(PushNotificationTemplate request, String taskDetailUrl) {
         Object[] blocks = new Object[]{
-                // Header 블록
                 Map.of(
                         "type", "header",
                         "text", "TaskFlow 작업 요청 알림",
                         "style", "blue"
                 ),
-                // Text 블록 1
                 Map.of(
                         "type", "text",
                         "text", "TaskFlow 작업 요청 알림",
@@ -56,7 +44,6 @@ public class KakaoWorkBlockBuilder {
                                 )
                         }
                 ),
-                // Text 블록 2: 제목 변수 사용
                 Map.of(
                         "type", "text",
                         "text", "TaskFlow 작업 요청 알림",
@@ -68,7 +55,6 @@ public class KakaoWorkBlockBuilder {
                                 )
                         }
                 ),
-                // Text 블록 3: 요청자 변수 사용
                 Map.of(
                         "type", "text",
                         "text", "TaskFlow 작업 요청 알림",
@@ -80,7 +66,6 @@ public class KakaoWorkBlockBuilder {
                                 )
                         }
                 ),
-                // Button 블록
                 Map.of(
                         "type", "button",
                         "text", "확인하기",
@@ -88,7 +73,7 @@ public class KakaoWorkBlockBuilder {
                         "action", Map.of(
                                 "type", "open_system_browser",
                                 "name", "button1",
-                                "value", "http://example.com/details/999"
+                                "value", taskDetailUrl
                         )
                 )
         };
@@ -97,7 +82,7 @@ public class KakaoWorkBlockBuilder {
         try {
             payload = "{" +
                     "\"email\":\"" + request.email() + "\"," +
-                    "\"text\": \"신규 작업 요청 알림\"," + // fallback 메시지
+                    "\"text\": \"신규 작업 요청 알림\"," +
                     "\"blocks\":" + objectMapper.writeValueAsString(blocks) +
                     "}";
         } catch (JsonProcessingException e) {
@@ -107,7 +92,7 @@ public class KakaoWorkBlockBuilder {
         return payload;
     }
 
-    private String makeNewProcessorBlock(SendWebhookRequest request) {
+    private String makeNewProcessorBlock(PushNotificationTemplate request, String taskDetailUrl) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -154,7 +139,7 @@ public class KakaoWorkBlockBuilder {
                         "action", Map.of(
                                 "type", "open_system_browser",
                                 "name", "button1",
-                                "value", "http://example.com/details/999"
+                                "value", taskDetailUrl
                         )
                 )
         };
@@ -163,7 +148,7 @@ public class KakaoWorkBlockBuilder {
         try {
             payload = "{" +
                         "\"email\":\"" + request.email() + "\"," +
-                        "\"text\":\"작업 담당자 선정 알림\"," + // fallback 메시지
+                        "\"text\":\"작업 담당자 선정 알림\"," +
                         "\"blocks\":" + objectMapper.writeValueAsString(blocks) +
                         "}";
         } catch (JsonProcessingException e) {
@@ -173,7 +158,7 @@ public class KakaoWorkBlockBuilder {
         return payload;
     }
 
-    private String makeProcessorChangeBlock(SendWebhookRequest request) {
+    private String makeProcessorChangeBlock(PushNotificationTemplate request, String taskDetailUrl) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -220,7 +205,7 @@ public class KakaoWorkBlockBuilder {
                         "action", Map.of(
                                 "type", "open_system_browser",
                                 "name", "button1",
-                                "value", "http://example.com/details/999"
+                                "value", taskDetailUrl
                         )
                 )
         };
@@ -229,7 +214,7 @@ public class KakaoWorkBlockBuilder {
         try {
             payload = "{" +
                     "\"email\":\"" + request.email() + "\"," +
-                    "\"text\":\"작업 담당자 변경 알림\"," + // fallback 메시지
+                    "\"text\":\"작업 담당자 변경 알림\"," +
                     "\"blocks\":" + objectMapper.writeValueAsString(blocks) +
                     "}";
         } catch (JsonProcessingException e) {
@@ -240,7 +225,7 @@ public class KakaoWorkBlockBuilder {
         return payload;
     }
 
-    private String makeCommentBlock(SendWebhookRequest request) {
+    private String makeCommentBlock(PushNotificationTemplate request, String taskDetailUrl) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -298,7 +283,7 @@ public class KakaoWorkBlockBuilder {
                         "action", Map.of(
                                 "type", "open_system_browser",
                                 "name", "button1",
-                                "value", "http://example.com/details/999"
+                                "value", taskDetailUrl
                         )
                 )
         };
@@ -307,7 +292,7 @@ public class KakaoWorkBlockBuilder {
         try {
             payload = "{" +
                     "\"email\":\"" + request.email() + "\"," +
-                    "\"text\":\"댓글 알림\"," + // fallback 메시지
+                    "\"text\":\"댓글 알림\"," +
                     "\"blocks\":" + objectMapper.writeValueAsString(blocks) +
                     "}";
         } catch (JsonProcessingException e) {
@@ -317,7 +302,7 @@ public class KakaoWorkBlockBuilder {
         return payload;
     }
 
-    private String makeTaskStatusBlock(SendWebhookRequest request) {
+    private String makeTaskStatusBlock(PushNotificationTemplate request, String taskDetailUrl) {
         Object[] blocks = new Object[]{
                 Map.of(
                         "type", "header",
@@ -364,7 +349,7 @@ public class KakaoWorkBlockBuilder {
                         "action", Map.of(
                                 "type", "open_system_browser",
                                 "name", "button1",
-                                "value", "http://example.com/details/999"
+                                "value", taskDetailUrl
                         )
                 )
         };
@@ -373,7 +358,7 @@ public class KakaoWorkBlockBuilder {
         try {
             payload = "{" +
                     "\"email\":\"" + request.email() + "\"," +
-                    "\"text\":\"작업 상태 변경 알림\"," + // fallback 메시지
+                    "\"text\":\"작업 상태 변경 알림\"," +
                     "\"blocks\":" + objectMapper.writeValueAsString(blocks) +
                     "}";
         } catch (JsonProcessingException e) {

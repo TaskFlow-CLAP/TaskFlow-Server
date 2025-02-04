@@ -21,11 +21,11 @@ public class LoginLogAdapter implements LoadLoginLogPort, CommandLoginLogPort {
 		loginLogRepository.save(loginLogEntity);
 	}
 
-	public void deleteById(String sessionId) {
-		loginLogRepository.deleteById(sessionId);
+	public void deleteById(String clientIp) {
+		loginLogRepository.deleteById(clientIp);
 	}
 
-	public Optional<LoginLog> findBySessionId(String sessionId) {
-		return loginLogRepository.findById(sessionId).map(loginLogMapper::toDomain);
+	public Optional<LoginLog> findByClientIp(String clientIp) {
+		return loginLogRepository.findById(clientIp).map(loginLogMapper::toDomain);
 	}
 }

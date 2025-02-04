@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,12 +63,6 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public Slice<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, Pageable pageable) {
-        Slice<TaskEntity> tasks = taskRepository.findTasksWithTaskStatusAndCompletedAt(processorId, statuses, untilDate, pageable);
-        return tasks.map(taskPersistenceMapper::toDomain);
-    }
-
-    @Override
     public Optional<Task> findByIdAndStatus(Long id, TaskStatus status) {
         Optional<TaskEntity> taskEntity = taskRepository.findByTaskIdAndTaskStatus(id, status);
         return taskEntity.map(taskPersistenceMapper::toDomain);
@@ -86,29 +81,34 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public Optional<Task> findPrevOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
-        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderDesc(processorId, taskStatus, processorOrder);
+    public Optional<Task> findPrevOrderTaskByProcessorOrderAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
+        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderAsc(processorId, taskStatus, processorOrder);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Optional<Task> findNextOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
-        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderDesc(processorId, taskStatus, processorOrder);
+    public Optional<Task> findNextOrderTaskByProcessorOrderAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
+        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderAsc(processorId, taskStatus, processorOrder);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Slice<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, FilterTaskBoardRequest request, Pageable pageable) {
-        List<Task> taskList = new java.util.ArrayList<>(taskRepository.findTasksByFilter(processorId, statuses, untilDate, request, pageable)
+    public Optional<Task> findPrevOrderTaskByTaskIdAndStatus(Long processorId, TaskStatus taskStatus, Long taskId) {
+        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndTaskIdLessThanOrderByTaskIdDesc(processorId, taskStatus, taskId);
+        return taskEntity.map(taskPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Task> findNextOrderTaskByTaskIdAndStatus(Long processorId, TaskStatus taskStatus, Long taskId) {
+        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndTaskIdGreaterThanOrderByTaskIdAsc(processorId, taskStatus, taskId);
+        return taskEntity.map(taskPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime fromDate, FilterTaskBoardRequest request) {
+        return  taskRepository.findTasksByFilter(processorId, statuses, fromDate, request)
                 .stream()
-                .map(taskPersistenceMapper::toDomain)
-                .toList());
-
-        boolean hasNext = taskList.size() > pageable.getPageSize();
-        if (hasNext) {
-            taskList.remove(taskList.size() - 1);
-        }
-        return new SliceImpl<>(taskList, pageable, hasNext);
+                .map(taskPersistenceMapper::toDomain).toList();
     }
 
     @Override

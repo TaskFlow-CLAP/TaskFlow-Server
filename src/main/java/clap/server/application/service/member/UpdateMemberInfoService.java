@@ -1,11 +1,11 @@
 package clap.server.application.service.member;
 
-import clap.server.adapter.inbound.web.dto.member.UpdateMemberInfoRequest;
+import clap.server.adapter.inbound.web.dto.member.request.UpdateMemberInfoRequest;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.member.UpdateMemberInfoUsecase;
 import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.common.constants.FilePathConstants;
+import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.common.utils.FileUtils;
 import clap.server.domain.model.member.Member;
 import clap.server.exception.ApplicationException;
@@ -29,7 +29,7 @@ class UpdateMemberInfoService implements UpdateMemberInfoUsecase {
             throw new ApplicationException(FileErrorcode.UNSUPPORTED_FILE_TYPE);
         }
         Member member = memberService.findActiveMember(memberId);
-        String profileImageUrl = s3UploadPort.uploadSingleFile(FilePathConstants.MEMBER_IMAGE, profileImage);
+        String profileImageUrl = s3UploadPort.uploadSingleFile(FilePathPolicy.MEMBER_IMAGE, profileImage);
         member.updateMemberInfo(request.name(), request.agitNotification(), request.emailNotification(),
                 request.kakaoWorkNotification(), profileImageUrl);
     }

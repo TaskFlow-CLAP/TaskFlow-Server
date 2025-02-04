@@ -1,7 +1,7 @@
 package clap.server.adapter.inbound.web.admin;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.admin.UpdateMemberRequest;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
+import clap.server.adapter.inbound.web.dto.admin.request.UpdateMemberRequest;
 import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;

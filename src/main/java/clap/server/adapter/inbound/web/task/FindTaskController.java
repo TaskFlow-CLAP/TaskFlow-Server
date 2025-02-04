@@ -1,14 +1,17 @@
 package clap.server.adapter.inbound.web.task;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.response.*;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.task.FindTaskDetailsUsecase;
 import clap.server.application.port.inbound.task.FindTaskListUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
+import clap.server.common.annotation.log.LogType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
@@ -28,12 +31,13 @@ public class FindTaskController {
     private final FindTaskListUsecase taskListUsecase;
 
     @Operation(summary = "사용자 요청 작업 목록 조회")
+    @LogType(LogStatus.TASK_VIEWED)
     @Secured({"ROLE_USER", "ROLE_MANAGER"})
     @GetMapping("/requests")
     public ResponseEntity<PageResponse<FilterRequestedTasksResponse>> findTasksRequestedByUser(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @ModelAttribute FilterTaskListRequest filterTaskListRequest,
+            @ModelAttribute @Valid FilterTaskListRequest filterTaskListRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         Pageable pageable = PageRequest.of(page, pageSize);
         return ResponseEntity.ok(taskListUsecase.findTasksRequestedByUser(userInfo.getUserId(), pageable, filterTaskListRequest));
@@ -54,7 +58,7 @@ public class FindTaskController {
     public ResponseEntity<PageResponse<FilterAssignedTaskListResponse>> findTasksAssignedByManager(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @ModelAttribute FilterTaskListRequest filterTaskListRequest,
+            @ModelAttribute @Valid FilterTaskListRequest filterTaskListRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         Pageable pageable = PageRequest.of(page, pageSize);
         return ResponseEntity.ok(taskListUsecase.findTasksAssignedByManager(userInfo.getUserId(), pageable, filterTaskListRequest));
@@ -66,7 +70,7 @@ public class FindTaskController {
     public ResponseEntity<PageResponse<FilterPendingApprovalResponse>> findPendingApprovalTasks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @ModelAttribute FilterTaskListRequest filterTaskListRequest,
+            @ModelAttribute @Valid FilterTaskListRequest filterTaskListRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         Pageable pageable = PageRequest.of(page, pageSize);
         return ResponseEntity.ok(taskListUsecase.findPendingApprovalTasks(userInfo.getUserId(), pageable, filterTaskListRequest));
@@ -78,7 +82,7 @@ public class FindTaskController {
     public ResponseEntity<PageResponse<FilterAllTasksResponse>> findAllTasks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
-            @ModelAttribute FilterTaskListRequest filterTaskListRequest,
+            @ModelAttribute @Valid FilterTaskListRequest filterTaskListRequest,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
         Pageable pageable = PageRequest.of(page, pageSize);
         return ResponseEntity.ok(taskListUsecase.findAllTasks(userInfo.getUserId(), pageable, filterTaskListRequest));

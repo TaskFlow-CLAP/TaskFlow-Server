@@ -16,12 +16,10 @@ public record ApprovalTaskRequest(
                 example = "2")
         Long processorId,
 
-        @NotNull
         @Schema(description = "마감 기한",
                 example = "2025-02-10T15:30:00")
         LocalDateTime dueDate,
 
-        @NotNull
         @Schema(description = "라벨 ID",
                 example = "1")
         Long labelId

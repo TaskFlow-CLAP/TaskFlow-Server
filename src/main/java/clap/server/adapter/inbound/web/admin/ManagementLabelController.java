@@ -1,8 +1,8 @@
 package clap.server.adapter.inbound.web.admin;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.label.CreateLabelRequest;
-import clap.server.adapter.inbound.web.dto.label.EditLabelRequest;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
+import clap.server.adapter.inbound.web.dto.label.request.CreateLabelRequest;
+import clap.server.adapter.inbound.web.dto.label.request.EditLabelRequest;
 import clap.server.application.port.inbound.label.AddLabelUsecase;
 import clap.server.application.port.inbound.admin.DeleteLabelUsecase;
 import clap.server.application.port.inbound.label.UpdateLabelUsecase;

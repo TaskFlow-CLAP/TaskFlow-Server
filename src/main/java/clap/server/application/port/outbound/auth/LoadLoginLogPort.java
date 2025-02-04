@@ -5,5 +5,5 @@ import clap.server.domain.model.auth.LoginLog;
 import java.util.Optional;
 
 public interface LoadLoginLogPort {
-    Optional<LoginLog> findBySessionId(String sessionId);
+    Optional<LoginLog> findByClientIp(String clientIp);
 }

@@ -1,6 +1,6 @@
 package clap.server.application.port.inbound.admin;
 
-import clap.server.adapter.inbound.web.dto.admin.FindSubCategoryResponse;
+import clap.server.adapter.inbound.web.dto.admin.response.FindSubCategoryResponse;
 
 import java.util.List;
 

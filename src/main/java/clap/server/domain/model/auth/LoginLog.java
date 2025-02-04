@@ -11,41 +11,45 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LoginLog {
-	private String sessionId;
 	private String clientIp;
 	private String attemptNickname;
 	private LocalDateTime lastAttemptAt;
-	private int attemptCount;
+	private int failedCount;
 	private boolean isLocked;
 
 	@Builder
-	private LoginLog(String sessionId, String clientIp, String attemptNickname, LocalDateTime lastAttemptAt,
-					 int attemptCount, boolean isLocked) {
-		this.sessionId = sessionId;
+	private LoginLog(String clientIp, String attemptNickname, LocalDateTime lastAttemptAt,
+					 int failedCount, boolean isLocked) {
 		this.clientIp = clientIp;
 		this.attemptNickname = attemptNickname;
 		this.lastAttemptAt = lastAttemptAt;
-		this.attemptCount = attemptCount;
+		this.failedCount = failedCount;
 		this.isLocked = isLocked;
 	}
 
-	public static LoginLog createLoginLog(String sessionId, String clientIp, String attemptNickname) {
+	public static LoginLog createLoginLog(String clientIp, String attemptNickname) {
 		return LoginLog.builder()
-				.sessionId(sessionId)
 				.clientIp(clientIp)
 				.attemptNickname(attemptNickname)
 				.lastAttemptAt(LocalDateTime.now())
-				.attemptCount(1)
+				.failedCount(1)
 				.isLocked(false)
 				.build();
 	}
 
 	public int recordFailedAttempt() {
-		this.attemptCount++;
-		return this.attemptCount;
+		this.failedCount++;
+		return this.failedCount;
 	}
 
 	public void setLocked(boolean locked) {
 		isLocked = locked;
+	}
+
+	public String toSummaryString() {
+			return "{" +
+					", failedCount=" + failedCount +
+					", isLocked=" + isLocked +
+					'}';
 	}
 }

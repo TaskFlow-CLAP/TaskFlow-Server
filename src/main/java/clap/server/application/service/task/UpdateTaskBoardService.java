@@ -1,24 +1,30 @@
 package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskOrderRequest;
+import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.UpdateTaskBoardUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskOrderAndStatusUsecase;
-import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
-import clap.server.domain.policy.task.TaskOrderCalculationPolicy;
-import clap.server.domain.policy.task.ProcessorValidationPolicy;
+import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
+import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;
-import clap.server.domain.policy.task.TaskValuePolicy;
+import clap.server.domain.model.task.TaskHistory;
+import clap.server.domain.policy.task.ProcessorValidationPolicy;
+import clap.server.domain.policy.task.TaskOrderCalculationPolicy;
+import clap.server.domain.policy.task.TaskPolicyConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @ApplicationService
@@ -27,7 +33,9 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     private final MemberService memberService;
     private final TaskService taskService;
     private final LoadTaskPort loadTaskPort;
-    private final CommandTaskPort commandTaskPort;
+    private final SendNotificationService sendNotificationService;
+    private final CommandTaskHistoryPort commandTaskHistoryPort;
+
     private final TaskOrderCalculationPolicy taskOrderCalculationPolicy;
     private final ProcessorValidationPolicy processorValidationPolicy;
 
@@ -52,17 +60,17 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
 
         // 가장 상위로 이동
         if (request.prevTaskId() == 0) {
-            Task nextTask = findByIdAndStatus(request.targetTaskId(), targetTask.getTaskStatus());
+            Task nextTask = findByIdAndStatus(request.nextTaskId(), targetTask.getTaskStatus());
             // 해당 상태에서 바로 앞에 있는 작업 찾기
-            Task prevTask = loadTaskPort.findPrevOrderTaskByProcessorIdAndStatus(processorId, targetTask.getTaskStatus(), nextTask.getProcessorOrder()).orElse(null);
-            long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(targetTask, nextTask);
+            Task prevTask = loadTaskPort.findPrevOrderTaskByProcessorOrderAndStatus(processorId, targetTask.getTaskStatus(), nextTask.getProcessorOrder()).orElse(null);
+            long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(prevTask, nextTask);
             updateNewTaskOrder(targetTask, newOrder);
         }
         // 가장 하위로 이동
         else if (request.nextTaskId() == 0) {
-            Task prevTask = findByIdAndStatus(request.targetTaskId(), targetTask.getTaskStatus());
+            Task prevTask = findByIdAndStatus(request.prevTaskId(), targetTask.getTaskStatus());
             // 해당 상태에서 바로 뒤에 있는 작업 찾기
-            Task nextTask = loadTaskPort.findNextOrderTaskByProcessorIdAndStatus(processorId, targetTask.getTaskStatus(), prevTask.getProcessorOrder()).orElse(null);
+            Task nextTask = loadTaskPort.findNextOrderTaskByProcessorOrderAndStatus(processorId, targetTask.getTaskStatus(), prevTask.getProcessorOrder()).orElse(null);
             long newOrder = taskOrderCalculationPolicy.calculateOrderForBottom(prevTask, nextTask);
             updateNewTaskOrder(targetTask, newOrder);
         } else {
@@ -81,7 +89,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
      */
     private void updateNewTaskOrder(Task targetTask, Long newOrder) {
         targetTask.updateProcessorOrder(newOrder);
-        commandTaskPort.save(targetTask);
+        taskService.upsert(targetTask);
     }
 
     /**
@@ -99,48 +107,88 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
         Task targetTask = taskService.findById(request.targetTaskId());
         processorValidationPolicy.validateProcessor(processorId, targetTask);
 
-        if (request.prevTaskId() == 0) {
-            Task nextTask = findByIdAndStatus(request.targetTaskId(), targetStatus);
+        Task updatedTask;
+        Task prevTask;
+        Task nextTask;
+
+        // 조회된 작업 보드에서 하나의 작업만 존재하고, 이 작업을 이동할 때
+        if (request.prevTaskId() == 0 && request.nextTaskId() == 0) {
+
+            // 요청 시간 기준으로 가장 가장 근접한 이전의 Task를 조회
+            prevTask = loadTaskPort.findPrevOrderTaskByTaskIdAndStatus(processorId, targetStatus, targetTask.getTaskId()).orElse(null);
+            if (prevTask != null) {
+                // 이전 Task가 있다면 바로 다음의 Task 조회
+                nextTask = loadTaskPort.findNextOrderTaskByProcessorOrderAndStatus(processorId, targetStatus, prevTask.getProcessorOrder()).orElse(null);
+            } // 요청 시간 기준으로 가장 가장 근접한 이후의 Task를 조회
+            else
+                nextTask = loadTaskPort.findNextOrderTaskByTaskIdAndStatus(processorId, targetStatus, targetTask.getTaskId()).orElse(null);
+
+            // 하나의 task만 존재할 경우 상태만 update
+            if (prevTask == null && nextTask == null) {
+                targetTask.updateTaskStatus(targetStatus);
+                updatedTask = taskService.upsert(targetTask);
+            } else if (prevTask == null) {
+                long newOrder = taskOrderCalculationPolicy.calculateOrderForBottom(null, nextTask);
+                updatedTask = updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
+            } else if (nextTask == null) {
+                long newOrder = taskOrderCalculationPolicy.calculateOrderForBottom(prevTask, null);
+                updatedTask = updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
+            } else {
+                long newOrder = taskOrderCalculationPolicy.calculateNewProcessorOrder(prevTask.getProcessorOrder(), nextTask.getProcessorOrder());
+                updatedTask = updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
+            }
+        } else if (request.prevTaskId() == 0) {
+            nextTask = findByIdAndStatus(request.nextTaskId(), targetStatus);
             // 해당 상태에서 바로 앞 있는 작업 찾기
-            Task prevTask = loadTaskPort.findPrevOrderTaskByProcessorIdAndStatus(processorId, targetStatus, nextTask.getProcessorOrder()).orElse(null);
-            long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(prevTask,nextTask);
-            updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
+            prevTask = loadTaskPort.findPrevOrderTaskByProcessorOrderAndStatus(processorId, targetStatus, nextTask.getProcessorOrder()).orElse(null);
+            long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(prevTask, nextTask);
+            updatedTask = updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
         } else if (request.nextTaskId() == 0) {
-            Task prevTask = findByIdAndStatus(request.targetTaskId(), targetStatus);
+            prevTask = findByIdAndStatus(request.prevTaskId(), targetStatus);
             // 해당 상태에서 바로 뒤에 있는 작업 찾기
-            Task nextTask = loadTaskPort.findNextOrderTaskByProcessorIdAndStatus(processorId, targetStatus, prevTask.getProcessorOrder()).orElse(null);
+            nextTask = loadTaskPort.findNextOrderTaskByProcessorOrderAndStatus(processorId, targetStatus, prevTask.getProcessorOrder()).orElse(null);
             long newOrder = taskOrderCalculationPolicy.calculateOrderForBottom(prevTask, nextTask);
-            updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
+            updatedTask = updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
         } else {
-            Task prevTask = findByIdAndStatus(request.prevTaskId(), targetStatus);
-            Task nextTask = findByIdAndStatus(request.nextTaskId(), targetStatus);
-            long newOrder = taskOrderCalculationPolicy.calculateNewProcessorOrder(nextTask.getProcessorOrder(), prevTask.getProcessorOrder());
-            updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
+            prevTask = findByIdAndStatus(request.prevTaskId(), targetStatus);
+            nextTask = findByIdAndStatus(request.nextTaskId(), targetStatus);
+            long newOrder = taskOrderCalculationPolicy.calculateNewProcessorOrder(prevTask.getProcessorOrder(), nextTask.getProcessorOrder());
+            updatedTask = updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
         }
+
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, updatedTask, targetStatus.getDescription(), null,null);
+        commandTaskHistoryPort.save(taskHistory);
+        //TODO: 최종 단계에서 주석 처리 해제
+        //publishNotification(targetTask, NotificationType.STATUS_SWITCHED, String.valueOf(updatedTask.getTaskStatus()));
     }
 
     /**
      * 작업의 상태와 순서를 업데이트하는 메서드
      */
-    private void updateNewTaskOrderAndStatus(TaskStatus targetStatus, Task targetTask, long newOrder) {
+    private Task updateNewTaskOrderAndStatus(TaskStatus targetStatus, Task targetTask, long newOrder) {
         targetTask.updateProcessorOrder(newOrder);
         targetTask.updateTaskStatus(targetStatus);
-        commandTaskPort.save(targetTask);
+        return taskService.upsert(targetTask);
     }
 
     /**
      * 순서 변경 요청의 유효성을 검증하는 메서드
      */
     public void validateRequest(UpdateTaskOrderRequest request, TaskStatus targetStatus) {
-        // 이전 및 다음 작업 ID가 모두 0인 경우 예외 발생
-        if (request.prevTaskId() == 0 && request.nextTaskId() == 0) {
-            throw new ApplicationException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
-        }
-
         // 타겟 상태가 유효한지 검증
-        if (targetStatus != null && !TaskValuePolicy.TASK_BOARD_STATUS_FILTER.contains(targetStatus)) {
+        if (targetStatus != null && !TaskPolicyConstants.TASK_BOARD_STATUS_FILTER.contains(targetStatus)) {
             throw new ApplicationException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
         }
+    }
+
+    private void publishNotification(Task task, NotificationType notificationType, String message) {
+        List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
+        receivers.forEach(receiver -> {
+            sendNotificationService.sendPushNotification(receiver, notificationType,
+                    task, message, null);
+        });
+        sendNotificationService.sendAgitNotification(notificationType,
+                task, message, null);
     }
 
 }

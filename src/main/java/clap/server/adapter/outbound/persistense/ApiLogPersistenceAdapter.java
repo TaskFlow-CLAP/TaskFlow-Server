@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.log.FilterLogRequest;
+import clap.server.adapter.inbound.web.dto.log.request.FilterLogRequest;
 
 import clap.server.adapter.outbound.persistense.mapper.ApiLogPersistenceMapper;
 import clap.server.adapter.outbound.persistense.mapper.MemberPersistenceMapper;
@@ -16,6 +16,7 @@ import clap.server.domain.model.log.MemberLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @PersistenceAdapter
@@ -28,6 +29,7 @@ public class ApiLogPersistenceAdapter implements CommandLogPort, LoadLogPort {
     private final ApiLogPersistenceMapper apiLogPersistenceMapper;
     private final MemberPersistenceMapper memberPersistenceMapper;
 
+    @Transactional
     @Override
     public void saveMemberLog(MemberLog memberLog) {
         apiLogRepository.save(apiLogPersistenceMapper.mapMemberLogToEntity(memberLog, memberPersistenceMapper.toEntity(memberLog.getMember())));

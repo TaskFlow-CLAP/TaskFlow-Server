@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
+import clap.server.adapter.inbound.web.dto.admin.request.FindMemberRequest;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
@@ -101,9 +101,8 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
-    public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest) {
-        return memberRepository.findMembersWithFilter(pageable, filterRequest).map(memberPersistenceMapper::toDomain);
-
+    public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest, String sortDirection) {
+        return memberRepository.findMembersWithFilter(pageable, filterRequest,sortDirection).map(memberPersistenceMapper::toDomain);
     }
 }
 

@@ -1,6 +1,6 @@
 package clap.server.application.service.auth;
 
-import clap.server.adapter.inbound.web.dto.auth.ReissueTokenResponse;
+import clap.server.adapter.inbound.web.dto.auth.response.ReissueTokenResponse;
 import clap.server.application.port.inbound.auth.ReissueTokenUsecase;
 import clap.server.application.port.outbound.auth.CommandRefreshTokenPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -11,7 +11,7 @@ import clap.server.exception.code.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import static clap.server.application.mapper.response.AuthResponseMapper.toReissueTokenResponse;
+import static clap.server.application.mapper.AuthResponseMapper.toReissueTokenResponse;
 
 @ApplicationService
 @RequiredArgsConstructor

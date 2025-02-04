@@ -1,18 +1,19 @@
 package clap.server.adapter.outbound.persistense.repository.task;
 
-import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
-import com.querydsl.core.types.dsl.CaseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,7 +33,6 @@ import static com.querydsl.core.types.Order.DESC;
 public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final EntityManager entityManager;
 
     @Override
     public Page<TaskEntity> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
@@ -175,32 +175,37 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     }
 
     @Override
-    public List<TaskEntity> findTasksByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request, Pageable pageable) {
+    public List<TaskEntity> findTasksByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request) {
         BooleanBuilder builder = createTaskBoardFilter(processorId, statuses, untilDateTime, request);
         return queryFactory
                 .selectFrom(taskEntity)
                 .where(builder)
                 .orderBy(taskEntity.processorOrder.asc())
-                .limit(pageable.getPageSize() + 1)
-                .offset(pageable.getOffset())
                 .fetch();
     }
 
-    private BooleanBuilder createTaskBoardFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request) {
+    private BooleanBuilder createTaskBoardFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime fromDateTime, FilterTaskBoardRequest request) {
         BooleanBuilder builder = new BooleanBuilder();
 
         builder.and(taskEntity.processor.memberId.eq(processorId));
         builder.and(taskEntity.taskStatus.in(statuses));
-        builder.and(taskEntity.finishedAt.isNull().or(taskEntity.finishedAt.loe(untilDateTime)));
+
+        if (fromDateTime != null) {
+            builder.and(taskEntity.taskStatus.ne(TaskStatus.COMPLETED)
+                    .or(taskEntity.taskStatus.eq(TaskStatus.COMPLETED)
+                            .and(taskEntity.finishedAt.goe(fromDateTime))));
+        }
 
         if (request.labelId() != null) {
             builder.and(taskEntity.label.labelId.eq(request.labelId()));
         }
-        if (request.mainCategoryId() != null) {
-            builder.and(taskEntity.category.mainCategory.categoryId.eq(request.mainCategoryId()));
+        if (!request.mainCategoryIds().isEmpty()) {
+            builder.and(taskEntity.category.mainCategory.categoryId.in(request.mainCategoryIds())
+                    .and(taskEntity.category.mainCategory.isDeleted.eq(false)));
         }
-        if (request.subCategoryId() != null) {
-            builder.and(taskEntity.category.categoryId.eq(request.subCategoryId()));
+        if (!request.categoryIds().isEmpty()) {
+            builder.and(taskEntity.category.categoryId.in(request.categoryIds())
+                    .and(taskEntity.category.isDeleted.eq(false)));
         }
         if (request.title() != null && !request.title().isEmpty()) {
             String titleFilter = "%" + request.title() + "%";

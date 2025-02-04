@@ -4,6 +4,7 @@ import clap.server.adapter.outbound.jwt.JwtClaims;
 import clap.server.adapter.outbound.jwt.access.AccessTokenClaimKeys;
 import clap.server.application.port.outbound.auth.ForbiddenTokenPort;
 import clap.server.application.port.outbound.auth.JwtProvider;
+import clap.server.exception.AuthException;
 import clap.server.exception.JwtException;
 import clap.server.exception.code.AuthErrorCode;
 import io.jsonwebtoken.Claims;
@@ -27,12 +28,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+
+import static clap.server.adapter.inbound.security.WebSecurityUrl.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String TEMPORARY_TOKEN_ALLOWED_ENDPOINT = "/api/members/initial-password";
     private final UserDetailsService securityUserDetailsService;
     private final JwtProvider accessTokenProvider;
     private final JwtProvider temporaryTokenProvider;

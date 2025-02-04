@@ -18,6 +18,6 @@ public interface TaskCustomRepository {
     List<TeamTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter);
     Page<TaskEntity> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
     Page<TaskEntity> findAllTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
-    List<TaskEntity> findTasksByFilter(Long processorId, List<TaskStatus> statuses,  LocalDateTime localDateTime, FilterTaskBoardRequest request, Pageable pageable);
+    List<TaskEntity> findTasksByFilter(Long processorId, List<TaskStatus> statuses,  LocalDateTime localDateTime, FilterTaskBoardRequest request);
     Page<TaskEntity> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
 }
