@@ -12,18 +12,16 @@ public class TaskOrderCalculationPolicy {
 
     public long calculateOrderForTop(Task prevTask, Task nextTask) {
         Long prevTaskOrder = prevTask == null ? null : prevTask.getProcessorOrder();
-        if (prevTaskOrder == null){
+        if (prevTaskOrder == null) {
             return nextTask.getProcessorOrder() - DEFAULT_PROCESSOR_ORDER_GAP;
-        }
-        return calculateNewProcessorOrder(prevTaskOrder, nextTask.getProcessorOrder());
+        } else return calculateNewProcessorOrder(prevTaskOrder, nextTask.getProcessorOrder());
     }
 
     public long calculateOrderForBottom(Task prevTask, Task nextTask) {
         Long nextTaskOrder = nextTask == null ? null : nextTask.getProcessorOrder();
-        if (nextTaskOrder == null){
+        if (nextTaskOrder == null) {
             return prevTask.getProcessorOrder() + DEFAULT_PROCESSOR_ORDER_GAP;
-        }
-        return calculateNewProcessorOrder(prevTask.getProcessorOrder(), nextTaskOrder);
+        } else return calculateNewProcessorOrder(prevTask.getProcessorOrder(), nextTaskOrder);
     }
 
     public long calculateNewProcessorOrder(Long prevTaskOrder, Long nextTaskOrder) {
