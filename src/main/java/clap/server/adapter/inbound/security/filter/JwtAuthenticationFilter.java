@@ -49,7 +49,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NotNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            if (Arrays.asList(PUBLIC_ENDPOINTS).contains(request.getRequestURI())) {
+            if (Arrays.asList(PUBLIC_ENDPOINTS).contains(request.getRequestURI()) ||
+                    Arrays.asList(SWAGGER_ENDPOINTS).contains(request.getRequestURI())) {
                 filterChain.doFilter(request, response);
                 return;
             }
