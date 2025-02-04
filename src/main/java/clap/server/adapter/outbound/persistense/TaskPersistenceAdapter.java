@@ -81,14 +81,26 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public Optional<Task> findPrevOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
-        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderDesc(processorId, taskStatus, processorOrder);
+    public Optional<Task> findPrevOrderTaskByProcessorOrderAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
+        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderAsc(processorId, taskStatus, processorOrder);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Optional<Task> findNextOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
-        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderDesc(processorId, taskStatus, processorOrder);
+    public Optional<Task> findNextOrderTaskByProcessorOrderAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
+        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderAsc(processorId, taskStatus, processorOrder);
+        return taskEntity.map(taskPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Task> findPrevOrderTaskByTaskIdAndStatus(Long processorId, TaskStatus taskStatus, Long taskId) {
+        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndTaskIdLessThanOrderByTaskIdDesc(processorId, taskStatus, taskId);
+        return taskEntity.map(taskPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Task> findNextOrderTaskByTaskIdAndStatus(Long processorId, TaskStatus taskStatus, Long taskId) {
+        Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndTaskIdGreaterThanOrderByTaskIdAsc(processorId, taskStatus, taskId);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
 

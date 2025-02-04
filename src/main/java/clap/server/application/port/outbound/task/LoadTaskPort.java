@@ -28,9 +28,13 @@ public interface LoadTaskPort {
 
     Optional<Task> findByIdAndStatus(Long id, TaskStatus status);
 
-    Optional<Task> findPrevOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder);
+    Optional<Task> findPrevOrderTaskByProcessorOrderAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder);
 
-    Optional<Task> findNextOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder);
+    Optional<Task> findNextOrderTaskByProcessorOrderAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder);
+
+    Optional<Task> findPrevOrderTaskByTaskIdAndStatus(Long processorId, TaskStatus taskStatus, Long taskId);
+
+    Optional<Task> findNextOrderTaskByTaskIdAndStatus(Long processorId, TaskStatus taskStatus, Long taskId);
 
     List<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request);
 

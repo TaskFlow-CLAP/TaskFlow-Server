@@ -24,7 +24,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
 
     @Query("select t from TaskEntity t join fetch t.processor p" +
             " where t.updatedAt between :updatedAtAfter and :updatedAtBefore")
-
     List<TaskEntity> findYesterdayTaskByUpdatedAtIsBetween(
             @Param("updatedAtAfter") LocalDateTime updatedAtAfter,
             @Param("updatedAtBefore") LocalDateTime updatedAtBefore
@@ -49,14 +48,17 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
 
     Optional<TaskEntity> findByTaskIdAndTaskStatus(Long id, TaskStatus status);
 
-    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderDesc(Long processorId, TaskStatus taskStatus, Long processorOrder);
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderAsc(Long processorId, TaskStatus taskStatus, Long processorOrder);
 
-    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderDesc(
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderAsc(
             Long processorId, TaskStatus taskStatus, Long processorOrder);
 
     @Query("SELECT t FROM TaskEntity t JOIN FETCH t.processor p WHERE (:memberId IS NULL OR p.memberId = :memberId) ")
     Page<TeamTaskResponse> findTeamStatus(@Param("memberId") Long memberId, FilterTeamStatusRequest filter, Pageable pageable);
 
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndTaskIdLessThanOrderByTaskIdDesc(Long processorId, TaskStatus taskStatus, Long taskId);
+
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndTaskIdGreaterThanOrderByTaskIdAsc(Long processorId, TaskStatus status, Long taskId);
 
 
 }
