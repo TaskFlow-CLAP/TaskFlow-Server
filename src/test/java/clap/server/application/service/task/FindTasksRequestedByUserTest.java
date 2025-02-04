@@ -3,8 +3,8 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.response.FilterRequestedTasksResponse;
-import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
+import clap.server.TestDataFactory;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.domain.model.member.Member;
@@ -36,57 +36,18 @@ class FindTasksRequestedByUserTest {
     private LoadTaskPort loadTaskPort;
     @InjectMocks
     private FindTaskListService findTaskListService;
-
-    private FilterTaskListRequest filterTaskListRequest;
-    private Member member;
+    private Member user;
     private Page<Task> taskPage;
     private Task task1, task2;
+    private Category category, mainCategory;
 
     @BeforeEach
     void setUp() {
-        member = new Member(1L, null, null,
-                true, false, true,
-                null, MemberStatus.ACTIVE, null
-        );
-        Category mainCategory = Category.builder()
-                .categoryId(1L)
-                .name("1차 카테고리")
-                .code("VM")
-                .isDeleted(false)
-                .descriptionExample("메인 카테고리 입니다.")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-        Category category = Category.builder()
-                .categoryId(2L)
-                .name("2차 카테고리")
-                .code("CR")
-                .isDeleted(false)
-                .descriptionExample("서브 카테고리 입니다.")
-                .mainCategory(mainCategory)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-        task1 = Task.builder()
-                .taskId(1L)
-                .taskCode("TC001")
-                .title("제목1")
-                .description("설명1")
-                .category(category)
-                .taskStatus(TaskStatus.REQUESTED)
-                .finishedAt(null)
-                .build();
-        task2 = Task.builder()
-                .taskId(2L)
-                .taskCode("TC002")
-                .title("제목2")
-                .description("설명2")
-                .category(category)
-                .taskStatus(TaskStatus.COMPLETED)
-                .finishedAt(LocalDateTime.of(2025,2,4,11,30,11))
-                .build();
-
-        filterTaskListRequest = new FilterTaskListRequest(null, List.of(), List.of(), "", "", List.of(), "", "");
+        user = TestDataFactory.createUser();
+        mainCategory = TestDataFactory.createMainCategory();
+        category = TestDataFactory.createCategory(mainCategory);
+        task1 = TestDataFactory.createTask(1L, "TC001", "제목1", TaskStatus.REQUESTED, category,null, null);
+        task2 = TestDataFactory.createTask(2L, "TC002", "제목2", TaskStatus.COMPLETED, category, LocalDateTime.of(2025, 2, 4, 11, 30, 11), user);
         taskPage = new PageImpl<>(List.of(task1, task2));
     }
 
@@ -94,12 +55,14 @@ class FindTasksRequestedByUserTest {
     @DisplayName("요청한 작업 목록 조회")
     void findRequestedByUserTasks() {
         //given
+        Long userId = 4L;
         PageRequest pageable = PageRequest.of(0, 20);
-        when(memberService.findActiveMember(1L)).thenReturn(member);
-        when(loadTaskPort.findTasksRequestedByUser(1L, pageable, filterTaskListRequest))
+        FilterTaskListRequest filterTaskListRequest = new FilterTaskListRequest(null, List.of(), List.of(), "", "", List.of(), "", "");
+        when(memberService.findActiveMember(userId)).thenReturn(user);
+        when(loadTaskPort.findTasksRequestedByUser(userId, pageable, filterTaskListRequest))
                 .thenReturn(taskPage);
         //when
-        PageResponse<FilterRequestedTasksResponse> result = findTaskListService.findTasksRequestedByUser(member.getMemberId(), pageable, filterTaskListRequest);
+        PageResponse<FilterRequestedTasksResponse> result = findTaskListService.findTasksRequestedByUser(userId, pageable, filterTaskListRequest);
 
         //then
         assertThat(result.content()).hasSize(2)
@@ -121,15 +84,16 @@ class FindTasksRequestedByUserTest {
     @DisplayName("요청한 작업 목록 조회 - 카테고리 조건")
     void findRequestedByUserTasks_FilteredWithCategory() {
         // given
+        Long userId = 4L;
         PageRequest pageable = PageRequest.of(0, 20);
-        filterTaskListRequest = new FilterTaskListRequest(null, List.of(2L), List.of(), "", "", List.of(), "", "");
+        FilterTaskListRequest filterTaskListRequest = new FilterTaskListRequest(null, List.of(2L), List.of(), "", "", List.of(), "", "");
         taskPage = new PageImpl<>(List.of(task2));
-        when(memberService.findActiveMember(1L)).thenReturn(member);
-        when(loadTaskPort.findTasksRequestedByUser(1L, pageable, filterTaskListRequest))
+        when(memberService.findActiveMember(userId)).thenReturn(user);
+        when(loadTaskPort.findTasksRequestedByUser(user.getMemberId(), pageable, filterTaskListRequest))
                 .thenReturn(taskPage);
 
         // when
-        PageResponse<FilterRequestedTasksResponse> result = findTaskListService.findTasksRequestedByUser(member.getMemberId(), pageable, filterTaskListRequest);
+        PageResponse<FilterRequestedTasksResponse> result = findTaskListService.findTasksRequestedByUser(userId, pageable, filterTaskListRequest);
 
         // then
         assertThat(result.content()).hasSize(1);
