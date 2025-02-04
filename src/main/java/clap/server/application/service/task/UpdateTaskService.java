@@ -21,13 +21,12 @@ import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
-import clap.server.domain.policy.task.TaskPolicyConstants;
+import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +70,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Override
     @Transactional
-    public UpdateTaskResponse updateTaskState(Long memberId, Long taskId, UpdateTaskStatusRequest updateTaskStatusRequest) {
+    public UpdateTaskResponse updateTaskStatus(Long memberId, Long taskId, TaskStatus taskStatus) {
         memberService.findActiveMember(memberId);
         memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
