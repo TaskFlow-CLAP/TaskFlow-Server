@@ -43,10 +43,6 @@ public class FindMemberController {
             @RequestParam(defaultValue = "20") int pageSize,
             @ModelAttribute @Valid FindMemberRequest filterRequest) {
 
-        if (filterRequest.name() != null && filterRequest.name().trim().isEmpty()) {
-            throw ApplicationException.from(MemberErrorCode.NAME_CANNOT_BE_EMPTY);
-        }
-
         Pageable pageable = PageRequest.of(page, pageSize);
         PageResponse<RetrieveAllMemberResponse> response = findMembersWithFilterUsecase.findMembersWithFilter(pageable, filterRequest);
         return ResponseEntity.ok(response);
