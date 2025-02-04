@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import static clap.server.adapter.inbound.security.WebSecurityUrl.LOGIN_ENDPOINT;
 import static clap.server.common.constants.AuthConstants.SESSION_ID;
+import static clap.server.common.utils.ClientIpParseUtil.getClientIp;
 
 
 @RequiredArgsConstructor
@@ -30,13 +31,16 @@ public class LoginAttemptFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String sessionId = request.getHeader(SESSION_ID.getValue().toLowerCase());
+        //TODO: 25.02.04 요구사항 변경에 따른 임시 주석 처리
+//        String sessionId = request.getHeader(SESSION_ID.getValue().toLowerCase());
 
         if (request.getRequestURI().equals(LOGIN_ENDPOINT)) {
-            if (sessionId == null) {
-                throw new AuthException(GlobalErrorCode.BAD_REQUEST);
-            }
-            loginAttemptService.checkAccountIsLocked(sessionId);
+
+//            if (sessionId == null) {
+//                throw new AuthException(GlobalErrorCode.BAD_REQUEST);
+//            }
+            String clientIp = getClientIp(request);
+            loginAttemptService.checkAccountIsLocked(clientIp);
         }
 
         UsernamePasswordAuthenticationToken authenticationToken =

@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LoginLog {
-	private String sessionId;
 	private String clientIp;
 	private String attemptNickname;
 	private LocalDateTime lastAttemptAt;
@@ -19,9 +18,8 @@ public class LoginLog {
 	private boolean isLocked;
 
 	@Builder
-	private LoginLog(String sessionId, String clientIp, String attemptNickname, LocalDateTime lastAttemptAt,
+	private LoginLog(String clientIp, String attemptNickname, LocalDateTime lastAttemptAt,
 					 int attemptCount, boolean isLocked) {
-		this.sessionId = sessionId;
 		this.clientIp = clientIp;
 		this.attemptNickname = attemptNickname;
 		this.lastAttemptAt = lastAttemptAt;
@@ -29,9 +27,8 @@ public class LoginLog {
 		this.isLocked = isLocked;
 	}
 
-	public static LoginLog createLoginLog(String sessionId, String clientIp, String attemptNickname) {
+	public static LoginLog createLoginLog(String clientIp, String attemptNickname) {
 		return LoginLog.builder()
-				.sessionId(sessionId)
 				.clientIp(clientIp)
 				.attemptNickname(attemptNickname)
 				.lastAttemptAt(LocalDateTime.now())
