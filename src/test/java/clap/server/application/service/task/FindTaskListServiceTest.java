@@ -7,9 +7,13 @@ import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.domain.model.task.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-//@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class)
 class FindTaskListServiceTest {
 
     @Mock
@@ -37,7 +41,7 @@ class FindTaskListServiceTest {
     private PageResponse<FilterPendingApprovalResponse> expectedResponse;
     private Page<Task> pageResponse;
 
-    //@BeforeEach
+    @BeforeEach
     void setUp() {
         pageable = PageRequest.of(0, 20);
         filterTaskListRequest = new FilterTaskListRequest(
@@ -62,7 +66,7 @@ class FindTaskListServiceTest {
         expectedResponse = PageResponse.from(pageResponse.map(TaskResponseMapper::toFilterPendingApprovalTasksResponse));
     }
 
-    //@Test
+    @Test
     @DisplayName("승인대기 중인 작업요청목록 조회 - 정상적인 데이터 반환")
     void findPendingApprovalTasks_ReturnFilteredTasks() {
         // given
