@@ -74,6 +74,12 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
+    public void saveAll(List<Member> members) {
+        List<MemberEntity> memberEntities = members.stream().map(memberPersistenceMapper::toEntity).toList();
+        memberRepository.saveAll(memberEntities);
+    }
+
+    @Override
     public List<Member> findActiveManagers() {
         List<MemberEntity> memberEntities = memberRepository.findByRoleAndStatus(MemberRole.valueOf("ROLE_MANAGER"), MemberStatus.ACTIVE);
         return memberEntities.stream()
