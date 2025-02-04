@@ -39,13 +39,14 @@ public class ChangeTaskController {
     @Operation(summary = "작업 상태 변경")
     @Secured("ROLE_MANAGER")
     @PatchMapping("/{taskId}/status")
-    public void updateTaskState(
+    public ResponseEntity<UpdateTaskResponse> updateTaskState(
             @PathVariable @NotNull Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @Parameter(description = "변경하고 싶은 작업 상태",
                     schema = @Schema(allowableValues = {"IN_PROGRESS", "PENDING_COMPLETED", "COMPLETED"}))
             @RequestBody TaskStatus taskStatus) {
-        updateTaskStatusUsecase.updateTaskStatus(userInfo.getUserId(), taskId, taskStatus);
+
+        return ResponseEntity.ok(updateTaskStatusUsecase.updateTaskStatus(userInfo.getUserId(), taskId, taskStatus));
     }
 
     @Operation(summary = "작업 처리자 변경")
