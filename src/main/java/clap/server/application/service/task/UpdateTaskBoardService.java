@@ -7,11 +7,11 @@ import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.UpdateTaskBoardUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskOrderAndStatusUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;
-import clap.server.domain.policy.task.TaskOrderCalculationPolicy;
-import clap.server.domain.policy.task.ProcessorValidationPolicy;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;
+import clap.server.domain.policy.task.ProcessorValidationPolicy;
+import clap.server.domain.policy.task.TaskOrderCalculationPolicy;
 import clap.server.domain.policy.task.TaskPolicyConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
@@ -51,7 +51,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
 
         // 가장 상위로 이동
         if (request.prevTaskId() == 0) {
-            Task nextTask = findByIdAndStatus(request.targetTaskId(), targetTask.getTaskStatus());
+            Task nextTask = findByIdAndStatus(request.nextTaskId(), targetTask.getTaskStatus());
             // 해당 상태에서 바로 앞에 있는 작업 찾기
             Task prevTask = loadTaskPort.findPrevOrderTaskByProcessorIdAndStatus(processorId, targetTask.getTaskStatus(), nextTask.getProcessorOrder()).orElse(null);
             long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(targetTask, nextTask);
@@ -59,7 +59,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
         }
         // 가장 하위로 이동
         else if (request.nextTaskId() == 0) {
-            Task prevTask = findByIdAndStatus(request.targetTaskId(), targetTask.getTaskStatus());
+            Task prevTask = findByIdAndStatus(request.prevTaskId(), targetTask.getTaskStatus());
             // 해당 상태에서 바로 뒤에 있는 작업 찾기
             Task nextTask = loadTaskPort.findNextOrderTaskByProcessorIdAndStatus(processorId, targetTask.getTaskStatus(), prevTask.getProcessorOrder()).orElse(null);
             long newOrder = taskOrderCalculationPolicy.calculateOrderForBottom(prevTask, nextTask);
@@ -99,13 +99,13 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
         processorValidationPolicy.validateProcessor(processorId, targetTask);
 
         if (request.prevTaskId() == 0) {
-            Task nextTask = findByIdAndStatus(request.targetTaskId(), targetStatus);
+            Task nextTask = findByIdAndStatus(request.nextTaskId(), targetStatus);
             // 해당 상태에서 바로 앞 있는 작업 찾기
             Task prevTask = loadTaskPort.findPrevOrderTaskByProcessorIdAndStatus(processorId, targetStatus, nextTask.getProcessorOrder()).orElse(null);
             long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(prevTask,nextTask);
             updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
         } else if (request.nextTaskId() == 0) {
-            Task prevTask = findByIdAndStatus(request.targetTaskId(), targetStatus);
+            Task prevTask = findByIdAndStatus(request.prevTaskId(), targetStatus);
             // 해당 상태에서 바로 뒤에 있는 작업 찾기
             Task nextTask = loadTaskPort.findNextOrderTaskByProcessorIdAndStatus(processorId, targetStatus, prevTask.getProcessorOrder()).orElse(null);
             long newOrder = taskOrderCalculationPolicy.calculateOrderForBottom(prevTask, nextTask);
