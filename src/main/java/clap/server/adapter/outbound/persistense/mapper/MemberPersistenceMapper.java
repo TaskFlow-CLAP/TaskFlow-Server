@@ -18,6 +18,7 @@ public interface MemberPersistenceMapper {
     @Mapping(source = "admin", target = "admin")
     @Mapping(source = "createdAt", target = "createdAt")
     @Mapping(source = "updatedAt", target = "updatedAt")
+    @Mapping(source = "memberId", target = "memberId")
 
     Member toDomain(MemberEntity entity);
 
@@ -31,6 +32,7 @@ public interface MemberPersistenceMapper {
     @Mapping(target = "admin", source = "admin")
     @Mapping(source = "createdAt", target = "createdAt")
     @Mapping(source = "updatedAt", target = "updatedAt")
+    @Mapping(source = "memberId", target = "memberId")
 
     MemberEntity toEntity(Member member);
 

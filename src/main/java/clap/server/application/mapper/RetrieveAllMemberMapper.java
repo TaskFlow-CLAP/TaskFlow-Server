@@ -16,6 +16,7 @@ public class RetrieveAllMemberMapper {
 
     public RetrieveAllMemberResponse toResponse(Member member) {
         return new RetrieveAllMemberResponse(
+                member.getMemberId(),
                 member.getMemberInfo().getName(),
                 member.getMemberInfo().getEmail(),
                 member.getMemberInfo().getNickname(),

@@ -6,6 +6,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 public record RetrieveAllMemberResponse(
+        @Schema(description = "회원 ID", example = "1")
+        Long memberId,
+
         @Schema(description = "회원 이름", example = "양시훈")
         String name,
 
