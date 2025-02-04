@@ -1,6 +1,7 @@
 package clap.server.adapter.inbound.web.dto.task.response;
 
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
+import clap.server.domain.model.task.Label;
 
 import java.time.LocalDateTime;
 

@@ -12,7 +12,7 @@ public record TeamMemberTaskResponse(
         int inProgressTaskCount,
         int pendingTaskCount,
         int totalTaskCount,
-        List<TaskItemResponse> tasks
+        List<TeamTaskItemResponse> tasks
 ) {
     @QueryProjection
     public TeamMemberTaskResponse {

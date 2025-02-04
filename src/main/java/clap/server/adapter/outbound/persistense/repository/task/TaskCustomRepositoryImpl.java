@@ -5,6 +5,7 @@ import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TaskItemResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -58,30 +59,37 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
     @Override
     public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+        // filter가 null인 경우에도 기본적으로 모든 데이터를 조회하도록 처리
         BooleanBuilder builder = new BooleanBuilder();
 
-        // 담당자 ID 필터링
-        if (memberId != null) {
-            builder.and(taskEntity.processor.memberId.eq(memberId));
-        }
+        // 필터가 null인 경우, 기본적으로 모든 데이터 조회
+        if (filter != null) {
+            // 진행 중 또는 완료 대기 상태 필터링
+            builder.and(taskEntity.taskStatus.in(TaskStatus.IN_PROGRESS, TaskStatus.PENDING_COMPLETED));
 
-        // 작업 타이틀 필터링
-        if (filter.taskTitle() != null && !filter.taskTitle().isEmpty()) {
-            builder.and(taskEntity.title.containsIgnoreCase(filter.taskTitle()));
-        }
+            // 담당자 ID 필터링
+            if (memberId != null) {
+                builder.and(taskEntity.processor.memberId.eq(memberId));
+            }
 
-        // 1차 카테고리 필터링
-        if (!filter.mainCategoryIds().isEmpty()) {
-            builder.and(taskEntity.category.mainCategory.categoryId.in(filter.mainCategoryIds()));
-        }
+            // 작업 타이틀 필터링
+            if (filter.taskTitle() != null && !filter.taskTitle().isEmpty()) {
+                builder.and(taskEntity.title.containsIgnoreCase(filter.taskTitle()));
+            }
 
-        // 2차 카테고리 필터링
-        if (!filter.categoryIds().isEmpty()) {
-            builder.and(taskEntity.category.categoryId.in(filter.categoryIds()));
+            // 1차 카테고리 필터링 (빈 배열인 경우, 필터링하지 않음)
+            if (filter.mainCategoryIds() != null && !filter.mainCategoryIds().isEmpty()) {
+                builder.and(taskEntity.category.mainCategory.categoryId.in(filter.mainCategoryIds()));
+            }
+
+            // 2차 카테고리 필터링 (빈 배열인 경우, 필터링하지 않음)
+            if (filter.categoryIds() != null && !filter.categoryIds().isEmpty()) {
+                builder.and(taskEntity.category.categoryId.in(filter.categoryIds()));
+            }
         }
 
         // 정렬 조건 적용
-        OrderSpecifier<?> orderBy = "기여도순".equals(filter.sortBy())
+        OrderSpecifier<?> orderBy = "기여도순".equals(filter != null ? filter.sortBy() : "")
                 ? new CaseBuilder()
                 .when(taskEntity.taskStatus.eq(TaskStatus.IN_PROGRESS)
                         .or(taskEntity.taskStatus.eq(TaskStatus.PENDING_COMPLETED)))
@@ -101,13 +109,18 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId()))
                 .entrySet().stream()
                 .map(entry -> {
-                    List<TaskItemResponse> taskResponses = entry.getValue().stream()
-                            .map(taskEntity -> new TaskItemResponse(
+                    List<TeamTaskItemResponse> taskResponses = entry.getValue().stream()
+                            .map(taskEntity -> new TeamTaskItemResponse(
                                     taskEntity.getTaskId(),
                                     taskEntity.getTaskCode(),
                                     taskEntity.getTitle(),
                                     taskEntity.getCategory().getMainCategory().getName(),
                                     taskEntity.getCategory().getName(),
+                                    taskEntity.getLabel() != null ?
+                                            new TeamTaskItemResponse.LabelInfo(
+                                                    taskEntity.getLabel().getLabelName(),
+                                                    taskEntity.getLabel().getLabelColor()
+                                            ) : null,
                                     taskEntity.getRequester().getNickname(),
                                     taskEntity.getRequester().getImageUrl(),
                                     taskEntity.getRequester().getDepartment().getName(),
@@ -128,6 +141,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                     );
                 }).collect(Collectors.toList());
     }
+
+
 
     private boolean isValidTitle(FilterTeamStatusRequest filter) {
         return filter.taskTitle() != null && !filter.taskTitle().isEmpty();

@@ -21,8 +21,8 @@ public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatu
     }
 
     @Override
-    public TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable) {
-        List<TeamMemberTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter); // 페이징 처리
+    public TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+        List<TeamMemberTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter);
         return new TeamStatusResponse(members);
     }
 
