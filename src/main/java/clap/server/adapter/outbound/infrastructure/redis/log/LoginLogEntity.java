@@ -10,14 +10,13 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
 
 import java.time.LocalDateTime;
 
 @Getter
 @RedisHash("loginLog")
 @Builder
-@ToString(of = {"clientIp", "attemptNickname", "lastAttemptAt", "attemptCount", "isLocked"})
+@ToString(of = {"clientIp", "attemptNickname", "lastAttemptAt", "failedCount", "isLocked"})
 @EqualsAndHashCode(of = {"clientIp"})
 public class LoginLogEntity {
 	@Id
@@ -30,7 +29,7 @@ public class LoginLogEntity {
 	@Builder.Default
 	private LocalDateTime lastAttemptAt = LocalDateTime.now();
 
-	private int attemptCount;
+	private int failedCount;
 
 	private boolean isLocked;
 }

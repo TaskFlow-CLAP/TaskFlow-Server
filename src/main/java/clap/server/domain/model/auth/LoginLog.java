@@ -14,16 +14,16 @@ public class LoginLog {
 	private String clientIp;
 	private String attemptNickname;
 	private LocalDateTime lastAttemptAt;
-	private int attemptCount;
+	private int failedCount;
 	private boolean isLocked;
 
 	@Builder
 	private LoginLog(String clientIp, String attemptNickname, LocalDateTime lastAttemptAt,
-					 int attemptCount, boolean isLocked) {
+					 int failedCount, boolean isLocked) {
 		this.clientIp = clientIp;
 		this.attemptNickname = attemptNickname;
 		this.lastAttemptAt = lastAttemptAt;
-		this.attemptCount = attemptCount;
+		this.failedCount = failedCount;
 		this.isLocked = isLocked;
 	}
 
@@ -32,27 +32,26 @@ public class LoginLog {
 				.clientIp(clientIp)
 				.attemptNickname(attemptNickname)
 				.lastAttemptAt(LocalDateTime.now())
-				.attemptCount(1)
+				.failedCount(1)
 				.isLocked(false)
 				.build();
 	}
 
 	public int recordFailedAttempt() {
-		this.attemptCount++;
-		return this.attemptCount;
+		this.failedCount++;
+		return this.failedCount;
 	}
 
 	public void setLocked(boolean locked) {
 		isLocked = locked;
 	}
 
-	@Override
 	public String toString() {
 			return "{" +
 					"clientIp='" + clientIp + '\'' +
 					", attemptNickname='" + attemptNickname + '\'' +
 					", lastAttemptAt=" + lastAttemptAt +
-					", attemptCount=" + attemptCount +
+					", failedCount=" + failedCount +
 					", isLocked=" + isLocked +
 					'}';
 	}
