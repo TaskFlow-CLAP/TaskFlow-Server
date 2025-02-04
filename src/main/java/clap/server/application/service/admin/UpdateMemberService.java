@@ -1,6 +1,6 @@
 package clap.server.application.service.admin;
 
-import clap.server.adapter.inbound.web.dto.admin.UpdateMemberRequest;
+import clap.server.adapter.inbound.web.dto.admin.request.UpdateMemberRequest;
 import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.member.CommandMemberPort;

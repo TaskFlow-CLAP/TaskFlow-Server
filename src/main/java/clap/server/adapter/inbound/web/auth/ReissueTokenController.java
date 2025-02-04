@@ -1,6 +1,6 @@
 package clap.server.adapter.inbound.web.auth;
 
-import clap.server.adapter.inbound.web.dto.auth.ReissueTokenResponse;
+import clap.server.adapter.inbound.web.dto.auth.response.ReissueTokenResponse;
 import clap.server.application.port.inbound.auth.ReissueTokenUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;

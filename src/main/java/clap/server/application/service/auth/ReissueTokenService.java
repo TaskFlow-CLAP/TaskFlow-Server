@@ -1,6 +1,6 @@
 package clap.server.application.service.auth;
 
-import clap.server.adapter.inbound.web.dto.auth.ReissueTokenResponse;
+import clap.server.adapter.inbound.web.dto.auth.response.ReissueTokenResponse;
 import clap.server.application.port.inbound.auth.ReissueTokenUsecase;
 import clap.server.application.port.outbound.auth.CommandRefreshTokenPort;
 import clap.server.common.annotation.architecture.ApplicationService;

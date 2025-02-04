@@ -1,8 +1,8 @@
 package clap.server.application.mapper;
 
-import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
-import clap.server.adapter.inbound.web.dto.auth.MemberInfoResponse;
-import clap.server.adapter.inbound.web.dto.auth.ReissueTokenResponse;
+import clap.server.adapter.inbound.web.dto.auth.response.LoginResponse;
+import clap.server.adapter.inbound.web.dto.auth.response.MemberInfoResponse;
+import clap.server.adapter.inbound.web.dto.auth.response.ReissueTokenResponse;
 import clap.server.domain.model.auth.CustomJwts;
 import clap.server.domain.model.member.Member;
 

@@ -1,7 +1,7 @@
 package clap.server.adapter.inbound.web.admin;
 
-import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
-import clap.server.adapter.inbound.web.dto.admin.RetrieveAllMemberResponse;
+import clap.server.adapter.inbound.web.dto.admin.request.FindMemberRequest;
+import clap.server.adapter.inbound.web.dto.admin.response.RetrieveAllMemberResponse;
 import clap.server.application.mapper.RetrieveAllMemberMapper;
 import clap.server.application.port.inbound.admin.FindAllMembersUsecase;
 import clap.server.application.port.inbound.admin.FindMembersWithFilterUsecase;

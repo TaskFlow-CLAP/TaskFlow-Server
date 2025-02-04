@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.persistense.repository.member;
 
-import clap.server.adapter.inbound.web.dto.admin.FindMemberRequest;
+import clap.server.adapter.inbound.web.dto.admin.request.FindMemberRequest;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import com.querydsl.core.BooleanBuilder;
