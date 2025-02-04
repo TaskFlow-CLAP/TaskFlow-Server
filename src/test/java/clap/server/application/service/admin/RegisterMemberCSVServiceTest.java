@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +38,7 @@ class RegisterMemberCSVServiceTest {
      * - 주어진 CSV 파일을 정상적으로 파싱하여 회원이 등록되는지 검증
      */
     @Test
-    void testRegisterMembersFromCsvSuccess() {
+    void testRegisterMembersFromCsvSuccess() throws IOException {
         Long adminId = 1L;
         MultipartFile file = new MockMultipartFile("file", "members.csv", "text/csv", "dummy-content".getBytes());
 
@@ -45,7 +46,7 @@ class RegisterMemberCSVServiceTest {
         List<Member> parsedMembers = List.of(Mockito.mock(Member.class), Mockito.mock(Member.class));
 
         when(memberService.findActiveMember(adminId)).thenReturn(admin);
-        when(csvParseService.parse(file)).thenReturn(parsedMembers);
+        when(csvParseService.parseDataAndMapToMember(file)).thenReturn(parsedMembers);
 
         int addedCount = registerMemberCSVService.registerMembersFromCsv(adminId, file);
 
@@ -83,7 +84,7 @@ class RegisterMemberCSVServiceTest {
         MultipartFile file = new MockMultipartFile("file", "members.csv", "text/csv", "dummy-content".getBytes());
 
         // ✅ Mock 객체 설정: CSV 파싱 과정에서 예외 발생하도록 설정
-        when(csvParseService.parse(file)).thenThrow(new ApplicationException(MemberErrorCode.CSV_PARSING_ERROR));
+        when(csvParseService.parseDataAndMapToMember(file)).thenThrow(new ApplicationException(MemberErrorCode.CSV_PARSING_ERROR));
 
         // 🔹 유스케이스 실행 및 예외 검증
         ApplicationException exception = assertThrows(ApplicationException.class, () -> {
@@ -110,7 +111,7 @@ class RegisterMemberCSVServiceTest {
 
         //  특정 회원 등록 중 예외 발생
         when(memberService.findActiveMember(adminId)).thenReturn(admin);
-        when(csvParseService.parse(file)).thenReturn(parsedMembers);
+        when(csvParseService.parseDataAndMapToMember(file)).thenReturn(parsedMembers);
         doThrow(new ApplicationException(MemberErrorCode.MEMBER_REGISTRATION_FAILED))
                 .when(commandMemberPort).save(failingMember);
 
