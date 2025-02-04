@@ -60,12 +60,6 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public List<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime fromDateTime) {
-        List<TaskEntity> tasks = taskRepository.findTasksWithTaskStatusAndCompletedAt(processorId, statuses, fromDateTime);
-        return tasks.stream().map(taskPersistenceMapper::toDomain).toList();
-    }
-
-    @Override
     public Optional<Task> findByIdAndStatus(Long id, TaskStatus status) {
         Optional<TaskEntity> taskEntity = taskRepository.findByTaskIdAndTaskStatus(id, status);
         return taskEntity.map(taskPersistenceMapper::toDomain);
