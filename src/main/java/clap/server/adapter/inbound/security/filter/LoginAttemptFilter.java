@@ -1,12 +1,17 @@
 package clap.server.adapter.inbound.security.filter;
 
+import clap.server.application.port.inbound.domain.LogService;
 import clap.server.application.service.auth.LoginAttemptService;
+import clap.server.application.service.log.FindApiLogsService;
+import clap.server.exception.AuthException;
+import clap.server.exception.code.AuthErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -28,16 +33,19 @@ public class LoginAttemptFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        //TODO: 25.02.04 요구사항 변경에 따른 임시 주석 처리
-//        String sessionId = request.getHeader(SESSION_ID.getValue().toLowerCase());
+        try {
+            if (request.getRequestURI().equals(LOGIN_ENDPOINT)) {
+                String clientIp = getClientIp(request);
 
-        if (request.getRequestURI().equals(LOGIN_ENDPOINT)) {
+                loginAttemptService.checkAccountIsLocked(clientIp);
 
-//            if (sessionId == null) {
-//                throw new AuthException(GlobalErrorCode.BAD_REQUEST);
-//            }
-            String clientIp = getClientIp(request);
-            loginAttemptService.checkAccountIsLocked(clientIp);
+            }
+        } catch (AuthException e) {
+            log.warn("Authentication failed for IP: {}. Error: {}", getClientIp(request), e.getMessage());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(e.getErrorCode().getCustomCode());
+            log.info("Sent error response: {}", e.getErrorCode().getCustomCode());
+            return;
         }
 
         UsernamePasswordAuthenticationToken authenticationToken =
