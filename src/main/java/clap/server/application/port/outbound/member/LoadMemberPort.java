@@ -31,7 +31,7 @@ public interface LoadMemberPort {
 
     Page<Member> findAllMembers(Pageable pageable);
 
-    Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest);
+    Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest, String sortDirection);
 
 
 }

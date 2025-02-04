@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface MemberCustomRepository {
     Page<MemberEntity> findAllMembers(Pageable pageable);
-    Page<MemberEntity> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest) ;
+    Page<MemberEntity> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest, String sortDirection) ;
 }

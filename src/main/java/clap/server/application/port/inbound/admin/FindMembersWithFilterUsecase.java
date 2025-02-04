@@ -7,5 +7,5 @@ import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface FindMembersWithFilterUsecase {
-    PageResponse<RetrieveAllMemberResponse> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest);
+    PageResponse<RetrieveAllMemberResponse> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest, String sortDirection);
 }
