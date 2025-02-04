@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @Tag(name = "05. Admin")
 @WebAdapter
 @RequestMapping("/api/managements")
@@ -28,7 +30,7 @@ public class RegisterMemberCsvController {
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> registerMembersFromCsv(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file) throws IOException {
         int addedCount = registerMemberCSVUsecase.registerMembersFromCsv(userInfo.getUserId(), file);
         return ResponseEntity.ok(addedCount + "명의 회원이 등록되었습니다.");
     }
