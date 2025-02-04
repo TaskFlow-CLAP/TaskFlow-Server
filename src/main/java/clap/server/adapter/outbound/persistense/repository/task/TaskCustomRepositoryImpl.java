@@ -3,7 +3,7 @@ package clap.server.adapter.outbound.persistense.repository.task;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
-import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
@@ -57,7 +57,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     }
 
     @Override
-    public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+    public List<TeamTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
         // filter가 null인 경우에도 기본적으로 모든 데이터를 조회하도록 처리
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -132,7 +132,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                     int pendingTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.PENDING_COMPLETED).count();
                     int totalTaskCount = inProgressTaskCount + pendingTaskCount;
 
-                    return new TeamMemberTaskResponse(
+                    return new TeamTaskResponse(
                             entry.getKey(),
                             entry.getValue().get(0).getProcessor().getNickname(),
                             entry.getValue().get(0).getProcessor().getImageUrl(),
