@@ -49,13 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NotNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            if (Arrays.asList(PUBLIC_ENDPOINTS).contains(request.getRequestURI()) ||
-                    Arrays.asList(SWAGGER_ENDPOINTS).contains(request.getRequestURI())) {
+            if (isAnonymousRequest(request)) {
                 filterChain.doFilter(request, response);
                 return;
-            }
-            if (isAnonymousRequest(request)) {
-                throw new AuthException(AuthErrorCode.UNAUTHORIZED);
             }
 
             String accessToken = resolveAccessToken(request);
