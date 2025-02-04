@@ -1,10 +1,12 @@
 package clap.server;
 
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
+import clap.server.adapter.outbound.persistense.entity.member.constant.DepartmentStatus;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.adapter.outbound.persistense.entity.task.constant.LabelColor;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
+import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
 import clap.server.domain.model.task.Category;
@@ -18,37 +20,88 @@ import java.util.List;
 public class TestDataFactory {
 
     public static Member createAdmin() {
-        return new Member(1L, createAdminInfo(), null,
-                true, true, true,
-                null, MemberStatus.ACTIVE, "1111");
-    }
-    public static Member createManagerWithReviewer() {
-        return new Member(2L, createManagerWithReviewerInfo(), createAdmin(),
-                true, true, true,
-                null, MemberStatus.ACTIVE, "1111");
-    }
-    public static Member createManager() {
-        return new Member(3L, createManagerInfo(), createAdmin(),
-                true, true, true,
-                null, MemberStatus.ACTIVE, "1111");
-    }
-    public static Member createUser() {
-        return new Member(4L, createUserInfo(), createAdmin(),
-                true, true, true,
-                null, MemberStatus.ACTIVE, "1111");
+        return Member.builder()
+                .memberId(1L)
+                .memberInfo(createAdminInfo())
+                .admin(null)
+                .kakaoworkNotificationEnabled(true)
+                .agitNotificationEnabled(true)
+                .emailNotificationEnabled(true)
+                .imageUrl(null)
+                .status(MemberStatus.ACTIVE)
+                .password("1111")
+                .department(createDepartment())
+                .build();
     }
 
-    public static MemberInfo createAdminInfo(){
+    public static Member createManagerWithReviewer() {
+        return Member.builder()
+                .memberId(2L)
+                .memberInfo(createManagerWithReviewerInfo())
+                .admin(createAdmin())
+                .kakaoworkNotificationEnabled(true)
+                .agitNotificationEnabled(true)
+                .emailNotificationEnabled(true)
+                .imageUrl(null)
+                .status(MemberStatus.ACTIVE)
+                .password("1111")
+                .department(createDepartment())
+                .build();
+    }
+
+    public static Member createManager() {
+        return Member.builder()
+                .memberId(3L)
+                .memberInfo(createManagerInfo())
+                .admin(createAdmin())
+                .kakaoworkNotificationEnabled(true)
+                .agitNotificationEnabled(true)
+                .emailNotificationEnabled(true)
+                .imageUrl(null)
+                .status(MemberStatus.ACTIVE)
+                .password("1111")
+                .department(createDepartment())
+                .build();
+    }
+
+    public static Member createUser() {
+        return Member.builder()
+                .memberId(4L)
+                .memberInfo(createUserInfo())
+                .admin(createAdmin())
+                .kakaoworkNotificationEnabled(true)
+                .agitNotificationEnabled(true)
+                .emailNotificationEnabled(true)
+                .imageUrl(null)
+                .status(MemberStatus.ACTIVE)
+                .password("1111")
+                .department(createDepartment())
+                .build();
+    }
+
+    public static MemberInfo createAdminInfo() {
         return new MemberInfo("홍길동(관리자)", "atom8426@naver.com", "atom.admin", false, null, MemberRole.ROLE_ADMIN, "인프라");
     }
-    public static MemberInfo createManagerWithReviewerInfo(){
+
+    public static MemberInfo createManagerWithReviewerInfo() {
         return new MemberInfo("홍길동(리뷰어)", "atom8426@naver.com", "atom.manager", true, null, MemberRole.ROLE_MANAGER, "인프라");
     }
-    public static MemberInfo createManagerInfo(){
+
+    public static MemberInfo createManagerInfo() {
         return new MemberInfo("홍길동(매니저)", "atom8426@naver.com", "atom.manager", false, null, MemberRole.ROLE_MANAGER, "인프라");
     }
-    public static MemberInfo createUserInfo(){
+
+    public static MemberInfo createUserInfo() {
         return new MemberInfo("홍길동(사용자)", "atom8426@naver.com", "atom.user", false, null, MemberRole.ROLE_USER, "인프라");
+    }
+
+    public static Department createDepartment() {
+        return Department.builder()
+                .departmentId(1L)
+                .adminId(1L)
+                .name("IT 부서")
+                .status(DepartmentStatus.ACTIVE)
+                .build();
     }
 
     public static Category createMainCategory() {
@@ -99,7 +152,6 @@ public class TestDataFactory {
                 .isDeleted(false)
                 .build();
     }
-
 
     public static PageImpl<Task> createTaskPage(List<Task> tasks) {
         return new PageImpl<>(tasks);
