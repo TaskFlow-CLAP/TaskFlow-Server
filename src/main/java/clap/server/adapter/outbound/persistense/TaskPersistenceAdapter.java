@@ -1,9 +1,9 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
-import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
@@ -16,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,9 +60,9 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public Slice<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, Pageable pageable) {
-        Slice<TaskEntity> tasks = taskRepository.findTasksWithTaskStatusAndCompletedAt(processorId, statuses, untilDate, pageable);
-        return tasks.map(taskPersistenceMapper::toDomain);
+    public List<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime fromDateTime) {
+        List<TaskEntity> tasks = taskRepository.findTasksWithTaskStatusAndCompletedAt(processorId, statuses, fromDateTime);
+        return tasks.stream().map(taskPersistenceMapper::toDomain).toList();
     }
 
     @Override
@@ -98,21 +96,14 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public Slice<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, FilterTaskBoardRequest request, Pageable pageable) {
-        List<Task> taskList = new java.util.ArrayList<>(taskRepository.findTasksByFilter(processorId, statuses, untilDate, request, pageable)
+    public List<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime fromDate, FilterTaskBoardRequest request) {
+        return  taskRepository.findTasksByFilter(processorId, statuses, fromDate, request)
                 .stream()
-                .map(taskPersistenceMapper::toDomain)
-                .toList());
-
-        boolean hasNext = taskList.size() > pageable.getPageSize();
-        if (hasNext) {
-            taskList.remove(taskList.size() - 1);
-        }
-        return new SliceImpl<>(taskList, pageable, hasNext);
+                .map(taskPersistenceMapper::toDomain).toList();
     }
 
     @Override
-    public List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+    public List<TeamTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
         return taskRepository.findTeamStatus(memberId, filter);
     }
 
