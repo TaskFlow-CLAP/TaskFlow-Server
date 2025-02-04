@@ -3,9 +3,9 @@ package clap.server.adapter.inbound.web.dto.task.response;
 import java.util.List;
 
 public record TeamStatusResponse(
-        List<TeamMemberTaskResponse> members
+        List<TeamTaskResponse> members
 ) {
-    public TeamStatusResponse(List<TeamMemberTaskResponse> members) {
+    public TeamStatusResponse(List<TeamTaskResponse> members) {
         this.members = (members == null) ? List.of() : members;
     }
 }

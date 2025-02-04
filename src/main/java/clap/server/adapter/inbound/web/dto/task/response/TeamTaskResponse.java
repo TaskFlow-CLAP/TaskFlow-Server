@@ -4,7 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 
 import java.util.List;
 
-public record TeamMemberTaskResponse(
+public record TeamTaskResponse(
         Long processorId,
         String nickname,
         String imageUrl,
@@ -12,10 +12,10 @@ public record TeamMemberTaskResponse(
         int inProgressTaskCount,
         int pendingTaskCount,
         int totalTaskCount,
-        List<TaskItemResponse> tasks
+        List<TeamTaskItemResponse> tasks
 ) {
     @QueryProjection
-    public TeamMemberTaskResponse {
+    public TeamTaskResponse {
         tasks = (tasks == null) ? List.of() : tasks;
     }
 }
