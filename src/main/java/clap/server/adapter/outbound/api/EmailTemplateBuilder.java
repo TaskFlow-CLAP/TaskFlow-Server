@@ -10,39 +10,46 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 @Component
 @RequiredArgsConstructor
 public class EmailTemplateBuilder {
+
     private final SpringTemplateEngine templateEngine;
 
     public EmailTemplate createWebhookTemplate(PushNotificationTemplate request) {
         Context context = new Context();
         String templateName = "";
         String subject = "";
+        String taskDetailUrl = "https://www.naver.com"; //ToDo task 상세 조회페이지 url 추가
         switch (request.notificationType()) {
             case TASK_REQUESTED:
                 templateName = "task-request";
                 subject = "[TaskFlow 알림] 신규 작업이 요청되었습니다.";
+                context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
                 break;
             case STATUS_SWITCHED:
                 templateName = "status-switched";
                 subject = "[TaskFlow 알림] 작업 상태가 변경되었습니다.";
+                context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
                 break;
             case PROCESSOR_CHANGED:
                 templateName = "processor-changed";
                 subject = "[TaskFlow 알림] 작업 담당자가 변경되었습니다.";
+                context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("processorName", request.message());
                 context.setVariable("title", request.taskName());
                 break;
             case PROCESSOR_ASSIGNED:
                 templateName = "processor-assigned";
                 subject = "[TaskFlow 알림] 작업 담당자가 지정되었습니다.";
+                context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("processorName", request.message());
                 context.setVariable("title", request.taskName());
                 break;
             case COMMENT:
                 subject = "[TaskFlow 알림] 댓글이 작성되었습니다.";
+                context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("comment", request.message());
                 context.setVariable("title", request.taskName());
                 break;

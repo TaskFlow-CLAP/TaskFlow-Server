@@ -1,7 +1,6 @@
 package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
-import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.webhook.SendAgitPort;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class AgitClient implements SendAgitPort {
         headers.add("Content-Type", "application/json");
 
         RestTemplate restTemplate = new RestTemplate();
-        String taskUrl = "https://210.109.59.9/api/tasks/" + request.taskId();
+        String taskUrl = "https://www.naver.com"; //Todo 작업 상세페이지 url 추가
 
         String message = switch (request.notificationType()) {
             case TASK_REQUESTED -> "📌 *새 작업 요청:* `" + request.taskName() + "`\\n"
