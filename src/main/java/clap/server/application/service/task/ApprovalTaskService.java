@@ -35,7 +35,6 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     private final TaskService taskService;
     private final CategoryService categoryService;
     private final LabelService labelService;
-    private final CommandTaskPort commandTaskPort;
     private final RequestedTaskUpdatePolicy requestedTaskUpdatePolicy;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final SendNotificationService sendNotificationService;
