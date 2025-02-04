@@ -24,7 +24,7 @@ public class Member extends BaseTime {
     private MemberStatus status;
     private String password;
 
-    // @Builder가 Lombok과 충돓하여 삭제
+
     public Member(MemberInfo memberInfo, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoworkNotificationEnabled,
                   Member admin, String imageUrl, MemberStatus status, String password) {
         this.memberInfo = memberInfo;
