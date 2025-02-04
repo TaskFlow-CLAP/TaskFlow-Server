@@ -2,11 +2,17 @@ package clap.server.adapter.outbound.persistense.mapper;
 
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.domain.model.member.Member;
+import clap.server.domain.model.member.MemberInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring", uses = {DepartmentPersistenceMapper.class})
-public interface MemberPersistenceMapper {
+public abstract class MemberPersistenceMapper {
+
+    @Autowired
+    protected DepartmentPersistenceMapper departmentPersistenceMapper;
 
     @Mapping(source = "name", target = "memberInfo.name")
     @Mapping(source = "email", target = "memberInfo.email")
@@ -19,8 +25,7 @@ public interface MemberPersistenceMapper {
     @Mapping(source = "createdAt", target = "createdAt")
     @Mapping(source = "updatedAt", target = "updatedAt")
     @Mapping(source = "memberId", target = "memberId")
-
-    Member toDomain(MemberEntity entity);
+    public abstract Member toDomain(MemberEntity entity);
 
     @Mapping(source = "memberInfo.name", target = "name")
     @Mapping(source = "memberInfo.email", target = "email")
@@ -33,12 +38,41 @@ public interface MemberPersistenceMapper {
     @Mapping(source = "createdAt", target = "createdAt")
     @Mapping(source = "updatedAt", target = "updatedAt")
     @Mapping(source = "memberId", target = "memberId")
+    public abstract MemberEntity toEntity(Member member);
 
-    MemberEntity toEntity(Member member);
+    @Named("toDomain")
+    protected Member toDomainAdmin(MemberEntity admin) {
+        if (admin == null) return null;
+        return Member.builder()
+                .memberId(admin.getMemberId())
+                .memberInfo(new MemberInfo(
+                        admin.getName(),
+                        admin.getEmail(),
+                        admin.getNickname(),
+                        admin.isReviewer(),
+                        departmentPersistenceMapper.toDomain(admin.getDepartment()),
+                        admin.getRole(),
+                        admin.getDepartmentRole()
+                ))
+                .createdAt(admin.getCreatedAt())
+                .updatedAt(admin.getUpdatedAt())
+                .build();
+    }
 
-    default boolean mapReviewer(boolean reviewer) {
-        return reviewer;
+    @Named("toEntity")
+    protected MemberEntity toEntityAdmin(Member admin) {
+        if (admin == null) return null;
+        return MemberEntity.builder()
+                .memberId(admin.getMemberId())
+                .name(admin.getMemberInfo().getName())
+                .email(admin.getMemberInfo().getEmail())
+                .nickname(admin.getMemberInfo().getNickname())
+                .isReviewer(admin.getMemberInfo().isReviewer())
+                .department(departmentPersistenceMapper.toEntity(admin.getMemberInfo().getDepartment()))
+                .role(admin.getMemberInfo().getRole())
+                .departmentRole(admin.getMemberInfo().getDepartmentRole())
+                .createdAt(admin.getCreatedAt())
+                .updatedAt(admin.getUpdatedAt())
+                .build();
     }
 }
-
-
