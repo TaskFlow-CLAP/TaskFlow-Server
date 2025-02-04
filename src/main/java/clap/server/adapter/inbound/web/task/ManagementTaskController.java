@@ -46,11 +46,11 @@ public class ManagementTaskController {
     @Operation(summary = "작업 수정")
     @PatchMapping(value = "/{taskId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
-    public ResponseEntity<UpdateTaskResponse> updateTask(
+    public void updateTask(
             @PathVariable @NotNull Long taskId,
             @RequestPart(name = "taskInfo") @Valid UpdateTaskRequest updateTaskRequest,
             @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo){
-        return ResponseEntity.ok(updateTaskUsecase.updateTask(userInfo.getUserId(), taskId, updateTaskRequest, attachments));
+        updateTaskUsecase.updateTask(userInfo.getUserId(), taskId, updateTaskRequest, attachments);
     }
 }

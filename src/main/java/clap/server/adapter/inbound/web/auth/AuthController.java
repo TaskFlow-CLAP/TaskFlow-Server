@@ -32,11 +32,11 @@ public class AuthController {
     @LogType(LogStatus.LOGIN)
     @Operation(summary = "로그인 API")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestHeader(name = "sessionId") String sessionId,
+    public ResponseEntity<LoginResponse> login(
                                                @RequestBody LoginRequest request,
                                                HttpServletRequest httpRequest) {
         String clientIp = getClientIp(httpRequest);
-        LoginResponse response = loginUsecase.login(request.nickname(), request.password(), sessionId, clientIp);
+        LoginResponse response = loginUsecase.login(request.nickname(), request.password(), clientIp);
         return ResponseEntity.ok(response);
     }
 

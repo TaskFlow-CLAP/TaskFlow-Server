@@ -34,10 +34,10 @@ class AuthService implements LoginUsecase, LogoutUsecase {
 
 
     @Override
-    public LoginResponse login(String nickname, String password, String sessionId, String clientIp) {
-        Member member = getMember(nickname, sessionId, clientIp);
+    public LoginResponse login(String nickname, String password, String clientIp) {
+        Member member = getMember(nickname,clientIp);
 
-        validatePassword(password, member.getPassword(), sessionId, nickname, clientIp);
+        validatePassword(password, member.getPassword(), nickname, clientIp);
 
         if (member.getStatus().equals(MemberStatus.APPROVAL_REQUEST)) {
             String temporaryToken = manageTokenService.issueTemporaryToken(member.getMemberId());
@@ -46,7 +46,7 @@ class AuthService implements LoginUsecase, LogoutUsecase {
 
         CustomJwts jwtTokens = manageTokenService.issueTokens(member);
         refreshTokenService.saveRefreshToken(manageTokenService.issueRefreshToken(member.getMemberId()));
-        loginAttemptService.resetFailedAttempts(sessionId);
+        loginAttemptService.resetFailedAttempts(clientIp);
         return AuthResponseMapper.toLoginResponse(jwtTokens.accessToken(), jwtTokens.refreshToken(), member);
     }
 
@@ -68,17 +68,17 @@ class AuthService implements LoginUsecase, LogoutUsecase {
         forbiddenTokenPort.save(forbiddenToken);
     }
 
-    private Member getMember(String inputNickname, String sessionId, String clientIp) {
+    private Member getMember(String inputNickname, String clientIp) {
         return loadMemberPort.findByNickname(inputNickname).orElseThrow(() ->
         {
-            loginAttemptService.recordFailedAttempt(sessionId, clientIp, inputNickname);
+            loginAttemptService.recordFailedAttempt(clientIp, inputNickname);
             return new AuthException(AuthErrorCode.LOGIN_REQUEST_FAILED);
         });
     }
 
-    private void validatePassword(String inputPassword, String encodedPassword, String sessionId, String inputNickname, String clientIp) {
+    private void validatePassword(String inputPassword, String encodedPassword, String inputNickname, String clientIp) {
         if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
-            loginAttemptService.recordFailedAttempt(sessionId, clientIp, inputNickname);
+            loginAttemptService.recordFailedAttempt(clientIp, inputNickname);
             throw new AuthException(AuthErrorCode.LOGIN_REQUEST_FAILED);
         }
     }

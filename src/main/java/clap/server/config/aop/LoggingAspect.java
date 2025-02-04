@@ -6,6 +6,7 @@ import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.domain.LogService;
 import clap.server.common.annotation.log.LogType;
 import clap.server.exception.BaseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +36,6 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class LoggingAspect {
     private final ObjectMapper objectMapper;
-    private final HandlerExceptionResolver handlerExceptionResolver;
     private final LogService logService;
 
     @Pointcut("execution(* clap.server.adapter.inbound.web..*Controller.*(..))")
@@ -59,6 +59,7 @@ public class LoggingAspect {
             LogStatus logStatus = getLogType((MethodSignature) joinPoint.getSignature());
             int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
             String customCode = null;
+
             if (capturedException != null) {
                 if (capturedException instanceof BaseException e) {
                     statusCode = e.getCode().getHttpStatus().value();
@@ -70,7 +71,8 @@ public class LoggingAspect {
 
             if (logStatus != null) {
                 if (LogStatus.LOGIN.equals(logStatus)) {
-                    logService.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
+                    handleLoginLog(statusCode, request, customCode, logStatus, result);
+
                 } else {
                     if (!isUserAuthenticated()) {
                         log.error("로그인 시도 로그를 기록할 수 없음");
@@ -84,6 +86,14 @@ public class LoggingAspect {
             }
         }
         return result;
+    }
+
+    private void handleLoginLog(int statusCode, HttpServletRequest request, String customCode, LogStatus logStatus, Object result) throws JsonProcessingException {
+        if (statusCode == HttpStatus.SC_OK) {
+            logService.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
+        } else {
+            logService.createLoginFailedLog(request, statusCode, customCode, logStatus, getRequestBody(request), getNicknameFromRequestBody(request));
+        }
     }
 
     private LogStatus getLogType(MethodSignature methodSignature) {
