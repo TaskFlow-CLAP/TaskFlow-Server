@@ -57,7 +57,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         List<Member> receivers = List.of(reviewer, processor);
         publishNotification(receivers, task);
 
-        return TaskResponseMapper.toApprovalTaskResponse(commandTaskPort.save(task));
+        return TaskResponseMapper.toApprovalTaskResponse(taskService.upsert(task));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package clap.server.adapter.inbound.web.task;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.request.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.response.CreateTaskResponse;

@@ -1,6 +1,6 @@
 package clap.server.adapter.inbound.web.admin;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.admin.UpdateCategoryRequest;
 import clap.server.application.port.inbound.admin.UpdateCategoryUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;

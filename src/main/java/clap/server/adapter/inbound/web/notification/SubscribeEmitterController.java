@@ -1,7 +1,7 @@
 package clap.server.adapter.inbound.web.notification;
 
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.application.port.inbound.notification.SubscribeSseUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;

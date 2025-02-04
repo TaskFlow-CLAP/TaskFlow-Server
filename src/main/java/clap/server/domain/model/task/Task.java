@@ -4,7 +4,6 @@ import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
 import clap.server.exception.ApplicationException;
-import clap.server.exception.DomainException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-import static clap.server.domain.policy.task.TaskValuePolicy.DEFAULT_PROCESSOR_ORDER_GAP;
+import static clap.server.domain.policy.task.TaskPolicyConstants.DEFAULT_PROCESSOR_ORDER_GAP;
 
 @Getter
 @SuperBuilder
@@ -47,7 +46,7 @@ public class Task extends BaseTime {
     }
 
     public void updateTask(Long requesterId, Category category, String title, String description) {
-        if(!Objects.equals(requesterId, this.requester.getMemberId() )) {
+        if (!Objects.equals(requesterId, this.requester.getMemberId())) {
             throw new ApplicationException(TaskErrorCode.NOT_A_REQUESTER);
         }
         this.category = category;
@@ -63,10 +62,15 @@ public class Task extends BaseTime {
     }
 
     public void updateTaskStatus(TaskStatus status) {
-        if (status == null) {
-            throw new DomainException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
+        if (status.equals(TaskStatus.COMPLETED)) {
+            this.finishedAt = LocalDateTime.now();
         }
         this.taskStatus = status;
+    }
+
+    public void terminateTask() {
+        this.taskStatus = TaskStatus.TERMINATED;
+        this.finishedAt = LocalDateTime.now();
     }
 
     public void updateProcessor(Member processor) {

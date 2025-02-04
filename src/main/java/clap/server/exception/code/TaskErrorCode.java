@@ -17,6 +17,7 @@ public enum TaskErrorCode implements BaseErrorCode {
     INVALID_TASK_STATUS_TRANSITION(HttpStatus.BAD_REQUEST, "TASK_008", "유효하지 않은 작업 상태 전환입니다."),
     NOT_A_REVIEWER(HttpStatus.FORBIDDEN, "TASK_009", "작업 승인 및 수정 권한이 없습니다."),
     NOT_A_REQUESTER(HttpStatus.FORBIDDEN, "TASK_009", "작업 수정 권한이 없습니다."),
+    TASK_STATUS_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "TASK_010", "변경할 수 없는 작업 상태입니다.")
     ;
 
     private final HttpStatus httpStatus;

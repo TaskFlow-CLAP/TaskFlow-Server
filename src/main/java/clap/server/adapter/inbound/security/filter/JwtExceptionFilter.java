@@ -33,7 +33,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
     private void sendAuthError(HttpServletResponse response, JwtException e) throws IOException {
         if (!response.isCommitted()) {
-            response.setContentType("application/json;charset=UTF-8");
             response.setStatus(e.getErrorCode().getHttpStatus().value());
             response.getWriter().write(e.getErrorCode().getCustomCode());
         }

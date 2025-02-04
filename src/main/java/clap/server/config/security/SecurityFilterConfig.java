@@ -1,6 +1,6 @@
 package clap.server.config.security;
 
-import clap.server.adapter.inbound.security.LoginAttemptFilter;
+import clap.server.adapter.inbound.security.filter.LoginAttemptFilter;
 import clap.server.adapter.inbound.security.filter.JwtAuthenticationFilter;
 import clap.server.adapter.inbound.security.filter.JwtExceptionFilter;
 import clap.server.application.port.outbound.auth.ForbiddenTokenPort;

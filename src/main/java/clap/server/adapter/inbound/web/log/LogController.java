@@ -1,6 +1,6 @@
 package clap.server.adapter.inbound.web.log;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.adapter.inbound.web.dto.log.response.AnonymousLogResponse;
 import clap.server.adapter.inbound.web.dto.log.request.FilterLogRequest;

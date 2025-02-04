@@ -1,6 +1,6 @@
 package clap.server.adapter.inbound.web.member;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.member.response.MemberDetailInfoResponse;
 import clap.server.adapter.inbound.web.dto.member.response.MemberProfileResponse;
 import clap.server.adapter.inbound.web.dto.member.request.UpdateMemberInfoRequest;
