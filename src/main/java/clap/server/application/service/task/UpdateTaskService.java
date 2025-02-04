@@ -27,6 +27,9 @@ import clap.server.domain.model.task.*;
 import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.policy.task.TaskPolicyConstants;
+import clap.server.domain.model.member.Member;
+import clap.server.domain.model.task.*;
+import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.NotificationErrorCode;
 import clap.server.exception.code.TaskErrorCode;
@@ -83,9 +86,6 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         memberService.findActiveMember(memberId);
         memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
-        if(!TASK_UPDATABLE_STATUS.contains(taskStatus)){
-            throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
-        }
 
         if(!task.getTaskStatus().equals(taskStatus)){
             task.updateTaskStatus(taskStatus);
