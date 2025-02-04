@@ -3,7 +3,6 @@ package clap.server.adapter.outbound.persistense.repository.task;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
-import clap.server.adapter.inbound.web.dto.task.response.TaskItemResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
@@ -129,6 +128,10 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                                     taskEntity.getCreatedAt()
                             )).collect(Collectors.toList());
 
+                    int inProgressTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count();
+                    int pendingTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.PENDING_COMPLETED).count();
+                    int totalTaskCount = inProgressTaskCount + pendingTaskCount;
+
                     return new TeamMemberTaskResponse(
                             entry.getKey(),
                             entry.getValue().get(0).getProcessor().getNickname(),
@@ -140,6 +143,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                             taskResponses
                     );
                 }).collect(Collectors.toList());
+
     }
 
 
