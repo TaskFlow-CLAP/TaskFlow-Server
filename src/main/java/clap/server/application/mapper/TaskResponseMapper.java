@@ -119,18 +119,15 @@ public class TaskResponseMapper {
         );
     }
 
-    public static TaskBoardResponse toSliceTaskItemResponse(Slice<Task> tasks) {
-        Map<TaskStatus, List<TaskItemResponse>> tasksByStatus =tasks.getContent().stream()
+    public static TaskBoardResponse toTaskBoardResponse(List<Task> tasks) {
+        Map<TaskStatus, List<TaskItemResponse>> tasksByStatus =tasks.stream()
                 .map(TaskResponseMapper::toTaskItemResponse)
                 .collect(Collectors.groupingBy(TaskItemResponse::taskStatus));
 
         return new TaskBoardResponse(
                 tasksByStatus.getOrDefault(TaskStatus.IN_PROGRESS, Collections.emptyList()),
                 tasksByStatus.getOrDefault(TaskStatus.PENDING_COMPLETED, Collections.emptyList()),
-                tasksByStatus.getOrDefault(TaskStatus.COMPLETED, Collections.emptyList()),
-                tasks.hasNext(),
-                tasks.isFirst(),
-                tasks.isLast()
+                tasksByStatus.getOrDefault(TaskStatus.COMPLETED, Collections.emptyList())
         );
     }
 
