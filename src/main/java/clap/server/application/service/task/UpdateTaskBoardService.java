@@ -2,16 +2,19 @@ package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskOrderRequest;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.UpdateTaskBoardUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskOrderAndStatusUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;
+import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;
+import clap.server.domain.model.task.TaskHistory;
 import clap.server.domain.policy.task.ProcessorValidationPolicy;
 import clap.server.domain.policy.task.TaskOrderCalculationPolicy;
 import clap.server.domain.policy.task.TaskPolicyConstants;
@@ -31,6 +34,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     private final TaskService taskService;
     private final LoadTaskPort loadTaskPort;
     private final SendNotificationService sendNotificationService;
+    private final CommandTaskHistoryPort commandTaskHistoryPort;
 
     private final TaskOrderCalculationPolicy taskOrderCalculationPolicy;
     private final ProcessorValidationPolicy processorValidationPolicy;
@@ -152,6 +156,8 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
             updatedTask = updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
         }
 
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, updatedTask, targetStatus.getDescription(), null,null);
+        commandTaskHistoryPort.save(taskHistory);
         //TODO: 최종 단계에서 주석 처리 해제
         //publishNotification(targetTask, NotificationType.STATUS_SWITCHED, String.valueOf(updatedTask.getTaskStatus()));
     }
