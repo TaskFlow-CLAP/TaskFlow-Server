@@ -1,6 +1,7 @@
 package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.outbound.persistense.entity.member.DepartmentEntity;
+import clap.server.adapter.outbound.persistense.entity.member.constant.DepartmentStatus;
 import clap.server.adapter.outbound.persistense.mapper.DepartmentPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.member.DepartmentRepository;
 import clap.server.application.port.outbound.member.CommandDepartmentPort;
@@ -9,6 +10,7 @@ import clap.server.common.annotation.architecture.PersistenceAdapter;
 import clap.server.domain.model.member.Department;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @PersistenceAdapter
@@ -22,4 +24,11 @@ public class DepartmentPersistentAdapter implements LoadDepartmentPort, CommandD
         Optional<DepartmentEntity> departmentEntity = departmentRepository.findById(id);
         return departmentEntity.map(departmentPersistenceMapper::toDomain);
     }
+
+    @Override
+    public List<Department> findActiveDepartments() {
+        return departmentRepository.findAllByStatusIs(DepartmentStatus.ACTIVE).stream()
+                .map(departmentPersistenceMapper::toDomain).toList();
+    }
+
 }
