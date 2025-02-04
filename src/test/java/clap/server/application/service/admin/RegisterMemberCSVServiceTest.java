@@ -6,6 +6,7 @@ import clap.server.domain.model.member.Member;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.MemberErrorCode;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
@@ -38,7 +39,8 @@ class RegisterMemberCSVServiceTest {
      * - 주어진 CSV 파일을 정상적으로 파싱하여 회원이 등록되는지 검증
      */
     @Test
-    void testRegisterMembersFromCsvSuccess() throws IOException {
+    @DisplayName("CSV 파일에서 회원 정보를 성공적으로 파싱하고 등록하는지 검증한다.")
+    void testRegisterMembersFromCsvSuccess() {
         Long adminId = 1L;
         MultipartFile file = new MockMultipartFile("file", "members.csv", "text/csv", "dummy-content".getBytes());
 
@@ -51,15 +53,17 @@ class RegisterMemberCSVServiceTest {
         int addedCount = registerMemberCSVService.registerMembersFromCsv(adminId, file);
 
         assertEquals(2, addedCount);
-        verify(commandMemberPort, times(2)).save(any(Member.class));
-        verify(parsedMembers.get(0), times(1)).register(admin);
-        verify(parsedMembers.get(1), times(1)).register(admin);
+        verify(commandMemberPort).saveAll(parsedMembers);
+        verify(parsedMembers.get(0)).register(admin);
+        verify(parsedMembers.get(1)).register(admin);
     }
+
 
     /**
      * ❌ 관리자 찾기 실패 (MEMBER_NOT_FOUND)
      */
     @Test
+    @DisplayName("관리자가 존재하지 않을 때 CSV 회원 등록 시 예외가 발생한다.")
     void testRegisterMembersFromCsvThrowsWhenAdminNotFound() {
         Long adminId = 99L;
         MultipartFile file = new MockMultipartFile("file", "members.csv", "text/csv", "dummy-content".getBytes());
@@ -79,6 +83,7 @@ class RegisterMemberCSVServiceTest {
      * ❌ CSV 파싱 실패 (CSV_PARSING_ERROR)
      */
     @Test
+    @DisplayName("CSV 파싱 실패 시 예외 발생 및 회원 등록이 실패한다.")
     void testRegisterMembersFromCsvThrowsWhenCsvParsingFails() {
         Long adminId = 1L;
         MultipartFile file = new MockMultipartFile("file", "members.csv", "text/csv", "dummy-content".getBytes());
@@ -101,6 +106,7 @@ class RegisterMemberCSVServiceTest {
      *
      */
     @Test
+    @DisplayName("회원 등록 과정 중 실패 시 예외 발생 및 부분 저장 된다.")
     void testRegisterMembersFromCsvThrowsWhenSavingMemberFails() {
         Long adminId = 1L;
         MultipartFile file = new MockMultipartFile("file", "members.csv", "text/csv", "dummy-content".getBytes());
