@@ -40,10 +40,10 @@ public class Category extends BaseTime {
                 .build();
     }
 
-    public void updateCategory(Member admin, String code, String name){
+    public void updateCategory(Member admin, String name, String code){
         this.admin = admin;
-        this.code = code;
         this.name = name;
+        this.code = code;
     }
 
     public void deleteCategory(Member admin) {
