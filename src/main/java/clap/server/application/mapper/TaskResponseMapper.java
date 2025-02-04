@@ -1,14 +1,12 @@
 package clap.server.application.mapper;
 
 
-import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
-import clap.server.adapter.inbound.web.dto.task.response.TaskItemResponse;
 import clap.server.adapter.inbound.web.dto.task.response.*;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
+import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
-import org.springframework.data.domain.Slice;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +42,7 @@ public class TaskResponseMapper {
                 task.getFinishedAt() != null ? task.getFinishedAt() : null
         );
     }
+
     public static FilterAssignedTaskListResponse toFilterAssignedTaskListResponse(Task task) {
         return new FilterAssignedTaskListResponse(
                 task.getTaskId(),
@@ -58,6 +57,7 @@ public class TaskResponseMapper {
                 task.getFinishedAt() != null ? task.getFinishedAt() : null
         );
     }
+
     public static FilterPendingApprovalResponse toFilterPendingApprovalTasksResponse(Task task) {
         return new FilterPendingApprovalResponse(
                 task.getTaskId(),
@@ -71,7 +71,7 @@ public class TaskResponseMapper {
         );
     }
 
-    public static FindTaskDetailsResponse toFindTaskDetailResponse(Task task, List<Attachment> attachments){
+    public static FindTaskDetailsResponse toFindTaskDetailResponse(Task task, List<Attachment> attachments) {
         List<AttachmentResponse> attachmentResponses = toAttachmentResponseList(attachments);
         return new FindTaskDetailsResponse(
                 task.getTaskId(),
@@ -119,18 +119,15 @@ public class TaskResponseMapper {
         );
     }
 
-    public static TaskBoardResponse toSliceTaskItemResponse(Slice<Task> tasks) {
-        Map<TaskStatus, List<TaskItemResponse>> tasksByStatus =tasks.getContent().stream()
+    public static TaskBoardResponse toTaskBoardResponse(List<Task> tasks) {
+        Map<TaskStatus, List<TaskItemResponse>> tasksByStatus = tasks.stream()
                 .map(TaskResponseMapper::toTaskItemResponse)
                 .collect(Collectors.groupingBy(TaskItemResponse::taskStatus));
 
         return new TaskBoardResponse(
                 tasksByStatus.getOrDefault(TaskStatus.IN_PROGRESS, Collections.emptyList()),
                 tasksByStatus.getOrDefault(TaskStatus.PENDING_COMPLETED, Collections.emptyList()),
-                tasksByStatus.getOrDefault(TaskStatus.COMPLETED, Collections.emptyList()),
-                tasks.hasNext(),
-                tasks.isFirst(),
-                tasks.isLast()
+                tasksByStatus.getOrDefault(TaskStatus.COMPLETED, Collections.emptyList())
         );
     }
 
@@ -141,12 +138,20 @@ public class TaskResponseMapper {
                 task.getTitle(),
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
+                task.getLabel() != null ? toLabelInfo(task.getLabel()) : null,
                 task.getRequester().getNickname(),
                 task.getRequester().getImageUrl(),
                 task.getRequester().getMemberInfo().getDepartment().getName(),
                 task.getProcessorOrder(),
                 task.getTaskStatus(),
                 task.getCreatedAt()
+        );
+    }
+
+    public static TaskItemResponse.LabelInfo toLabelInfo(Label label) {
+        return new TaskItemResponse.LabelInfo(
+                label.getLabelName(),
+                label.getLabelColor()
         );
     }
 
