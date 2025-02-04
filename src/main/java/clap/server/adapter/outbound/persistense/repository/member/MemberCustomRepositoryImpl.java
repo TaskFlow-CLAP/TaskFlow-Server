@@ -46,17 +46,17 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(memberEntity.status.ne(MemberStatus.DELETED));
 
-        if (filterRequest.name() != null) {
+        if (!filterRequest.name().isBlank()) {
             whereClause.and(memberEntity.name.containsIgnoreCase(filterRequest.name()));
         }
-        if (filterRequest.email() != null) {
+        if (!filterRequest.email().isBlank()) {
             whereClause.and(memberEntity.email.containsIgnoreCase(filterRequest.email()));
         }
-        if (filterRequest.nickName() != null) {
+        if (!filterRequest.nickName().isBlank()) {
             whereClause.and(memberEntity.nickname.containsIgnoreCase(filterRequest.nickName()));
         }
-        if (filterRequest.departmentName() != null) {
-            whereClause.and(memberEntity.department.name.eq(filterRequest.departmentName()));
+        if (!filterRequest.departmentName().isBlank()) {
+            whereClause.and(memberEntity.department.name.contains(filterRequest.departmentName()));
         }
         if (filterRequest.role() != null) {
             whereClause.and(memberEntity.role.eq(filterRequest.role()));

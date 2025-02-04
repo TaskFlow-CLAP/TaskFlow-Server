@@ -103,7 +103,6 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     @Override
     public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest) {
         return memberRepository.findMembersWithFilter(pageable, filterRequest).map(memberPersistenceMapper::toDomain);
-
     }
 }
 
