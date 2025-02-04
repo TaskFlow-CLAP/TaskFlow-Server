@@ -51,7 +51,7 @@ public class LoginAttemptService {
             if (minutesSinceLastAttemptInMillis <= LOCK_TIME_DURATION) {
                 throw new AuthException(AuthErrorCode.ACCOUNT_IS_LOCKED);
             }
-            commandLoginLogPort.deleteById(clientIp);
+            else commandLoginLogPort.deleteById(clientIp);
         }
     }
 

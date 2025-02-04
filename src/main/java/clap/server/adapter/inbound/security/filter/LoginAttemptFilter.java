@@ -1,8 +1,6 @@
 package clap.server.adapter.inbound.security.filter;
 
 import clap.server.application.service.auth.LoginAttemptService;
-import clap.server.exception.AuthException;
-import clap.server.exception.code.GlobalErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static clap.server.adapter.inbound.security.WebSecurityUrl.LOGIN_ENDPOINT;
-import static clap.server.common.constants.AuthConstants.SESSION_ID;
 import static clap.server.common.utils.ClientIpParseUtil.getClientIp;
 
 
