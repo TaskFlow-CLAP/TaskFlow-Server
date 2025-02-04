@@ -58,7 +58,6 @@ class ApprovalTaskServiceTest {
 
     private Member reviewer, processor;
     private Task task;
-    private Label label;
     private Category category, mainCategory;
 
     @BeforeEach
@@ -67,7 +66,6 @@ class ApprovalTaskServiceTest {
         processor = TestDataFactory.createManager();
         mainCategory = TestDataFactory.createMainCategory();
         category = TestDataFactory.createCategory(mainCategory);
-        label = TestDataFactory.createLabel();
         task = TestDataFactory.createTask( 1L,"TC001", "제목1", TaskStatus.REQUESTED, category, null, processor);
     }
 
@@ -83,7 +81,6 @@ class ApprovalTaskServiceTest {
         when(taskService.findById(taskId)).thenReturn(task);
         when(memberService.findById(approvalTaskRequest.processorId())).thenReturn(processor);
         when(categoryService.findById(approvalTaskRequest.categoryId())).thenReturn(category);
-        when(labelService.findById(approvalTaskRequest.labelId())).thenReturn(label);
         when(taskService.upsert(task)).thenReturn(task);
 
         //when
