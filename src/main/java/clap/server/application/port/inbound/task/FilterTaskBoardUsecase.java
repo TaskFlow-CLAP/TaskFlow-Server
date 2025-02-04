@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 
 public interface FilterTaskBoardUsecase {
-    TaskBoardResponse getTaskBoardByFilter(Long processorId, LocalDate untilDate, FilterTaskBoardRequest request, Pageable pageable);
+    TaskBoardResponse getTaskBoardByFilter(Long processorId, LocalDate fromDate, FilterTaskBoardRequest request);
 }
