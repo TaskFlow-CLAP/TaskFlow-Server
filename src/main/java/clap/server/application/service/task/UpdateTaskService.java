@@ -71,7 +71,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Override
     @Transactional
-    public UpdateTaskResponse updateTaskState(Long memberId, Long taskId, UpdateTaskStatusRequest updateTaskStatusRequest) {
+    public UpdateTaskResponse updateTaskStatus(Long memberId, Long taskId, TaskStatus taskStatus) {
         memberService.findActiveMember(memberId);
         memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
@@ -135,7 +135,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             sendNotificationService.sendPushNotification(receiver, notificationType,
                     task, message, null);
         });
-        sendNotificationService.sendAgitNotification(notificationType,
-                task, message, null);
+
+            sendNotificationService.sendAgitNotification(notificationType, task, message, null);
     }
 }
