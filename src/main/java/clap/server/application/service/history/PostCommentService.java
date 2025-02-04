@@ -1,6 +1,6 @@
 package clap.server.application.service.history;
 
-import clap.server.adapter.inbound.web.dto.history.CreateCommentRequest;
+import clap.server.adapter.inbound.web.dto.history.request.CreateCommentRequest;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;

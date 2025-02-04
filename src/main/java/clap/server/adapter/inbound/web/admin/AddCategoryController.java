@@ -1,8 +1,8 @@
 package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.security.service.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.admin.AddMainCategoryRequest;
-import clap.server.adapter.inbound.web.dto.admin.AddSubCategoryRequest;
+import clap.server.adapter.inbound.web.dto.admin.request.AddMainCategoryRequest;
+import clap.server.adapter.inbound.web.dto.admin.request.AddSubCategoryRequest;
 import clap.server.application.port.inbound.admin.AddMainCategoryUsecase;
 import clap.server.application.port.inbound.admin.AddSubCategoryUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;

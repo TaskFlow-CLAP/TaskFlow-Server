@@ -1,8 +1,8 @@
 package clap.server.adapter.inbound.web.admin;
 
-import clap.server.adapter.inbound.web.dto.admin.FindAllCategoryResponse;
-import clap.server.adapter.inbound.web.dto.admin.FindMainCategoryResponse;
-import clap.server.adapter.inbound.web.dto.admin.FindSubCategoryResponse;
+import clap.server.adapter.inbound.web.dto.admin.response.FindAllCategoryResponse;
+import clap.server.adapter.inbound.web.dto.admin.response.FindMainCategoryResponse;
+import clap.server.adapter.inbound.web.dto.admin.response.FindSubCategoryResponse;
 import clap.server.application.port.inbound.admin.FindAllCategoryUsecase;
 import clap.server.application.port.inbound.admin.FindMainCategoryUsecase;
 import clap.server.application.port.inbound.admin.FindSubCategoryUsecase;
