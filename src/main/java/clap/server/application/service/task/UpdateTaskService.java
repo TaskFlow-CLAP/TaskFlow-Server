@@ -36,6 +36,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_UPDATABLE_STATUS;
+
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -74,11 +76,19 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         memberService.findActiveMember(memberId);
         memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
-        task.updateTaskStatus(taskStatus);
-        Task updateTask = taskService.upsert(task);
 
-        publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
-        return TaskResponseMapper.toUpdateTaskResponse(updateTask);
+        if(!TASK_UPDATABLE_STATUS.contains(taskStatus)){
+            throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
+        }
+
+        if(!task.getTaskStatus().equals(taskStatus)){
+            task.updateTaskStatus(taskStatus);
+            Task updateTask = taskService.upsert(task);
+
+            publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
+            return TaskResponseMapper.toUpdateTaskResponse(updateTask);
+        }
+        return TaskResponseMapper.toUpdateTaskResponse(task);
     }
 
     @Transactional
