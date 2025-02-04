@@ -6,15 +6,15 @@ import clap.server.domain.model.auth.LoginLog;
 import clap.server.exception.AuthException;
 import clap.server.exception.code.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @RequiredArgsConstructor
 @Component
-@Slf4j
+@Transactional
 public class LoginAttemptService {
     private final LoadLoginLogPort loadLoginLogPort;
     private final CommandLoginLogPort commandLoginLogPort;

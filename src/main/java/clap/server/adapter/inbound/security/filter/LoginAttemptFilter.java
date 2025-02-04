@@ -1,10 +1,7 @@
 package clap.server.adapter.inbound.security.filter;
 
-import clap.server.application.port.inbound.domain.LogService;
 import clap.server.application.service.auth.LoginAttemptService;
-import clap.server.application.service.log.FindApiLogsService;
 import clap.server.exception.AuthException;
-import clap.server.exception.code.AuthErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

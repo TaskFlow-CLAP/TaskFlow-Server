@@ -45,4 +45,15 @@ public class LoginLog {
 	public void setLocked(boolean locked) {
 		isLocked = locked;
 	}
+
+	@Override
+	public String toString() {
+			return "{" +
+					"clientIp='" + clientIp + '\'' +
+					", attemptNickname='" + attemptNickname + '\'' +
+					", lastAttemptAt=" + lastAttemptAt +
+					", attemptCount=" + attemptCount +
+					", isLocked=" + isLocked +
+					'}';
+	}
 }
