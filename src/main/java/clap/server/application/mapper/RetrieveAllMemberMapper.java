@@ -16,13 +16,15 @@ public class RetrieveAllMemberMapper {
 
     public RetrieveAllMemberResponse toResponse(Member member) {
         return new RetrieveAllMemberResponse(
+                member.getMemberId(),
                 member.getMemberInfo().getName(),
                 member.getMemberInfo().getEmail(),
                 member.getMemberInfo().getNickname(),
                 member.getMemberInfo().isReviewer(),
                 member.getMemberInfo().getDepartment().getName(),
                 member.getMemberInfo().getRole(),
-                member.getMemberInfo().getDepartmentRole()
+                member.getMemberInfo().getDepartmentRole(),
+                member.getCreatedAt()
         );
     }
 }

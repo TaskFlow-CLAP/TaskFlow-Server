@@ -21,7 +21,10 @@ public record FindMemberRequest(
         @Schema(description = "부서 이름", example = "1")
         String departmentName,
 
-        @NotNull
         @Schema(description = "회원 역할", example = "ROLE_USER")
         MemberRole role
+
+        //TODO: 가입일 추가
+
+
 ) {}
