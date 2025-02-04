@@ -5,6 +5,7 @@ import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskProcessorReque
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskResponseMapper;
@@ -19,14 +20,12 @@ import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;
+import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.domain.model.task.*;
 import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.task.Attachment;
-import clap.server.domain.model.task.Category;
-import clap.server.domain.model.task.Label;
-import clap.server.domain.model.task.Task;
 import clap.server.domain.policy.task.TaskPolicyConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.NotificationErrorCode;
@@ -42,6 +41,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_UPDATABLE_STATUS;
+
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -56,6 +57,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final LoadAttachmentPort loadAttachmentPort;
     private final LabelService labelService;
     private final CommandAttachmentPort commandAttachmentPort;
+    private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final S3UploadPort s3UploadPort;
     private final ObjectMapper objectMapper;
 
@@ -81,10 +83,17 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         memberService.findActiveMember(memberId);
         memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
-        task.updateTaskStatus(taskStatus);
-        Task updateTask = taskService.upsert(task);
+        if(!TASK_UPDATABLE_STATUS.contains(taskStatus)){
+            throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
+        }
 
-        publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
+        if(!task.getTaskStatus().equals(taskStatus)){
+            task.updateTaskStatus(taskStatus);
+            Task updateTask = taskService.upsert(task);
+            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, taskStatus.getDescription(), null,null);
+            commandTaskHistoryPort.save(taskHistory);
+            publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
+        }
     }
 
     @Transactional
