@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -56,15 +57,12 @@ public class LoggingAspect {
             throw ex;
         } finally {
             LogStatus logStatus = getLogType((MethodSignature) joinPoint.getSignature());
-            int statusCode;
+            int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
             String customCode = null;
             if (capturedException != null) {
                 if (capturedException instanceof BaseException e) {
                     statusCode = e.getCode().getHttpStatus().value();
                     customCode = e.getCode().getCustomCode();
-                } else {
-                    ModelAndView modelAndView = handlerExceptionResolver.resolveException(request, response, null, capturedException);
-                    statusCode = modelAndView.getStatus().value();
                 }
             } else {
                 statusCode = response.getStatus();
