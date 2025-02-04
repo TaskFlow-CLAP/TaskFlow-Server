@@ -29,9 +29,14 @@ import clap.server.domain.model.task.Label;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.policy.task.TaskPolicyConstants;
 import clap.server.exception.ApplicationException;
+import clap.server.exception.code.NotificationErrorCode;
 import clap.server.exception.code.TaskErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +57,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final LabelService labelService;
     private final CommandAttachmentPort commandAttachmentPort;
     private final S3UploadPort s3UploadPort;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -108,6 +114,16 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         task.updateLabel(label);
         Task updatetask = taskService.upsert(task);
         return TaskResponseMapper.toUpdateTaskResponse(updatetask);
+    }
+
+    public void updateAgitPostId(ResponseEntity<String> responseEntity, Task task) {
+        try {
+            JsonNode jsonNode = objectMapper.readTree(responseEntity.getBody());
+            task.updateAgitPostId(jsonNode.get("id").asLong());
+            taskService.upsert(task);
+        } catch (JsonProcessingException e) {
+            throw new ApplicationException(NotificationErrorCode.AGIT_SEND_FAILED);
+        }
     }
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {

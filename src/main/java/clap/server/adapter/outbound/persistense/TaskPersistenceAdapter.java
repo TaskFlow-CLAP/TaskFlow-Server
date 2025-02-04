@@ -45,17 +45,6 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public void updateAgitPostId(ResponseEntity<String> responseEntity, Task task) {
-        try {
-            JsonNode jsonNode = objectMapper.readTree(responseEntity.getBody());
-            task.updateAgitPostId(jsonNode.get("id").asLong());
-            taskRepository.save(taskPersistenceMapper.toEntity(task));
-        } catch (JsonProcessingException e) {
-            throw new ApplicationException(NotificationErrorCode.AGIT_SEND_FAILED);
-        }
-    }
-
-    @Override
     public Optional<Task> findById(Long id) {
         Optional<TaskEntity> taskEntity = taskRepository.findById(id);
         return taskEntity.map(taskPersistenceMapper::toDomain);
