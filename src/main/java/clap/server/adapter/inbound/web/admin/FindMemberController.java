@@ -28,17 +28,20 @@ public class FindMemberController {
             description = "모든 회원 정보를 페이징 처리하여 반환하거나 조건에 맞는 회원 정보를 반환합니다.",
             parameters = {
                     @Parameter(name = "page", description = "조회할 페이지 번호 (0부터 시작, 기본값: 0)", example = "0"),
-                    @Parameter(name = "pageSize", description = "페이지 당 회원 수 (기본값: 20)", example = "20")
+                    @Parameter(name = "pageSize", description = "페이지 당 회원 수 (기본값: 20)", example = "20"),
+                    @Parameter(name = "sortDirection", description = "정렬 방향 (ASC 또는 DESC, 기본값: DESC)", example = "DESC")
+
             }
     )
     @GetMapping("/members")
     public ResponseEntity<PageResponse<RetrieveAllMemberResponse>> getAllMembers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int pageSize,
+            @RequestParam(defaultValue = "DESC") String sortDirection,
             @ModelAttribute @Valid FindMemberRequest filterRequest) {
 
         Pageable pageable = PageRequest.of(page, pageSize);
-        PageResponse<RetrieveAllMemberResponse> response = findMembersWithFilterUsecase.findMembersWithFilter(pageable, filterRequest);
+        PageResponse<RetrieveAllMemberResponse> response = findMembersWithFilterUsecase.findMembersWithFilter(pageable, filterRequest, sortDirection);
         return ResponseEntity.ok(response);
     }
 }

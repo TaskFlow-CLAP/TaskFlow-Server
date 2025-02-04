@@ -20,6 +20,8 @@ public record FindNotificationListResponse(
         String taskTitle,
         @Schema(description = "알림 내용", example = "진행 중 or 담당자 이름 등등")
         String message,
+        @Schema(description = "읽음 여부", example = "false")
+        Boolean isRead,
         @Schema(description = "알림 생성 시간", example = "2025-01-24 14:58")
         LocalDateTime createdAt
 ) {

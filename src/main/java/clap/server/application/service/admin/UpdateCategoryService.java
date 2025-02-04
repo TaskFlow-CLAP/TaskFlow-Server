@@ -2,9 +2,11 @@ package clap.server.application.service.admin;
 
 import clap.server.application.port.inbound.admin.UpdateCategoryUsecase;
 import clap.server.application.port.outbound.member.LoadMemberPort;
+import clap.server.application.port.outbound.task.CommandCategoryPort;
 import clap.server.application.port.outbound.task.LoadCategoryPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
+import clap.server.domain.model.task.Category;
 import clap.server.exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,13 +19,15 @@ import static clap.server.exception.code.TaskErrorCode.CATEGORY_NOT_FOUND;
 public class UpdateCategoryService implements UpdateCategoryUsecase {
     private final LoadCategoryPort loadCategoryPort;
     private final LoadMemberPort loadMemberPort;
+    private final CommandCategoryPort commandCategoryPort;
 
     @Override
     @Transactional
     public void updateCategory(Long adminId, Long categoryId, String name, String code) {
         Member admin = loadMemberPort.findActiveMemberById(adminId).orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND));
-        loadCategoryPort.findById(categoryId)
-                .orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND))
-                .updateCategory(admin, name, code);
+        Category category = loadCategoryPort.findById(categoryId)
+                .orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND));
+        category.updateCategory(admin, name, code);
+        commandCategoryPort.save(category);
     }
 }

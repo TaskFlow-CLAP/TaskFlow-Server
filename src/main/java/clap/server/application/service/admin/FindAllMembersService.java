@@ -5,14 +5,14 @@ import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.application.mapper.RetrieveAllMemberMapper;
 import clap.server.application.port.inbound.admin.FindAllMembersUsecase;
 import clap.server.application.port.outbound.member.LoadMemberPort;
+import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class FindAllMembersService implements FindAllMembersUsecase {
     private final LoadMemberPort loadMemberPort;

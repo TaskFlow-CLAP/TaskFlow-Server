@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Policy
 public class TaskStatisticsPolicy {
-    private static final String DISPLAY_FORMAT = "MM월 dd일";
+    private static final String DISPLAY_FORMAT = "M월 d일";
 
     public Map<String, Long> filterAndFormatWeekdayStatistics(Map<String, Long> statistics) {
         return statistics.entrySet().stream()
