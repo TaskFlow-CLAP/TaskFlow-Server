@@ -33,7 +33,6 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @RequestMapping("/api/task-board")
 public class TaskBoardController {
-    private final GetTaskBoardUsecase getTaskBoardUsecase;
     private final FilterTaskBoardUsecase filterTaskBoardUsecase;
     private final UpdateTaskBoardUsecase updateTaskBoardUsecase;
     private final UpdateTaskOrderAndStatusUsecase updateTaskOrderAndStatus;
@@ -41,17 +40,12 @@ public class TaskBoardController {
     @Operation(summary = "작업 보드 조회 API")
     @Secured({"ROLE_MANAGER"})
     @GetMapping
-    public ResponseEntity<TaskBoardResponse> getTaskBoard(@RequestParam(defaultValue = "0") int page,
-                                                          @RequestParam(defaultValue = "20") int pageSize,
-                                                          @Parameter(description = "작업 완료 일자 조회 기준, yyyy-mm-dd 형식으로 입력합니다.") @RequestParam(required = false)
-                                                          @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate untilDate,
-                                                          @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "필터링 조회 request") @ModelAttribute FilterTaskBoardRequest request,
-                                                          @AuthenticationPrincipal SecurityUserDetails userInfo) {
-        Pageable pageable = PageRequest.of(page, pageSize);
-        if (request != null) {
-            return ResponseEntity.ok(filterTaskBoardUsecase.getTaskBoardByFilter(userInfo.getUserId(), untilDate, request, pageable));
-        } else
-            return ResponseEntity.ok(getTaskBoardUsecase.getTaskBoards(userInfo.getUserId(), untilDate, pageable));
+    public ResponseEntity<TaskBoardResponse> getTaskBoard(
+            @Parameter(description = "작업 완료 일자 조회 기준, yyyy-mm-dd 형식으로 입력합니다.") @RequestParam(required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
+            @ModelAttribute FilterTaskBoardRequest request,
+            @AuthenticationPrincipal SecurityUserDetails userInfo) {
+        return ResponseEntity.ok(filterTaskBoardUsecase.getTaskBoardByFilter(userInfo.getUserId(), fromDate, request));
     }
 
     @Operation(summary = "작업 보드 순서 및 상태 변경 API")
