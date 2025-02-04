@@ -37,7 +37,7 @@ public class LogService {
 
     public void createLoginFailedLog(HttpServletRequest request, int statusCode, String customCode, LogStatus logStatus, String requestBody, String nickName) throws JsonProcessingException {
         LoginLog loginLog = loadLoginLogPort.findByClientIp(ClientIpParseUtil.getClientIp(request)).orElse(null);
-        String responseBody = loginLog != null ? loginLog.toString() : null;
+        String responseBody = loginLog != null ? loginLog.toSummaryString() : null;
         AnonymousLog anonymousLog = AnonymousLog.createAnonymousLog(request, statusCode,customCode, logStatus, responseBody, requestBody, nickName);
         commandLogPort.saveAnonymousLog(anonymousLog);
     }

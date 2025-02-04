@@ -46,11 +46,8 @@ public class LoginLog {
 		isLocked = locked;
 	}
 
-	public String toString() {
+	public String toSummaryString() {
 			return "{" +
-					"clientIp='" + clientIp + '\'' +
-					", attemptNickname='" + attemptNickname + '\'' +
-					", lastAttemptAt=" + lastAttemptAt +
 					", failedCount=" + failedCount +
 					", isLocked=" + isLocked +
 					'}';
