@@ -12,12 +12,18 @@ import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
 import clap.server.domain.model.task.Task;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.NotificationErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,12 +35,24 @@ import java.util.Optional;
 public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     private final TaskRepository taskRepository;
     private final TaskPersistenceMapper taskPersistenceMapper;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Task save(Task task) {
         TaskEntity taskEntity = taskPersistenceMapper.toEntity(task);
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
         return taskPersistenceMapper.toDomain(savedTaskEntity);
+    }
+
+    @Override
+    public void updateAgitPostId(ResponseEntity<String> responseEntity, Task task) {
+        try {
+            JsonNode jsonNode = objectMapper.readTree(responseEntity.getBody());
+            task.updateAgitPostId(jsonNode.get("id").asLong());
+            taskRepository.save(taskPersistenceMapper.toEntity(task));
+        } catch (JsonProcessingException e) {
+            throw new ApplicationException(NotificationErrorCode.AGIT_SEND_FAILED);
+        }
     }
 
     @Override
