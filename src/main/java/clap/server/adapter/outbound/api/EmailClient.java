@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.outbound.api.dto.EmailTemplate;
-import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
+import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import clap.server.application.port.outbound.webhook.SendEmailPort;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
 import clap.server.exception.AdapterException;
@@ -19,7 +19,7 @@ public class EmailClient implements SendEmailPort {
     private final JavaMailSender mailSender;
 
     @Override
-    public void sendWebhookEmail(SendWebhookRequest request) {
+    public void sendWebhookEmail(PushNotificationTemplate request) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");

@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.api;
 
-import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
+import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import clap.server.application.port.outbound.webhook.SendKaKaoWorkPort;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
 import clap.server.exception.AdapterException;
@@ -25,7 +25,7 @@ public class KakaoWorkClient implements SendKaKaoWorkPort {
     private final KakaoWorkBlockBuilder kakaoWorkBlockBuilder;
 
     @Override
-    public void sendKakaoWork(SendWebhookRequest request) {
+    public void sendKakaoWork(PushNotificationTemplate request) {
         RestTemplate restTemplate = new RestTemplate();
 
         // Payload 생성

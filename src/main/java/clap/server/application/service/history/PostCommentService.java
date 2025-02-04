@@ -89,6 +89,8 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
     private void publishNotification(Member receiver, Task task, String message, String commenterName) {
         sendNotificationService.sendPushNotification(receiver, NotificationType.COMMENT, task, message, commenterName);
+        sendNotificationService.sendAgitNotification(NotificationType.COMMENT,
+                task, message, commenterName);
     }
 
 }

@@ -64,5 +64,7 @@ public class CreateTaskService implements CreateTaskUsecase {
         reviewers.forEach(reviewer -> {sendNotificationService.sendPushNotification(reviewer, NotificationType.TASK_REQUESTED,
                 task, null, null);});
 
+        sendNotificationService.sendAgitNotification(NotificationType.TASK_REQUESTED,
+                task, null, null);
     }
 }
