@@ -25,9 +25,14 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.*;
 import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.exception.ApplicationException;
+import clap.server.exception.code.NotificationErrorCode;
 import clap.server.exception.code.TaskErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,6 +56,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final CommandAttachmentPort commandAttachmentPort;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final S3UploadPort s3UploadPort;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -140,7 +146,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             sendNotificationService.sendPushNotification(receiver, notificationType,
                     task, message, null);
         });
-        sendNotificationService.sendAgitNotification(notificationType,
-                task, message, null);
+
+            sendNotificationService.sendAgitNotification(notificationType, task, message, null);
     }
 }

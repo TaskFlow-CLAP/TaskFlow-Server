@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static clap.server.domain.model.notification.Notification.createTaskNotification;
 
 @ApplicationService
@@ -25,7 +23,6 @@ public class SendNotificationService {
     private final SendEmailService sendEmailService;
     private final SendKaKaoWorkService sendKaKaoWorkService;
     private final CommandNotificationPort commandNotificationPort;
-    private static final AtomicBoolean agitSent = new AtomicBoolean(false);
 
     @Async("notificationExecutor")
     public void sendPushNotification(Member receiver, NotificationType notificationType,
@@ -85,6 +82,6 @@ public class SendNotificationService {
                 commenterName
         );
 
-        sendAgitService.sendAgit(pushNotificationTemplate);
+        sendAgitService.sendAgit(pushNotificationTemplate, task);
     }
 }

@@ -1,13 +1,22 @@
 package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
+import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
+import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.outbound.webhook.SendAgitPort;
+import clap.server.application.service.task.UpdateTaskService;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
+import clap.server.domain.model.task.Task;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.NotificationErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -18,41 +27,33 @@ public class AgitClient implements SendAgitPort {
     @Value("${webhook.agit.url}")
     private String AGIT_WEBHOOK_URL;
 
-    @Override
-    public void sendAgit(PushNotificationTemplate request) {
+    private final AgitTemplateBuilder agitTemplateBuilder;
+    private final ObjectMapper objectMapper;
+    private final TaskService taskService;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
+    @Override
+    public void sendAgit(PushNotificationTemplate request, Task task) {
+
+        HttpEntity<String> entity = agitTemplateBuilder.createAgitEntity(request, task);
 
         RestTemplate restTemplate = new RestTemplate();
-        String taskUrl = "https://www.naver.com"; //Todo 작업 상세페이지 url 추가
+        if (request.notificationType() == NotificationType.TASK_REQUESTED) {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    AGIT_WEBHOOK_URL, HttpMethod.POST, entity, String.class);
+            updateAgitPostId(responseEntity, task);
+        }
+        else {
+            restTemplate.exchange(AGIT_WEBHOOK_URL, HttpMethod.POST, entity, String.class);
+        }
+    }
 
-        String message = switch (request.notificationType()) {
-            case TASK_REQUESTED -> "📌 *새 작업 요청:* `" + request.taskName() + "`\\n"
-                    + "\\t\\t*•요청자: " + request.senderName() + "*\\n"
-                    + "\\t\\t[OPEN](" + taskUrl + ")";
-            case STATUS_SWITCHED -> "⚙️ *작업 상태 변경:* `" + request.taskName() + "\\n"
-                    + "\\t\\t*•작업 상태: " + request.message() + "*\\n"
-                    + "\\t\\t[OPEN](" + taskUrl + ")";
-            case PROCESSOR_CHANGED -> "🔄 *담당자 변경:* `" + request.taskName() + "\\n"
-                    + "\\t\\t*•새 담당자: " + request.message() + "*\\n"
-                    + "\\t\\t[OPEN](" + taskUrl + ")";
-            case PROCESSOR_ASSIGNED -> "👤 *작업 담당자 배정:* `" + request.taskName() + "\\n"
-                    + "\\t\\t*•담당자: " + request.message() + "*\\n"
-                    + "\\t\\t[OPEN](" + taskUrl + ")";
-            case COMMENT -> "💬 *새 댓글:* `" + request.taskName() + "`\\n"
-                    + "\\t\\t*•작성자: " + request.commenterName() + "\\n"
-                    + "\\t\\t*•댓글 내용: " + request.message() + "\\n"
-                    + "\\t\\t[OPEN](" + taskUrl + ")";
-            default -> null;
-        };
-
-        String payload = "{"
-                + "\"text\": \"" + message + "\","
-                + "\"mrkdwn\": true" + "}";
-
-        HttpEntity<String> entity = new HttpEntity<>(payload, headers);
-
-        restTemplate.exchange(AGIT_WEBHOOK_URL, HttpMethod.POST, entity, String.class);
+    private void updateAgitPostId(ResponseEntity<String> responseEntity, Task task) {
+        try {
+            JsonNode jsonNode = objectMapper.readTree(responseEntity.getBody());
+            task.updateAgitPostId(jsonNode.get("id").asLong());
+            taskService.upsert(task);
+        } catch (JsonProcessingException e) {
+            throw new ApplicationException(NotificationErrorCode.AGIT_SEND_FAILED);
+        }
     }
 }
