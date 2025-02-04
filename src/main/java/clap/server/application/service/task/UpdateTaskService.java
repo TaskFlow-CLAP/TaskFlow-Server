@@ -72,7 +72,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Override
     @Transactional
     public UpdateTaskResponse updateTaskStatus(Long memberId, Long taskId, TaskStatus taskStatus) {
-        memberService.findActiveMember(memberId);
+        memberService.findReviewer(memberId);
         if(!TaskPolicyConstants.TASK_UPDATABLE_STATUS.contains(taskStatus)){
             throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
         }
