@@ -3,6 +3,10 @@ package clap.server.adapter.inbound.web.admin;
 import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.application.port.inbound.admin.RegisterMemberCSVUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
+import clap.server.common.utils.FileTypeValidator;
+import clap.server.exception.AdapterException;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.FileErrorcode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +35,9 @@ public class RegisterMemberCsvController {
     public ResponseEntity<String> registerMembersFromCsv(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @RequestParam("file") MultipartFile file) throws IOException {
+        if (!FileTypeValidator.validCSVFile(file.getInputStream())) {
+            throw new AdapterException(FileErrorcode.UNSUPPORTED_FILE_TYPE);
+        }
         int addedCount = registerMemberCSVUsecase.registerMembersFromCsv(userInfo.getUserId(), file);
         return ResponseEntity.ok(addedCount + "명의 회원이 등록되었습니다.");
     }
