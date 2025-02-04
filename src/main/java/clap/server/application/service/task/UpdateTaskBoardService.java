@@ -26,7 +26,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     private final MemberService memberService;
     private final TaskService taskService;
     private final LoadTaskPort loadTaskPort;
-    
+
     private final TaskOrderCalculationPolicy taskOrderCalculationPolicy;
     private final ProcessorValidationPolicy processorValidationPolicy;
 
@@ -54,7 +54,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
             Task nextTask = findByIdAndStatus(request.nextTaskId(), targetTask.getTaskStatus());
             // 해당 상태에서 바로 앞에 있는 작업 찾기
             Task prevTask = loadTaskPort.findPrevOrderTaskByProcessorIdAndStatus(processorId, targetTask.getTaskStatus(), nextTask.getProcessorOrder()).orElse(null);
-            long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(targetTask, nextTask);
+            long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(prevTask, nextTask);
             updateNewTaskOrder(targetTask, newOrder);
         }
         // 가장 하위로 이동
@@ -102,7 +102,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
             Task nextTask = findByIdAndStatus(request.nextTaskId(), targetStatus);
             // 해당 상태에서 바로 앞 있는 작업 찾기
             Task prevTask = loadTaskPort.findPrevOrderTaskByProcessorIdAndStatus(processorId, targetStatus, nextTask.getProcessorOrder()).orElse(null);
-            long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(prevTask,nextTask);
+            long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(prevTask, nextTask);
             updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
         } else if (request.nextTaskId() == 0) {
             Task prevTask = findByIdAndStatus(request.prevTaskId(), targetStatus);
@@ -113,7 +113,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
         } else {
             Task prevTask = findByIdAndStatus(request.prevTaskId(), targetStatus);
             Task nextTask = findByIdAndStatus(request.nextTaskId(), targetStatus);
-            long newOrder = taskOrderCalculationPolicy.calculateNewProcessorOrder(nextTask.getProcessorOrder(), prevTask.getProcessorOrder());
+            long newOrder = taskOrderCalculationPolicy.calculateNewProcessorOrder(prevTask.getProcessorOrder(), nextTask.getProcessorOrder());
             updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
         }
     }
