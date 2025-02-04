@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.dto.auth;
+package clap.server.adapter.inbound.web.dto.auth.response;
 
 public record ReissueTokenResponse(
         String accessToken,

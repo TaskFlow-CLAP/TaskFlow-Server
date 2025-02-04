@@ -1,8 +1,8 @@
 package clap.server.application.mapper;
 
-import clap.server.adapter.inbound.web.dto.admin.FindAllCategoryResponse;
-import clap.server.adapter.inbound.web.dto.admin.FindMainCategoryResponse;
-import clap.server.adapter.inbound.web.dto.admin.FindSubCategoryResponse;
+import clap.server.adapter.inbound.web.dto.admin.response.FindAllCategoryResponse;
+import clap.server.adapter.inbound.web.dto.admin.response.FindMainCategoryResponse;
+import clap.server.adapter.inbound.web.dto.admin.response.FindSubCategoryResponse;
 import clap.server.domain.model.task.Category;
 
 import java.util.List;

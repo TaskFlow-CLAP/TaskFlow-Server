@@ -1,6 +1,6 @@
 package clap.server.application.service.admin;
 
-import clap.server.adapter.inbound.web.dto.admin.SendInvitationRequest;
+import clap.server.adapter.inbound.web.dto.admin.request.SendInvitationRequest;
 import clap.server.application.port.inbound.admin.SendInvitationUsecase;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;

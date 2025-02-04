@@ -1,6 +1,6 @@
 package clap.server.application.service.history;
 
-import clap.server.adapter.inbound.web.dto.history.EditCommentRequest;
+import clap.server.adapter.inbound.web.dto.history.request.EditCommentRequest;
 import clap.server.application.port.inbound.history.DeleteCommentUsecase;
 import clap.server.application.port.inbound.history.EditCommentUsecase;
 import clap.server.application.port.inbound.domain.MemberService;

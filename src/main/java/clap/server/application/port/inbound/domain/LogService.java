@@ -1,29 +1,27 @@
-package clap.server.application.service.log;
+package clap.server.application.port.inbound.domain;
 
-import clap.server.adapter.outbound.persistense.ApiLogPersistenceAdapter;
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
-import clap.server.application.port.inbound.domain.MemberService;
-import clap.server.application.port.inbound.log.CreateMemberLogsUsecase;
 import clap.server.application.port.outbound.log.CommandLogPort;
-import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.domain.model.log.AnonymousLog;
 import clap.server.domain.model.log.MemberLog;
 import clap.server.domain.model.member.Member;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
-@ApplicationService
+@Service
 @RequiredArgsConstructor
-public class CreateMemberLogsService implements CreateMemberLogsUsecase {
-
+@Transactional
+public class LogService {
     private final CommandLogPort commandLogPort;
     private final MemberService memberService;
 
-    @Override
-    @Transactional
+    public void createAnonymousLog(HttpServletRequest request,  int statusCode, String customCode, LogStatus logStatus, Object responseBody, String requestBody, String nickName) {
+        AnonymousLog anonymousLog = AnonymousLog.createAnonymousLog(request, statusCode,customCode, logStatus, responseBody, requestBody, nickName);
+        commandLogPort.saveAnonymousLog(anonymousLog);
+    }
+
     public void createMemberLog(HttpServletRequest request, int statusCode, String customCode,LogStatus logStatus, Object responseBody, String requestBody, Long userId) {
         Member member = memberService.findById(userId);
         MemberLog memberLog = MemberLog.createMemberLog(request, statusCode, customCode, logStatus,  responseBody, requestBody, member);
