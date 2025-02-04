@@ -22,7 +22,8 @@ public class RetrieveAllMemberMapper {
                 member.getMemberInfo().isReviewer(),
                 member.getMemberInfo().getDepartment().getName(),
                 member.getMemberInfo().getRole(),
-                member.getMemberInfo().getDepartmentRole()
+                member.getMemberInfo().getDepartmentRole(),
+                member.getCreatedAt()
         );
     }
 }
