@@ -46,7 +46,10 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         Task task = taskService.findById(taskId);
         Member processor = memberService.findById(approvalTaskRequest.processorId());
         Category category = categoryService.findById(approvalTaskRequest.categoryId());
-        Label label = labelService.findById(approvalTaskRequest.labelId());
+        Label label = null;
+        if (approvalTaskRequest.labelId() != null) {
+            label = labelService.findById(approvalTaskRequest.labelId());
+        }
 
         requestedTaskUpdatePolicy.validateTaskRequested(task);
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);

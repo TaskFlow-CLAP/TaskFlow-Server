@@ -97,7 +97,7 @@ public class TaskResponseMapper {
                 approvedTask.getProcessor().getNickname(),
                 approvedTask.getReviewer().getNickname(),
                 approvedTask.getDueDate(),
-                approvedTask.getLabel().getLabelName(),
+                approvedTask.getLabel() != null ? approvedTask.getLabel().getLabelName() : "",
                 approvedTask.getTaskStatus()
         );
     }
