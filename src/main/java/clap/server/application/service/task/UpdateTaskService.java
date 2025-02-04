@@ -124,16 +124,6 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         return TaskResponseMapper.toUpdateTaskResponse(updatetask);
     }
 
-    public void updateAgitPostId(ResponseEntity<String> responseEntity, Task task) {
-        try {
-            JsonNode jsonNode = objectMapper.readTree(responseEntity.getBody());
-            task.updateAgitPostId(jsonNode.get("id").asLong());
-            taskService.upsert(task);
-        } catch (JsonProcessingException e) {
-            throw new ApplicationException(NotificationErrorCode.AGIT_SEND_FAILED);
-        }
-    }
-
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
         List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
         attachmentsToDelete.forEach(Attachment::softDelete);
