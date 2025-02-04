@@ -1,6 +1,7 @@
 package clap.server.application.service.admin;
 
 import clap.server.application.port.outbound.member.LoadDepartmentPort;
+import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
@@ -10,7 +11,6 @@ import clap.server.exception.code.DepartmentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -24,7 +24,7 @@ import static clap.server.domain.model.member.MemberInfo.toMemberInfo;
 
 
 @Slf4j
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class CsvParseService {
 
@@ -33,6 +33,11 @@ public class CsvParseService {
     public List<Member> parse(MultipartFile file) {
         List<Member> members = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            // 첫 번째 줄은 헤더로 간주하고 다음 줄부터 파싱
+            String headerLine = reader.readLine();
+            if (headerLine == null) {
+                throw ApplicationException.from(MemberErrorCode.INVALID_CSV_FORMAT);
+            }
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
