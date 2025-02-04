@@ -6,7 +6,6 @@ import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskOrderRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.port.inbound.task.FilterTaskBoardUsecase;
-import clap.server.application.port.inbound.task.GetTaskBoardUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskBoardUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskOrderAndStatusUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
@@ -29,7 +28,6 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @RequestMapping("/api/task-board")
 public class TaskBoardController {
-    private final GetTaskBoardUsecase getTaskBoardUsecase;
     private final FilterTaskBoardUsecase filterTaskBoardUsecase;
     private final UpdateTaskBoardUsecase updateTaskBoardUsecase;
     private final UpdateTaskOrderAndStatusUsecase updateTaskOrderAndStatus;
@@ -38,14 +36,11 @@ public class TaskBoardController {
     @Secured({"ROLE_MANAGER"})
     @GetMapping
     public ResponseEntity<TaskBoardResponse> getTaskBoard(
-                                                          @Parameter(description = "작업 완료 일자 조회 기준, yyyy-mm-dd 형식으로 입력합니다.") @RequestParam(required = false)
-                                                          @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
-                                                          @ModelAttribute FilterTaskBoardRequest request,
-                                                          @AuthenticationPrincipal SecurityUserDetails userInfo) {
-        if (request != null) {
-            return ResponseEntity.ok(filterTaskBoardUsecase.getTaskBoardByFilter(userInfo.getUserId(), fromDate, request));
-        } else
-            return ResponseEntity.ok(getTaskBoardUsecase.getTaskBoards(userInfo.getUserId(), fromDate));
+            @Parameter(description = "작업 완료 일자 조회 기준, yyyy-mm-dd 형식으로 입력합니다.") @RequestParam(required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
+            @ModelAttribute FilterTaskBoardRequest request,
+            @AuthenticationPrincipal SecurityUserDetails userInfo) {
+        return ResponseEntity.ok(filterTaskBoardUsecase.getTaskBoardByFilter(userInfo.getUserId(), fromDate, request));
     }
 
     @Operation(summary = "작업 보드 순서 및 상태 변경 API")

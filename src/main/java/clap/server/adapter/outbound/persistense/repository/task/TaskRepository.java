@@ -38,14 +38,15 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
     @Query("SELECT t FROM TaskEntity t " +
             "WHERE t.processor.memberId = :processorId " +
             "AND t.taskStatus IN :taskStatus " +
-            "AND (t.taskStatus != 'COMPLETED' OR t.finishedAt <= :untilDate) " +
+            "AND (:fromDateTime IS NULL OR t.taskStatus != 'COMPLETED' OR " +
+            "    (t.taskStatus = 'COMPLETED' AND t.finishedAt >= :fromDateTime)) " +
             "ORDER BY t.processorOrder ASC ")
-    Slice<TaskEntity> findTasksWithTaskStatusAndCompletedAt(
+    List<TaskEntity> findTasksWithTaskStatusAndCompletedAt(
             @Param("processorId") Long processorId,
             @Param("taskStatus") List<TaskStatus> taskStatus,
-            @Param("untilDate") LocalDateTime untilDate,
-            Pageable pageable
+            @Param("fromDateTime") LocalDateTime fromDateTime
     );
+
 
     Optional<TaskEntity> findByTaskIdAndTaskStatus(Long id, TaskStatus status);
 

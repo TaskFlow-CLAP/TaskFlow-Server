@@ -1,14 +1,13 @@
 package clap.server.application.port.outbound.task;
 
-import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +26,7 @@ public interface LoadTaskPort {
 
     Page<Task> findAllTasks(Pageable pageable, FilterTaskListRequest findTaskListRequest);
 
-    Slice<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDate, Pageable pageable);
+    List<Task> findByProcessorAndStatus(Long processorId, List<TaskStatus> statuses, LocalDateTime fromDate);
 
     Optional<Task> findByIdAndStatus(Long id, TaskStatus status);
 
@@ -35,7 +34,7 @@ public interface LoadTaskPort {
 
     Optional<Task> findNextOrderTaskByProcessorIdAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder);
 
-    Slice<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request, Pageable pageable);
+    List<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request);
 
     List<TeamMemberTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter);
 }
