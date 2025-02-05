@@ -41,7 +41,7 @@ public class ErrorExampleController {
     @GetMapping("/notification")
     @DevelopOnlyApi
     @Operation(summary = "알림 도메인 및 웹훅 관련 에러 코드 나열")
-    @ApiErrorCodes(TaskErrorCode.class)
+    @ApiErrorCodes(NotificationErrorCode.class)
     public void getNotificationErrorCode() {}
 
     @GetMapping("/comment")
