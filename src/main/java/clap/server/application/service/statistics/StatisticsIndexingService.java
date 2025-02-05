@@ -15,7 +15,7 @@ public class StatisticsIndexingService {
     private final LoadTaskPort loadTaskPort;
     private final TaskDocumentPort taskDocumentPort;
 
-  @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void IndexStatistics() {
         taskDocumentPort.saveStatistics(
