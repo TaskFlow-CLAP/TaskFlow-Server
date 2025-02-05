@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Tag(name = "02. Task [담당자]")
 @RestController
 @RequestMapping("/api/team-status")
 @RequiredArgsConstructor
@@ -21,8 +24,9 @@ public class TeamStatusController {
     private final TeamStatusService teamStatusService;
     @Operation(summary = "팀 현황 필터링 조회 API")
     @GetMapping("/filter")
-    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@Validated @ModelAttribute FilterTeamStatusRequest filter) {
+    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@ModelAttribute FilterTeamStatusRequest filter) {
         TeamStatusResponse response = teamStatusService.filterTeamStatus(filter);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response != null ? response : new TeamStatusResponse(List.of(), 0, 0, 0));
     }
+
 }

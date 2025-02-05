@@ -22,12 +22,18 @@ public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatu
     @Override
     public TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
         List<TeamTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter);
+        if (members == null) {
+            members = List.of();
+        }
         return new TeamStatusResponse(members);
     }
 
     @Override
     public TeamStatusResponse filterTeamStatus(FilterTeamStatusRequest filter) {
         List<TeamTaskResponse> members = loadTaskPort.findTeamStatus(null, filter);
+        if (members == null) {
+            members = List.of();
+        }
         return new TeamStatusResponse(members);
     }
 

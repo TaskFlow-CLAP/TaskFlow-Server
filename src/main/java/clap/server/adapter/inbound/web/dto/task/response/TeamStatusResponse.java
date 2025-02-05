@@ -8,7 +8,7 @@ public record TeamStatusResponse(
         int totalPendingTaskCount,
         int totalTaskCount
 ) {
-    // 기존 생성자 (3개 파라미터)
+
     public TeamStatusResponse(List<TeamTaskResponse> members, int totalInProgressTaskCount, int totalPendingTaskCount) {
         this(
                 (members == null) ? List.of() : members,
@@ -18,8 +18,7 @@ public record TeamStatusResponse(
         );
     }
 
-    // 추가된 생성자 (List만 받음)
     public TeamStatusResponse(List<TeamTaskResponse> members) {
-        this(members, 0, 0); // 기본값을 사용하여 생성
+        this(members != null ? members : List.of(), 0, 0); // 기본값을 사용하여 생성
     }
 }

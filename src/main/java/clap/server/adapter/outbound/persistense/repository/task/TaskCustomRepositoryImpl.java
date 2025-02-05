@@ -5,8 +5,6 @@ import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
-import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
-import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
 import static com.querydsl.core.types.Order.ASC;
@@ -58,44 +57,44 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
     @Override
     public List<TeamTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
-        // filter가 null인 경우에도 기본적으로 모든 데이터를 조회하도록 처리
+        // BooleanBuilder로 동적 필터링 적용
         BooleanBuilder builder = new BooleanBuilder();
 
-        // 필터가 null인 경우, 기본적으로 모든 데이터 조회
         if (filter != null) {
-            // 진행 중 또는 완료 대기 상태 필터링
             builder.and(taskEntity.taskStatus.in(TaskStatus.IN_PROGRESS, TaskStatus.PENDING_COMPLETED));
 
-            // 담당자 ID 필터링
             if (memberId != null) {
                 builder.and(taskEntity.processor.memberId.eq(memberId));
             }
 
-            // 작업 타이틀 필터링
             if (filter.taskTitle() != null && !filter.taskTitle().isEmpty()) {
                 builder.and(taskEntity.title.containsIgnoreCase(filter.taskTitle()));
             }
 
-            // 1차 카테고리 필터링 (빈 배열인 경우, 필터링하지 않음)
             if (filter.mainCategoryIds() != null && !filter.mainCategoryIds().isEmpty()) {
                 builder.and(taskEntity.category.mainCategory.categoryId.in(filter.mainCategoryIds()));
             }
 
-            // 2차 카테고리 필터링 (빈 배열인 경우, 필터링하지 않음)
             if (filter.categoryIds() != null && !filter.categoryIds().isEmpty()) {
                 builder.and(taskEntity.category.categoryId.in(filter.categoryIds()));
             }
         }
 
         // 정렬 조건 적용
-        OrderSpecifier<?> orderBy = "기여도순".equals(filter != null ? filter.sortBy() : "")
-                ? new CaseBuilder()
-                .when(taskEntity.taskStatus.eq(TaskStatus.IN_PROGRESS)
-                        .or(taskEntity.taskStatus.eq(TaskStatus.PENDING_COMPLETED)))
-                .then(1)
-                .otherwise(0)
-                .desc()
-                : taskEntity.processor.nickname.asc();
+        String sortBy = Optional.ofNullable(filter).map(FilterTeamStatusRequest::sortBy).orElse(""); // Null-safe 처리
+
+        OrderSpecifier<?> orderBy;
+        if ("기여도순".equals(sortBy)) {
+            // 진행 중 + 완료 대기 상태의 개수를 기준으로 내림차순 정렬
+            orderBy = new CaseBuilder()
+                    .when(taskEntity.taskStatus.eq(TaskStatus.IN_PROGRESS)
+                            .or(taskEntity.taskStatus.eq(TaskStatus.PENDING_COMPLETED)))
+                    .then(taskEntity.count()) // 개수 기준으로 정렬
+                    .otherwise(0L)
+                    .desc();
+        } else {
+            orderBy = taskEntity.processor.nickname.asc(); // 기본 정렬 (담당자 이름 오름차순)
+        }
 
         // 쿼리 실행
         List<TaskEntity> taskEntities = queryFactory
@@ -103,6 +102,11 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 .where(builder)
                 .orderBy(orderBy)
                 .fetch();
+
+        // null 또는 빈 리스트 처리
+        if (taskEntities == null || taskEntities.isEmpty()) {
+            return List.of(); // 빈 리스트 반환
+        }
 
         return taskEntities.stream()
                 .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId()))
@@ -128,8 +132,12 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                                     taskEntity.getCreatedAt()
                             )).collect(Collectors.toList());
 
-                    int inProgressTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count();
-                    int pendingTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.PENDING_COMPLETED).count();
+                    int inProgressTaskCount = (int) entry.getValue().stream()
+                            .filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS)
+                            .count();
+                    int pendingTaskCount = (int) entry.getValue().stream()
+                            .filter(t -> t.getTaskStatus() == TaskStatus.PENDING_COMPLETED)
+                            .count();
                     int totalTaskCount = inProgressTaskCount + pendingTaskCount;
 
                     return new TeamTaskResponse(
@@ -137,14 +145,14 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                             entry.getValue().get(0).getProcessor().getNickname(),
                             entry.getValue().get(0).getProcessor().getImageUrl(),
                             entry.getValue().get(0).getProcessor().getDepartment().getName(),
-                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count(),
-                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.PENDING_COMPLETED).count(),
+                            inProgressTaskCount,
+                            pendingTaskCount,
                             entry.getValue().size(),
                             taskResponses
                     );
                 }).collect(Collectors.toList());
-
     }
+
 
 
 
