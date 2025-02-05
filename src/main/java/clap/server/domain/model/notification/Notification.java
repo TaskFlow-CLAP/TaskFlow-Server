@@ -24,14 +24,16 @@ public class Notification extends BaseTime {
     private NotificationType type;
     private Member receiver;
     private String message;
+    private String taskTitle;
     private boolean isRead;
 
     @Builder
-    public Notification(Task task, NotificationType type, Member receiver, String message) {
+    public Notification(Task task, NotificationType type, Member receiver, String message, String taskTitle) {
         this.task = task;
         this.type = type;
         this.receiver = receiver;
         this.message = message;
+        this.taskTitle = taskTitle;
         this.isRead = false;
     }
 
@@ -39,12 +41,13 @@ public class Notification extends BaseTime {
         this.isRead = true;
     }
 
-    public static Notification createTaskNotification(Task task, Member reviewer, NotificationType type, String message) {
+    public static Notification createTaskNotification(Task task, Member reviewer, NotificationType type, String message, String taskTitle) {
         return Notification.builder()
                 .task(task)
                 .type(type)
                 .receiver(reviewer)
                 .message(message)
+                .taskTitle(taskTitle)
                 .build();
     }
 }
