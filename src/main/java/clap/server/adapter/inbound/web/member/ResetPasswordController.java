@@ -26,14 +26,14 @@ public class ResetPasswordController {
     private final ResetInitialPasswordUsecase resetInitialPasswordUsecase;
     private final VerifyPasswordUseCase verifyPasswordUseCase;
 
-    @Operation(summary = "초기 로그인 후 비밀번호 재설정 API", description = "swagger에서 따옴표를 포함하지 않고 요청합니다.")
+    @Operation(summary = "초기 로그인 후 비밀번호 재설정 API")
     @PatchMapping("/members/initial-password")
     public void resetPasswordAndActivateMember(@AuthenticationPrincipal SecurityUserDetails userInfo,
                                                @RequestBody UpdateInitialPasswordRequest request) {
         resetInitialPasswordUsecase.resetPasswordAndActivateMember(userInfo.getUserId(),request.password());
     }
 
-    @Operation(summary = "비밀번호 재설정 API", description = "swagger에서 따옴표를 포함하지 않고 요청합니다.")
+    @Operation(summary = "비밀번호 재설정 API")
     @PatchMapping("/members/password")
     public void resetPassword(@AuthenticationPrincipal SecurityUserDetails userInfo,
                                                @RequestBody UpdatePasswordRequest request) {
