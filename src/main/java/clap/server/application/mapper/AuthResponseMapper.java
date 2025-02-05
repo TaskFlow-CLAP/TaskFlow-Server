@@ -11,22 +11,10 @@ public class AuthResponseMapper {
         throw new IllegalArgumentException();
     }
 
-    public static LoginResponse toLoginResponse(final String accessToken, final String refreshToken, final Member member) {
+    public static LoginResponse toLoginResponse(final String accessToken, final String refreshToken) {
         return new LoginResponse(
                 accessToken,
-                refreshToken,
-                toMemberInfoResponse(member)
-        );
-    }
-
-    public static MemberInfoResponse toMemberInfoResponse(Member member) {
-        return new MemberInfoResponse(
-                member.getMemberId(),
-                member.getMemberInfo().getName(),
-                member.getMemberInfo().getNickname(),
-                member.getImageUrl(),
-                member.getMemberInfo().getRole(),
-                member.getStatus()
+                refreshToken
         );
     }
 
