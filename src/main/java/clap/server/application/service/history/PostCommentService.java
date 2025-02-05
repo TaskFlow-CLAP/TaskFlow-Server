@@ -68,29 +68,28 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         if (Member.checkCommenter(task, member)) {
             Comment comment = Comment.createComment(member, task, null);
             Comment savedComment = commandCommentPort.saveComment(comment);
-            saveAttachment(file, task, savedComment);
+            String fileName = saveAttachment(file, task, savedComment);
 
             TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, task, null, member, savedComment);
             commandTaskHistoryPort.save(taskHistory);
 
             if (member.getMemberInfo().getRole() == MemberRole.ROLE_USER) {
-                publishNotification(task.getProcessor(), task, "첨부파일", member.getNickname());
+                publishNotification(task.getProcessor(), task, fileName + "(첨부파일)", member.getNickname());
             } else {
-                publishNotification(task.getRequester(), task, "첨부파일", task.getProcessor().getNickname());
+                publishNotification(task.getRequester(), task, fileName + "(첨부파일)", task.getProcessor().getNickname());
             }
         }
     }
 
-    private void saveAttachment(MultipartFile file, Task task, Comment comment) {
+    private String saveAttachment(MultipartFile file, Task task, Comment comment) {
         String fileUrl = s3UploadPort.uploadSingleFile(FilePathPolicy.TASK_COMMENT, file);
         Attachment attachment = Attachment.createCommentAttachment(task, comment, file.getOriginalFilename(), fileUrl, file.getSize());
         commandAttachmentPort.save(attachment);
+        return file.getOriginalFilename();
     }
 
     private void publishNotification(Member receiver, Task task, String message, String commenterName) {
         sendNotificationService.sendPushNotification(receiver, NotificationType.COMMENT, task, message, commenterName);
-        sendNotificationService.sendAgitNotification(NotificationType.COMMENT,
-                task, message, commenterName);
     }
 
 }

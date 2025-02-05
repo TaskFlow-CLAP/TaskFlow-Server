@@ -45,6 +45,7 @@ public class ChangeTaskController {
             @Parameter(description = "변경하고 싶은 작업 상태",
                     schema = @Schema(allowableValues = {"IN_PROGRESS", "PENDING_COMPLETED", "COMPLETED"}))
             @RequestBody TaskStatus taskStatus) {
+
         updateTaskStatusUsecase.updateTaskStatus(userInfo.getUserId(), taskId, taskStatus);
     }
 

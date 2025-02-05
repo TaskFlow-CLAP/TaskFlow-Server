@@ -28,6 +28,7 @@ public class Task extends BaseTime {
     private Member requester;
     private TaskStatus taskStatus;
     private long processorOrder;
+    private Long agitPostId;
     private Member processor;
     private Label label;
     private Member reviewer;
@@ -66,6 +67,10 @@ public class Task extends BaseTime {
             this.finishedAt = LocalDateTime.now();
         }
         this.taskStatus = status;
+    }
+
+    public void updateAgitPostId(Long agitPostId) {
+        this.agitPostId = agitPostId;
     }
 
     public void terminateTask() {
