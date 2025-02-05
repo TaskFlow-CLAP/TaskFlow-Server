@@ -1,5 +1,6 @@
 package clap.server.adapter.inbound.web.dto.task.response;
 
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.annotations.QueryProjection;
 
 import java.util.List;

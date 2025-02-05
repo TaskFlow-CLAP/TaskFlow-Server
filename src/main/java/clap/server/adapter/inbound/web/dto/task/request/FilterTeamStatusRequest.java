@@ -24,9 +24,4 @@ public record FilterTeamStatusRequest(
                 taskTitle = taskTitle == null ? "" : taskTitle;
         }
 
-        // 카테고리 유효성 검사
-        public boolean isValid() {
-                // 1차 카테고리가 없으면 2차 카테고리는 선택할 수 없으므로
-                return mainCategoryIds.isEmpty() || !categoryIds.isEmpty();
-        }
 }

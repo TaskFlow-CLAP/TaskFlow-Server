@@ -5,6 +5,6 @@ import clap.server.adapter.inbound.web.dto.task.response.TeamStatusResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface LoadTeamStatusUsecase {
-    TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable);
+    TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter);
 }
 
