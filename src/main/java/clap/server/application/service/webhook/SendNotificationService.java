@@ -25,8 +25,10 @@ public class SendNotificationService {
     private final CommandNotificationPort commandNotificationPort;
 
     @Async("notificationExecutor")
-    public void sendPushNotification(Member receiver, String email, NotificationType notificationType,
-                                        Task task, String taskTitle, String message, String commenterName) {
+    public void sendPushNotification(Member receiver, NotificationType notificationType,
+                                        Task task, String message, String commenterName) {
+        String email = receiver.getMemberInfo().getEmail();
+        String taskTitle = task.getTitle();
         String requesterNickname = task.getRequester().getNickname();
 
         Notification notification = createTaskNotification(task, receiver, notificationType, message, taskTitle);
@@ -69,11 +71,11 @@ public class SendNotificationService {
 
     @Async("notificationExecutor")
     public void sendAgitNotification(NotificationType notificationType,
-                                     Task task, String taskTitle, String message, String commenterName) {
+                                     Task task, String message, String commenterName) {
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
                 null,
                 notificationType,
-                taskTitle,
+                task.getTitle(),
                 task.getRequester().getNickname(),
                 message,
                 commenterName

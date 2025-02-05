@@ -88,9 +88,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             Task updateTask = taskService.upsert(task);
             TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, taskStatus.getDescription(), null,null);
             commandTaskHistoryPort.save(taskHistory);
-
-            String taskTitle = task.getTitle();
-            publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()), taskTitle);
+            publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
         }
     }
 
@@ -108,7 +106,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         commandTaskHistoryPort.save(taskHistory);
 
         String taskTitle = task.getTitle();
-        publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, updateTask.getProcessor().getNickname(), taskTitle);
+        publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());
     }
 
     @Transactional
@@ -142,13 +140,13 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         return attachmentsOfTask;
     }
 
-    private void publishNotification(Task task, NotificationType notificationType, String message, String taskTitle) {
+    private void publishNotification(Task task, NotificationType notificationType, String message) {
         List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
         receivers.forEach(receiver -> {
-            sendNotificationService.sendPushNotification(receiver, receiver.getMemberInfo().getEmail(), notificationType,
-                    task, taskTitle, message, null);
+            sendNotificationService.sendPushNotification(receiver, notificationType,
+                    task, message, null);
         });
 
-            sendNotificationService.sendAgitNotification(notificationType, task, taskTitle, message, null);
+            sendNotificationService.sendAgitNotification(notificationType, task, message, null);
     }
 }

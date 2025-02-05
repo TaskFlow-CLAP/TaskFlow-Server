@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class PostCommentController {
 
     @Operation(summary = "댓글 작성(첨부 파일)")
     @Parameter(name = "taskId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
-    @PostMapping("/attachment/{taskId}")
+    @PostMapping(value = "/attachment/{taskId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public void createAttachmentComment(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
