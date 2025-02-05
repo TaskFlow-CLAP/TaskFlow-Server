@@ -11,13 +11,13 @@ public class TaskPolicyConstants {
 
     public static final List<TaskStatus> TASK_BOARD_STATUS_FILTER = List.of(
             TaskStatus.IN_PROGRESS,
-            TaskStatus.PENDING_COMPLETED,
+            TaskStatus.IN_REVIEWING,
             TaskStatus.COMPLETED);
 
     public static final List<TaskStatus> TASK_UPDATABLE_STATUS = List.of(
             TaskStatus.REQUESTED,
             TaskStatus.IN_PROGRESS,
-            TaskStatus.PENDING_COMPLETED,
+            TaskStatus.IN_REVIEWING,
             TaskStatus.COMPLETED
     );
 }

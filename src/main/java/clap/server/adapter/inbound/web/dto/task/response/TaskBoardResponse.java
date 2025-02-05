@@ -4,7 +4,7 @@ import java.util.List;
 
 public record TaskBoardResponse(
         List<TaskItemResponse> tasksInProgress,
-        List<TaskItemResponse> tasksPendingComplete,
+        List<TaskItemResponse> tasksInReviewing,
         List<TaskItemResponse> tasksCompleted
 ){
 }

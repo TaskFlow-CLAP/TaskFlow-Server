@@ -43,9 +43,9 @@ public class Member extends BaseTime {
     public static Member createMember(Member admin, MemberInfo memberInfo) {
         return Member.builder()
                 .memberInfo(memberInfo)
-                .agitNotificationEnabled(null)
-                .emailNotificationEnabled(null)
-                .kakaoworkNotificationEnabled(null)
+                .agitNotificationEnabled(false)
+                .emailNotificationEnabled(false)
+                .kakaoworkNotificationEnabled(false)
                 .admin(admin)
                 .imageUrl(null)
                 .status(MemberStatus.PENDING)
