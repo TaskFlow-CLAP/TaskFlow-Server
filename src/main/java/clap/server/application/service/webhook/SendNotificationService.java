@@ -31,7 +31,7 @@ public class SendNotificationService {
         String taskTitle = task.getTitle();
         String requesterNickname = task.getRequester().getNickname();
 
-        Notification notification = createTaskNotification(task, receiver, notificationType);
+        Notification notification = createTaskNotification(task, receiver, notificationType, message);
 
         SseRequest sseRequest = new SseRequest(
                 task.getTitle(),

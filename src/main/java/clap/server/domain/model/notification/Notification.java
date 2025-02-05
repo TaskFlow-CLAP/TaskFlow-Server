@@ -39,12 +39,12 @@ public class Notification extends BaseTime {
         this.isRead = true;
     }
 
-    public static Notification createTaskNotification(Task task, Member reviewer, NotificationType type) {
+    public static Notification createTaskNotification(Task task, Member reviewer, NotificationType type, String message) {
         return Notification.builder()
                 .task(task)
                 .type(type)
                 .receiver(reviewer)
-                .message(null)
+                .message(message)
                 .build();
     }
 }
