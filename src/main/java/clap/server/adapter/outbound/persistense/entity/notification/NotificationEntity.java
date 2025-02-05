@@ -38,5 +38,8 @@ public class NotificationEntity extends BaseTimeEntity {
     private String message;
 
     @Column(nullable = false)
+    private String taskTitle;
+
+    @Column(nullable = false)
     private boolean isRead;
 }

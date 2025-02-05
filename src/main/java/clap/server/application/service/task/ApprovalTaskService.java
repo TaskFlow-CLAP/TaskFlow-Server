@@ -57,7 +57,8 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         commandTaskHistoryPort.save(taskHistory);
 
         List<Member> receivers = List.of(reviewer, processor);
-        publishNotification(receivers, task);
+        String processorName = task.getProcessor().getNickname();
+        publishNotification(receivers, task, task.getTitle(), processorName);
 
         return TaskResponseMapper.toApprovalTaskResponse(taskService.upsert(task));
     }
@@ -70,13 +71,13 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         return TaskResponseMapper.toFindApprovalFormResponse(task);
     }
 
-    private void publishNotification(List<Member> receivers, Task task){
+    private void publishNotification(List<Member> receivers, Task task, String taskTitle, String processorName){
         receivers.forEach(receiver -> {
-            sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
-                    task, task.getProcessor().getNickname(), null);
+            sendNotificationService.sendPushNotification(receiver, receiver.getMemberInfo().getEmail(), NotificationType.PROCESSOR_ASSIGNED,
+                    task, taskTitle, processorName, null);
         });
         sendNotificationService.sendAgitNotification(NotificationType.PROCESSOR_CHANGED,
-                task, task.getProcessor().getNickname(), null);
+                task, taskTitle, processorName, null);
     }
 
 }

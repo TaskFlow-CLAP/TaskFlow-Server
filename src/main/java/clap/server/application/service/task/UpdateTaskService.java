@@ -56,7 +56,6 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final CommandAttachmentPort commandAttachmentPort;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final S3UploadPort s3UploadPort;
-    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -89,7 +88,9 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             Task updateTask = taskService.upsert(task);
             TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, taskStatus.getDescription(), null,null);
             commandTaskHistoryPort.save(taskHistory);
-            publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
+
+            String taskTitle = task.getTitle();
+            publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()), taskTitle);
         }
     }
 
@@ -106,7 +107,8 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor,null);
         commandTaskHistoryPort.save(taskHistory);
 
-        publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, updateTask.getProcessor().getNickname());
+        String taskTitle = task.getTitle();
+        publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, updateTask.getProcessor().getNickname(), taskTitle);
     }
 
     @Transactional
@@ -140,13 +142,13 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         return attachmentsOfTask;
     }
 
-    private void publishNotification(Task task, NotificationType notificationType, String message) {
+    private void publishNotification(Task task, NotificationType notificationType, String message, String taskTitle) {
         List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
         receivers.forEach(receiver -> {
-            sendNotificationService.sendPushNotification(receiver, notificationType,
-                    task, message, null);
+            sendNotificationService.sendPushNotification(receiver, receiver.getMemberInfo().getEmail(), notificationType,
+                    task, taskTitle, message, null);
         });
 
-            sendNotificationService.sendAgitNotification(notificationType, task, message, null);
+            sendNotificationService.sendAgitNotification(notificationType, task, taskTitle, message, null);
     }
 }
