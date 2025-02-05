@@ -6,7 +6,6 @@ import clap.server.adapter.inbound.web.dto.task.response.TeamStatusResponse;
 import clap.server.application.port.inbound.task.FilterTeamStatusUsecase;
 import clap.server.application.port.inbound.task.LoadTeamStatusUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +20,8 @@ public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatu
     }
 
     @Override
-    public TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable) {
-        List<TeamTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter); // 페이징 처리
+    public TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+        List<TeamTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter);
         return new TeamStatusResponse(members);
     }
 
