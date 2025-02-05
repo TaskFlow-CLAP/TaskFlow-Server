@@ -1,11 +1,13 @@
 package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.security.service.SecurityUserDetails;
+import clap.server.adapter.inbound.web.dto.task.request.TerminateTaskRequest;
 import clap.server.application.port.inbound.task.TerminateTaskUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,8 +26,8 @@ public class TerminateTaskController {
     @PatchMapping("/{taskId}/terminate")
     public void terminateTask(@AuthenticationPrincipal SecurityUserDetails userInfo,
                               @PathVariable Long taskId,
-                              @RequestBody @Schema(example = "스웨거에서는 따옴표를 떼고 보내주세요") String reason) {
-        terminateTaskUsecase.terminateTask(userInfo.getUserId(), taskId, reason);
+                              @RequestBody TerminateTaskRequest request) {
+        terminateTaskUsecase.terminateTask(userInfo.getUserId(), taskId, request.reason());
     }
 
 }

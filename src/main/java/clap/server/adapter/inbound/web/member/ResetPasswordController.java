@@ -1,11 +1,12 @@
 package clap.server.adapter.inbound.web.member;
 
 import clap.server.adapter.inbound.security.service.SecurityUserDetails;
+import clap.server.adapter.inbound.web.dto.member.request.UpdateInitialPasswordRequest;
+import clap.server.adapter.inbound.web.dto.member.request.UpdatePasswordRequest;
 import clap.server.application.port.inbound.member.ResetInitialPasswordUsecase;
 import clap.server.application.port.inbound.member.ResetPasswordUsecase;
 import clap.server.application.port.inbound.member.VerifyPasswordUseCase;
 import clap.server.common.annotation.architecture.WebAdapter;
-import clap.server.common.annotation.validation.password.ValidPassword;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
@@ -28,15 +29,15 @@ public class ResetPasswordController {
     @Operation(summary = "초기 로그인 후 비밀번호 재설정 API", description = "swagger에서 따옴표를 포함하지 않고 요청합니다.")
     @PatchMapping("/members/initial-password")
     public void resetPasswordAndActivateMember(@AuthenticationPrincipal SecurityUserDetails userInfo,
-                                               @RequestBody @NotBlank @ValidPassword String password) {
-        resetInitialPasswordUsecase.resetPasswordAndActivateMember(userInfo.getUserId(), password);
+                                               @RequestBody UpdateInitialPasswordRequest request) {
+        resetInitialPasswordUsecase.resetPasswordAndActivateMember(userInfo.getUserId(),request.password());
     }
 
     @Operation(summary = "비밀번호 재설정 API", description = "swagger에서 따옴표를 포함하지 않고 요청합니다.")
     @PatchMapping("/members/password")
     public void resetPassword(@AuthenticationPrincipal SecurityUserDetails userInfo,
-                                               @RequestBody @NotBlank @ValidPassword String password) {
-        resetPasswordUsecase.resetPassword(userInfo.getUserId(), password);
+                                               @RequestBody UpdatePasswordRequest request) {
+        resetPasswordUsecase.resetPassword(userInfo.getUserId(), request.password());
     }
 
 
