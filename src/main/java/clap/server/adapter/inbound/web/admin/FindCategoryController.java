@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,18 +28,21 @@ public class FindCategoryController {
 
     @Operation(summary = "모든 카테고리 조회")
     @GetMapping("/category")
+    @Secured({"ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN"})
     public ResponseEntity<List<FindAllCategoryResponse>> findAllCategory() {
         return ResponseEntity.ok(findAllCategoryUsecase.findAllCategory());
     }
 
     @Operation(summary = "1차 카테고리 조회")
     @GetMapping("/main-category")
+    @Secured({"ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN"})
     public ResponseEntity<List<FindMainCategoryResponse>> findMainCategory() {
         return ResponseEntity.ok(findmainCategoryUsecase.findMainCategory());
     }
 
     @Operation(summary = "2차 카테고리 조회")
     @GetMapping("/sub-category")
+    @Secured({"ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN"})
     public ResponseEntity<List<FindSubCategoryResponse>> findSubCategory() {
         return ResponseEntity.ok(findsubCategoryUsecase.findSubCategory());
     }
