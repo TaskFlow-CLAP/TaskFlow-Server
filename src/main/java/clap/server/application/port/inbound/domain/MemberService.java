@@ -26,7 +26,7 @@ public class MemberService {
     }
 
     public int getRemainingTasks(Long memberId) {
-        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.PENDING_COMPLETED);
+        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEWING);
         return loadMemberPort.findTasksByMemberIdAndStatus(memberId, targetStatuses).size();
     }
 

@@ -89,7 +89,7 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
 
     @Override
     public int getRemainingTasks(Long memberId) {
-        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.PENDING_COMPLETED);
+        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEWING);
         return findTasksByMemberIdAndStatus(memberId, targetStatuses).size();
     }
 
