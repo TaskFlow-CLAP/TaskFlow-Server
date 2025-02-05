@@ -25,23 +25,21 @@ public class SendNotificationService {
     private final CommandNotificationPort commandNotificationPort;
 
     @Async("notificationExecutor")
-    public void sendPushNotification(Member receiver, NotificationType notificationType,
-                                        Task task, String message, String commenterName) {
-        String email = receiver.getMemberInfo().getEmail();
-        String taskTitle = task.getTitle();
+    public void sendPushNotification(Member receiver, String email, NotificationType notificationType,
+                                        Task task, String taskTitle, String message, String commenterName) {
         String requesterNickname = task.getRequester().getNickname();
 
-        Notification notification = createTaskNotification(task, receiver, notificationType);
+        Notification notification = createTaskNotification(task, receiver, notificationType, message, taskTitle);
 
         SseRequest sseRequest = new SseRequest(
-                task.getTitle(),
+                taskTitle,
                 notificationType,
                 receiver.getMemberId(),
                 message
         );
 
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
-                task.getTaskId(), email, notificationType, taskTitle, requesterNickname, message, commenterName
+                email, notificationType, taskTitle, requesterNickname, message, commenterName
         );
 
         CompletableFuture<Void> saveNotification = CompletableFuture.runAsync(() -> {
@@ -71,12 +69,11 @@ public class SendNotificationService {
 
     @Async("notificationExecutor")
     public void sendAgitNotification(NotificationType notificationType,
-                                     Task task, String message, String commenterName) {
+                                     Task task, String taskTitle, String message, String commenterName) {
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
-                task.getTaskId(),
                 null,
                 notificationType,
-                task.getTitle(),
+                taskTitle,
                 task.getRequester().getNickname(),
                 message,
                 commenterName

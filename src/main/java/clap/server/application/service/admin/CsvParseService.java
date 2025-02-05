@@ -65,12 +65,14 @@ public class CsvParseService {
                 fields[0].trim(), // name
                 fields[4].trim(), // email
                 fields[1].trim(), // nickname
-                Boolean.parseBoolean(fields[6].trim()), // isReviewer
+                Boolean.parseBoolean(fields[6].trim().toLowerCase()), // isReviewer
                 department, // department
                 MemberRole.valueOf(fields[5].trim()), // role
                 fields[3].trim() // departmentRole
         );
 
-        return toMember(memberInfo);
+        return Member.builder()
+                .memberInfo(memberInfo)
+                .build();
     }
 }

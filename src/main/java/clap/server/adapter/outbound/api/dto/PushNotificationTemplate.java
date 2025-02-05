@@ -4,7 +4,6 @@ import clap.server.adapter.outbound.persistense.entity.notification.constant.Not
 
 public record PushNotificationTemplate(
 
-        Long taskId,
         String email,
         NotificationType notificationType,
         String taskName,

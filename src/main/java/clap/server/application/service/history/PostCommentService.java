@@ -51,10 +51,14 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
             TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT, task, null, member, savedComment);
             commandTaskHistoryPort.save(taskHistory);
 
+            String taskTitle = task.getTitle();
+            Member receiver;
             if (member.getMemberInfo().getRole() == MemberRole.ROLE_USER) {
-                publishNotification(task.getProcessor(), task, comment.getContent(), member.getNickname());
+                receiver = task.getProcessor();
+                publishNotification(receiver, task, request.content(), member.getNickname(), taskTitle, receiver.getMemberInfo().getEmail());
             } else {
-                publishNotification(task.getRequester(), task, comment.getContent(), task.getProcessor().getNickname());
+                receiver = task.getRequester();
+                publishNotification(receiver, task, request.content(), receiver.getNickname(), taskTitle, receiver.getMemberInfo().getEmail());
             }
         }
     }
@@ -74,9 +78,11 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
             commandTaskHistoryPort.save(taskHistory);
 
             if (member.getMemberInfo().getRole() == MemberRole.ROLE_USER) {
-                publishNotification(task.getProcessor(), task, fileName + "(첨부파일)", member.getNickname());
+                Member receiver = task.getProcessor();
+                publishNotification(receiver, task, fileName + "(첨부파일)", member.getNickname(), task.getTitle(), receiver.getMemberInfo().getEmail());
             } else {
-                publishNotification(task.getRequester(), task, fileName + "(첨부파일)", task.getProcessor().getNickname());
+                Member receiver = task.getRequester();
+                publishNotification(receiver, task, fileName + "(첨부파일)", task.getProcessor().getNickname(), task.getTitle(), receiver.getMemberInfo().getEmail());
             }
         }
     }
@@ -88,8 +94,8 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         return file.getOriginalFilename();
     }
 
-    private void publishNotification(Member receiver, Task task, String message, String commenterName) {
-        sendNotificationService.sendPushNotification(receiver, NotificationType.COMMENT, task, message, commenterName);
+    private void publishNotification(Member receiver, Task task, String message, String commenterName, String taskTitle, String email) {
+        sendNotificationService.sendPushNotification(receiver, email, NotificationType.COMMENT, task, taskTitle, message, commenterName);
     }
 
 }

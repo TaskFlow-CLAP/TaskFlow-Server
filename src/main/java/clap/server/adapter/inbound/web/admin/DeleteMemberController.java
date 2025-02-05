@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ public class DeleteMemberController {
     @Transactional
     @Operation(summary = "회원 삭제 API")
     @Secured("ROLE_ADMIN")
-    @PatchMapping("/members/delete")
+    @DeleteMapping("/members")
     public void deleteMember(@RequestBody @Valid DeleteMemberRequest deleteMemberRequest) {
         deleteMemberUsecase.deleteMember(deleteMemberRequest.memberId());
     }

@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "02. Task [담당자]")
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
     private final TeamStatusService teamStatusService;
     @Operation(summary = "팀 현황 필터링 조회 API")
     @GetMapping("/filter")
-    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@Validated @ModelAttribute FilterTeamStatusRequest filter) {
+    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@ModelAttribute FilterTeamStatusRequest filter) {
         TeamStatusResponse response = teamStatusService.filterTeamStatus(filter);
         return ResponseEntity.ok(response);
     }
