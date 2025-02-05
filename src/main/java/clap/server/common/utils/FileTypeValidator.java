@@ -18,6 +18,9 @@ public class FileTypeValidator {
     );
     private static final List<String> VALID_DOCS_TYPES = Arrays.asList(
             "text/csv",
+            "text/plain",
+            "application/csv",
+            "application/octet-stream",
             "application/vnd.ms-excel",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
