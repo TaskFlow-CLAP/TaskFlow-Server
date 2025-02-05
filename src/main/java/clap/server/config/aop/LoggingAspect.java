@@ -1,18 +1,19 @@
 package clap.server.config.aop;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
-import clap.server.application.port.inbound.log.CreateAnonymousLogsUsecase;
-import clap.server.application.port.inbound.log.CreateMemberLogsUsecase;
+import clap.server.application.port.inbound.domain.LogService;
 import clap.server.common.annotation.log.LogType;
 import clap.server.exception.BaseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,9 +36,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class LoggingAspect {
     private final ObjectMapper objectMapper;
-    private final CreateAnonymousLogsUsecase createAnonymousLogsUsecase;
-    private final CreateMemberLogsUsecase createMemberLogsUsecase;
-    private final HandlerExceptionResolver handlerExceptionResolver;
+    private final LogService logService;
 
     @Pointcut("execution(* clap.server.adapter.inbound.web..*Controller.*(..))")
     public void controllerMethods() {
@@ -58,15 +57,13 @@ public class LoggingAspect {
             throw ex;
         } finally {
             LogStatus logStatus = getLogType((MethodSignature) joinPoint.getSignature());
-            int statusCode;
+            int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
             String customCode = null;
+
             if (capturedException != null) {
                 if (capturedException instanceof BaseException e) {
                     statusCode = e.getCode().getHttpStatus().value();
                     customCode = e.getCode().getCustomCode();
-                } else {
-                    ModelAndView modelAndView = handlerExceptionResolver.resolveException(request, response, null, capturedException);
-                    statusCode = modelAndView.getStatus().value();
                 }
             } else {
                 statusCode = response.getStatus();
@@ -74,20 +71,29 @@ public class LoggingAspect {
 
             if (logStatus != null) {
                 if (LogStatus.LOGIN.equals(logStatus)) {
-                    createAnonymousLogsUsecase.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
+                    handleLoginLog(statusCode, request, customCode, logStatus, result);
+
                 } else {
                     if (!isUserAuthenticated()) {
                         log.error("로그인 시도 로그를 기록할 수 없음");
                     } else {
                         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                         if (principal instanceof SecurityUserDetails userDetails) {
-                            createMemberLogsUsecase.createMemberLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), userDetails.getUserId());
+                            logService.createMemberLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), userDetails.getUserId());
                         }
                     }
                 }
             }
         }
         return result;
+    }
+
+    private void handleLoginLog(int statusCode, HttpServletRequest request, String customCode, LogStatus logStatus, Object result) throws JsonProcessingException {
+        if (statusCode == HttpStatus.SC_OK) {
+            logService.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
+        } else {
+            logService.createLoginFailedLog(request, statusCode, customCode, logStatus, getRequestBody(request), getNicknameFromRequestBody(request));
+        }
     }
 
     private LogStatus getLogType(MethodSignature methodSignature) {

@@ -1,8 +1,8 @@
 package clap.server.adapter.inbound.web.auth;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
-import clap.server.adapter.inbound.web.dto.auth.LoginRequest;
-import clap.server.adapter.inbound.web.dto.auth.LoginResponse;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
+import clap.server.adapter.inbound.web.dto.auth.request.LoginRequest;
+import clap.server.adapter.inbound.web.dto.auth.response.LoginResponse;
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.auth.LoginUsecase;
 import clap.server.application.port.inbound.auth.LogoutUsecase;
@@ -32,11 +32,11 @@ public class AuthController {
     @LogType(LogStatus.LOGIN)
     @Operation(summary = "로그인 API")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestHeader(name = "sessionId") String sessionId,
+    public ResponseEntity<LoginResponse> login(
                                                @RequestBody LoginRequest request,
                                                HttpServletRequest httpRequest) {
         String clientIp = getClientIp(httpRequest);
-        LoginResponse response = loginUsecase.login(request.nickname(), request.password(), sessionId, clientIp);
+        LoginResponse response = loginUsecase.login(request.nickname(), request.password(), clientIp);
         return ResponseEntity.ok(response);
     }
 

@@ -1,6 +1,6 @@
 package clap.server.application.mapper;
 
-import clap.server.adapter.inbound.web.dto.admin.RetrieveAllMemberResponse;
+import clap.server.adapter.inbound.web.dto.admin.response.RetrieveAllMemberResponse;
 import clap.server.domain.model.member.Member;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +16,15 @@ public class RetrieveAllMemberMapper {
 
     public RetrieveAllMemberResponse toResponse(Member member) {
         return new RetrieveAllMemberResponse(
+                member.getMemberId(),
                 member.getMemberInfo().getName(),
                 member.getMemberInfo().getEmail(),
                 member.getMemberInfo().getNickname(),
                 member.getMemberInfo().isReviewer(),
                 member.getMemberInfo().getDepartment().getName(),
                 member.getMemberInfo().getRole(),
-                member.getMemberInfo().getDepartmentRole()
+                member.getMemberInfo().getDepartmentRole(),
+                member.getCreatedAt()
         );
     }
 }

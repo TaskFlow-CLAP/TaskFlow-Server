@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.dto.auth;
+package clap.server.adapter.inbound.web.dto.auth.response;
 
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;

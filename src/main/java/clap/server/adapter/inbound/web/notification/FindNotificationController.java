@@ -1,6 +1,6 @@
 package clap.server.adapter.inbound.web.notification;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
 import clap.server.adapter.inbound.web.dto.notification.response.CountNotificationResponse;
 import clap.server.adapter.inbound.web.dto.notification.response.FindNotificationListResponse;

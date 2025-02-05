@@ -10,29 +10,26 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
 
 import java.time.LocalDateTime;
 
 @Getter
 @RedisHash("loginLog")
 @Builder
-@ToString(of = {"sessionId", "clientIp", "attemptNickname", "lastAttemptAt", "attemptCount", "isLocked"})
-@EqualsAndHashCode(of = {"sessionId"})
+@ToString(of = {"clientIp", "attemptNickname", "lastAttemptAt", "failedCount", "isLocked"})
+@EqualsAndHashCode(of = {"clientIp"})
 public class LoginLogEntity {
 	@Id
-	private String sessionId;
-
 	private String clientIp;
 
 	private String attemptNickname;
 
-	@JsonSerialize(using = ToStringSerializer.class)  // 직렬화 방식을 설정
+	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@Builder.Default
 	private LocalDateTime lastAttemptAt = LocalDateTime.now();
 
-	private int attemptCount;
+	private int failedCount;
 
 	private boolean isLocked;
 }

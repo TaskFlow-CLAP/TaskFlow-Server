@@ -1,10 +1,10 @@
 package clap.server.application.service.admin;
 
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.application.port.outbound.member.LoadDepartmentPort;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
-import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.DepartmentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
@@ -30,27 +30,35 @@ public class CsvParseService {
 
     private final LoadDepartmentPort loadDepartmentPort;
 
-    public List<Member> parse(MultipartFile file) {
+    public List<Member> parseDataAndMapToMember(MultipartFile file) {
         List<Member> members = new ArrayList<>();
+        List<Department> departments = loadDepartmentPort.findActiveDepartments();
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            // 첫 번째 줄은 헤더로 간주하고 다음 줄부터 파싱
+            String headerLine = reader.readLine();
+            if (headerLine == null) {
+                throw new ApplicationException(MemberErrorCode.INVALID_CSV_FORMAT);
+            }
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
                 if (fields.length != 7) {
-                    throw ApplicationException.from(MemberErrorCode.INVALID_CSV_FORMAT);
+                    throw new ApplicationException(MemberErrorCode.INVALID_CSV_FORMAT);
                 }
-                members.add(mapToMember(fields));
+                members.add(mapToMember(fields, departments));
             }
         } catch (IOException e) {
-            throw ApplicationException.from(MemberErrorCode.CSV_PARSING_ERROR);
+            throw new ApplicationException(MemberErrorCode.CSV_PARSING_ERROR);
         }
         return members;
     }
 
-    private Member mapToMember(String[] fields) {
-        // 부서 ID로 Department 객체 조회
+    private Member mapToMember(String[] fields, List<Department> departments) {
         Long departmentId = Long.parseLong(fields[2].trim());
-        Department department = loadDepartmentPort.findById(departmentId)
+        Department department = departments.stream()
+                .filter(dept -> dept.getDepartmentId().equals(departmentId))
+                .findFirst()
                 .orElseThrow(() -> new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
         MemberInfo memberInfo = toMemberInfo(

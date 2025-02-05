@@ -9,6 +9,7 @@ import clap.server.exception.code.MemberErrorCode;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,8 +24,10 @@ public class Member extends BaseTime {
     private String imageUrl;
     private MemberStatus status;
     private String password;
+    private Department department;
 
-    @Builder
+
+
     public Member(MemberInfo memberInfo, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoworkNotificationEnabled,
                   Member admin, String imageUrl, MemberStatus status, String password) {
         this.memberInfo = memberInfo;

@@ -35,7 +35,6 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     private final TaskService taskService;
     private final CategoryService categoryService;
     private final LabelService labelService;
-    private final CommandTaskPort commandTaskPort;
     private final RequestedTaskUpdatePolicy requestedTaskUpdatePolicy;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final SendNotificationService sendNotificationService;
@@ -47,7 +46,10 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         Task task = taskService.findById(taskId);
         Member processor = memberService.findById(approvalTaskRequest.processorId());
         Category category = categoryService.findById(approvalTaskRequest.categoryId());
-        Label label = labelService.findById(approvalTaskRequest.labelId());
+        Label label = null;
+        if (approvalTaskRequest.labelId() != null) {
+            label = labelService.findById(approvalTaskRequest.labelId());
+        }
 
         requestedTaskUpdatePolicy.validateTaskRequested(task);
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
@@ -73,6 +75,8 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
             sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
                     task, task.getProcessor().getNickname(), null);
         });
+        sendNotificationService.sendAgitNotification(NotificationType.PROCESSOR_CHANGED,
+                task, task.getProcessor().getNickname(), null);
     }
 
 }

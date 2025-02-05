@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 public class Department extends BaseTime {
     private Long departmentId;
     private Long adminId;
-    private String code;
     private String name;
     private DepartmentStatus status;
 }

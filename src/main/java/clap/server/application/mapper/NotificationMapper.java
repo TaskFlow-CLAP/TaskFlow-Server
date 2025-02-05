@@ -17,6 +17,7 @@ public class NotificationMapper {
                 notification.getReceiver().getMemberId(),
                 notification.getTask().getTitle(),
                 notification.getMessage() != null ? notification.getMessage() : null,
+                notification.isRead(),
                 notification.getCreatedAt()
         );
     }

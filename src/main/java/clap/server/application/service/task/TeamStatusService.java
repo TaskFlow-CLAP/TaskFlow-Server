@@ -1,7 +1,7 @@
 package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
-import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamStatusResponse;
 import clap.server.application.port.inbound.task.FilterTeamStatusUsecase;
 import clap.server.application.port.inbound.task.LoadTeamStatusUsecase;
@@ -22,13 +22,13 @@ public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatu
 
     @Override
     public TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter, Pageable pageable) {
-        List<TeamMemberTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter); // 페이징 처리
+        List<TeamTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter); // 페이징 처리
         return new TeamStatusResponse(members);
     }
 
     @Override
     public TeamStatusResponse filterTeamStatus(FilterTeamStatusRequest filter) {
-        List<TeamMemberTaskResponse> members = loadTaskPort.findTeamStatus(null, filter);
+        List<TeamTaskResponse> members = loadTaskPort.findTeamStatus(null, filter);
         return new TeamStatusResponse(members);
     }
 

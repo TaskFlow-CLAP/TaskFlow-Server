@@ -1,6 +1,6 @@
 package clap.server.application.service.admin;
 
-import clap.server.adapter.inbound.web.dto.admin.FindMainCategoryResponse;
+import clap.server.adapter.inbound.web.dto.admin.response.FindMainCategoryResponse;
 import clap.server.application.mapper.CategoryResponseMapper;
 import clap.server.application.port.inbound.admin.FindMainCategoryUsecase;
 import clap.server.application.port.outbound.task.LoadCategoryPort;

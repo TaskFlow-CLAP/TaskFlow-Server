@@ -36,7 +36,7 @@ public class JwtErrorCodeUtil {
     public static JwtException determineAuthErrorException(Exception exception) {
         return findAuthErrorException(exception).orElseGet(
                 () -> {
-                    BaseErrorCode errorCode = determineErrorCode(exception, GlobalErrorCode.INTERNAL_SERVER_ERROR);
+                    BaseErrorCode errorCode = determineErrorCode(exception, AuthErrorCode.UNAUTHORIZED);
                     log.debug(exception.getMessage(), exception);
                     return new JwtException(errorCode);
                 }

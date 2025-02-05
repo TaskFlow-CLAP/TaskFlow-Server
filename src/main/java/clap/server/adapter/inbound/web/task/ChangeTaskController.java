@@ -1,11 +1,10 @@
 package clap.server.adapter.inbound.web.task;
 
-import clap.server.adapter.inbound.security.SecurityUserDetails;
+import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.request.ApprovalTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskLabelRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskProcessorRequest;
 import clap.server.adapter.inbound.web.dto.task.response.ApprovalTaskResponse;
-import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskLabelUsecase;
@@ -40,34 +39,34 @@ public class ChangeTaskController {
     @Operation(summary = "작업 상태 변경")
     @Secured("ROLE_MANAGER")
     @PatchMapping("/{taskId}/status")
-    public ResponseEntity<UpdateTaskResponse> updateTaskState(
+    public void updateTaskState(
             @PathVariable @NotNull Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @Parameter(description = "변경하고 싶은 작업 상태",
                     schema = @Schema(allowableValues = {"IN_PROGRESS", "PENDING_COMPLETED", "COMPLETED"}))
             @RequestBody TaskStatus taskStatus) {
 
-        return ResponseEntity.ok(updateTaskStatusUsecase.updateTaskStatus(userInfo.getUserId(), taskId, taskStatus));
+        updateTaskStatusUsecase.updateTaskStatus(userInfo.getUserId(), taskId, taskStatus);
     }
 
     @Operation(summary = "작업 처리자 변경")
     @Secured({"ROLE_MANAGER"})
     @PatchMapping("/{taskId}/processor")
-    public ResponseEntity<UpdateTaskResponse> updateTaskProcessor(
+    public void updateTaskProcessor(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @Valid @RequestBody UpdateTaskProcessorRequest updateTaskProcessorRequest) {
-        return ResponseEntity.ok(updateTaskProcessorUsecase.updateTaskProcessor(taskId, userInfo.getUserId(), updateTaskProcessorRequest));
+        updateTaskProcessorUsecase.updateTaskProcessor(taskId, userInfo.getUserId(), updateTaskProcessorRequest);
     }
 
     @Operation(summary = "작업 구분 변경")
     @Secured({"ROLE_MANAGER"})
     @PatchMapping("/{taskId}/label")
-    public ResponseEntity<UpdateTaskResponse> updateTaskLabel(
+    public void updateTaskLabel(
             @PathVariable Long taskId,
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @Valid @RequestBody UpdateTaskLabelRequest updateTaskLabelRequest) {
-        return ResponseEntity.ok(updateTaskLabelUsecase.updateTaskLabel(taskId, userInfo.getUserId(), updateTaskLabelRequest));
+        updateTaskLabelUsecase.updateTaskLabel(taskId, userInfo.getUserId(), updateTaskLabelRequest);
     }
 
     @Operation(summary = "작업 승인")

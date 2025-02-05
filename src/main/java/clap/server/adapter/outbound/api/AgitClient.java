@@ -1,14 +1,22 @@
 package clap.server.adapter.outbound.api;
 
-import clap.server.adapter.outbound.api.dto.SendWebhookRequest;
+import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
+import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.outbound.webhook.SendAgitPort;
+import clap.server.application.service.task.UpdateTaskService;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
+import clap.server.domain.model.task.Task;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.NotificationErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -19,35 +27,33 @@ public class AgitClient implements SendAgitPort {
     @Value("${webhook.agit.url}")
     private String AGIT_WEBHOOK_URL;
 
-    @Override
-    public void sendAgit(SendWebhookRequest request) {
-        RestTemplate restTemplate = new RestTemplate();
+    private final AgitTemplateBuilder agitTemplateBuilder;
+    private final ObjectMapper objectMapper;
+    private final TaskService taskService;
 
-        String message = null;
+    @Override
+    public void sendAgit(PushNotificationTemplate request, Task task) {
+
+        HttpEntity<String> entity = agitTemplateBuilder.createAgitEntity(request, task);
+
+        RestTemplate restTemplate = new RestTemplate();
         if (request.notificationType() == NotificationType.TASK_REQUESTED) {
-            message = request.taskName() + " 작업이 요청되었습니다.";
-        }
-        else if (request.notificationType() == NotificationType.COMMENT) {
-            message = request.taskName() + " 작업에 " + request.commenterName() + "님이 댓글을 남기셨습니다.";
-        }
-        else if (request.notificationType() == NotificationType.PROCESSOR_ASSIGNED) {
-            message = request.taskName() + " 작업에 담당자(" + request.message() + ")가 배정되었습니다.";
-        }
-        else if (request.notificationType() == NotificationType.PROCESSOR_CHANGED) {
-            message = request.taskName() + " 작업의 담당자가 " + request.message() + "로 변경되었습니다.";
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    AGIT_WEBHOOK_URL, HttpMethod.POST, entity, String.class);
+            updateAgitPostId(responseEntity, task);
         }
         else {
-            message = request.taskName() + " 작업의 상태가 "  + request.message() + "로 변경되었습니다";
+            restTemplate.exchange(AGIT_WEBHOOK_URL, HttpMethod.POST, entity, String.class);
         }
+    }
 
-        String payload = "{\"text\":\"" + message + "\"}";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-
-        HttpEntity<String> entity = new HttpEntity<>(payload, headers);
-
-        // Post 요청
-        restTemplate.exchange(AGIT_WEBHOOK_URL, HttpMethod.POST, entity, String.class);
+    private void updateAgitPostId(ResponseEntity<String> responseEntity, Task task) {
+        try {
+            JsonNode jsonNode = objectMapper.readTree(responseEntity.getBody());
+            task.updateAgitPostId(jsonNode.get("id").asLong());
+            taskService.upsert(task);
+        } catch (JsonProcessingException e) {
+            throw new ApplicationException(NotificationErrorCode.AGIT_SEND_FAILED);
+        }
     }
 }

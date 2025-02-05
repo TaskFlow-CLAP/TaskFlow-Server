@@ -45,6 +45,9 @@ public class TaskEntity extends BaseTimeEntity {
     @Column
     private Long processorOrder;
 
+    @Column
+    private Long agitPostId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id")
     private MemberEntity reviewer;

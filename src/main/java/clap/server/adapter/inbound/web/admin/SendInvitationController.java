@@ -1,6 +1,6 @@
 package clap.server.adapter.inbound.web.admin;
 
-import clap.server.adapter.inbound.web.dto.admin.SendInvitationRequest;
+import clap.server.adapter.inbound.web.dto.admin.request.SendInvitationRequest;
 import clap.server.application.port.inbound.admin.SendInvitationUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;

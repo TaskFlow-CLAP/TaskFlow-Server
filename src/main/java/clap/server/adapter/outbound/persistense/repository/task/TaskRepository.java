@@ -2,13 +2,12 @@ package clap.server.adapter.outbound.persistense.repository.task;
 
 
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
-import clap.server.adapter.inbound.web.dto.task.response.TeamMemberTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -25,7 +24,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
 
     @Query("select t from TaskEntity t join fetch t.processor p" +
             " where t.updatedAt between :updatedAtAfter and :updatedAtBefore")
-
     List<TaskEntity> findYesterdayTaskByUpdatedAtIsBetween(
             @Param("updatedAtAfter") LocalDateTime updatedAtAfter,
             @Param("updatedAtBefore") LocalDateTime updatedAtBefore
@@ -38,25 +36,29 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
     @Query("SELECT t FROM TaskEntity t " +
             "WHERE t.processor.memberId = :processorId " +
             "AND t.taskStatus IN :taskStatus " +
-            "AND (t.taskStatus != 'COMPLETED' OR t.finishedAt <= :untilDate) " +
+            "AND (:fromDateTime IS NULL OR t.taskStatus != 'COMPLETED' OR " +
+            "    (t.taskStatus = 'COMPLETED' AND t.finishedAt >= :fromDateTime)) " +
             "ORDER BY t.processorOrder ASC ")
-    Slice<TaskEntity> findTasksWithTaskStatusAndCompletedAt(
+    List<TaskEntity> findTasksWithTaskStatusAndCompletedAt(
             @Param("processorId") Long processorId,
             @Param("taskStatus") List<TaskStatus> taskStatus,
-            @Param("untilDate") LocalDateTime untilDate,
-            Pageable pageable
+            @Param("fromDateTime") LocalDateTime fromDateTime
     );
+
 
     Optional<TaskEntity> findByTaskIdAndTaskStatus(Long id, TaskStatus status);
 
-    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderDesc(Long processorId, TaskStatus taskStatus, Long processorOrder);
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderAsc(Long processorId, TaskStatus taskStatus, Long processorOrder);
 
-    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderDesc(
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderAsc(
             Long processorId, TaskStatus taskStatus, Long processorOrder);
 
     @Query("SELECT t FROM TaskEntity t JOIN FETCH t.processor p WHERE (:memberId IS NULL OR p.memberId = :memberId) ")
-    Page<TeamMemberTaskResponse> findTeamStatus(@Param("memberId") Long memberId, FilterTeamStatusRequest filter, Pageable pageable);
+    Page<TeamTaskResponse> findTeamStatus(@Param("memberId") Long memberId, FilterTeamStatusRequest filter, Pageable pageable);
 
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndTaskIdLessThanOrderByTaskIdDesc(Long processorId, TaskStatus taskStatus, Long taskId);
+
+    Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndTaskIdGreaterThanOrderByTaskIdAsc(Long processorId, TaskStatus status, Long taskId);
 
 
 }

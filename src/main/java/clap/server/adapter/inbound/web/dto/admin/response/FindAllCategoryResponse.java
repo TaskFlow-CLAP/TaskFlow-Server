@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web.dto.admin;
+package clap.server.adapter.inbound.web.dto.admin.response;
 
 import java.util.List;
 
