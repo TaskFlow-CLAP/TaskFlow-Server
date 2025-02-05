@@ -39,10 +39,12 @@ public abstract class ApiLogEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String customStatusCode;
 
-    @Column(length = 4096, nullable = false)
+    @Lob
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String requestBody;
 
-    @Column(length = 4096, nullable = false)
+    @Lob
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String responseBody;
 
     @Column(nullable = false)
