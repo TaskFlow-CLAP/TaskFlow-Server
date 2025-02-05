@@ -46,6 +46,7 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private MemberStatus status;
 
+    @Column
     private String password;
 
     @Column
