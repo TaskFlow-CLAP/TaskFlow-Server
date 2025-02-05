@@ -3,12 +3,10 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskLabelRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskProcessorRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskRequest;
-import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.AttachmentMapper;
-import clap.server.application.mapper.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.LabelService;
 import clap.server.application.port.inbound.domain.MemberService;
@@ -27,9 +25,14 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.*;
 import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.exception.ApplicationException;
+import clap.server.exception.code.NotificationErrorCode;
 import clap.server.exception.code.TaskErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -102,7 +105,8 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor,null);
         commandTaskHistoryPort.save(taskHistory);
 
-        publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, updateTask.getProcessor().getNickname());
+        String taskTitle = task.getTitle();
+        publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());
     }
 
     @Transactional
@@ -142,7 +146,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             sendNotificationService.sendPushNotification(receiver, notificationType,
                     task, message, null);
         });
-        sendNotificationService.sendAgitNotification(notificationType,
-                task, message, null);
+
+            sendNotificationService.sendAgitNotification(notificationType, task, message, null);
     }
 }

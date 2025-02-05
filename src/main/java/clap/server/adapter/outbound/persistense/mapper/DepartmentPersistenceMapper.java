@@ -10,10 +10,8 @@ import org.mapstruct.Mapping;
 public interface DepartmentPersistenceMapper extends PersistenceMapper<DepartmentEntity, Department> {
 
     @Mapping(source = "admin.memberId", target = "adminId")
-    @Mapping(source = "name", target = "code")
     Department toDomain(DepartmentEntity entity);
 
-    @Mapping(source = "code", target = "name")
     @Mapping(source = "adminId", target = "admin.memberId")
     DepartmentEntity toEntity(Department domain);
 }

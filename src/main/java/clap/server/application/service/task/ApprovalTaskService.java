@@ -46,7 +46,10 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         Task task = taskService.findById(taskId);
         Member processor = memberService.findById(approvalTaskRequest.processorId());
         Category category = categoryService.findById(approvalTaskRequest.categoryId());
-        Label label = labelService.findById(approvalTaskRequest.labelId());
+        Label label = null;
+        if (approvalTaskRequest.labelId() != null) {
+            label = labelService.findById(approvalTaskRequest.labelId());
+        }
 
         requestedTaskUpdatePolicy.validateTaskRequested(task);
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
@@ -54,7 +57,8 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         commandTaskHistoryPort.save(taskHistory);
 
         List<Member> receivers = List.of(reviewer, processor);
-        publishNotification(receivers, task);
+        String processorName = processor.getNickname();
+        publishNotification(receivers, task, processorName);
 
         return TaskResponseMapper.toApprovalTaskResponse(taskService.upsert(task));
     }
@@ -67,13 +71,13 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         return TaskResponseMapper.toFindApprovalFormResponse(task);
     }
 
-    private void publishNotification(List<Member> receivers, Task task){
+    private void publishNotification(List<Member> receivers, Task task, String processorName){
         receivers.forEach(receiver -> {
             sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
-                    task, task.getProcessor().getNickname(), null);
+                    task, processorName, null);
         });
         sendNotificationService.sendAgitNotification(NotificationType.PROCESSOR_CHANGED,
-                task, task.getProcessor().getNickname(), null);
+                task, processorName, null);
     }
 
 }

@@ -74,6 +74,12 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
+    public void saveAll(List<Member> members) {
+        List<MemberEntity> memberEntities = members.stream().map(memberPersistenceMapper::toEntity).toList();
+        memberRepository.saveAll(memberEntities);
+    }
+
+    @Override
     public List<Member> findActiveManagers() {
         List<MemberEntity> memberEntities = memberRepository.findByRoleAndStatus(MemberRole.valueOf("ROLE_MANAGER"), MemberStatus.ACTIVE);
         return memberEntities.stream()
@@ -83,7 +89,7 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
 
     @Override
     public int getRemainingTasks(Long memberId) {
-        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.PENDING_COMPLETED);
+        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEWING);
         return findTasksByMemberIdAndStatus(memberId, targetStatuses).size();
     }
 

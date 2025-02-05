@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static clap.server.domain.model.notification.Notification.createTaskNotification;
 
 @ApplicationService
@@ -25,7 +23,6 @@ public class SendNotificationService {
     private final SendEmailService sendEmailService;
     private final SendKaKaoWorkService sendKaKaoWorkService;
     private final CommandNotificationPort commandNotificationPort;
-    private static final AtomicBoolean agitSent = new AtomicBoolean(false);
 
     @Async("notificationExecutor")
     public void sendPushNotification(Member receiver, NotificationType notificationType,
@@ -34,17 +31,17 @@ public class SendNotificationService {
         String taskTitle = task.getTitle();
         String requesterNickname = task.getRequester().getNickname();
 
-        Notification notification = createTaskNotification(task, receiver, notificationType);
+        Notification notification = createTaskNotification(task, receiver, notificationType, message, taskTitle);
 
         SseRequest sseRequest = new SseRequest(
-                task.getTitle(),
+                taskTitle,
                 notificationType,
                 receiver.getMemberId(),
                 message
         );
 
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
-                task.getTaskId(), email, notificationType, taskTitle, requesterNickname, message, commenterName
+                email, notificationType, taskTitle, requesterNickname, message, commenterName
         );
 
         CompletableFuture<Void> saveNotification = CompletableFuture.runAsync(() -> {
@@ -76,7 +73,6 @@ public class SendNotificationService {
     public void sendAgitNotification(NotificationType notificationType,
                                      Task task, String message, String commenterName) {
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
-                task.getTaskId(),
                 null,
                 notificationType,
                 task.getTitle(),
@@ -85,6 +81,6 @@ public class SendNotificationService {
                 commenterName
         );
 
-        sendAgitService.sendAgit(pushNotificationTemplate);
+        sendAgitService.sendAgit(pushNotificationTemplate, task);
     }
 }

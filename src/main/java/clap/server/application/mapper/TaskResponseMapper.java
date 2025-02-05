@@ -97,7 +97,7 @@ public class TaskResponseMapper {
                 approvedTask.getProcessor().getNickname(),
                 approvedTask.getReviewer().getNickname(),
                 approvedTask.getDueDate(),
-                approvedTask.getLabel().getLabelName(),
+                approvedTask.getLabel() != null ? approvedTask.getLabel().getLabelName() : "",
                 approvedTask.getTaskStatus()
         );
     }
@@ -126,7 +126,7 @@ public class TaskResponseMapper {
 
         return new TaskBoardResponse(
                 tasksByStatus.getOrDefault(TaskStatus.IN_PROGRESS, Collections.emptyList()),
-                tasksByStatus.getOrDefault(TaskStatus.PENDING_COMPLETED, Collections.emptyList()),
+                tasksByStatus.getOrDefault(TaskStatus.IN_REVIEWING, Collections.emptyList()),
                 tasksByStatus.getOrDefault(TaskStatus.COMPLETED, Collections.emptyList())
         );
     }

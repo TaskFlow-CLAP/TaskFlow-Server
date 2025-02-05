@@ -9,8 +9,9 @@ import clap.server.exception.code.MemberErrorCode;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+
 @Getter
-@SuperBuilder(toBuilder = true)
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Member extends BaseTime {
@@ -23,8 +24,10 @@ public class Member extends BaseTime {
     private String imageUrl;
     private MemberStatus status;
     private String password;
+    private Department department;
 
-    // @Builder가 Lombok과 충돓하여 삭제
+
+
     public Member(MemberInfo memberInfo, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoworkNotificationEnabled,
                   Member admin, String imageUrl, MemberStatus status, String password) {
         this.memberInfo = memberInfo;
@@ -40,9 +43,9 @@ public class Member extends BaseTime {
     public static Member createMember(Member admin, MemberInfo memberInfo) {
         return Member.builder()
                 .memberInfo(memberInfo)
-                .agitNotificationEnabled(null)
-                .emailNotificationEnabled(null)
-                .kakaoworkNotificationEnabled(null)
+                .agitNotificationEnabled(false)
+                .emailNotificationEnabled(false)
+                .kakaoworkNotificationEnabled(false)
                 .admin(admin)
                 .imageUrl(null)
                 .status(MemberStatus.PENDING)

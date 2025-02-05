@@ -181,11 +181,10 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
         }
     }
 
-    private void publishNotification(Task task, NotificationType notificationType, String message) {
+    private void publishNotification(Task task, NotificationType notificationType, String message, String taskTitle) {
         List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
         receivers.forEach(receiver -> {
-            sendNotificationService.sendPushNotification(receiver, notificationType,
-                    task, message, null);
+            sendNotificationService.sendPushNotification(receiver, notificationType, task, message, null);
         });
         sendNotificationService.sendAgitNotification(notificationType,
                 task, message, null);

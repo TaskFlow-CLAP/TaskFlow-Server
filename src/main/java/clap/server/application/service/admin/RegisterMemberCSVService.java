@@ -21,12 +21,14 @@ public class RegisterMemberCSVService implements RegisterMemberCSVUsecase {
     @Override
     @Transactional
     public int registerMembersFromCsv(Long adminId, MultipartFile file) {
-        List<Member> members = csvParser.parse(file);
+        List<Member> members = csvParser.parseDataAndMapToMember(file);
         Member admin = memberService.findActiveMember(adminId);
-        members.forEach(member -> {
-            member.register(admin);
-            commandMemberPort.save(member);
-        });
+
+        List<Member> newMembers = members.stream()
+                .map(memberData -> Member.createMember(admin, memberData.getMemberInfo()))
+                .toList();
+
+        commandMemberPort.saveAll(newMembers);
         return members.size();
     }
 }

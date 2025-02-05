@@ -46,8 +46,7 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private MemberStatus status;
 
-    // TODO: spring security 적용 예정
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Column

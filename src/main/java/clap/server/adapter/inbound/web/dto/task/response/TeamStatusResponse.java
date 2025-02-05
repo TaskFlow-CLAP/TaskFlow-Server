@@ -5,16 +5,16 @@ import java.util.List;
 public record TeamStatusResponse(
         List<TeamTaskResponse> members,
         int totalInProgressTaskCount,
-        int totalPendingTaskCount,
+        int totalInReviewingTaskCount,
         int totalTaskCount
 ) {
     // 기존 생성자 (3개 파라미터)
-    public TeamStatusResponse(List<TeamTaskResponse> members, int totalInProgressTaskCount, int totalPendingTaskCount) {
+    public TeamStatusResponse(List<TeamTaskResponse> members, int totalInProgressTaskCount, int totalInReviewingTaskCount) {
         this(
                 (members == null) ? List.of() : members,
                 totalInProgressTaskCount,
-                totalPendingTaskCount,
-                totalInProgressTaskCount + totalPendingTaskCount
+                totalInReviewingTaskCount,
+                totalInProgressTaskCount + totalInReviewingTaskCount
         );
     }
 

@@ -41,13 +41,13 @@ class AuthService implements LoginUsecase, LogoutUsecase {
 
         if (member.getStatus().equals(MemberStatus.APPROVAL_REQUEST)) {
             String temporaryToken = manageTokenService.issueTemporaryToken(member.getMemberId());
-            return AuthResponseMapper.toLoginResponse(temporaryToken, null, member);
+            return AuthResponseMapper.toLoginResponse(temporaryToken, null);
         }
 
         CustomJwts jwtTokens = manageTokenService.issueTokens(member);
         refreshTokenService.saveRefreshToken(manageTokenService.issueRefreshToken(member.getMemberId()));
         loginAttemptService.resetFailedAttempts(clientIp);
-        return AuthResponseMapper.toLoginResponse(jwtTokens.accessToken(), jwtTokens.refreshToken(), member);
+        return AuthResponseMapper.toLoginResponse(jwtTokens.accessToken(), jwtTokens.refreshToken());
     }
 
     @Override
