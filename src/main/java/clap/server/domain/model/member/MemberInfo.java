@@ -65,7 +65,7 @@ public class MemberInfo {
     public static void assertReviewerIsManager(boolean isReviewer, MemberRole role) {
         if (isReviewer) {
             if (role != MemberRole.ROLE_MANAGER) {
-                throw new DomainException(MemberErrorCode.MEMBER_REGISTRATION_FAILED);
+                throw new DomainException(MemberErrorCode.MANAGER_ONLY_REVIEW);
             }
         }
     }
