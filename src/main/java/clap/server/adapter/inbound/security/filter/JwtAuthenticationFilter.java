@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SWAGGER_ENDPOINTS
     ).flatMap(Arrays::stream).toArray(String[]::new);
 
-    public static final String[] ANONYMOUS_ENDPOINTS = {LOGIN_ENDPOINT, REISSUANCE_ENDPOINT, ANONYMOUS_ENDPOINT};
+    public static final String[] ANONYMOUS_ENDPOINTS = {LOGIN_ENDPOINT, REISSUANCE_ENDPOINT, PASSWORD_EMAIL_ENDPOINT};
 
     @Override
     protected void doFilterInternal(

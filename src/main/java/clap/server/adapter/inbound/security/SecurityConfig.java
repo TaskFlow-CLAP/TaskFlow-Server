@@ -85,7 +85,7 @@ public class SecurityConfig {
                 .requestMatchers(LOGIN_ENDPOINT).permitAll()
                 .requestMatchers(HEALTH_CHECK_ENDPOINT).permitAll()
                 .requestMatchers(REISSUANCE_ENDPOINT).permitAll()
-                .requestMatchers(ANONYMOUS_ENDPOINT).permitAll()
+                .requestMatchers(PASSWORD_EMAIL_ENDPOINT).permitAll()
                 .requestMatchers(SWAGGER_ENDPOINTS).permitAll();
     }
 
