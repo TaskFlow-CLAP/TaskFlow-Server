@@ -7,7 +7,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Document(indexName = "task")
 @Mapping(mappingPath = "elastic/task-mapping.json")
@@ -26,7 +26,7 @@ public class TaskDocument {
     @Field(name="processor")
     private String processor;
     @Field(name="created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     public TaskDocument(Task taskEntity) {
         this.id = taskEntity.getTaskId();
@@ -35,6 +35,6 @@ public class TaskDocument {
         this.subCategory = taskEntity.getCategory().getName();
         this.status = taskEntity.getTaskStatus().name().toLowerCase();
         this.processor = taskEntity.getProcessor().getMemberInfo().getNickname();
-        this.createdAt = taskEntity.getCreatedAt().toLocalDate();
+        this.createdAt = taskEntity.getCreatedAt();
     }
 }
