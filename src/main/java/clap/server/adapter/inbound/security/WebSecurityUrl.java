@@ -13,5 +13,6 @@ public class WebSecurityUrl {
             "/swagger-ui/**", "/swagger"
     };
     public static final String REISSUANCE_ENDPOINT = "/api/auths/reissuance";
+    public static final String ANONYMOUS_ENDPOINT = "/api/verification/email";
     public static final String TEMPORARY_TOKEN_ALLOWED_ENDPOINT = "/api/members/initial-password";
 }
