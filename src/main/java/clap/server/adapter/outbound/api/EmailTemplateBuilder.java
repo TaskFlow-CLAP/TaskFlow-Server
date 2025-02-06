@@ -69,4 +69,14 @@ public class EmailTemplateBuilder {
         String body = templateEngine.process(templateName, context);
         return new EmailTemplate(receiver, subject, body);
     }
+
+    public EmailTemplate createVerificationCodeTemplate(String receiver, String receiverName, String verificationCode) {
+        Context context = new Context();
+        String templateName = "verification";
+        String subject = "[TaskFlow] 비밀번호 재설정 인증 번호";
+        context.setVariable("verificationCode", verificationCode);
+        context.setVariable("receiverName", receiverName);
+        String body = templateEngine.process(templateName, context);
+        return new EmailTemplate(receiver, subject, body);
+    }
 }
