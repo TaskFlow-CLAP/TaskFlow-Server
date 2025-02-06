@@ -7,7 +7,6 @@ public record PushNotificationTemplate(
         String email,
         NotificationType notificationType,
         String taskName,
-        String status,
         String senderName,
         String message,
         String commenterName
