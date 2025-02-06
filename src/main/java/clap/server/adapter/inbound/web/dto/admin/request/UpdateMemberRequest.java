@@ -12,8 +12,6 @@ public record UpdateMemberRequest(
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
                 message = "올바른 이메일 형식이 아닙니다.")
-        @Schema(description = "회원 이메일", example = "siena@gmail.com")
-        String email,
         @NotNull @Schema(description = "승인 권한 여부")
         Boolean isReviewer,
         @NotNull @Schema(description = "부서 ID")
