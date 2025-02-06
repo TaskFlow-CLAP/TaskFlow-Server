@@ -66,7 +66,7 @@ public class EmailTemplateBuilder {
         String templateName = "invitation";
         String subject = "[TaskFlow 초대] 회원가입을 환영합니다.";
         context.setVariable("userNickname", userNickname);
-        context.setVariable("invitationLink", "https://localhost:5173/login"); //TODO:비밀번호 설정 링크로 변경 예정
+        context.setVariable("invitationLink", "http://localhost:5173/login");
         context.setVariable("initialPassword", initialPassword);
         context.setVariable("receiverName", receiverName);
         String body = templateEngine.process(templateName, context);
