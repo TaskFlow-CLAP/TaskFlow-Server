@@ -4,8 +4,8 @@ import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.request.SortBy;
-import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -20,9 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
 import static com.querydsl.core.types.Order.ASC;
@@ -118,7 +118,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         }
 
         return taskEntities.stream()
-                .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId()))
+                .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId(), LinkedHashMap::new, Collectors.toList()))
                 .entrySet().stream()
                 .map(entry -> {
                     List<TeamTaskItemResponse> taskResponses = entry.getValue().stream()
