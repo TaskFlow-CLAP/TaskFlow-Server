@@ -7,7 +7,6 @@ spring:
       - swagger.yml
       - redis.yml
       - auth.yml
-      - env.properties
       - elasticsearch.yml
       - s3.yml
       - notifications.yml
