@@ -33,5 +33,5 @@ public interface LoadMemberPort {
 
     Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest, String sortDirection);
 
-
+    Optional<Member> findByNicknameOrEmail(String nickname, String email);
 }
