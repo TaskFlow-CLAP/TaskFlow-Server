@@ -213,7 +213,7 @@ public class TaskResponseMapper {
                             entry.getValue().get(0).getProcessor().getImageUrl(),
                             entry.getValue().get(0).getProcessor().getDepartment().getName(),
                             (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count(),
-                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.PENDING_COMPLETED).count(),
+                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_REVIEWING).count(),
                             entry.getValue().size(),
                             teamtaskItemResponses
                     );
