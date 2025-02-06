@@ -8,7 +8,7 @@ public record MemberDetailInfoResponse(
         @Schema(description = "회원 이름", example = "서주원")
         String name,
         @Schema(description = "회원 아이디", example = "siena.it")
-        String nicknanme,
+        String nickname,
         @Schema(description = "회원 이메일", example = "siena.it@gmail.com")
         String email,
         @Schema(description = "승인 권한 여부")
