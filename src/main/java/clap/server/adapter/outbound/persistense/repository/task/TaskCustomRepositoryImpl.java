@@ -3,8 +3,9 @@ package clap.server.adapter.outbound.persistense.repository.task;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
-import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
+import clap.server.adapter.inbound.web.dto.task.request.SortBy;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
+import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -19,9 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
 import static com.querydsl.core.types.Order.ASC;
@@ -87,14 +88,22 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         }
 
         // 정렬 조건 적용
-        OrderSpecifier<?> orderBy = "기여도순".equals(filter != null ? filter.sortBy() : "")
-                ? new CaseBuilder()
-                .when(taskEntity.taskStatus.eq(TaskStatus.IN_PROGRESS)
-                        .or(taskEntity.taskStatus.eq(TaskStatus.IN_REVIEWING)))
-                .then(1)
-                .otherwise(0)
-                .desc()
-                : taskEntity.processor.nickname.asc();
+        SortBy sortBy = (filter != null && filter.sortBy() != null) ? filter.sortBy() : SortBy.DEFAULT;
+
+        assert filter != null;
+        OrderSpecifier<?> orderBy;
+        if (sortBy == SortBy.CONTRIBUTE) {
+            // 기여도순 (진행 중 + 검토 중 작업 개수 합 기준 내림차순)
+            orderBy = new CaseBuilder()
+                    .when(taskEntity.taskStatus.eq(TaskStatus.IN_PROGRESS)
+                            .or(taskEntity.taskStatus.eq(TaskStatus.IN_REVIEWING)))
+                    .then(1)
+                    .otherwise(0)
+                    .desc();
+        } else {
+            // 기본순 (닉네임 오름차순)
+            orderBy = taskEntity.processor.nickname.asc();
+        }
 
         // 쿼리 실행
         List<TaskEntity> taskEntities = queryFactory
@@ -109,7 +118,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         }
 
         return taskEntities.stream()
-                .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId()))
+                .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId(), LinkedHashMap::new, Collectors.toList()))
                 .entrySet().stream()
                 .map(entry -> {
                     List<TeamTaskItemResponse> taskResponses = entry.getValue().stream()
