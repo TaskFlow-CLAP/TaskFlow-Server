@@ -26,7 +26,7 @@ class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
     @Override
     @Transactional
     public void updateMemberInfo(Long adminId, Long memberId, UpdateMemberRequest request) {
-        Member member = memberService.findActiveMember(memberId);
+        Member member = memberService.findById(memberId);
         Department department = loadDepartmentPort.findById(request.departmentId()).orElseThrow(() ->
                 new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
@@ -40,7 +40,7 @@ class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
     @Override
     @Transactional(readOnly = true)
     public MemberDetailsResponse getMemberDetail(Long memberId) {
-        Member member = memberService.findActiveMember(memberId);
+        Member member = memberService.findById(memberId);
         return MemberResponseMapper.toMemberDetailsResponse(member);
     }
 }
