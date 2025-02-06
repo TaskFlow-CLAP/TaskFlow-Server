@@ -62,7 +62,7 @@ public class MemberResponseMapper {
                 member.getImageUrl(),
                 member.getMemberInfo().getName(),
                 member.getMemberInfo().getNickname(),
-                member.getImageUrl(),
+                member.getMemberInfo().getEmail(),
                 member.isReviewer(),
                 member.getMemberInfo().getRole(),
                 member.getMemberInfo().getDepartment().getDepartmentId(),
