@@ -6,7 +6,7 @@ import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.application.port.inbound.task.FilterTeamStatusUsecase;
 import clap.server.application.port.inbound.task.LoadTeamStatusUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;
-import org.springframework.stereotype.Service;
+import clap.server.common.annotation.architecture.ApplicationService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
