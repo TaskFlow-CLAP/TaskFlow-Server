@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @InfrastructureAdapter
 @RequiredArgsConstructor
-public class SendSseService implements SendSsePort {
+public class SseEventEmitter implements SendSsePort {
 
     private final EmitterRepository emitterRepository;
 
