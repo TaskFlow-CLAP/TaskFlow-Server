@@ -1,5 +1,5 @@
 package clap.server.application.port.inbound.task;
 
 public interface CancelTaskUsecase {
-    void cancleTask(Long taskId);
+    void cancleTask(Long taskId, Long memberId);
 }

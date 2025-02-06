@@ -4,6 +4,7 @@ import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
 import clap.server.exception.ApplicationException;
+import clap.server.exception.DomainException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import static clap.server.domain.policy.task.TaskPolicyConstants.DEFAULT_PROCESSOR_ORDER_GAP;
+import static clap.server.exception.code.TaskErrorCode.NOT_A_REQUESTER;
 
 @Getter
 @SuperBuilder
@@ -48,7 +50,7 @@ public class Task extends BaseTime {
 
     public void updateTask(Long requesterId, Category category, String title, String description) {
         if (!Objects.equals(requesterId, this.requester.getMemberId())) {
-            throw new ApplicationException(TaskErrorCode.NOT_A_REQUESTER);
+            throw new ApplicationException(NOT_A_REQUESTER);
         }
         this.category = category;
         this.title = title;
@@ -103,7 +105,10 @@ public class Task extends BaseTime {
         this.processorOrder = newProcessorOrder;
     }
 
-    public void cancelTask() {
+    public void cancelTask(Long requesterId) {
+        if (!Objects.equals(this.requester.getMemberId(), requesterId)) {
+            throw new DomainException(NOT_A_REQUESTER);
+        }
         this.taskStatus = TaskStatus.TERMINATED;
         this.finishedAt = LocalDateTime.now();
     }
