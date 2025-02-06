@@ -60,11 +60,13 @@ public class EmailTemplateBuilder {
         return new EmailTemplate(request.email(), subject, body);
     }
 
-    public EmailTemplate createInvitationTemplate(String receiver, String receiverName, String initialPassword) {
+    public EmailTemplate createInvitationTemplate(String receiver, String receiverName,
+                                                  String initialPassword, String userNickname) {
         Context context = new Context();
         String templateName = "invitation";
         String subject = "[TaskFlow 초대] 회원가입을 환영합니다.";
-        context.setVariable("invitationLink", "https://example.com/reset-password"); //TODO:비밀번호 설정 링크로 변경 예정
+        context.setVariable("userNickname", userNickname);
+        context.setVariable("invitationLink", "http://localhost:5173/login");
         context.setVariable("initialPassword", initialPassword);
         context.setVariable("receiverName", receiverName);
         String body = templateEngine.process(templateName, context);

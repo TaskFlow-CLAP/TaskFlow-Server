@@ -15,8 +15,8 @@ public class SendAgitService {
     private final SendAgitPort agitPort;
     private final TaskService taskService;
 
-    public void sendAgit(PushNotificationTemplate request, Task task) {
-        Long agitPostId = agitPort.sendAgit(request, task);
+    public void sendAgit(PushNotificationTemplate request, Task task, String taskDetailUrl) {
+        Long agitPostId = agitPort.sendAgit(request, task, taskDetailUrl);
 
         if (request.notificationType().equals(NotificationType.TASK_REQUESTED)) {
             task.updateAgitPostId(agitPostId);

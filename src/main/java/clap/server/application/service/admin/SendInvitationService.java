@@ -44,7 +44,8 @@ public class SendInvitationService implements SendInvitationUsecase {
         sendEmailPort.sendInvitationEmail(
                 member.getMemberInfo().getEmail(),
                 member.getMemberInfo().getName(),
-                initialPassword
+                initialPassword,
+                member.getNickname()
         );
     }
 }
