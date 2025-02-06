@@ -1,8 +1,8 @@
-package clap.server.application.port.inbound.notification;
+package clap.server.application.port.outbound.webhook;
 
 import clap.server.adapter.inbound.web.dto.notification.request.SseRequest;
 
-public interface SendSseUsecase {
+public interface SendSsePort {
 
     void send(SseRequest request);
 }
