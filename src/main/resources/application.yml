@@ -10,6 +10,7 @@ spring:
       - elasticsearch.yml
       - s3.yml
       - notifications.yml
+      - clamav.yml
   application:
     name: taskflow
   web.resources.add-mappings: false
@@ -34,19 +35,20 @@ web:
 local: ${TASKFLOW_LOCAL_WEB:127.0.0.1:5173}
 service: ${TASKFLOW_SERVICE_WEB:127.0.0.1:5173}
 
-#logging:
-#  level:
-#    root: INFO
-#    taskflow.clap.server: ERROR
+logging:
+  level:
+    root: INFO
+    taskflow.clap.server: DEBUG
 #    org:
 #      springframework: DEBUG
+
 
 ---
 spring.config.activate.on-profile: local
 logging:
   level:
     root: INFO
-    taskflow.clap.server: ERROR
+    taskflow.clap.server: DEBUG
 #    org:
 #      springframework: DEBUG
 
