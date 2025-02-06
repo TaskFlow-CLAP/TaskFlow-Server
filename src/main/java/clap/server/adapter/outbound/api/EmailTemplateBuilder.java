@@ -48,6 +48,7 @@ public class EmailTemplateBuilder {
                 context.setVariable("title", request.taskName());
                 break;
             case COMMENT:
+                templateName = "comment";
                 subject = "[TaskFlow 알림] 댓글이 작성되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("comment", request.message());
