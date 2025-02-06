@@ -1,6 +1,7 @@
 package clap.server.application.service.auth;
 
 import clap.server.adapter.inbound.web.dto.member.response.SendVerificationCodeRequest;
+import clap.server.adapter.inbound.web.dto.member.response.VerifyCodeRequest;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.member.SendVerificationEmailUsecase;
 import clap.server.application.port.inbound.member.VerifyEmailCodeUsecase;
@@ -40,17 +41,16 @@ import org.springframework.transaction.annotation.Transactional;
 
     @Override
     @Transactional
-    public void verifyEmailCode(Long memberId, String code) {
-        Member member = memberService.findActiveMember(memberId);
-        Otp otp = loadOtpPort.findByEmail(member.getMemberInfo().getEmail()).orElseThrow(
+    public void verifyEmailCode(VerifyCodeRequest request) {
+        Otp otp = loadOtpPort.findByEmail(request.email()).orElseThrow(
                 () -> new ApplicationException(AuthErrorCode.VERIFICATION_CODE_EXPIRED)
         );
 
-        if(!code.equals(otp.code())){
+        if(!request.code().equals(otp.code())){
             throw new ApplicationException(AuthErrorCode.VERIFICATION_CODE_MISMATCH);
         }
         else {
-            commandOtpPort.deleteByEmail(member.getMemberInfo().getEmail());
+            commandOtpPort.deleteByEmail(request.email());
         }
     }
 }
