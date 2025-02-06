@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "05. Admin")
+@Tag(name = "05. Admin [회원 관리]")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/managements")

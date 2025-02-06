@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comment")
+@RequestMapping("/api/comments")
 public class PostCommentController {
 
     private final SaveCommentUsecase saveCommentUsecase;

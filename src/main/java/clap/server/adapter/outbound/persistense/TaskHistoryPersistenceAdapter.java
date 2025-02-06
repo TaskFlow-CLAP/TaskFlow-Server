@@ -3,10 +3,11 @@ package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.outbound.persistense.entity.task.TaskHistoryEntity;
 import clap.server.adapter.outbound.persistense.mapper.TaskHistoryPersistenceMapper;
-import clap.server.adapter.outbound.persistense.repository.task.TaskHistoryRepository;
+import clap.server.adapter.outbound.persistense.repository.history.TaskHistoryRepository;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.port.outbound.taskhistory.LoadTaskHistoryPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
+
 
 import clap.server.domain.model.task.TaskHistory;
 import lombok.RequiredArgsConstructor;

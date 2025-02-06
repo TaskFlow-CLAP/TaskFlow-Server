@@ -17,7 +17,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "05. Admin")
+@Tag(name = "05. Admin [작업 관리]")
 @WebAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/managements/labels")

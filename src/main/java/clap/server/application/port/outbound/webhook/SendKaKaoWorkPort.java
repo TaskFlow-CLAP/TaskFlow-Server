@@ -4,5 +4,5 @@ import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 
 public interface SendKaKaoWorkPort {
 
-    void sendKakaoWork(PushNotificationTemplate request);
+    void sendKakaoWork(PushNotificationTemplate request, String taskDetailUrl);
 }

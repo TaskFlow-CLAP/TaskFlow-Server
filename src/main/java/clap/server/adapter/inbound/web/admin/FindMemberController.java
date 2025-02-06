@@ -5,6 +5,7 @@ import clap.server.adapter.inbound.web.dto.admin.response.RetrieveAllMemberRespo
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import clap.server.application.port.inbound.admin.FindMembersWithFilterUsecase;
 
+import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Tag(name = "05. Admin [회원 관리]")
+@WebAdapter
 @RequestMapping("/api/managements")
 @RequiredArgsConstructor
 public class FindMemberController {

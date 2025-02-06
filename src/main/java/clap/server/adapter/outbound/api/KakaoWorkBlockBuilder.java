@@ -14,8 +14,7 @@ public class KakaoWorkBlockBuilder {
 
     private final ObjectMapper objectMapper;
 
-    public String makeObjectBlock(PushNotificationTemplate request){
-        String taskDetailUrl = "https://www.naver.com";
+    public String makeObjectBlock(PushNotificationTemplate request, String taskDetailUrl){
         return switch (request.notificationType()) {
             case TASK_REQUESTED -> makeTaskRequestBlock(request, taskDetailUrl);
             case STATUS_SWITCHED -> makeTaskStatusBlock(request, taskDetailUrl);

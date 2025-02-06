@@ -36,6 +36,7 @@ public class TaskHistoryResponseMapper {
                                 case COMMENT -> new FindTaskHistoryResponse.Details(
                                         null,
                                         new FindTaskHistoryResponse.CommentDetails(
+                                                taskHistory.getComment().getCommentId(),
                                                 taskHistory.getComment().getMember().getNickname(),
                                                 taskHistory.getComment().getMember().getImageUrl(),
                                                 taskHistory.getComment().isModified(),
@@ -50,6 +51,7 @@ public class TaskHistoryResponseMapper {
                                                 .filter(attachment -> attachment.getComment().getCommentId().equals(taskHistory.getComment().getCommentId()))
                                                 .findFirst()
                                                 .map(attachment -> new FindTaskHistoryResponse.CommentFileDetails(
+                                                        taskHistory.getComment().getCommentId(),
                                                         taskHistory.getComment().getMember().getNickname(),
                                                         taskHistory.getComment().getMember().getImageUrl(),
                                                         taskHistory.getComment().isModified(),

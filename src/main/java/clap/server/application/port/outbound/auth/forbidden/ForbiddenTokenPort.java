@@ -1,4 +1,4 @@
-package clap.server.application.port.outbound.auth;
+package clap.server.application.port.outbound.auth.forbidden;
 
 import clap.server.domain.model.auth.ForbiddenToken;
 

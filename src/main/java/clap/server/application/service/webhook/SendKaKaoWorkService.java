@@ -2,16 +2,16 @@ package clap.server.application.service.webhook;
 
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import clap.server.application.port.outbound.webhook.SendKaKaoWorkPort;
-import clap.server.common.annotation.architecture.ApplicationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-@ApplicationService
+@Service
 @RequiredArgsConstructor
-public class SendKaKaoWorkService {
+public class SendKaKaoWorkService implements NotificationSender {
 
     private final SendKaKaoWorkPort sendKaKaoWorkPort;
 
-    public void sendKaKaoWork(PushNotificationTemplate request) {
-        sendKaKaoWorkPort.sendKakaoWork(request);
+    public void send(PushNotificationTemplate request, String taskDetailUrl) {
+        sendKaKaoWorkPort.sendKakaoWork(request, taskDetailUrl);
     }
 }

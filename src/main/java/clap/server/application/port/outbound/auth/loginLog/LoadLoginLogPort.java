@@ -1,4 +1,4 @@
-package clap.server.application.port.outbound.auth;
+package clap.server.application.port.outbound.auth.loginLog;
 
 import clap.server.domain.model.auth.LoginLog;
 
