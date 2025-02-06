@@ -1,0 +1,3 @@
+clamav:
+  host: localhost
+  port: 3310
