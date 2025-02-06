@@ -6,12 +6,13 @@ import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.application.port.inbound.task.FilterTeamStatusUsecase;
 import clap.server.application.port.inbound.task.LoadTeamStatusUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;
+import clap.server.common.annotation.architecture.ApplicationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@ApplicationService
 public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatusUsecase {
 
     private final LoadTaskPort loadTaskPort;
