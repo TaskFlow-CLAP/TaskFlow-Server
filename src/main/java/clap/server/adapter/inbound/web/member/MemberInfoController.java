@@ -8,6 +8,9 @@ import clap.server.application.port.inbound.member.UpdateMemberInfoUsecase;
 import clap.server.application.port.inbound.member.MemberDetailInfoUsecase;
 import clap.server.application.port.inbound.member.MemberProfileUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
+import clap.server.common.utils.FileTypeValidator;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.FileErrorcode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +52,9 @@ public class MemberInfoController {
             @RequestPart(name = "memberInfo") UpdateMemberInfoRequest request,
             @RequestPart(name = "profileImage", required = false) MultipartFile profileImage,
             @AuthenticationPrincipal SecurityUserDetails userInfo) throws IOException {
+        if (profileImage !=null && !FileTypeValidator.validImageFile(profileImage.getInputStream())) {
+            throw new ApplicationException(FileErrorcode.UNSUPPORTED_FILE_TYPE);
+        }
         updateMemberInfoUsecase.updateMemberInfo(userInfo.getUserId(), request, profileImage);
     }
 }
