@@ -3,6 +3,7 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.task.request.ApprovalTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.response.ApprovalTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.FindApprovalFormResponse;
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.application.mapper.TaskResponseMapper;
@@ -73,10 +74,11 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
 
     private void publishNotification(List<Member> receivers, Task task, String processorName){
         receivers.forEach(receiver -> {
+            boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
             sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
-                    task, processorName, null);
+                    task, processorName, null, isManager);
         });
-        sendNotificationService.sendAgitNotification(NotificationType.PROCESSOR_CHANGED,
+        sendNotificationService.sendAgitNotification(NotificationType.PROCESSOR_ASSIGNED,
                 task, processorName, null);
     }
 

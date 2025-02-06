@@ -4,5 +4,5 @@ import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 
 public interface SendWebhookEmailPort {
 
-    void sendWebhookEmail(PushNotificationTemplate request);
+    void sendWebhookEmail(PushNotificationTemplate request, String taskDetailUrl);
 }
