@@ -18,7 +18,7 @@ import java.util.Optional;
 @Repository
 public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCustomRepository {
 
-    @Query("select t from TaskEntity t join fetch t.processor p" +
+    @Query("select t from TaskEntity t left join fetch t.processor p" +
             " where t.updatedAt between :updatedAtAfter and :updatedAtBefore")
     List<TaskEntity> findYesterdayTaskByUpdatedAtIsBetween(
             @Param("updatedAtAfter") LocalDateTime updatedAtAfter,
