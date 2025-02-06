@@ -1,7 +1,7 @@
 package clap.server.application.service.auth;
 
-import clap.server.application.port.outbound.auth.CommandLoginLogPort;
-import clap.server.application.port.outbound.auth.LoadLoginLogPort;
+import clap.server.application.port.outbound.auth.loginLog.CommandLoginLogPort;
+import clap.server.application.port.outbound.auth.loginLog.LoadLoginLogPort;
 import clap.server.domain.model.auth.LoginLog;
 import clap.server.exception.AuthException;
 import clap.server.exception.code.AuthErrorCode;

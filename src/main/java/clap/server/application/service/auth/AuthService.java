@@ -5,7 +5,7 @@ import clap.server.adapter.outbound.persistense.entity.member.constant.MemberSta
 import clap.server.application.mapper.AuthResponseMapper;
 import clap.server.application.port.inbound.auth.LoginUsecase;
 import clap.server.application.port.inbound.auth.LogoutUsecase;
-import clap.server.application.port.outbound.auth.ForbiddenTokenPort;
+import clap.server.application.port.outbound.auth.forbidden.ForbiddenTokenPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.auth.CustomJwts;

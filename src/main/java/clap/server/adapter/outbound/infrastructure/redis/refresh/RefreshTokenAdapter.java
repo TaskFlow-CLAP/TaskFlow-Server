@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.infrastructure.redis.refresh;
 
-import clap.server.application.port.outbound.auth.CommandRefreshTokenPort;
-import clap.server.application.port.outbound.auth.LoadRefreshTokenPort;
+import clap.server.application.port.outbound.auth.refresh.CommandRefreshTokenPort;
+import clap.server.application.port.outbound.auth.refresh.LoadRefreshTokenPort;
 import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import clap.server.domain.model.auth.RefreshToken;
 import lombok.RequiredArgsConstructor;

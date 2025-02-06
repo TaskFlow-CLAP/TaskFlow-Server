@@ -1,6 +1,6 @@
 package clap.server.adapter.outbound.infrastructure.redis.forbidden;
 
-import clap.server.application.port.outbound.auth.ForbiddenTokenPort;
+import clap.server.application.port.outbound.auth.forbidden.ForbiddenTokenPort;
 import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import clap.server.domain.model.auth.ForbiddenToken;
 import lombok.RequiredArgsConstructor;
