@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@ApplicationService
 public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatusUsecase {
 
     private final LoadTaskPort loadTaskPort;
