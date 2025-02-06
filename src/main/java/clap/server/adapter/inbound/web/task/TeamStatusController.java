@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Tag(name = "02. Task [담당자]")
-@RestController
 @RequestMapping("/api/team-status")
 @RequiredArgsConstructor
 @WebAdapter
