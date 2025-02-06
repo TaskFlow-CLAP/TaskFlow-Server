@@ -3,7 +3,7 @@ package clap.server.config.security;
 import clap.server.adapter.inbound.security.filter.LoginAttemptFilter;
 import clap.server.adapter.inbound.security.filter.JwtAuthenticationFilter;
 import clap.server.adapter.inbound.security.filter.JwtExceptionFilter;
-import clap.server.application.port.outbound.auth.ForbiddenTokenPort;
+import clap.server.application.port.outbound.auth.forbidden.ForbiddenTokenPort;
 import clap.server.application.port.outbound.auth.JwtProvider;
 import clap.server.application.service.auth.LoginAttemptService;
 import lombok.AccessLevel;

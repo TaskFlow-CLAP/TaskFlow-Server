@@ -24,6 +24,8 @@ public enum AuthErrorCode implements BaseErrorCode {
     ACCOUNT_IS_LOCKED(HttpStatus.UNAUTHORIZED, "AUTH_015", "접근할 수 없는 계정입니다."),
     LOGIN_REQUEST_FAILED(HttpStatus.UNAUTHORIZED, "AUTH_016", "로그인에 실패하였습니다."),
     REFRESH_TOKEN_MISMATCHED(HttpStatus.UNAUTHORIZED, "AUTH_017", "리프레시 토큰이 일치하지 않습니다"),
+    VERIFICATION_CODE_MISMATCH(HttpStatus.BAD_REQUEST, "AUTH_018", "인증번호가 일치하지 않습니다."),
+    VERIFICATION_CODE_EXPIRED(HttpStatus.BAD_REQUEST, "AUTH_019", "만료된 인증번호입니다.")
     ;
 
     private final HttpStatus httpStatus;

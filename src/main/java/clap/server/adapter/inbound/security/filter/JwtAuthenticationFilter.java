@@ -2,7 +2,7 @@ package clap.server.adapter.inbound.security.filter;
 
 import clap.server.adapter.outbound.jwt.JwtClaims;
 import clap.server.adapter.outbound.jwt.access.AccessTokenClaimKeys;
-import clap.server.application.port.outbound.auth.ForbiddenTokenPort;
+import clap.server.application.port.outbound.auth.forbidden.ForbiddenTokenPort;
 import clap.server.application.port.outbound.auth.JwtProvider;
 import clap.server.exception.JwtException;
 import clap.server.exception.code.AuthErrorCode;

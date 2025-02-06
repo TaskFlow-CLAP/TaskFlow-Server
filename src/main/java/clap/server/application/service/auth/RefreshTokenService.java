@@ -1,7 +1,7 @@
 package clap.server.application.service.auth;
 
-import clap.server.application.port.outbound.auth.CommandRefreshTokenPort;
-import clap.server.application.port.outbound.auth.LoadRefreshTokenPort;
+import clap.server.application.port.outbound.auth.refresh.CommandRefreshTokenPort;
+import clap.server.application.port.outbound.auth.refresh.LoadRefreshTokenPort;
 import clap.server.domain.model.auth.RefreshToken;
 import clap.server.exception.AuthException;
 import clap.server.exception.code.AuthErrorCode;
