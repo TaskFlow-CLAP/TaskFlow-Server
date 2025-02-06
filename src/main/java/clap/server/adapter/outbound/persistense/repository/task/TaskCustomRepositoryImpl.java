@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
 import static com.querydsl.core.types.Order.ASC;
@@ -101,6 +102,11 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 .where(builder)
                 .orderBy(orderBy)
                 .fetch();
+
+        // null 또는 빈 리스트 처리
+        if (taskEntities == null || taskEntities.isEmpty()) {
+            return List.of(); // 빈 리스트 반환
+        }
 
         return taskEntities.stream()
                 .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId()))
