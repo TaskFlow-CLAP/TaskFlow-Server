@@ -19,7 +19,7 @@ public class CancelTaskController {
 
     @Operation(summary = "작업 취소")
     @Secured("ROLE_USER")
-    @PatchMapping("/{taskId}/cancle")
+    @PatchMapping("/{taskId}/cancel")
     public void cancelTask(@PathVariable Long taskId) {
         cancelTaskUsecase.cancleTask(taskId);
     }
