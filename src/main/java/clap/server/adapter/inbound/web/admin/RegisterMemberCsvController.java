@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@Tag(name = "05. Admin")
+@Tag(name = "05. Admin [회원 관리]")
 @WebAdapter
 @RequestMapping("/api/managements")
 public class RegisterMemberCsvController {

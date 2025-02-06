@@ -9,13 +9,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "comment")
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE Comment SET is_Deleted = true WHERE comment_id = ?")
+@SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE comment_id = ?")
+@SQLRestriction("is_deleted = false")
 public class CommentEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

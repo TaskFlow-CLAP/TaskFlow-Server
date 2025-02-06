@@ -6,5 +6,5 @@ public interface CommandCommentPort {
 
     Comment saveComment(Comment comment);
 
-    void deleteComment(Comment comment);
+    void deleteCommentWithTaskHistory(Long commentId);
 }

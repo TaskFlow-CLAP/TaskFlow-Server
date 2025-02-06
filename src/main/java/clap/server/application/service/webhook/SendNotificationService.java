@@ -1,10 +1,8 @@
 package clap.server.application.service.webhook;
 
-import clap.server.adapter.inbound.web.dto.notification.request.SseRequest;
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.notification.CommandNotificationPort;
-import clap.server.application.port.outbound.webhook.SendSsePort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.notification.Notification;
@@ -20,7 +18,7 @@ import static clap.server.domain.model.notification.Notification.createTaskNotif
 @RequiredArgsConstructor
 public class SendNotificationService {
 
-    private final SendSsePort sendSsePort;
+    private final SendSseService sendSseService;
     private final SendAgitService sendAgitService;
     private final SendWebhookEmailService sendWebhookEmailService;
     private final SendKaKaoWorkService sendKaKaoWorkService;
@@ -35,13 +33,6 @@ public class SendNotificationService {
 
         Notification notification = createTaskNotification(task, receiver, notificationType, message, taskTitle);
 
-        SseRequest sseRequest = new SseRequest(
-                taskTitle,
-                notificationType,
-                receiver.getMemberId(),
-                message
-        );
-
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
                 email, notificationType, taskTitle, requesterNickname, message, commenterName
         );
@@ -51,7 +42,7 @@ public class SendNotificationService {
         });
 
         CompletableFuture<Void> sendSseFuture = CompletableFuture.runAsync(() -> {
-            sendSsePort.send(sseRequest);
+            sendSseService.send(receiver, notificationType, task, message);
         });
 
         CompletableFuture<Void> sendEmailFuture = CompletableFuture.runAsync(() -> {
