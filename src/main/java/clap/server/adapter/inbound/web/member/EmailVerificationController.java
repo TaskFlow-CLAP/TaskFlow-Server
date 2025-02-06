@@ -21,13 +21,13 @@ public class EmailVerificationController {
     private final VerifyEmailCodeUsecase verifyEmailCodeUsecase;
 
     @Operation(summary = "인증번호 전송 API")
-    @PostMapping("/verification/email")
+    @PostMapping("/verifications/email")
     public void sendVerificationEmail(@RequestBody SendVerificationCodeRequest request) {
         sendVerificationEmailUsecase.sendVerificationCode(request);
     }
 
     @Operation(summary = "인증번호 검증 API")
-    @PostMapping("/verification")
+    @PostMapping("/verifications")
     public void sendVerificationEmail(@RequestBody VerifyCodeRequest request) {
         verifyEmailCodeUsecase.verifyEmailCode(request);
     }
