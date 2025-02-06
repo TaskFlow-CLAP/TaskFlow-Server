@@ -107,6 +107,10 @@ dependencies {
     implementation 'org.apache.tika:tika-core:2.9.0'
     implementation 'org.apache.tika:tika-parsers:2.9.0'
 
+    // Clam AV
+    implementation group: 'xyz.capybara', name: 'clamav-client', version: '2.1.2'
+
+
 }
 
 tasks.named('test') {
