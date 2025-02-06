@@ -4,7 +4,6 @@ import clap.server.adapter.outbound.jwt.JwtClaims;
 import clap.server.adapter.outbound.jwt.access.AccessTokenClaimKeys;
 import clap.server.application.port.outbound.auth.ForbiddenTokenPort;
 import clap.server.application.port.outbound.auth.JwtProvider;
-import clap.server.exception.AuthException;
 import clap.server.exception.JwtException;
 import clap.server.exception.code.AuthErrorCode;
 import io.jsonwebtoken.Claims;
@@ -24,11 +23,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static clap.server.adapter.inbound.security.WebSecurityUrl.*;
 
@@ -42,6 +43,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AccessDeniedHandler accessDeniedHandler;
     private final ForbiddenTokenPort forbiddenTokenPort;
 
+    public static final String[] PUBLIC_ENDPOINTS = Stream.of(
+            HEALTH_CHECK_ENDPOINT,
+            READ_ONLY_PUBLIC_ENDPOINTS,
+            SWAGGER_ENDPOINTS
+    ).flatMap(Arrays::stream).toArray(String[]::new);
+
+    public static final String[] ANONYMOUS_ENDPOINTS = {LOGIN_ENDPOINT, REISSUANCE_ENDPOINT};
+
     @Override
     protected void doFilterInternal(
             @NotNull HttpServletRequest request,
@@ -49,6 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NotNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
+
             if (isAnonymousRequest(request)) {
                 filterChain.doFilter(request, response);
                 return;
@@ -66,9 +76,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isAnonymousRequest(HttpServletRequest request) {
-        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        return accessToken == null;
+        boolean isAnonymousURI = Arrays.stream(ANONYMOUS_ENDPOINTS)
+                .anyMatch(endpoint -> new AntPathMatcher().match(endpoint, request.getRequestURI()));
+        boolean isAnonymous = request.getHeader(HttpHeaders.AUTHORIZATION) == null;
+        return isAnonymousURI && isAnonymous;
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return Arrays.stream(PUBLIC_ENDPOINTS)
+                .anyMatch(endpoint -> new AntPathMatcher().match(endpoint, request.getRequestURI()));
+    }
+
 
     private String resolveAccessToken(
             HttpServletRequest request
@@ -104,6 +123,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         return accessToken;
     }
+
+
 
 
     private boolean isTemporaryTokenAllowed(String requestUrl) {
