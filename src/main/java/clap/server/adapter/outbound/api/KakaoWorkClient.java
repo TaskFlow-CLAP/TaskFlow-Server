@@ -25,11 +25,11 @@ public class KakaoWorkClient implements SendKaKaoWorkPort {
     private final KakaoWorkBlockBuilder kakaoWorkBlockBuilder;
 
     @Override
-    public void sendKakaoWork(PushNotificationTemplate request) {
+    public void sendKakaoWork(PushNotificationTemplate request, String taskDetailUrl) {
         RestTemplate restTemplate = new RestTemplate();
 
         // Payload 생성
-        String payload = kakaoWorkBlockBuilder.makeObjectBlock(request);
+        String payload = kakaoWorkBlockBuilder.makeObjectBlock(request, taskDetailUrl);
 
         // HTTP 요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();

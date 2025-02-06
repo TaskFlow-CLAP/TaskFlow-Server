@@ -74,6 +74,19 @@ public class SendNotificationService {
         allOf.join();
     }
 
+    private String extractTaskUrl(NotificationType notificationType, Task task, Boolean isManager) {
+        String taskDetailUrl = "http://localhost:5173/my-request?taskId=" + task.getTaskId();
+        if (isManager) {
+            if (notificationType == NotificationType.TASK_REQUESTED) {
+                taskDetailUrl = "http://localhost:5173/requested?taskId=" + task.getTaskId();
+            }
+            else {
+                taskDetailUrl = "http://localhost:5173/my-task?taskId=" + task.getTaskId();
+            }
+        }
+        return taskDetailUrl;
+    }
+
     @Async("notificationExecutor")
     public void sendAgitNotification(NotificationType notificationType,
                                      Task task, String message, String commenterName) {

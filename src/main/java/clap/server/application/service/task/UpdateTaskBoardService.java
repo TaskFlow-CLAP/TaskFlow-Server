@@ -1,6 +1,7 @@
 package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskOrderRequest;
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
@@ -184,7 +185,8 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     private void publishNotification(Task task, NotificationType notificationType, String message, String taskTitle) {
         List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
         receivers.forEach(receiver -> {
-            sendNotificationService.sendPushNotification(receiver, notificationType, task, message, null);
+            boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
+            sendNotificationService.sendPushNotification(receiver, notificationType, task, message, null, isManager);
         });
         sendNotificationService.sendAgitNotification(notificationType,
                 task, message, null);

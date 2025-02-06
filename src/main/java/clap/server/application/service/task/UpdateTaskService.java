@@ -3,6 +3,7 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskLabelRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskProcessorRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskRequest;
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
@@ -103,7 +104,8 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor,null);
         commandTaskHistoryPort.save(taskHistory);
 
-        publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());
+        List<Member> receivers = List.of(updateTask.getRequester(), updateTask.getProcessor());
+        publishNotification(receivers, updateTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());
     }
 
     @Transactional
@@ -137,13 +139,13 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         return attachmentsOfTask;
     }
 
-    private void publishNotification(Task task, NotificationType notificationType, String message) {
-        List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
+    private void publishNotification(List<Member> receivers, Task task, NotificationType notificationType, String message) {
         receivers.forEach(receiver -> {
+            boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
             sendNotificationService.sendPushNotification(receiver, notificationType,
-                    task, message, null);
+                    task, message, null, isManager);
         });
 
-            sendNotificationService.sendAgitNotification(notificationType, task, message, null);
+        sendNotificationService.sendAgitNotification(notificationType, task, message, null);
     }
 }
