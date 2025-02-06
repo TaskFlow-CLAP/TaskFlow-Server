@@ -83,6 +83,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             Task updateTask = taskService.upsert(task);
             TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, taskStatus.getDescription(), null,null);
             commandTaskHistoryPort.save(taskHistory);
+
             List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
             publishNotification(receivers, updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
         }
