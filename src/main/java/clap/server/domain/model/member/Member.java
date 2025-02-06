@@ -121,7 +121,7 @@ public class Member extends BaseTime {
     public static Boolean checkCommenter(Task task, Member member) {
         // 일반 회원일 경우 => 요청자인지 확인
         if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
-                && !(Objects.equals(member, task.getRequester()))) {
+                && !(Objects.equals(member.getMemberId(), task.getRequester().getMemberId()))) {
             throw new DomainException(MemberErrorCode.NOT_A_COMMENTER);
         }
         else {
