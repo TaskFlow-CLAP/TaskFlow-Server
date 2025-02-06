@@ -25,14 +25,9 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.*;
 import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.exception.ApplicationException;
-import clap.server.exception.code.NotificationErrorCode;
 import clap.server.exception.code.TaskErrorCode;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,12 +55,12 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Override
     @Transactional
     public void updateTask(Long requesterId, Long taskId, UpdateTaskRequest updateTaskRequest, List<MultipartFile> files) {
-        Member requester = memberService.findActiveMember(requesterId);
+        memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(updateTaskRequest.categoryId());
         Task task = taskService.findById(taskId);
 
         task.updateTask(requesterId, category, updateTaskRequest.title(), updateTaskRequest.description());
-        Task updatedTask = taskService.upsert(task);
+        taskService.upsert(task);
 
         if (!updateTaskRequest.attachmentsToDelete().isEmpty()) {
             updateAttachments(updateTaskRequest.attachmentsToDelete(), files, task);
@@ -105,7 +100,6 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor,null);
         commandTaskHistoryPort.save(taskHistory);
 
-        String taskTitle = task.getTitle();
         publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());
     }
 
@@ -118,7 +112,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         Label label = labelService.findById(request.labelId());
 
         task.updateLabel(label);
-        Task updatetask = taskService.upsert(task);
+        taskService.upsert(task);
     }
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {

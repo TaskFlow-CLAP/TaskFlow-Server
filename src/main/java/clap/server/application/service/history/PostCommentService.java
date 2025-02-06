@@ -43,7 +43,6 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         Member member = memberService.findActiveMember(userId);
 
         // 일반 회원일 경우 => 요청자인지 확인
-        // 담당자일 경우 => 처리자인지 확인
         if (Member.checkCommenter(task, member)) {
             Comment comment = Comment.createComment(member, task, request.content());
             Comment savedComment = commandCommentPort.saveComment(comment);
@@ -77,7 +76,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
             Member processor = task.getProcessor();
             Member requester = task.getRequester();
-            if (member.getMemberInfo().getRole() == MemberRole.ROLE_USER) {
+            if (member.getMemberInfo().getRole() == requester.getMemberInfo().getRole()) {
                 publishNotification(processor, task, fileName + "(첨부파일)", requester.getNickname());
             } else {
                 publishNotification(requester, task, fileName + "(첨부파일)", processor.getNickname());
