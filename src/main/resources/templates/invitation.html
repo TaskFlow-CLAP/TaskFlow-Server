@@ -1,3 +1,4 @@
+Invitation.html
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
@@ -72,7 +73,7 @@
         <p>안녕하세요, <strong th:text="${receiverName}"></strong>님!</p>
         <p>TaskFlow 회원가입 초대 메일입니다.</p>
         <ul>
-            <li>초대 링크: <a href="https://example.com/register" target="_blank" th:href="${invitationLink}">회원가입 링크</a></li>
+            <li>아이디: <a href="https://example.com/register" target="_blank" th:href="${userNickname}">회원가입 링크</a></li>
             <li>초기 비밀번호: <strong th:text="${initialPassword}"></strong></li>
         </ul>
         <div class="cta-button">

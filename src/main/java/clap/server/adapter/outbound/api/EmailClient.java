@@ -37,12 +37,12 @@ public class EmailClient implements SendEmailPort, SendWebhookEmailPort {
     }
 
     @Override
-    public void sendInvitationEmail(String memberEmail, String receiverName, String initialPassword) {
+    public void sendInvitationEmail(String memberEmail, String receiverName, String initialPassword, String userNickname) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            EmailTemplate template = emailTemplateBuilder.createInvitationTemplate(memberEmail, receiverName, initialPassword);
+            EmailTemplate template = emailTemplateBuilder.createInvitationTemplate(memberEmail, receiverName, initialPassword, userNickname);
             helper.setTo(template.email());
             helper.setSubject(template.subject());
             helper.setText(template.body(), true);
