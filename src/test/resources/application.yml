@@ -59,24 +59,3 @@ password:
   policy:
     length: 12
     characters: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+
-
-cloud:
-  kakao:
-    project-id: 34481374c1ee4bbb8745df43e4c13fff
-    region: kr-central-2
-    object-storage:
-      endpoint: https://objectstorage.kr-central-2.kakaocloud.com
-      access-key: 253474a41cb447f4ad3c38e0ed9963c4
-      secret-key: 74861656e46845488ec4357f155fa3ed
-      bucketName: taskflow
-
-webhook:
-  kakaowork:
-    url: https://api.kakaowork.com/v1/messages.send_by_email
-    auth: Bearer 1b01becc.a7f10da76d2e4038948771107cfe5c1d
-  agit:
-    url: https://agit.io/webhook/a342181d-fb18-4eb0-a99a-30f4fb5b14b1
-
-mail:
-  username: leegd120@gmail.com
-  password: znlictzarqurxlla
