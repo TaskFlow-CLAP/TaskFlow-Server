@@ -43,6 +43,17 @@ public class ManagementTaskController {
             return ResponseEntity.ok(createTaskUsecase.createTask(userInfo.getUserId(), createTaskRequest, attachments));
     }
 
+    @Operation(summary = "작업 요청 생성, 파일 스캔 기능 추가")
+    @PostMapping(value = "/v2", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Secured({"ROLE_MANAGER", "ROLE_USER"})
+    public ResponseEntity<CreateTaskResponse> createTaskWithScanner(
+            @RequestPart(name = "taskInfo") @Valid CreateTaskRequest createTaskRequest,
+            @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
+            @AuthenticationPrincipal SecurityUserDetails userInfo
+    ){
+        return ResponseEntity.ok(createTaskUsecase.createTaskWithScanner(userInfo.getUserId(), createTaskRequest, attachments));
+    }
+
     @Operation(summary = "작업 수정")
     @PatchMapping(value = "/{taskId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @Secured({"ROLE_MANAGER", "ROLE_USER"})

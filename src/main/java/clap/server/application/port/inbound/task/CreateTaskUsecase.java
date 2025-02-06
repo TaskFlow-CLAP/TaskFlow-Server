@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CreateTaskUsecase {
     CreateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest, List<MultipartFile> files);
+
+    CreateTaskResponse createTaskWithScanner(Long requesterId, CreateTaskRequest createTaskRequest, List<MultipartFile> files);
 }

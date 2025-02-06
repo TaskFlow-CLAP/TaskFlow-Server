@@ -46,6 +46,20 @@ public class CreateTaskService implements CreateTaskUsecase {
         Member member = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(createTaskRequest.categoryId());
         Task task = Task.createTask(member, category, createTaskRequest.title(), createTaskRequest.description());
+        Task savedTask = commandTaskPort.save(task);
+        savedTask.setInitialProcessorOrder();
+        commandTaskPort.save(savedTask);
+
+        if (files != null) {saveAttachments(files, savedTask);}
+        publishNotification(savedTask);
+        return TaskResponseMapper.toCreateTaskResponse(savedTask);
+    }
+
+    @Override
+    public CreateTaskResponse createTaskWithScanner(Long requesterId, CreateTaskRequest createTaskRequest, List<MultipartFile> files) {
+        Member member = memberService.findActiveMember(requesterId);
+        Category category = categoryService.findById(createTaskRequest.categoryId());
+        Task task = Task.createTask(member, category, createTaskRequest.title(), createTaskRequest.description());
         List<MultipartFile> scannedFiles = (files != null && !files.isEmpty()) ? fileVirusScannerPort.scanFiles(files) : new ArrayList<>();
         Task savedTask = commandTaskPort.save(task);
         savedTask.setInitialProcessorOrder();
