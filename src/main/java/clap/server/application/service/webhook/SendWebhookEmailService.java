@@ -2,16 +2,16 @@ package clap.server.application.service.webhook;
 
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import clap.server.application.port.outbound.webhook.SendWebhookEmailPort;
-import clap.server.common.annotation.architecture.ApplicationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-@ApplicationService
+@Service
 @RequiredArgsConstructor
-public class SendWebhookEmailService {
+public class SendWebhookEmailService implements NotificationSender {
 
     private final SendWebhookEmailPort sendWebhookEmailPort;
 
-    public void sendEmail(PushNotificationTemplate request) {
+    public void send(PushNotificationTemplate request) {
         sendWebhookEmailPort.sendWebhookEmail(request);
     }
 }

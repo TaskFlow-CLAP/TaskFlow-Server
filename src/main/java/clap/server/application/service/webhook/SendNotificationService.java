@@ -3,7 +3,6 @@ package clap.server.application.service.webhook;
 import clap.server.adapter.inbound.web.dto.notification.request.SseRequest;
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
-import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.outbound.notification.CommandNotificationPort;
 import clap.server.application.port.outbound.webhook.SendSsePort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -14,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.concurrent.CompletableFuture;
+
 import static clap.server.domain.model.notification.Notification.createTaskNotification;
 
 @ApplicationService
@@ -25,7 +25,6 @@ public class SendNotificationService {
     private final SendWebhookEmailService sendWebhookEmailService;
     private final SendKaKaoWorkService sendKaKaoWorkService;
     private final CommandNotificationPort commandNotificationPort;
-    private final TaskService taskService;
 
     @Async("notificationExecutor")
     public void sendPushNotification(Member receiver, NotificationType notificationType,
@@ -83,12 +82,6 @@ public class SendNotificationService {
                 message,
                 commenterName
         );
-
-        if(notificationType.equals(NotificationType.TASK_REQUESTED)){
-            Long agitPostId = sendAgitService.sendAgit(pushNotificationTemplate, task);
-
-            task.updateAgitPostId(agitPostId);
-            taskService.upsert(task);
-        }
+        sendAgitService.sendAgit(pushNotificationTemplate, task);
     }
 }
