@@ -20,7 +20,7 @@ public class SendNotificationService {
 
     private final SendSseService sendSseService;
     private final SendAgitService sendAgitService;
-    private final SendEmailService sendEmailService;
+    private final SendWebhookEmailService sendWebhookEmailService;
     private final SendKaKaoWorkService sendKaKaoWorkService;
     private final CommandNotificationPort commandNotificationPort;
 
@@ -54,7 +54,7 @@ public class SendNotificationService {
 
         CompletableFuture<Void> sendEmailFuture = CompletableFuture.runAsync(() -> {
             if (receiver.getEmailNotificationEnabled()) {
-                sendEmailService.sendEmail(pushNotificationTemplate);
+                sendWebhookEmailService.sendEmail(pushNotificationTemplate);
             }
         });
 

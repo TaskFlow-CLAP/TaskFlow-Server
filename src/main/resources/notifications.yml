@@ -1,4 +1,3 @@
-#TODO 구글 알림 이메일 발신자 정보 설정(논의 필요)
 spring:
   mail:
     host: smtp.gmail.com

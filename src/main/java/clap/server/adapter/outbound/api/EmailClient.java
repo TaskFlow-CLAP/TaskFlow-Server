@@ -2,7 +2,8 @@ package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.outbound.api.dto.EmailTemplate;
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
-import clap.server.application.port.outbound.webhook.SendEmailPort;
+import clap.server.application.port.outbound.email.SendEmailPort;
+import clap.server.application.port.outbound.webhook.SendWebhookEmailPort;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
 import clap.server.exception.AdapterException;
 import clap.server.exception.code.NotificationErrorCode;
@@ -13,7 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 @ExternalApiAdapter
 @RequiredArgsConstructor
-public class EmailClient implements SendEmailPort {
+public class EmailClient implements SendEmailPort, SendWebhookEmailPort {
 
     private final EmailTemplateBuilder emailTemplateBuilder;
     private final JavaMailSender mailSender;
@@ -51,4 +52,23 @@ public class EmailClient implements SendEmailPort {
             throw new AdapterException(NotificationErrorCode.EMAIL_SEND_FAILED);
         }
     }
+
+    @Override
+    public void sendVerificationEmail(String memberEmail, String receiverName, String verificationCode) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            EmailTemplate template = emailTemplateBuilder.createVerificationCodeTemplate(memberEmail, receiverName, verificationCode);
+            helper.setTo(template.email());
+            helper.setSubject(template.subject());
+            helper.setText(template.body(), true);
+
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            throw new AdapterException(NotificationErrorCode.EMAIL_SEND_FAILED);
+        }
+    }
+
+
 }

@@ -2,7 +2,7 @@ package clap.server.application.service.auth;
 
 import clap.server.adapter.inbound.web.dto.auth.response.ReissueTokenResponse;
 import clap.server.application.port.inbound.auth.ReissueTokenUsecase;
-import clap.server.application.port.outbound.auth.CommandRefreshTokenPort;
+import clap.server.application.port.outbound.auth.refresh.CommandRefreshTokenPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.auth.CustomJwts;
 import clap.server.domain.model.auth.RefreshToken;
