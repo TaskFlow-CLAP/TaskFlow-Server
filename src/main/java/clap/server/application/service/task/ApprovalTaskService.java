@@ -57,7 +57,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_ASSIGNED, task, null, processor,null);
         commandTaskHistoryPort.save(taskHistory);
 
-        List<Member> receivers = List.of(reviewer, processor);
+        List<Member> receivers = List.of(task.getRequester(), processor);
         String processorName = processor.getNickname();
         publishNotification(receivers, task, processorName);
 

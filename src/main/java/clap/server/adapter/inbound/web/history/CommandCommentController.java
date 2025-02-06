@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comment")
+@RequestMapping("/api/comments")
 public class CommandCommentController {
 
     private final EditCommentUsecase editCommentUsecase;
