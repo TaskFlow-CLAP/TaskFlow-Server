@@ -24,7 +24,7 @@ class VerifyPasswordService implements VerifyPasswordUseCase {
     @Override
     public void verifyPassword(Long memberId, String inputPassword) {
         Member member = memberService.findActiveMember(memberId);
-        if (!passwordEncoder.matches(member.getPassword(), inputPassword)) {
+        if (!passwordEncoder.matches(inputPassword, member.getPassword())) {
             throw new ApplicationException(MemberErrorCode.PASSWORD_VERIFY_FAILED);
         }
     }
