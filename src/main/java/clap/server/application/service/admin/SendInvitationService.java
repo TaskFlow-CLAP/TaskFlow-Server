@@ -4,7 +4,7 @@ import clap.server.adapter.inbound.web.dto.admin.request.SendInvitationRequest;
 import clap.server.application.port.inbound.admin.SendInvitationUsecase;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
-import clap.server.application.port.outbound.webhook.SendEmailPort;
+import clap.server.application.port.outbound.email.SendEmailPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.common.utils.InitialPasswordGenerator;
 import clap.server.domain.model.member.Member;
