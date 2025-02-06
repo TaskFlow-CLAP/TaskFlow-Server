@@ -25,14 +25,9 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.*;
 import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.exception.ApplicationException;
-import clap.server.exception.code.NotificationErrorCode;
 import clap.server.exception.code.TaskErrorCode;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,12 +55,12 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Override
     @Transactional
     public void updateTask(Long requesterId, Long taskId, UpdateTaskRequest updateTaskRequest, List<MultipartFile> files) {
-        Member requester = memberService.findActiveMember(requesterId);
+        memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(updateTaskRequest.categoryId());
         Task task = taskService.findById(taskId);
 
         task.updateTask(requesterId, category, updateTaskRequest.title(), updateTaskRequest.description());
-        Task updatedTask = taskService.upsert(task);
+        taskService.upsert(task);
 
         if (!updateTaskRequest.attachmentsToDelete().isEmpty()) {
             updateAttachments(updateTaskRequest.attachmentsToDelete(), files, task);
@@ -88,9 +83,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             Task updateTask = taskService.upsert(task);
             TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, taskStatus.getDescription(), null,null);
             commandTaskHistoryPort.save(taskHistory);
-
-            String taskTitle = task.getTitle();
-            publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()), taskTitle);
+            publishNotification(updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
         }
     }
 
@@ -99,16 +92,16 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     public void updateTaskProcessor(Long taskId, Long userId, UpdateTaskProcessorRequest request) {
         memberService.findActiveMember(userId);
         memberService.findReviewer(userId);
-        Member processor = memberService.findById(request.processorId());
 
         Task task = taskService.findById(taskId);
+        Member processor = memberService.findById(request.processorId());
+
         task.updateProcessor(processor);
         Task updateTask = taskService.upsert(task);
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor,null);
         commandTaskHistoryPort.save(taskHistory);
 
-        String taskTitle = task.getTitle();
-        publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, updateTask.getProcessor().getNickname(), taskTitle);
+        publishNotification(updateTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());
     }
 
     @Transactional
@@ -120,7 +113,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         Label label = labelService.findById(request.labelId());
 
         task.updateLabel(label);
-        Task updatetask = taskService.upsert(task);
+        taskService.upsert(task);
     }
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
@@ -142,13 +135,13 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         return attachmentsOfTask;
     }
 
-    private void publishNotification(Task task, NotificationType notificationType, String message, String taskTitle) {
+    private void publishNotification(Task task, NotificationType notificationType, String message) {
         List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
         receivers.forEach(receiver -> {
-            sendNotificationService.sendPushNotification(receiver, receiver.getMemberInfo().getEmail(), notificationType,
-                    task, taskTitle, message, null);
+            sendNotificationService.sendPushNotification(receiver, notificationType,
+                    task, message, null);
         });
 
-            sendNotificationService.sendAgitNotification(notificationType, task, taskTitle, message, null);
+            sendNotificationService.sendAgitNotification(notificationType, task, message, null);
     }
 }

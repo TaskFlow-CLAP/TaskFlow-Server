@@ -1,6 +1,5 @@
 package clap.server.adapter.inbound.web.dto.task.response;
 
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.annotations.QueryProjection;
 
 import java.util.List;
@@ -11,7 +10,7 @@ public record TeamTaskResponse(
         String imageUrl,
         String department,
         int inProgressTaskCount,
-        int pendingTaskCount,
+        int inReviewingTaskCount,
         int totalTaskCount,
         List<TeamTaskItemResponse> tasks
 ) {

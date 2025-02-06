@@ -47,7 +47,7 @@ public class TaskBoardController {
     @Secured({"ROLE_MANAGER"})
     @PatchMapping
     public void updateTaskBoard(@Parameter(description = "전환될 작업의 상태, 상태 전환이 아니라면 입력 X",
-            schema = @Schema(allowableValues = {"IN_PROGRESS", "PENDING_COMPLETED", "COMPLETED"}))
+            schema = @Schema(allowableValues = {"IN_PROGRESS", "IN_REVIEWING", "COMPLETED"}))
                                 @RequestParam(required = false) TaskStatus status,
                                 @RequestBody UpdateTaskOrderRequest request,
                                 @AuthenticationPrincipal SecurityUserDetails userInfo) {

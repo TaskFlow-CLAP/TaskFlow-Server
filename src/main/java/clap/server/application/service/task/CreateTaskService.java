@@ -49,7 +49,7 @@ public class CreateTaskService implements CreateTaskUsecase {
 
         if (files != null) {
             saveAttachments(files, savedTask);}
-        publishNotification(savedTask, savedTask.getTitle());
+        publishNotification(savedTask);
         return TaskResponseMapper.toCreateTaskResponse(savedTask);
     }
 
@@ -59,12 +59,12 @@ public class CreateTaskService implements CreateTaskUsecase {
         commandAttachmentPort.saveAll(attachments);
     }
 
-    private void publishNotification(Task task, String taskTitle) {
+    private void publishNotification(Task task) {
         List<Member> reviewers = memberService.findReviewers();
-        reviewers.forEach(reviewer -> {sendNotificationService.sendPushNotification(reviewer, reviewer.getMemberInfo().getNickname(), NotificationType.TASK_REQUESTED,
-                task, taskTitle, null, null);});
+        reviewers.forEach(reviewer -> {sendNotificationService.sendPushNotification(reviewer, NotificationType.TASK_REQUESTED,
+                task, null, null);});
 
         sendNotificationService.sendAgitNotification(NotificationType.TASK_REQUESTED,
-                task, taskTitle, null, null);
+                task, null, null);
     }
 }

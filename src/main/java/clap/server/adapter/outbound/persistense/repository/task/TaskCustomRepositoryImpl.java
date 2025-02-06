@@ -5,8 +5,6 @@ import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
-import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
-import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -64,7 +62,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         // 필터가 null인 경우, 기본적으로 모든 데이터 조회
         if (filter != null) {
             // 진행 중 또는 완료 대기 상태 필터링
-            builder.and(taskEntity.taskStatus.in(TaskStatus.IN_PROGRESS, TaskStatus.PENDING_COMPLETED));
+            builder.and(taskEntity.taskStatus.in(TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEWING));
 
             // 담당자 ID 필터링
             if (memberId != null) {
@@ -91,7 +89,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         OrderSpecifier<?> orderBy = "기여도순".equals(filter != null ? filter.sortBy() : "")
                 ? new CaseBuilder()
                 .when(taskEntity.taskStatus.eq(TaskStatus.IN_PROGRESS)
-                        .or(taskEntity.taskStatus.eq(TaskStatus.PENDING_COMPLETED)))
+                        .or(taskEntity.taskStatus.eq(TaskStatus.IN_REVIEWING)))
                 .then(1)
                 .otherwise(0)
                 .desc()
@@ -129,8 +127,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                             )).collect(Collectors.toList());
 
                     int inProgressTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count();
-                    int pendingTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.PENDING_COMPLETED).count();
-                    int totalTaskCount = inProgressTaskCount + pendingTaskCount;
+                    int inReviewingTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_REVIEWING).count();
+                    int totalTaskCount = inProgressTaskCount + inReviewingTaskCount;
 
                     return new TeamTaskResponse(
                             entry.getKey(),
@@ -138,7 +136,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                             entry.getValue().get(0).getProcessor().getImageUrl(),
                             entry.getValue().get(0).getProcessor().getDepartment().getName(),
                             (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count(),
-                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.PENDING_COMPLETED).count(),
+                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_REVIEWING).count(),
                             entry.getValue().size(),
                             taskResponses
                     );

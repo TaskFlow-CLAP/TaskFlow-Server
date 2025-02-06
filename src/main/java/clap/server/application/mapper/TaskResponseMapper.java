@@ -126,7 +126,7 @@ public class TaskResponseMapper {
 
         return new TaskBoardResponse(
                 tasksByStatus.getOrDefault(TaskStatus.IN_PROGRESS, Collections.emptyList()),
-                tasksByStatus.getOrDefault(TaskStatus.PENDING_COMPLETED, Collections.emptyList()),
+                tasksByStatus.getOrDefault(TaskStatus.IN_REVIEWING, Collections.emptyList()),
                 tasksByStatus.getOrDefault(TaskStatus.COMPLETED, Collections.emptyList())
         );
     }
