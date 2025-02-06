@@ -75,9 +75,10 @@ public class Member extends BaseTime {
         return this.memberInfo != null && this.memberInfo.isReviewer();
     }
 
-    public void changeStatusToAPPROVAL_REQUEST() {
+    public void changeToApproveRequested() {
         this.status = MemberStatus.APPROVAL_REQUEST;
     }
+
     public void updateMemberInfo(String name, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoWorkNotificationEnabled, String imageUrl) {
         this.memberInfo.updateName(name);
         this.agitNotificationEnabled = agitNotificationEnabled;

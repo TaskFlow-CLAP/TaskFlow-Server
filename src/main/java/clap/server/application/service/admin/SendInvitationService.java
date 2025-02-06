@@ -39,7 +39,7 @@ public class SendInvitationService implements SendInvitationUsecase {
         commandMemberPort.save(member);
 
         // 회원 상태를 APPROVAL_REQUEST으로 변경
-        member.changeStatusToAPPROVAL_REQUEST();
+        member.changeToApproveRequested();
 
         sendEmailPort.sendInvitationEmail(
                 member.getMemberInfo().getEmail(),
