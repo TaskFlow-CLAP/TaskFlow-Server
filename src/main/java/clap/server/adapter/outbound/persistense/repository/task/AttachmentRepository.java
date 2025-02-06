@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Long> {
-    List<AttachmentEntity> findAllByTask_TaskIdAndCommentIsNullAndIsDeletedIsFalse(Long taskId);
-    List<AttachmentEntity> findAllByTask_TaskIdAndCommentIsNullAndIsDeletedIsFalseAndAttachmentIdIn(Long task_taskId, List<Long> attachmentId);
-    Optional<AttachmentEntity> findByComment_CommentIdAndIsDeletedFalse(Long commentId);
+    List<AttachmentEntity> findAllByTask_TaskIdAndCommentIsNull(Long taskId);
+    List<AttachmentEntity> findAllByTask_TaskIdAndCommentIsNullAndAttachmentIdIn(Long task_taskId, List<Long> attachmentId);
+    Optional<AttachmentEntity> findByComment_CommentId(Long commentId);
     boolean existsByComment_CommentId(Long commentId);
-    List<AttachmentEntity> findAllByTask_TaskIdAndCommentIsNotNullAndIsDeletedIsFalse(Long taskId);
+    List<AttachmentEntity> findAllByTask_TaskIdAndCommentIsNotNull(Long taskId);
 }

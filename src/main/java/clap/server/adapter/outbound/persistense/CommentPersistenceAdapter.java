@@ -2,7 +2,7 @@ package clap.server.adapter.outbound.persistense;
 
 import clap.server.adapter.outbound.persistense.entity.task.CommentEntity;
 import clap.server.adapter.outbound.persistense.mapper.CommentPersistenceMapper;
-import clap.server.adapter.outbound.persistense.repository.task.CommentRepository;
+import clap.server.adapter.outbound.persistense.repository.history.CommentRepository;
 import clap.server.application.port.outbound.task.CommandCommentPort;
 import clap.server.application.port.outbound.task.LoadCommentPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
@@ -31,7 +31,7 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CommandCommen
     }
 
     @Override
-    public void deleteComment(Comment comment) {
-        commentRepository.delete(commentPersistenceMapper.toEntity(comment));
+    public void deleteCommentWithTaskHistory(Long commentId) {
+        commentRepository.deleteCommentWithTaskHistory(commentId);
     }
 }

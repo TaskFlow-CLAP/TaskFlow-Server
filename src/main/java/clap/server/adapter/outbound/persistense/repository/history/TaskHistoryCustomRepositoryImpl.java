@@ -1,11 +1,10 @@
-package clap.server.adapter.outbound.persistense.repository.task;
+package clap.server.adapter.outbound.persistense.repository.history;
 
 import clap.server.adapter.outbound.persistense.entity.task.QCommentEntity;
 import clap.server.adapter.outbound.persistense.entity.task.QTaskHistoryEntity;
 import clap.server.adapter.outbound.persistense.entity.task.TaskHistoryEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-
 
 
 import java.util.List;
