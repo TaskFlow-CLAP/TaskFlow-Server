@@ -102,4 +102,9 @@ public class Task extends BaseTime {
     public void updateProcessorOrder(long newProcessorOrder) {
         this.processorOrder = newProcessorOrder;
     }
+
+    public void cancelTask() {
+        this.taskStatus = TaskStatus.TERMINATED;
+        this.finishedAt = LocalDateTime.now();
+    }
 }
