@@ -138,6 +138,7 @@ public class TestDataFactory {
                 .category(category)
                 .taskStatus(taskStatus)
                 .finishedAt(finishedAt)
+                .requester(createUser())
                 .processor(processor)
                 .label(createLabel())
                 .build();
