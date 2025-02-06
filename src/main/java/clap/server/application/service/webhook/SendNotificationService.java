@@ -34,7 +34,7 @@ public class SendNotificationService {
         Notification notification = createTaskNotification(task, receiver, notificationType, message, taskTitle);
 
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
-                email, notificationType, taskTitle, requesterNickname, message, commenterName
+                email, notificationType, taskTitle, task.getTaskStatus().getDescription(), requesterNickname, message, commenterName
         );
 
         CompletableFuture<Void> saveNotification = CompletableFuture.runAsync(() -> {
@@ -69,6 +69,7 @@ public class SendNotificationService {
                 null,
                 notificationType,
                 task.getTitle(),
+                task.getTaskStatus().getDescription(),
                 task.getRequester().getNickname(),
                 message,
                 commenterName

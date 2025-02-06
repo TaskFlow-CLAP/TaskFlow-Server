@@ -32,6 +32,7 @@ public class EmailTemplateBuilder {
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
+                context.setVariable("status", request.status());
                 break;
             case PROCESSOR_CHANGED:
                 templateName = "processor-changed";
