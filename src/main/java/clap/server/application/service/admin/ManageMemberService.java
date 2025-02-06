@@ -1,6 +1,9 @@
 package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.request.UpdateMemberRequest;
+import clap.server.adapter.inbound.web.dto.admin.response.MemberDetailsResponse;
+import clap.server.application.mapper.MemberResponseMapper;
+import clap.server.application.port.inbound.admin.MemberDetailUsecase;
 import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.member.CommandMemberPort;
@@ -15,13 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @ApplicationService
 @RequiredArgsConstructor
-@Transactional
-class UpdateMemberService implements UpdateMemberUsecase {
+class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
     private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
 
     @Override
+    @Transactional
     public void updateMemberInfo(Long adminId, Long memberId, UpdateMemberRequest request) {
         Member member = memberService.findActiveMember(memberId);
         Department department = loadDepartmentPort.findById(request.departmentId()).orElseThrow(() ->
@@ -32,5 +35,12 @@ class UpdateMemberService implements UpdateMemberUsecase {
                 request.name(), request.email(), request.isReviewer(),
                 department, request.role(), request.departmentRole());
         commandMemberPort.save(member);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberDetailsResponse getMemberDetail(Long memberId) {
+        Member member = memberService.findActiveMember(memberId);
+        return MemberResponseMapper.toMemberDetailsResponse(member);
     }
 }
