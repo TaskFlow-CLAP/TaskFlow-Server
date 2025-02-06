@@ -42,8 +42,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         Task task = taskService.findById(taskId);
         Member member = memberService.findActiveMember(userId);
 
-        // 일반 회원일 경우 => 요청자인지 확인
-        // 담당자일 경우 => 처리자인지 확인
+        // ROLE_USER일 경우 => 요청자인지 확인
         if (Member.checkCommenter(task, member)) {
             Comment comment = Comment.createComment(member, task, request.content());
             Comment savedComment = commandCommentPort.saveComment(comment);

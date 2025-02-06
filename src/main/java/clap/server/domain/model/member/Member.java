@@ -9,6 +9,8 @@ import clap.server.exception.code.MemberErrorCode;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Objects;
+
 
 @Getter
 @SuperBuilder
@@ -118,14 +120,8 @@ public class Member extends BaseTime {
 
     public static Boolean checkCommenter(Task task, Member member) {
         // 일반 회원일 경우 => 요청자인지 확인
-        // 담당자일 경우 => 처리자인지 확인
-        if ((member.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER)
-                && !(member.getMemberId() == task.getProcessor().getMemberId())) {
-            throw new DomainException(MemberErrorCode.NOT_A_COMMENTER);
-        }
-
-        else if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
-                && !(member.getMemberId() == task.getRequester().getMemberId())) {
+        if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
+                && !(Objects.equals(member.getMemberId(), task.getRequester().getMemberId()))) {
             throw new DomainException(MemberErrorCode.NOT_A_COMMENTER);
         }
         else {
