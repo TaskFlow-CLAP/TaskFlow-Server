@@ -29,9 +29,9 @@ public class AgitClient implements SendAgitPort {
     private final ObjectMapper objectMapper;
 
     @Override
-    public Long sendAgit(PushNotificationTemplate request, Task task) {
+    public Long sendAgit(PushNotificationTemplate request, Task task, String taskDetailUrl) {
 
-        HttpEntity<String> entity = agitTemplateBuilder.createAgitEntity(request, task);
+        HttpEntity<String> entity = agitTemplateBuilder.createAgitEntity(request, task, taskDetailUrl);
 
         RestTemplate restTemplate = new RestTemplate();
         if (request.notificationType() == NotificationType.TASK_REQUESTED) {

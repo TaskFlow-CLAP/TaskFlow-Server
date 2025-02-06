@@ -18,7 +18,7 @@ import static clap.server.domain.model.notification.Notification.createTaskNotif
 @RequiredArgsConstructor
 public class SendNotificationService {
 
-    private final SendSseService sendSseService;
+    //private final SendSseService sendSseService;
     private final SendAgitService sendAgitService;
     private final SendWebhookEmailService sendWebhookEmailService;
     private final SendKaKaoWorkService sendKaKaoWorkService;
@@ -74,19 +74,6 @@ public class SendNotificationService {
         allOf.join();
     }
 
-    private String extractTaskUrl(NotificationType notificationType, Task task, Boolean isManager) {
-        String taskDetailUrl = "http://localhost:5173/my-request?taskId=" + task.getTaskId();
-        if (isManager) {
-            if (notificationType == NotificationType.TASK_REQUESTED) {
-                taskDetailUrl = "http://localhost:5173/requested?taskId=" + task.getTaskId();
-            }
-            else {
-                taskDetailUrl = "http://localhost:5173/my-task?taskId=" + task.getTaskId();
-            }
-        }
-        return taskDetailUrl;
-    }
-
     @Async("notificationExecutor")
     public void sendAgitNotification(NotificationType notificationType,
                                      Task task, String message, String commenterName) {
@@ -98,6 +85,22 @@ public class SendNotificationService {
                 message,
                 commenterName
         );
-        sendAgitService.sendAgit(pushNotificationTemplate, task);
+
+        String taskDetailUrl = extractTaskUrl(notificationType, task, true);
+
+        sendAgitService.sendAgit(pushNotificationTemplate, task, taskDetailUrl);
+    }
+
+    private String extractTaskUrl(NotificationType notificationType, Task task, Boolean isManager) {
+        String taskDetailUrl = "http://localhost:5173/my-request?taskId=" + task.getTaskId();
+        if (isManager) {
+            if (notificationType == NotificationType.TASK_REQUESTED) {
+                taskDetailUrl = "http://localhost:5173/requested?taskId=" + task.getTaskId();
+            }
+            else {
+                taskDetailUrl = "http://localhost:5173/my-task?taskId=" + task.getTaskId();
+            }
+        }
+        return taskDetailUrl;
     }
 }
