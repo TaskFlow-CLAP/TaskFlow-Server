@@ -8,8 +8,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 @EnableAsync
 public class AsyncConfig {
-
-
     @Bean(name = "notificationExecutor")
     public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -23,6 +21,18 @@ public class AsyncConfig {
         // 스레드가 유휴 상태로 일정 시간이 지나면 종료되도록 설정
         executor.setKeepAliveSeconds(60);  // 60초 후 유휴 스레드 종료
 
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean(name = "clamavExecutor")
+    public ThreadPoolTaskExecutor clamavExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(50);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("clamav-scan-");
+        executor.setKeepAliveSeconds(120);
         executor.initialize();
         return executor;
     }
