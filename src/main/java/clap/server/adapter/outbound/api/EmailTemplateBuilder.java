@@ -21,28 +21,29 @@ public class EmailTemplateBuilder {
         switch (request.notificationType()) {
             case TASK_REQUESTED:
                 templateName = "task-request";
-                subject = "[TaskFlow 알림] 신규 작업이 요청되었습니다.";
+                subject = "[TaskFlow] 신규 작업"+ request.taskName()+ "요청되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
                 break;
             case STATUS_SWITCHED:
                 templateName = "status-switched";
-                subject = "[TaskFlow 알림] 작업 상태가 변경되었습니다.";
+                subject = "[TaskFlow] "+ request.taskName()+ " " + request.message()+ "으로 변경되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
+                context.setVariable("status", request.message());
                 break;
             case PROCESSOR_CHANGED:
                 templateName = "processor-changed";
-                subject = "[TaskFlow 알림] 작업 담당자가 변경되었습니다.";
+                subject = "[TaskFlow] "+ request.taskName()+ "담당자" + request.message() + " 변경되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("processorName", request.message());
                 context.setVariable("title", request.taskName());
                 break;
             case PROCESSOR_ASSIGNED:
                 templateName = "processor-assigned";
-                subject = "[TaskFlow 알림] 작업 담당자가 지정되었습니다.";
+                subject = "[TaskFlow] "+ request.taskName()+ "담당자" + request.message() + " 지정되었습니다..";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("processorName", request.message());
                 context.setVariable("title", request.taskName());
@@ -65,6 +66,16 @@ public class EmailTemplateBuilder {
         String subject = "[TaskFlow 초대] 회원가입을 환영합니다.";
         context.setVariable("invitationLink", "https://example.com/reset-password"); //TODO:비밀번호 설정 링크로 변경 예정
         context.setVariable("initialPassword", initialPassword);
+        context.setVariable("receiverName", receiverName);
+        String body = templateEngine.process(templateName, context);
+        return new EmailTemplate(receiver, subject, body);
+    }
+
+    public EmailTemplate createVerificationCodeTemplate(String receiver, String receiverName, String verificationCode) {
+        Context context = new Context();
+        String templateName = "verification";
+        String subject = "[TaskFlow] 비밀번호 재설정 인증 번호";
+        context.setVariable("verificationCode", verificationCode);
         context.setVariable("receiverName", receiverName);
         String body = templateEngine.process(templateName, context);
         return new EmailTemplate(receiver, subject, body);

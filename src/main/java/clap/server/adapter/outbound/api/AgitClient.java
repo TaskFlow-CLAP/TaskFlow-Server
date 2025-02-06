@@ -2,12 +2,10 @@ package clap.server.adapter.outbound.api;
 
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
-import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.outbound.webhook.SendAgitPort;
-import clap.server.application.service.task.UpdateTaskService;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
 import clap.server.domain.model.task.Task;
-import clap.server.exception.ApplicationException;
+import clap.server.exception.AdapterException;
 import clap.server.exception.code.NotificationErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,10 +27,9 @@ public class AgitClient implements SendAgitPort {
 
     private final AgitTemplateBuilder agitTemplateBuilder;
     private final ObjectMapper objectMapper;
-    private final TaskService taskService;
 
     @Override
-    public void sendAgit(PushNotificationTemplate request, Task task) {
+    public Long sendAgit(PushNotificationTemplate request, Task task) {
 
         HttpEntity<String> entity = agitTemplateBuilder.createAgitEntity(request, task);
 
@@ -40,20 +37,20 @@ public class AgitClient implements SendAgitPort {
         if (request.notificationType() == NotificationType.TASK_REQUESTED) {
             ResponseEntity<String> responseEntity = restTemplate.exchange(
                     AGIT_WEBHOOK_URL, HttpMethod.POST, entity, String.class);
-            updateAgitPostId(responseEntity, task);
+            return getAgitPostId(responseEntity);
         }
         else {
             restTemplate.exchange(AGIT_WEBHOOK_URL, HttpMethod.POST, entity, String.class);
+            return null;
         }
     }
 
-    private void updateAgitPostId(ResponseEntity<String> responseEntity, Task task) {
+    private Long getAgitPostId(ResponseEntity<String> responseEntity) {
         try {
             JsonNode jsonNode = objectMapper.readTree(responseEntity.getBody());
-            task.updateAgitPostId(jsonNode.get("id").asLong());
-            taskService.upsert(task);
+            return jsonNode.get("id").asLong();
         } catch (JsonProcessingException e) {
-            throw new ApplicationException(NotificationErrorCode.AGIT_SEND_FAILED);
+            throw new AdapterException(NotificationErrorCode.AGIT_SEND_FAILED);
         }
     }
 }

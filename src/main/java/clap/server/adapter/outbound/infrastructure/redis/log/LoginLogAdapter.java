@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.infrastructure.redis.log;
 
-import clap.server.application.port.outbound.auth.CommandLoginLogPort;
-import clap.server.application.port.outbound.auth.LoadLoginLogPort;
+import clap.server.application.port.outbound.auth.loginLog.CommandLoginLogPort;
+import clap.server.application.port.outbound.auth.loginLog.LoadLoginLogPort;
 import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import clap.server.domain.model.auth.LoginLog;
 import lombok.RequiredArgsConstructor;

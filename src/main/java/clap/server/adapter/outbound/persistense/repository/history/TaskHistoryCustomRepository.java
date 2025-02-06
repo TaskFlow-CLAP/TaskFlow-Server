@@ -1,4 +1,4 @@
-package clap.server.adapter.outbound.persistense.repository.task;
+package clap.server.adapter.outbound.persistense.repository.history;
 
 import clap.server.adapter.outbound.persistense.entity.task.TaskHistoryEntity;
 

@@ -28,6 +28,7 @@ public record FindTaskHistoryResponse(
     ) {}
 
     public static record CommentDetails(
+            Long commentId,
             String nickName,
             String profileImageUrl,
             boolean isModified,
@@ -35,6 +36,7 @@ public record FindTaskHistoryResponse(
     ) {}
 
     public static record CommentFileDetails(
+            Long commentId,
             String nickName,
             String profileImageUrl,
             boolean isModified,

@@ -1,29 +1,26 @@
 package clap.server.application.service.webhook;
 
 import clap.server.adapter.inbound.web.dto.notification.request.SseRequest;
-import clap.server.application.port.inbound.notification.SendSseUsecase;
-import clap.server.application.port.outbound.notification.LoadSsePort;
-import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.exception.ApplicationException;
-import clap.server.exception.code.NotificationErrorCode;
+import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
+import clap.server.application.port.outbound.webhook.SendSsePort;
+import clap.server.domain.model.member.Member;
+import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.stereotype.Service;
 
-@ApplicationService
+@Service
 @RequiredArgsConstructor
-public class SendSseService implements SendSseUsecase {
+public class SendSseService {
+    private final SendSsePort sendSsePort;
 
-    private final LoadSsePort loadSsePort;
-
-    @Override
-    public void send(SseRequest request) {
-        SseEmitter sseEmitter = loadSsePort.get(request.receiverId());
-        try {
-            sseEmitter.send(SseEmitter.event()
-                    .id(String.valueOf(request.receiverId()))
-                    .data(request));
-        } catch (Exception e) {
-            throw new ApplicationException(NotificationErrorCode.SSE_SEND_FAILED);
-        }
+    public void send(Member receiver, NotificationType notificationType,
+                     Task task, String message) {
+        SseRequest sseRequest = new SseRequest(
+                task.getTitle(),
+                notificationType,
+                receiver.getMemberId(),
+                message
+        );
+        sendSsePort.send(sseRequest);
     }
 }

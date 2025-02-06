@@ -4,22 +4,22 @@ import clap.server.adapter.inbound.web.dto.history.request.CreateCommentRequest;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
-import clap.server.application.port.inbound.history.SaveCommentAttachmentUsecase;
-import clap.server.application.port.inbound.history.SaveCommentUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
+import clap.server.application.port.inbound.history.SaveCommentAttachmentUsecase;
+import clap.server.application.port.inbound.history.SaveCommentUsecase;
 import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandCommentPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.domain.policy.attachment.FilePathPolicy;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Comment;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
+import clap.server.domain.policy.attachment.FilePathPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +42,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         Task task = taskService.findById(taskId);
         Member member = memberService.findActiveMember(userId);
 
-        // ROLE_USER일 경우 => 요청자인지 확인
+        // 일반 회원일 경우 => 요청자인지 확인
         if (Member.checkCommenter(task, member)) {
             Comment comment = Comment.createComment(member, task, request.content());
             Comment savedComment = commandCommentPort.saveComment(comment);
@@ -76,7 +76,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
             Member processor = task.getProcessor();
             Member requester = task.getRequester();
-            if (member.getMemberInfo().getRole() == MemberRole.ROLE_USER) {
+            if (member.getMemberInfo().getRole() == requester.getMemberInfo().getRole()) {
                 publishNotification(processor, task, fileName + "(첨부파일)", requester.getNickname());
             } else {
                 publishNotification(requester, task, fileName + "(첨부파일)", processor.getNickname());

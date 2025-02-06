@@ -57,8 +57,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth ->
                                 defaultAuthorizeHttpRequest(auth)
-                                        .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
-                                        .requestMatchers(LOGIN_ENDPOINT).permitAll()
                                         .anyRequest().authenticated()
                 ).build();
     }
@@ -83,8 +81,10 @@ public class SecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "*").permitAll()
                 .requestMatchers(HttpMethod.GET, READ_ONLY_PUBLIC_ENDPOINTS).permitAll()
+                .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
+                .requestMatchers(LOGIN_ENDPOINT).permitAll()
                 .requestMatchers(HEALTH_CHECK_ENDPOINT).permitAll()
-                .requestMatchers(REISSUANCE_ENDPOINTS).permitAll()
+                .requestMatchers(REISSUANCE_ENDPOINT).permitAll()
                 .requestMatchers(SWAGGER_ENDPOINTS).permitAll();
     }
 

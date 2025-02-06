@@ -1,6 +1,5 @@
 package clap.server.application.service.webhook;
 
-import clap.server.adapter.inbound.web.dto.notification.request.SseRequest;
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.notification.CommandNotificationPort;
@@ -12,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.concurrent.CompletableFuture;
+
 import static clap.server.domain.model.notification.Notification.createTaskNotification;
 
 @ApplicationService
@@ -20,7 +20,7 @@ public class SendNotificationService {
 
     private final SendSseService sendSseService;
     private final SendAgitService sendAgitService;
-    private final SendEmailService sendEmailService;
+    private final SendWebhookEmailService sendWebhookEmailService;
     private final SendKaKaoWorkService sendKaKaoWorkService;
     private final CommandNotificationPort commandNotificationPort;
 
@@ -33,13 +33,6 @@ public class SendNotificationService {
 
         Notification notification = createTaskNotification(task, receiver, notificationType, message, taskTitle);
 
-        SseRequest sseRequest = new SseRequest(
-                taskTitle,
-                notificationType,
-                receiver.getMemberId(),
-                message
-        );
-
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
                 email, notificationType, taskTitle, requesterNickname, message, commenterName
         );
@@ -49,18 +42,18 @@ public class SendNotificationService {
         });
 
         CompletableFuture<Void> sendSseFuture = CompletableFuture.runAsync(() -> {
-            sendSseService.send(sseRequest);
+            sendSseService.send(receiver, notificationType, task, message);
         });
 
         CompletableFuture<Void> sendEmailFuture = CompletableFuture.runAsync(() -> {
             if (receiver.getEmailNotificationEnabled()) {
-                sendEmailService.sendEmail(pushNotificationTemplate);
+                sendWebhookEmailService.send(pushNotificationTemplate);
             }
         });
 
         CompletableFuture<Void> sendKakaoWorkFuture = CompletableFuture.runAsync(() -> {
             if (receiver.getKakaoworkNotificationEnabled()) {
-                sendKaKaoWorkService.sendKaKaoWork(pushNotificationTemplate);
+                sendKaKaoWorkService.send(pushNotificationTemplate);
             }
         });
 
@@ -80,7 +73,6 @@ public class SendNotificationService {
                 message,
                 commenterName
         );
-
         sendAgitService.sendAgit(pushNotificationTemplate, task);
     }
 }

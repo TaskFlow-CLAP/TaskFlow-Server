@@ -39,7 +39,7 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
 
     @Override
     public List<Attachment> findAllByTaskIdAndCommentIsNull(final Long taskId) {
-        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNullAndIsDeletedIsFalse(taskId);
+        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNull(taskId);
         return attachmentEntities.stream()
                 .map(attachmentPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
@@ -47,7 +47,7 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
 
     @Override
     public List<Attachment> findAllByTaskIdAndCommentIsNullAndAttachmentId(final Long taskId, final List<Long> attachmentIds) {
-        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNullAndIsDeletedIsFalseAndAttachmentIdIn(taskId, attachmentIds);
+        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNullAndAttachmentIdIn(taskId, attachmentIds);
         return attachmentEntities.stream()
                 .map(attachmentPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
@@ -55,13 +55,13 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
 
     @Override
     public Optional<Attachment> findByCommentId(Long commentId) {
-        Optional<AttachmentEntity> attachmentEntity = attachmentRepository.findByComment_CommentIdAndIsDeletedFalse(commentId);
+        Optional<AttachmentEntity> attachmentEntity = attachmentRepository.findByComment_CommentId(commentId);
         return attachmentEntity.map(attachmentPersistenceMapper::toDomain);
     }
 
     @Override
     public List<Attachment> findAllByTaskIdAndCommentIsNotNull(final Long taskId) {
-        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNotNullAndIsDeletedIsFalse(taskId);
+        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNotNull(taskId);
         return attachmentEntities.stream()
                 .map(attachmentPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
