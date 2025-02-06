@@ -92,6 +92,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
     }
 
     private void publishNotification(Member receiver, Task task, String message, String commenterName) {
-        sendNotificationService.sendPushNotification(receiver, NotificationType.COMMENT, task, message, commenterName);
+        boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
+        sendNotificationService.sendPushNotification(receiver, NotificationType.COMMENT, task, message, commenterName, isManager);
     }
 }

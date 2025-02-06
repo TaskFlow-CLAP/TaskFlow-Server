@@ -26,10 +26,13 @@ public class SendNotificationService {
 
     @Async("notificationExecutor")
     public void sendPushNotification(Member receiver, NotificationType notificationType,
-                                        Task task, String message, String commenterName) {
+                                        Task task, String message, String commenterName, Boolean isManager) {
+
         String email = receiver.getMemberInfo().getEmail();
         String taskTitle = task.getTitle();
         String requesterNickname = task.getRequester().getNickname();
+
+        String taskDetailUrl = extractTaskUrl(notificationType, task, isManager);
 
         Notification notification = createTaskNotification(task, receiver, notificationType, message, taskTitle);
 
@@ -41,25 +44,47 @@ public class SendNotificationService {
             commandNotificationPort.save(notification);
         });
 
-        CompletableFuture<Void> sendSseFuture = CompletableFuture.runAsync(() -> {
-            sendSseService.send(receiver, notificationType, task, message);
-        });
-
         CompletableFuture<Void> sendEmailFuture = CompletableFuture.runAsync(() -> {
             if (receiver.getEmailNotificationEnabled()) {
-                sendWebhookEmailService.send(pushNotificationTemplate);
+                sendWebhookEmailService.send(pushNotificationTemplate, taskDetailUrl);
             }
         });
 
         CompletableFuture<Void> sendKakaoWorkFuture = CompletableFuture.runAsync(() -> {
             if (receiver.getKakaoworkNotificationEnabled()) {
-                sendKaKaoWorkService.send(pushNotificationTemplate);
+                sendKaKaoWorkService.send(pushNotificationTemplate, taskDetailUrl);
             }
         });
 
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(saveNotification, sendSseFuture,
+        //Todo : SSE 구현시 추가
+        //SseRequest sseRequest = new SseRequest(
+        //        taskTitle,
+        //        notificationType,
+        //        receiver.getMemberId(),
+        //        message
+        //);
+
+        //Todo : SSE 구현시 추가
+        //CompletableFuture<Void> sendSseFuture = CompletableFuture.runAsync(() -> {
+        //    sendSsePort.send(sseRequest);
+        //});
+
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(saveNotification,
                 sendEmailFuture, sendKakaoWorkFuture);
         allOf.join();
+    }
+
+    private String extractTaskUrl(NotificationType notificationType, Task task, Boolean isManager) {
+        String taskDetailUrl = "http://localhost:5173/my-request?taskId=" + task.getTaskId();
+        if (isManager) {
+            if (notificationType == NotificationType.TASK_REQUESTED) {
+                taskDetailUrl = "http://localhost:5173/requested?taskId=" + task.getTaskId();
+            }
+            else {
+                taskDetailUrl = "http://localhost:5173/my-task?taskId=" + task.getTaskId();
+            }
+        }
+        return taskDetailUrl;
     }
 
     @Async("notificationExecutor")

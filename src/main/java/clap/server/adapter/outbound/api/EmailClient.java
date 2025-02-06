@@ -20,12 +20,12 @@ public class EmailClient implements SendEmailPort, SendWebhookEmailPort {
     private final JavaMailSender mailSender;
 
     @Override
-    public void sendWebhookEmail(PushNotificationTemplate request) {
+    public void sendWebhookEmail(PushNotificationTemplate request, String taskDetailUrl) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            EmailTemplate template = emailTemplateBuilder.createWebhookTemplate(request);
+            EmailTemplate template = emailTemplateBuilder.createWebhookTemplate(request, taskDetailUrl);
             helper.setTo(template.email());
             helper.setSubject(template.subject());
             helper.setText(template.body(), true);

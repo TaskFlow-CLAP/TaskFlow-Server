@@ -3,6 +3,7 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.task.request.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.response.CreateTaskResponse;
 
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.mapper.AttachmentMapper;
 import clap.server.application.mapper.TaskResponseMapper;
@@ -61,8 +62,10 @@ public class CreateTaskService implements CreateTaskUsecase {
 
     private void publishNotification(Task task) {
         List<Member> reviewers = memberService.findReviewers();
-        reviewers.forEach(reviewer -> {sendNotificationService.sendPushNotification(reviewer, NotificationType.TASK_REQUESTED,
-                task, null, null);});
+        reviewers.forEach(reviewer -> {
+            boolean isManager = reviewer.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
+            sendNotificationService.sendPushNotification(reviewer, NotificationType.TASK_REQUESTED,
+                task, null, null, isManager);});
 
         sendNotificationService.sendAgitNotification(NotificationType.TASK_REQUESTED,
                 task, null, null);

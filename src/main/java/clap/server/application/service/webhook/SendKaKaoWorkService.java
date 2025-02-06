@@ -11,7 +11,7 @@ public class SendKaKaoWorkService implements NotificationSender {
 
     private final SendKaKaoWorkPort sendKaKaoWorkPort;
 
-    public void send(PushNotificationTemplate request) {
-        sendKaKaoWorkPort.sendKakaoWork(request);
+    public void send(PushNotificationTemplate request, String taskDetailUrl) {
+        sendKaKaoWorkPort.sendKakaoWork(request, taskDetailUrl);
     }
 }

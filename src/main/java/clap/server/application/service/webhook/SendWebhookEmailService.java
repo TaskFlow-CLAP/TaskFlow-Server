@@ -11,7 +11,7 @@ public class SendWebhookEmailService implements NotificationSender {
 
     private final SendWebhookEmailPort sendWebhookEmailPort;
 
-    public void send(PushNotificationTemplate request) {
-        sendWebhookEmailPort.sendWebhookEmail(request);
+    public void send(PushNotificationTemplate request, String taskDetailUrl) {
+        sendWebhookEmailPort.sendWebhookEmail(request, taskDetailUrl);
     }
 }

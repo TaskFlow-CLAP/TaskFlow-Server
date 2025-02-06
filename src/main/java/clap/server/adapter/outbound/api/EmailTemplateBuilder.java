@@ -13,11 +13,10 @@ public class EmailTemplateBuilder {
 
     private final SpringTemplateEngine templateEngine;
 
-    public EmailTemplate createWebhookTemplate(PushNotificationTemplate request) {
+    public EmailTemplate createWebhookTemplate(PushNotificationTemplate request, String taskDetailUrl) {
         Context context = new Context();
         String templateName = "";
         String subject = "";
-        String taskDetailUrl = "https://www.naver.com"; //ToDo task 상세 조회페이지 url 추가
         switch (request.notificationType()) {
             case TASK_REQUESTED:
                 templateName = "task-request";
@@ -49,6 +48,7 @@ public class EmailTemplateBuilder {
                 context.setVariable("title", request.taskName());
                 break;
             case COMMENT:
+                templateName = "comment";
                 subject = "[TaskFlow 알림] 댓글이 작성되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("comment", request.message());
