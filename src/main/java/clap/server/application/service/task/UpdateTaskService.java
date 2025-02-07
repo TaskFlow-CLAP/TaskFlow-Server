@@ -125,7 +125,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         attachmentsToDelete.forEach(Attachment::softDelete);
 
         if (files != null) {
-            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicy.TASK_IMAGE, files);
+            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicy.TASK_FILE, files);
             List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
             commandAttachmentPort.saveAll(attachments);
         }
