@@ -6,4 +6,6 @@ public interface SendEmailPort {
 
     void sendVerificationEmail(String memberEmail, String receiverName, String verificationCode);
 
+    void sendNewPasswordEmail(String memberEmail, String receiverName, String newPassword);
+
 }
