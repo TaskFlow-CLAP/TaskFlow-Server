@@ -34,4 +34,7 @@ public interface LoadMemberPort {
     Optional<Member> findByNicknameAndEmail(String nickname, String email);
 
     Optional<Member> findByNameAndEmail(String name, String email);
+
+    Optional<Member> findByEmail(String email);
+
 }
