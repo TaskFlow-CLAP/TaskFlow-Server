@@ -8,6 +8,7 @@ public record UpdateCategoryRequest(
         @NotBlank @Length(max = 20)
         String name,
         @NotBlank @Pattern(regexp = "^[A-Z]{1,2}$", message = "올바른 카테고리 코드 형식이 아닙니다.")
-        String code
+        String code,
+        String descriptionExample
 ) {
 }

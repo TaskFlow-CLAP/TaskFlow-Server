@@ -31,19 +31,21 @@ public class Category extends BaseTime {
                 .build();
     }
 
-    public static Category createSubCategory(Member admin, Category mainCategory, String code, String name) {
+    public static Category createSubCategory(Member admin, Category mainCategory, String code, String name, String descriptionExample) {
         return Category.builder()
                 .mainCategory(mainCategory)
                 .admin(admin)
                 .code(code)
                 .name(name)
+                .descriptionExample(descriptionExample != null ? descriptionExample : "")
                 .build();
     }
 
-    public void updateCategory(Member admin, String name, String code){
+    public void updateCategory(Member admin, String name, String code, String descriptionExample){
         this.admin = admin;
         this.name = name;
         this.code = code;
+        this.descriptionExample = descriptionExample != null ? descriptionExample : "";
     }
 
     public void deleteCategory(Member admin) {

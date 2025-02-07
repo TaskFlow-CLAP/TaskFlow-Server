@@ -23,11 +23,11 @@ public class UpdateCategoryService implements UpdateCategoryUsecase {
 
     @Override
     @Transactional
-    public void updateCategory(Long adminId, Long categoryId, String name, String code) {
+    public void updateCategory(Long adminId, Long categoryId, String name, String code, String descriptionExample) {
         Member admin = loadMemberPort.findActiveMemberById(adminId).orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND));
         Category category = loadCategoryPort.findById(categoryId)
                 .orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND));
-        category.updateCategory(admin, name, code);
+        category.updateCategory(admin, name, code, descriptionExample);
         commandCategoryPort.save(category);
     }
 }

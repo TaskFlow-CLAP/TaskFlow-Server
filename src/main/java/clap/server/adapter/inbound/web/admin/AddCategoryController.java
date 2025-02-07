@@ -35,7 +35,11 @@ public class AddCategoryController {
     @PostMapping("/sub-category")
     @Secured("ROLE_ADMIN")
     public void addSubCategory(@AuthenticationPrincipal SecurityUserDetails userInfo, @Valid @RequestBody AddSubCategoryRequest addCategoryRequest) {
-        addSubCategoryUsecase.addSubCategory(userInfo.getUserId(), addCategoryRequest.mainCategoryId(), addCategoryRequest.code(), addCategoryRequest.name());
+        addSubCategoryUsecase.addSubCategory(userInfo.getUserId(),
+                addCategoryRequest.mainCategoryId(),
+                addCategoryRequest.code(),
+                addCategoryRequest.name(),
+                addCategoryRequest.descriptionExample());
     }
 
 }
