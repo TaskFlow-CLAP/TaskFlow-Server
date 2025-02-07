@@ -22,8 +22,8 @@ import java.util.List;
 public class TeamStatusController {
     private final FilterTeamStatusUsecase filterTeamStatusUsecase;
 
-    @Operation(summary = "팀 현황 필터링 조회 API")
-    @GetMapping("/filter")
+    @Operation(summary = "팀 현황 조회 API")
+    @GetMapping()
     @Secured("ROLE_MANAGER")
     public ResponseEntity<TeamStatusResponse> filterTeamStatus(@ModelAttribute FilterTeamStatusRequest filter) {
         TeamStatusResponse response = filterTeamStatusUsecase.filterTeamStatus(filter);
