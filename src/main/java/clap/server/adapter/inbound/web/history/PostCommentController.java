@@ -2,9 +2,11 @@ package clap.server.adapter.inbound.web.history;
 
 import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.history.request.CreateCommentRequest;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.history.SaveCommentAttachmentUsecase;
 import clap.server.application.port.inbound.history.SaveCommentUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
+import clap.server.common.annotation.log.LogType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -27,7 +29,7 @@ public class PostCommentController {
 
     private final SaveCommentUsecase saveCommentUsecase;
     private final SaveCommentAttachmentUsecase saveCommentAttachmentUsecase;
-
+    @LogType(LogStatus.COMMENT_ADDED)
     @Operation(summary = "댓글 작성")
     @Parameter(name = "taskId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
     @PostMapping("/{taskId}")

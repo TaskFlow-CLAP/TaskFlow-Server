@@ -71,7 +71,7 @@ public class AccessTokenProvider implements JwtProvider {
             return claims.getExpiration().before(new Date());
         } catch (Exception e) {
             log.error("Token is expired: {}", e.getMessage());
-            throw new JwtException(AuthErrorCode.EMPTY_ACCESS_KEY);
+            throw new JwtException(AuthErrorCode.EXPIRED_TOKEN);
         }
     }
 

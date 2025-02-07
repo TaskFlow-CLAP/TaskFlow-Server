@@ -65,4 +65,7 @@ public class TaskEntity extends BaseTimeEntity {
 
     @Column
     private LocalDateTime finishedAt;
+
+    @Column(nullable = false)
+    private int attachmentCount;
 }

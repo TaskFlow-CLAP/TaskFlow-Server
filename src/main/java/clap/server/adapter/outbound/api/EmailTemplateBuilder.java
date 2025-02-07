@@ -3,6 +3,7 @@ package clap.server.adapter.outbound.api;
 import clap.server.adapter.outbound.api.dto.EmailTemplate;
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -13,6 +14,9 @@ public class EmailTemplateBuilder {
 
     private final SpringTemplateEngine templateEngine;
 
+    @Value("${redirect.url.login}")
+    private String REDIRECT_URL_LOGIN;
+
     public EmailTemplate createWebhookTemplate(PushNotificationTemplate request, String taskDetailUrl) {
         Context context = new Context();
         String templateName = "";
@@ -20,14 +24,14 @@ public class EmailTemplateBuilder {
         switch (request.notificationType()) {
             case TASK_REQUESTED:
                 templateName = "task-request";
-                subject = "[TaskFlow] 신규 작업"+ request.taskName()+ "요청되었습니다.";
+                subject = "[TaskFlow] 신규 작업 "+ request.taskName()+ "이 요청되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
                 break;
             case STATUS_SWITCHED:
                 templateName = "status-switched";
-                subject = "[TaskFlow] "+ request.taskName()+ " " + request.message()+ "으로 변경되었습니다.";
+                subject = "[TaskFlow] "+ request.taskName()+ " 작업의 상태가 " + request.message() + "으로 변경되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
@@ -35,22 +39,23 @@ public class EmailTemplateBuilder {
                 break;
             case PROCESSOR_CHANGED:
                 templateName = "processor-changed";
-                subject = "[TaskFlow] "+ request.taskName()+ "담당자" + request.message() + " 변경되었습니다.";
+                subject = "[TaskFlow] "+ request.taskName()+ " 작업의 담당자가 " + request.message() + "으로 변경되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("processorName", request.message());
                 context.setVariable("title", request.taskName());
                 break;
             case PROCESSOR_ASSIGNED:
                 templateName = "processor-assigned";
-                subject = "[TaskFlow] "+ request.taskName()+ "담당자" + request.message() + " 지정되었습니다..";
+                subject = "[TaskFlow] "+ request.taskName()+ " 작업의 담당자가 " + request.message() + "으로 선정되었습니다..";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("processorName", request.message());
                 context.setVariable("title", request.taskName());
                 break;
             case COMMENT:
                 templateName = "comment";
-                subject = "[TaskFlow 알림] 댓글이 작성되었습니다.";
+                subject = "[TaskFlow] " + request.taskName() + " 작업에 " + request.commenterName() + "님이 댓글을 작성하였습니다";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
+                context.setVariable("commenter", request.commenterName());
                 context.setVariable("comment", request.message());
                 context.setVariable("title", request.taskName());
                 break;
@@ -66,7 +71,7 @@ public class EmailTemplateBuilder {
         String templateName = "invitation";
         String subject = "[TaskFlow 초대] 회원가입을 환영합니다.";
         context.setVariable("userNickname", userNickname);
-        context.setVariable("invitationLink", "http://localhost:5173/login");
+        context.setVariable("invitationLink", REDIRECT_URL_LOGIN);
         context.setVariable("initialPassword", initialPassword);
         context.setVariable("receiverName", receiverName);
         String body = templateEngine.process(templateName, context);

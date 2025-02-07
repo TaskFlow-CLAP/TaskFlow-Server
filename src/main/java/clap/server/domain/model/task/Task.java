@@ -5,7 +5,6 @@ import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.DomainException;
-import clap.server.exception.code.TaskErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,8 +35,9 @@ public class Task extends BaseTime {
     private Member reviewer;
     private LocalDateTime dueDate;
     private LocalDateTime finishedAt;
+    private int attachmentCount;
 
-    public static Task createTask(Member member, Category category, String title, String description) {
+    public static Task createTask(Member member, Category category, String title, String description, int attachmentCount) {
         return Task.builder()
                 .requester(member)
                 .category(category)
@@ -45,10 +45,11 @@ public class Task extends BaseTime {
                 .description(description)
                 .taskStatus(TaskStatus.REQUESTED)
                 .taskCode(toTaskCode(category))
+                .attachmentCount(attachmentCount)
                 .build();
     }
 
-    public void updateTask(Long requesterId, Category category, String title, String description) {
+    public void updateTask(Long requesterId, Category category, String title, String description, int attachmentCount) {
         if (!Objects.equals(requesterId, this.requester.getMemberId())) {
             throw new ApplicationException(NOT_A_REQUESTER);
         }
@@ -56,12 +57,14 @@ public class Task extends BaseTime {
         this.title = title;
         this.description = description;
         this.taskCode = toTaskCode(category);
+        this.attachmentCount = attachmentCount;
     }
 
-    public void setInitialProcessorOrder() {
+    public void finalSave(int attachmentCount) {
         if (this.processor == null) {
             this.processorOrder = this.taskId * DEFAULT_PROCESSOR_ORDER_GAP;
         }
+        this.attachmentCount = attachmentCount;
     }
 
     public void updateTaskStatus(TaskStatus status) {
@@ -98,7 +101,7 @@ public class Task extends BaseTime {
     }
 
     private static String toTaskCode(Category category) {
-        return category.getMainCategory().getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
+        return category.getMainCategory().getCode() + category.getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
     }
 
     public void updateProcessorOrder(long newProcessorOrder) {

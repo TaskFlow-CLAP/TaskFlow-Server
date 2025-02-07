@@ -113,5 +113,11 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     public Optional<Member> findByNameAndEmail(String name, String email) {
         return memberRepository.findByNameAndEmail(name, email).map(memberPersistenceMapper::toDomain);
     }
-}
 
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .map(memberPersistenceMapper::toDomain);
+    }
+
+}

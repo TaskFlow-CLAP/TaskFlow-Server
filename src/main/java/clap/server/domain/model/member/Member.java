@@ -138,6 +138,6 @@ public class Member extends BaseTime {
     }
 
     public void register(Member admin) {
-        this.admin = admin; // 관리자 설정
+        this.admin = admin;
     }
 }

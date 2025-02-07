@@ -15,7 +15,7 @@ import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.domain.policy.attachment.FilePathPolicy;
+import clap.server.domain.policy.attachment.FilePathPolicyConstants;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Category;
@@ -43,21 +43,26 @@ public class CreateTaskService implements CreateTaskUsecase {
     public CreateTaskResponse createTask(Long requesterId, CreateTaskRequest createTaskRequest, List<MultipartFile> files) {
         Member member = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(createTaskRequest.categoryId());
-        Task task = Task.createTask(member, category, createTaskRequest.title(), createTaskRequest.description());
+
+        int fileSize = files == null ? 0 : files.size();
+        Task task = Task.createTask(member, category, createTaskRequest.title(), createTaskRequest.description(), fileSize);
         Task savedTask = commandTaskPort.save(task);
-        savedTask.setInitialProcessorOrder();
-        commandTaskPort.save(savedTask);
 
         if (files != null) {
-            saveAttachments(files, savedTask);}
+            fileSize = saveAttachments(files, savedTask);
+        }
+        savedTask.finalSave(fileSize);
+        commandTaskPort.save(savedTask);
+
         publishNotification(savedTask);
         return TaskResponseMapper.toCreateTaskResponse(savedTask);
     }
 
-    private void saveAttachments(List<MultipartFile> files, Task task) {
-        List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicy.TASK_IMAGE, files);
+    private int saveAttachments(List<MultipartFile> files, Task task) {
+        List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicyConstants.TASK_FILE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
+        return fileUrls.size();
     }
 
     private void publishNotification(Task task) {
@@ -65,7 +70,8 @@ public class CreateTaskService implements CreateTaskUsecase {
         reviewers.forEach(reviewer -> {
             boolean isManager = reviewer.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
             sendNotificationService.sendPushNotification(reviewer, NotificationType.TASK_REQUESTED,
-                task, null, null, isManager);});
+                    task, null, null, isManager);
+        });
 
         sendNotificationService.sendAgitNotification(NotificationType.TASK_REQUESTED,
                 task, null, null);

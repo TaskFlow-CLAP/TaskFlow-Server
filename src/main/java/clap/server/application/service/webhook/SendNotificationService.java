@@ -8,7 +8,9 @@ import clap.server.domain.model.member.Member;
 import clap.server.domain.model.notification.Notification;
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -17,6 +19,15 @@ import static clap.server.domain.model.notification.Notification.createTaskNotif
 @ApplicationService
 @RequiredArgsConstructor
 public class SendNotificationService {
+
+    @Value("${redirect.url.user}")
+    private String REDIRECT_URL_USER;
+
+    @Value("${redirect.url.task.request}")
+    private String REDIRECT_URL_TASK_REQUEST;
+
+    @Value("${redirect.url.manger}")
+    private String REDIRECT_URL_MANAGER;
 
     //private final SendSseService sendSseService;
     private final SendAgitService sendAgitService;
@@ -75,6 +86,7 @@ public class SendNotificationService {
     }
 
     @Async("notificationExecutor")
+    @Transactional
     public void sendAgitNotification(NotificationType notificationType,
                                      Task task, String message, String commenterName) {
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
@@ -92,13 +104,13 @@ public class SendNotificationService {
     }
 
     private String extractTaskUrl(NotificationType notificationType, Task task, Boolean isManager) {
-        String taskDetailUrl = "http://localhost:5173/my-request?taskId=" + task.getTaskId();
+        String taskDetailUrl = REDIRECT_URL_USER + task.getTaskId();
         if (isManager) {
             if (notificationType == NotificationType.TASK_REQUESTED) {
-                taskDetailUrl = "http://localhost:5173/requested?taskId=" + task.getTaskId();
+                taskDetailUrl = REDIRECT_URL_TASK_REQUEST + task.getTaskId();
             }
             else {
-                taskDetailUrl = "http://localhost:5173/my-task?taskId=" + task.getTaskId();
+                taskDetailUrl = REDIRECT_URL_MANAGER + task.getTaskId();
             }
         }
         return taskDetailUrl;
