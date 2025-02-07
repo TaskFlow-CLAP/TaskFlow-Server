@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "02. Task [거부 & 종료]")
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks")
 public class TerminateTaskController {

@@ -18,7 +18,6 @@ import java.util.List;
 
 @Tag(name = "02. Task [조회]", description = "담당자 및 관리자 공통으로 사용")
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/labels")
 public class FindLabelController {

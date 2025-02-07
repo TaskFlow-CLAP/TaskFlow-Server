@@ -16,7 +16,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Tag(name = "SSE 관리 - 회원 등록(최초 접속시)")
 @WebAdapter
-@RestController
 @RequestMapping("/api/sse")
 @RequiredArgsConstructor
 public class SubscribeEmitterController {

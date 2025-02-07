@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "03. Task History")
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks")
 public class FindTaskHistoryController {

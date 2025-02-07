@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "03. Task History", description = "히스토리 및 댓글 관련 API")
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/comments")
 public class CommandCommentController {

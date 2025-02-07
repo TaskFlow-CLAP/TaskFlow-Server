@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "03. Task History")
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/comments")
 public class PostCommentController {
