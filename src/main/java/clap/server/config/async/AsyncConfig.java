@@ -9,7 +9,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync
 public class AsyncConfig {
 
-
     @Bean(name = "notificationExecutor")
     public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -26,4 +25,21 @@ public class AsyncConfig {
         executor.initialize();
         return executor;
     }
+
+    @Bean(name = "emailExecutor")
+    public ThreadPoolTaskExecutor emailExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        // 스레드 풀 크기 설정 (100명 사용자를 위한 설정)
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(30);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("async-email-");
+
+        executor.setKeepAliveSeconds(60);
+
+        executor.initialize();
+        return executor;
+    }
+
 }
