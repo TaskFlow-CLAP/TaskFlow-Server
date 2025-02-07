@@ -12,10 +12,11 @@ public record FilterTeamStatusRequest(
         SortBy sortBy,
 
         @Schema(description = "1차 카테고리 ID 목록", example = "[10, 20, 30]")
-        @NotBlank
+        @NotNull
         List<Long> mainCategoryIds,
 
         @Schema(description = "2차 카테고리 ID 목록", example = "[1, 2, 3]")
+        @NotNull
         List<Long> categoryIds,
 
         @Schema(description = "작업 타이틀 검색", example = "타이틀1")

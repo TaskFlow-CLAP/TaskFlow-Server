@@ -71,6 +71,7 @@ public class ChangeTaskController {
             @Valid @RequestBody UpdateTaskLabelRequest updateTaskLabelRequest) {
         updateTaskLabelUsecase.updateTaskLabel(taskId, userInfo.getUserId(), updateTaskLabelRequest);
     }
+
     @LogType(LogStatus.REQUEST_APPROVED)
     @Operation(summary = "작업 승인")
     @Secured({"ROLE_MANAGER"})
