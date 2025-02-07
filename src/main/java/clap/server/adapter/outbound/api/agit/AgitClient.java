@@ -1,6 +1,6 @@
-package clap.server.adapter.outbound.api;
+package clap.server.adapter.outbound.api.agit;
 
-import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
+import clap.server.adapter.outbound.api.data.PushNotificationTemplate;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.outbound.webhook.SendAgitPort;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;

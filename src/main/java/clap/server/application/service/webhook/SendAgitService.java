@@ -1,6 +1,6 @@
 package clap.server.application.service.webhook;
 
-import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
+import clap.server.adapter.outbound.api.data.PushNotificationTemplate;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.outbound.webhook.SendAgitPort;

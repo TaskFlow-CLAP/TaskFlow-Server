@@ -1,6 +1,6 @@
-package clap.server.adapter.outbound.api;
+package clap.server.adapter.outbound.api.agit;
 
-import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
+import clap.server.adapter.outbound.api.data.PushNotificationTemplate;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.domain.model.task.Task;
 import org.springframework.http.HttpEntity;

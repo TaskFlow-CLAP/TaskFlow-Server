@@ -1,7 +1,7 @@
-package clap.server.adapter.outbound.api;
+package clap.server.adapter.outbound.api.email;
 
-import clap.server.adapter.outbound.api.dto.EmailTemplate;
-import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
+import clap.server.adapter.outbound.api.data.EmailTemplate;
+import clap.server.adapter.outbound.api.data.PushNotificationTemplate;
 import clap.server.application.port.outbound.email.SendEmailPort;
 import clap.server.application.port.outbound.webhook.SendWebhookEmailPort;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
