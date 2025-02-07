@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SWAGGER_ENDPOINTS
     ).flatMap(Arrays::stream).toArray(String[]::new);
 
-    public static final String[] ANONYMOUS_ENDPOINTS = {LOGIN_ENDPOINT, REISSUANCE_ENDPOINT, PASSWORD_EMAIL_ENDPOINT};
+    public static final String[] ANONYMOUS_ENDPOINTS = {LOGIN_ENDPOINT, PASSWORD_EMAIL_ENDPOINT};
 
     @Override
     protected void doFilterInternal(
@@ -58,7 +58,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NotNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-
             if (isAnonymousRequest(request)) {
                 filterChain.doFilter(request, response);
                 return;
@@ -76,10 +75,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isAnonymousRequest(HttpServletRequest request) {
+        String requestUri = request.getRequestURI();
         boolean isAnonymousURI = Arrays.stream(ANONYMOUS_ENDPOINTS)
                 .anyMatch(endpoint -> new AntPathMatcher().match(endpoint, request.getRequestURI()));
         boolean isAnonymous = request.getHeader(HttpHeaders.AUTHORIZATION) == null;
-        return isAnonymousURI && isAnonymous;
+        return (isAnonymousURI && isAnonymous) || requestUri==REISSUANCE_ENDPOINT;
     }
 
     @Override
