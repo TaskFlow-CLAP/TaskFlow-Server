@@ -10,7 +10,6 @@ import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +19,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static clap.server.adapter.inbound.web.dto.task.request.SortBy.CONTRIBUTE;
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
 import static com.querydsl.core.types.Order.ASC;
 import static com.querydsl.core.types.Order.DESC;
@@ -91,25 +92,10 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         SortBy sortBy = (filter != null && filter.sortBy() != null) ? filter.sortBy() : SortBy.DEFAULT;
 
         assert filter != null;
-        OrderSpecifier<?> orderBy;
-        if (sortBy == SortBy.CONTRIBUTE) {
-            // 기여도순 (진행 중 + 검토 중 작업 개수 합 기준 내림차순)
-            orderBy = new CaseBuilder()
-                    .when(taskEntity.taskStatus.eq(TaskStatus.IN_PROGRESS)
-                            .or(taskEntity.taskStatus.eq(TaskStatus.IN_REVIEWING)))
-                    .then(1)
-                    .otherwise(0)
-                    .desc();
-        } else {
-            // 기본순 (닉네임 오름차순)
-            orderBy = taskEntity.processor.nickname.asc();
-        }
-
         // 쿼리 실행
         List<TaskEntity> taskEntities = queryFactory
                 .selectFrom(taskEntity)
                 .where(builder)
-                .orderBy(orderBy)
                 .fetch();
 
         // null 또는 빈 리스트 처리
@@ -117,7 +103,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
             return List.of(); // 빈 리스트 반환
         }
 
-        return taskEntities.stream()
+        List<TeamTaskResponse> members = taskEntities.stream()
                 .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId(), LinkedHashMap::new, Collectors.toList()))
                 .entrySet().stream()
                 .map(entry -> {
@@ -157,6 +143,12 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                     );
                 }).collect(Collectors.toList());
 
+        // 기여도순 (진행 중 + 검토 중 작업 개수 합 기준 내림차순)
+        if (sortBy.equals(CONTRIBUTE)) members.sort((a, b) -> b.totalTaskCount() - a.totalTaskCount());
+        // 기본순 (닉네임 오름차순)
+        else members.sort(Comparator.comparing(TeamTaskResponse::nickname));
+
+        return members;
     }
 
 

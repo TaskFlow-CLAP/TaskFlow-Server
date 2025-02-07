@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static clap.server.adapter.inbound.web.dto.task.request.SortBy.CONTRIBUTE;
-
 @ApplicationService
 public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatusUsecase {
 
@@ -43,7 +41,6 @@ public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatu
         // 전체 팀의 진행 중 & 검토 중 작업 수 계산
         int totalInProgressTaskCount = members.stream().mapToInt(TeamTaskResponse::inProgressTaskCount).sum();
         int totalInReviewingTaskCount = members.stream().mapToInt(TeamTaskResponse::inReviewingTaskCount).sum();
-        if (filter.sortBy().equals(CONTRIBUTE)) members.sort((a, b) -> b.totalTaskCount() - a.totalTaskCount());
 
         return new TeamStatusResponse(members, totalInProgressTaskCount, totalInReviewingTaskCount);
     }
