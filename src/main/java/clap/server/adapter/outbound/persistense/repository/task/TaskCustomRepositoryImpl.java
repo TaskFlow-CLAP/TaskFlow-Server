@@ -276,9 +276,9 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
     private OrderSpecifier<?> getOrderSpecifier(String sortBy, String sortDirection) {
         DateTimePath<LocalDateTime> sortColumn = switch (sortBy) {
-            case "REQUESTED_AT" -> taskEntity.updatedAt;
+            case "REQUESTED_AT" -> taskEntity.createdAt;
             case "FINISHED_AT" -> taskEntity.finishedAt;
-            default -> taskEntity.updatedAt;
+            default -> taskEntity.createdAt;
         };
         return "ASC".equalsIgnoreCase(sortDirection)
                 ? new OrderSpecifier<>(ASC, sortColumn)
