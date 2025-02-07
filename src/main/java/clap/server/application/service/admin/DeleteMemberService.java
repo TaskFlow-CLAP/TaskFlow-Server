@@ -3,15 +3,15 @@ package clap.server.application.service.admin;
 import clap.server.application.port.inbound.admin.DeleteMemberUsecase;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
+import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class DeleteMemberService implements DeleteMemberUsecase {
     private final LoadMemberPort loadMemberPort;
