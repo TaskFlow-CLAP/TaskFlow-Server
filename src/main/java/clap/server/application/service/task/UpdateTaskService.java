@@ -24,7 +24,7 @@ import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.*;
-import clap.server.domain.policy.attachment.FilePathPolicyConstants;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -132,7 +132,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
                 .forEach(commandAttachmentPort::save);
 
         if (files != null) {
-            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicyConstants.TASK_FILE, files);
+            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_FILE, files);
             List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
             commandAttachmentPort.saveAll(attachments);
         }

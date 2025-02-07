@@ -3,7 +3,7 @@ package clap.server.adapter.outbound.infrastructure.s3;
 import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import clap.server.config.s3.KakaoS3Config;
-import clap.server.domain.policy.attachment.FilePathPolicyConstants;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.exception.S3Exception;
 import clap.server.exception.code.FileErrorcode;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +26,11 @@ public class S3UploadAdapter implements S3UploadPort {
     private final KakaoS3Config kakaoS3Config;
     private final S3Client s3Client;
 
-    public List<String> uploadFiles(final FilePathPolicyConstants filePrefix,final List<MultipartFile> multipartFiles)  {
+    public List<String> uploadFiles(final FilePathConstants filePrefix, final List<MultipartFile> multipartFiles)  {
         return multipartFiles.stream().map((file) -> uploadSingleFile(filePrefix, file)).toList();
     }
 
-    public String uploadSingleFile(final FilePathPolicyConstants filePrefix,final MultipartFile file) {
+    public String uploadSingleFile(final FilePathConstants filePrefix, final MultipartFile file) {
         try {
             Path filePath = getFilePath(file);
             String objectKey = createObjectKey(filePrefix.getPath(), file.getOriginalFilename());
