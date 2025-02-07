@@ -101,7 +101,7 @@ public class Task extends BaseTime {
     }
 
     private static String toTaskCode(Category category) {
-        return category.getMainCategory().getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
+        return category.getMainCategory().getCode() + category.getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
     }
 
     public void updateProcessorOrder(long newProcessorOrder) {
