@@ -3,7 +3,7 @@ package clap.server.adapter.outbound.infrastructure.s3;
 import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.common.annotation.architecture.InfrastructureAdapter;
 import clap.server.config.s3.KakaoS3Config;
-import clap.server.domain.policy.attachment.FilePathPolicy;
+import clap.server.domain.policy.attachment.FilePathPolicyConstants;
 import clap.server.exception.S3Exception;
 import clap.server.exception.code.FileErrorcode;
 import lombok.RequiredArgsConstructor;
@@ -17,20 +17,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @InfrastructureAdapter
 @RequiredArgsConstructor
 public class S3UploadAdapter implements S3UploadPort {
+
     private final KakaoS3Config kakaoS3Config;
     private final S3Client s3Client;
 
-    public List<String> uploadFiles(FilePathPolicy filePrefix, List<MultipartFile> multipartFiles)  {
+    public List<String> uploadFiles(FilePathPolicyConstants filePrefix, List<MultipartFile> multipartFiles)  {
         return multipartFiles.stream().map((file) -> uploadSingleFile(filePrefix, file)).toList();
     }
 
-    public String uploadSingleFile(FilePathPolicy filePrefix, MultipartFile file) {
+    public String uploadSingleFile(FilePathPolicyConstants filePrefix, MultipartFile file) {
         try {
             Path filePath = getFilePath(file);
             String objectKey = createObjectKey(filePrefix.getPath(), file.getOriginalFilename());
@@ -62,13 +62,9 @@ public class S3UploadAdapter implements S3UploadPort {
         s3Client.putObject(putObjectRequest, path);
     }
 
-    private String createFileId() {
-        return UUID.randomUUID().toString();
-    }
-
     private String createObjectKey(String filepath, String fileName) {
-        String fileId = createFileId();
-        return String.format("%s/%s-%s", filepath, fileId , fileName);
+        String fileId = FileIDGenerator.createFileId();
+        return String.format("%s/%s-%s", filepath, fileId, fileName);
     }
 
 }
