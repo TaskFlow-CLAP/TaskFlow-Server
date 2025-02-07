@@ -20,6 +20,7 @@ import clap.server.domain.model.task.Comment;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
 import clap.server.domain.policy.attachment.FilePathPolicyConstants;
+import clap.server.domain.policy.task.TaskCommentPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
     private final CommandAttachmentPort commandAttachmentPort;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final SendNotificationService sendNotificationService;
+    private final TaskCommentPolicy taskCommentPolicy;
 
     @Transactional
     @Override
@@ -43,21 +45,21 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         Member member = memberService.findActiveMember(userId);
 
         // 일반 회원일 경우 => 요청자인지 확인
-        if (Member.checkCommenter(task, member)) {
-            Comment comment = Comment.createComment(member, task, request.content());
-            Comment savedComment = commandCommentPort.saveComment(comment);
+        taskCommentPolicy.validateCommentPermission(task, member);
+        Comment comment = Comment.createComment(member, task, request.content());
+        Comment savedComment = commandCommentPort.saveComment(comment);
 
-            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT, task, null, member, savedComment);
-            commandTaskHistoryPort.save(taskHistory);
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT, task, null, member, savedComment);
+        commandTaskHistoryPort.save(taskHistory);
 
-            Member processor = task.getProcessor();
-            Member requester = task.getRequester();
-            if (member.getMemberInfo().getRole() == MemberRole.ROLE_USER) {
-                publishNotification(processor, task, request.content(), requester.getNickname());
-            } else {
-                publishNotification(requester, task, request.content(), processor.getNickname());
-            }
+        Member processor = task.getProcessor();
+        Member requester = task.getRequester();
+        if (member.getMemberInfo().getRole() == MemberRole.ROLE_USER) {
+            publishNotification(processor, task, request.content(), requester.getNickname());
+        } else {
+            publishNotification(requester, task, request.content(), processor.getNickname());
         }
+
     }
 
     @Transactional
@@ -66,22 +68,22 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         Task task = taskService.findById(taskId);
         Member member = memberService.findActiveMember(userId);
 
-        if (Member.checkCommenter(task, member)) {
-            Comment comment = Comment.createComment(member, task, null);
-            Comment savedComment = commandCommentPort.saveComment(comment);
-            String fileName = saveAttachment(file, task, savedComment);
+        taskCommentPolicy.validateCommentPermission(task, member);
+        Comment comment = Comment.createComment(member, task, null);
+        Comment savedComment = commandCommentPort.saveComment(comment);
+        String fileName = saveAttachment(file, task, savedComment);
 
-            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, task, null, member, savedComment);
-            commandTaskHistoryPort.save(taskHistory);
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, task, null, member, savedComment);
+        commandTaskHistoryPort.save(taskHistory);
 
-            Member processor = task.getProcessor();
-            Member requester = task.getRequester();
-            if (member.getMemberInfo().getRole() == requester.getMemberInfo().getRole()) {
-                publishNotification(processor, task, fileName + "(첨부파일)", requester.getNickname());
-            } else {
-                publishNotification(requester, task, fileName + "(첨부파일)", processor.getNickname());
-            }
+        Member processor = task.getProcessor();
+        Member requester = task.getRequester();
+        if (member.getMemberInfo().getRole() == requester.getMemberInfo().getRole()) {
+            publishNotification(processor, task, fileName + "(첨부파일)", requester.getNickname());
+        } else {
+            publishNotification(requester, task, fileName + "(첨부파일)", processor.getNickname());
         }
+
     }
 
     private String saveAttachment(MultipartFile file, Task task, Comment comment) {
