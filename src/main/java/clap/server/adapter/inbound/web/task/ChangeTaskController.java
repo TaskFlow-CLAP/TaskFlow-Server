@@ -52,7 +52,7 @@ public class ChangeTaskController {
     }
 
     @LogType(LogStatus.ASSIGNER_CHANGED)
-    @Operation(summary = "작업 처리자 변경")
+    @Operation(summary = "작업 담당자 변경")
     @Secured({"ROLE_MANAGER"})
     @PatchMapping("/{taskId}/processor")
     public void updateTaskProcessor(
