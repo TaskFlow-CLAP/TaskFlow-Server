@@ -1,10 +1,7 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.common.SliceResponse;
-import clap.server.adapter.inbound.web.dto.notification.response.FindNotificationListResponse;
 import clap.server.adapter.outbound.persistense.mapper.NotificationPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.notification.NotificationRepository;
-import clap.server.application.mapper.NotificationMapper;
 import clap.server.application.port.outbound.notification.CommandNotificationPort;
 import clap.server.application.port.outbound.notification.LoadNotificationPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
@@ -32,14 +29,10 @@ public class NotificationPersistenceAdapter implements LoadNotificationPort, Com
     }
 
     @Override
-    public SliceResponse<FindNotificationListResponse> findAllByReceiverId(Long receiverId, Pageable pageable) {
-        Slice<Notification> notificationList = notificationRepository
+    public Slice<Notification> findAllByReceiverId(Long receiverId, Pageable pageable) {
+        return notificationRepository
                 .findAllByReceiver_MemberIdOrderByCreatedAtDesc(receiverId, pageable)
                 .map(notificationPersistenceMapper::toDomain);
-
-        return NotificationMapper.toSliceOfFindNoticeListResponse(
-                notificationList.map(NotificationMapper::toFindNoticeListResponse)
-        );
     }
 
     @Override

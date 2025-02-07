@@ -2,6 +2,7 @@ package clap.server.application.service.notification;
 
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
 import clap.server.adapter.inbound.web.dto.notification.response.FindNotificationListResponse;
+import clap.server.application.mapper.response.NotificationResponseMapper;
 import clap.server.application.port.inbound.notification.FindNotificationListUsecase;
 import clap.server.application.port.outbound.notification.LoadNotificationPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -19,6 +20,8 @@ public class FindNotificationListService implements FindNotificationListUsecase 
 
     @Override
     public SliceResponse<FindNotificationListResponse> findNotificationList(Long receiverId, Pageable pageable) {
-        return loadNotificationPort.findAllByReceiverId(receiverId, pageable);
+        return NotificationResponseMapper.toSliceOfFindNoticeListResponse(loadNotificationPort.findAllByReceiverId(receiverId, pageable)
+                .map(NotificationResponseMapper::toFindNoticeListResponse)
+        );
     }
 }
