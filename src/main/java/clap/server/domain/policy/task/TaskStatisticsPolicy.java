@@ -30,7 +30,7 @@ public class TaskStatisticsPolicy {
     }
 
     public Map<String, Long> formatDayStatistics(Map<String, Long> statistics) {
-        for (int i = 0; i <= 23; i++) statistics.putIfAbsent(String.valueOf(i), 0L);
+        for (int i = 0; i <= 23; i++) statistics.putIfAbsent(String.format("%02d", i), 0L);
 
         return statistics.entrySet().stream()
                 .collect(Collectors.toMap(
