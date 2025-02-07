@@ -9,9 +9,6 @@ import jakarta.validation.constraints.Pattern;
 public record UpdateMemberRequest(
         @NotBlank @Schema(description = "회원 이름", example = "서주원")
         String name,
-        @NotBlank
-        @Pattern(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
-                message = "올바른 이메일 형식이 아닙니다.")
         @NotNull @Schema(description = "승인 권한 여부")
         Boolean isReviewer,
         @NotNull @Schema(description = "부서 ID")
