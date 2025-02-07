@@ -13,6 +13,10 @@ spring:
   application:
     name: taskflow
   web.resources.add-mappings: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+
 
 
 server:
@@ -46,7 +50,7 @@ spring.config.activate.on-profile: local
 logging:
   level:
     root: INFO
-    taskflow.clap.server: ERROR
+    taskflow.clap.server: DEBUG
 #    org:
 #      springframework: DEBUG
 
