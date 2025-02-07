@@ -5,4 +5,6 @@ import clap.server.domain.model.task.TaskHistory;
 
 public interface CommandTaskHistoryPort {
     TaskHistory save(TaskHistory taskHistory);
+
+    void deleteTaskHistoryByCommentId(Long commentId);
 }

@@ -35,4 +35,9 @@ public class TaskHistoryPersistenceAdapter implements LoadTaskHistoryPort, Comma
         TaskHistoryEntity savedTaskHistoryEntity = taskHistoryRepository.save(taskHistoryEntity);
         return taskHistoryPersistenceMapper.toDomain(savedTaskHistoryEntity);
     }
+
+    @Override
+    public void deleteTaskHistoryByCommentId(Long commentId) {
+        taskHistoryRepository.updateByComment_CommentId(commentId);
+    }
 }

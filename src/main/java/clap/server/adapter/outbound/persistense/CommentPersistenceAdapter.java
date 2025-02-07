@@ -34,4 +34,9 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CommandCommen
     public void deleteCommentWithTaskHistory(Long commentId) {
         commentRepository.deleteCommentWithTaskHistory(commentId);
     }
+
+    @Override
+    public void deleteComment(Comment comment) {
+        commentRepository.delete(commentPersistenceMapper.toEntity(comment));
+    }
 }

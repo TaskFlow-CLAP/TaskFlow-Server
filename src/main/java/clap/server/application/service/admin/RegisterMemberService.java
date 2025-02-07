@@ -5,12 +5,16 @@ import clap.server.application.port.inbound.admin.RegisterMemberUsecase;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadDepartmentPort;
+import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
 import clap.server.exception.ApplicationException;
+import clap.server.exception.AuthException;
+import clap.server.exception.code.AuthErrorCode;
 import clap.server.exception.code.DepartmentErrorCode;
+import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +28,7 @@ class RegisterMemberService implements RegisterMemberUsecase {
     private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
-    private final PasswordEncoder passwordEncoder;
-    private final CsvParseService csvParser;
+    private final LoadMemberPort loadMemberPort;
 
     @Override
     @Transactional
@@ -33,6 +36,12 @@ class RegisterMemberService implements RegisterMemberUsecase {
         Member admin = memberService.findActiveMember(adminId);
         Department department = loadDepartmentPort.findById(request.departmentId())
                 .orElseThrow(() -> new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
+
+        loadMemberPort.findByNickname(request.nickname()).ifPresent(
+                member -> {
+                    throw new ApplicationException(MemberErrorCode.DUPLICATE_NICKNAME);
+                }
+        );
 
         // TODO: 인프라팀만 담당자가 될 수 있도록 수정해야함
         MemberInfo memberInfo = MemberInfo.toMemberInfo(request.name(), request.email(), request.nickname(), request.isReviewer(),

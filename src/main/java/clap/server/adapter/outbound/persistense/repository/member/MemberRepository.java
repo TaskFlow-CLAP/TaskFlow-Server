@@ -11,10 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, Long>,  MemberCustomRepository {
-
-
     List<MemberEntity> findByRoleAndStatus(MemberRole role, MemberStatus status);
-
 
     Optional<MemberEntity> findByStatusAndMemberId(MemberStatus memberStatus, Long memberId);
 
@@ -24,7 +21,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long>,  Me
 
     List<MemberEntity> findAll(); // 전체 회원 조회
 
-
     Optional<MemberEntity> findByMemberIdAndIsReviewerTrue(Long memberId);
+
+    Optional<MemberEntity> findByNicknameAndEmail(String nickname, String email);
 }
 

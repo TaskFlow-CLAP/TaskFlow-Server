@@ -2,8 +2,8 @@ package clap.server.adapter.inbound.security.filter;
 
 import clap.server.adapter.outbound.jwt.JwtClaims;
 import clap.server.adapter.outbound.jwt.access.AccessTokenClaimKeys;
-import clap.server.application.port.outbound.auth.forbidden.ForbiddenTokenPort;
 import clap.server.application.port.outbound.auth.JwtProvider;
+import clap.server.application.port.outbound.auth.forbidden.ForbiddenTokenPort;
 import clap.server.exception.JwtException;
 import clap.server.exception.code.AuthErrorCode;
 import io.jsonwebtoken.Claims;
@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SWAGGER_ENDPOINTS
     ).flatMap(Arrays::stream).toArray(String[]::new);
 
-    public static final String[] ANONYMOUS_ENDPOINTS = {LOGIN_ENDPOINT, REISSUANCE_ENDPOINT};
+    public static final String[] ANONYMOUS_ENDPOINTS = {LOGIN_ENDPOINT, REISSUANCE_ENDPOINT, PASSWORD_EMAIL_ENDPOINT};
 
     @Override
     protected void doFilterInternal(
