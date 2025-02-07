@@ -31,7 +31,7 @@ public class SendInvitationService implements SendInvitationUsecase {
                 .orElseThrow(() -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 초기 비밀번호 생성
-        String initialPassword = passwordGenerator.generateRandomPassword(8);
+        String initialPassword = passwordGenerator.generateRandomPassword();
         String encodedPassword = passwordEncoder.encode(initialPassword);
 
         // 회원 비밀번호 업데이트

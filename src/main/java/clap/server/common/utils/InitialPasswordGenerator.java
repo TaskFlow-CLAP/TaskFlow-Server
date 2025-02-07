@@ -1,28 +1,39 @@
 package clap.server.common.utils;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 @Component
 public class InitialPasswordGenerator {
-    @Value("${password.policy.characters:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()}")
-    private String characters;
+    private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+    private static final int UPPER = 0, LOWER = 26, DIGIT = 52, SPECIAL = 62;
+    private static final int PASSWORD_LENGTH = 8;
 
-    public String generateRandomPassword(int length) {
-        if (length <= 0) {
-            throw new IllegalArgumentException("Password length must be greater than 0");
+    private final SecureRandom random = new SecureRandom();
+
+    public String generateRandomPassword() {
+        char[] password = new char[PASSWORD_LENGTH];
+        int[] cases = {UPPER, LOWER, DIGIT, SPECIAL};
+
+        for (int i = 0; i < 4; i++) {
+            int start = cases[i];
+            int end = (i == 3) ? CHARS.length() : cases[i + 1];
+            password[i] = CHARS.charAt(start + random.nextInt(end - start));
         }
 
-        SecureRandom secureRandom = new SecureRandom();
-        StringBuilder password = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            int randomIndex = secureRandom.nextInt(characters.length());
-            password.append(characters.charAt(randomIndex));
+        for (int i = 4; i < PASSWORD_LENGTH; i++) {
+            password[i] = CHARS.charAt(random.nextInt(CHARS.length()));
         }
 
-        return password.toString();
+        for (int i = PASSWORD_LENGTH - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            char temp = password[i];
+            password[i] = password[j];
+            password[j] = temp;
+        }
+
+        return new String(password);
     }
 }
+
 
