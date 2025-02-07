@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static clap.server.application.mapper.MemberResponseMapper.toMember;
 import static clap.server.domain.model.member.MemberInfo.toMemberInfo;
 
 
@@ -35,7 +34,6 @@ public class CsvParseService {
         List<Department> departments = loadDepartmentPort.findActiveDepartments();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-            // 첫 번째 줄은 헤더로 간주하고 다음 줄부터 파싱
             String headerLine = reader.readLine();
             if (headerLine == null) {
                 throw new ApplicationException(MemberErrorCode.INVALID_CSV_FORMAT);

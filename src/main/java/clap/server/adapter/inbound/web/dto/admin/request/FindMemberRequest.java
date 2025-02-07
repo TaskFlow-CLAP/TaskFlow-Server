@@ -24,7 +24,4 @@ public record FindMemberRequest(
         @Schema(description = "회원 역할", example = "ROLE_USER")
         MemberRole role
 
-        //TODO: 가입일 추가
-
-
 ) {}

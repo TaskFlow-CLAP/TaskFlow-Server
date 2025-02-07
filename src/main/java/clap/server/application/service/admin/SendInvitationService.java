@@ -26,19 +26,15 @@ public class SendInvitationService implements SendInvitationUsecase {
     @Override
     @Transactional
     public void sendInvitation(SendInvitationRequest request) {
-        // 회원 조회
         Member member = loadMemberPort.findById(request.memberId())
                 .orElseThrow(() -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        // 초기 비밀번호 생성
         String initialPassword = passwordGenerator.generateRandomPassword();
         String encodedPassword = passwordEncoder.encode(initialPassword);
 
-        // 회원 비밀번호 업데이트
         member.resetPassword(encodedPassword);
         commandMemberPort.save(member);
 
-        // 회원 상태를 APPROVAL_REQUEST으로 변경
         member.changeToApproveRequested();
 
         sendEmailPort.sendInvitationEmail(

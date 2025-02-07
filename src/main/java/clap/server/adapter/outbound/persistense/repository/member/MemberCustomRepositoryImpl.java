@@ -26,7 +26,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         List<MemberEntity> result = queryFactory
                 .selectFrom(memberEntity)
                 .where(whereClause)
-                .orderBy(orderSpecifier) // 동적 sorting
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -44,7 +44,6 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         );
     }
 
-    // 필터 조건 생성
     private BooleanBuilder createMemberFilter(FindMemberRequest filterRequest) {
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(memberEntity.status.ne(MemberStatus.DELETED));
@@ -70,7 +69,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 
     @Override
     public Page<MemberEntity> findAllMembers(Pageable pageable) {
-        OrderSpecifier<LocalDateTime> orderSpecifier = memberEntity.createdAt.desc(); // 기본 정렬: 최신순
+        OrderSpecifier<LocalDateTime> orderSpecifier = memberEntity.createdAt.desc();
         return executeQueryWithPageable(pageable, new BooleanBuilder().and(memberEntity.status.ne(MemberStatus.DELETED)), orderSpecifier);
     }
 
@@ -79,8 +78,8 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         BooleanBuilder whereClause = createMemberFilter(filterRequest);
 
         OrderSpecifier<LocalDateTime> orderSpecifier = sortDirection.equalsIgnoreCase("ASC")
-                ? memberEntity.createdAt.asc() // ASC 정렬
-                : memberEntity.createdAt.desc(); // DESC 정렬
+                ? memberEntity.createdAt.asc()
+                : memberEntity.createdAt.desc();
 
         return executeQueryWithPageable(pageable, whereClause, orderSpecifier);
     }

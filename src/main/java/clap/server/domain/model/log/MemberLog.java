@@ -4,7 +4,6 @@ import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.common.utils.ClientIpParseUtil;
 import clap.server.domain.model.member.Member;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
