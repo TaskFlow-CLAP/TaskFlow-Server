@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class TaskDocumentAdapter implements TaskDocumentPort {
     private final TaskElasticRepository taskElasticRepository;
     private final ElasticsearchOperations elasticsearchOperations;
+    private static final String TIME_ZONE = "Asia/Seoul";
 
     @Override
     public void saveStatistics(List<Task> statistics) {
@@ -75,9 +76,12 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
                         .range(r -> r
                                 .date(d -> d
                                         .field("created_at")
-                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract()))))))
+                                        .timeZone(TIME_ZONE)
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))
+                                        .lt(String.valueOf(LocalDate.now())))))
                 .withAggregation("period_task", AggregationBuilders.dateHistogram()
                         .field("created_at")
+                        .timeZone(TIME_ZONE)
                         .calendarInterval(config.getCalendarInterval())
                         .build()._toAggregation())
                 .withMaxResults(0)
@@ -90,12 +94,16 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
                         .range(r -> r
                                 .date(d -> d
                                         .field("created_at")
-                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))))).build();
+                                        .timeZone(TIME_ZONE)
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))
+                                        .lt(String.valueOf(LocalDate.now())))))
+                .build();
         NativeQuery statusQuery = NativeQuery.builder()
                 .withQuery(q -> q
                         .term(v -> v
                                 .field("status")
-                                .value("completed"))).build();
+                                .value("completed")))
+                .build();
 
         return NativeQuery.builder()
                 .withQuery(q -> q
@@ -104,6 +112,7 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
                 )
                 .withAggregation("period_task", AggregationBuilders.dateHistogram()
                         .field("created_at")
+                        .timeZone(TIME_ZONE)
                         .calendarInterval(config.getCalendarInterval())
                         .build()._toAggregation())
                 .withMaxResults(0)
@@ -116,7 +125,9 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
                         .range(r -> r
                                 .date(d -> d
                                         .field("created_at")
-                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract()))))))
+                                        .timeZone(TIME_ZONE)
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))
+                                        .lt(String.valueOf(LocalDate.now())))))
                 .withAggregation("category_task", AggregationBuilders.terms()
                         .field("main_category")
                         .build()._toAggregation())
@@ -130,7 +141,10 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
                         .range(r -> r
                                 .date(d -> d
                                         .field("created_at")
-                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))))).build();
+                                        .timeZone(TIME_ZONE)
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))
+                                        .lt(String.valueOf(LocalDate.now())))))
+                .build();
         NativeQuery categoryQuery = NativeQuery.builder()
                 .withQuery(q -> q
                         .term(v -> v
@@ -155,7 +169,9 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
                         .range(r -> r
                                 .date(d -> d
                                         .field("created_at")
-                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract()))))))
+                                        .timeZone(TIME_ZONE)
+                                        .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))
+                                        .lt(String.valueOf(LocalDate.now())))))
                 .withAggregation("manager_task", AggregationBuilders.terms()
                         .field("processor")
                         .build()._toAggregation())

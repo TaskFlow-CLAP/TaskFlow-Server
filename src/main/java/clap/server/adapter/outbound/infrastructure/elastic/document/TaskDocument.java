@@ -34,7 +34,7 @@ public class TaskDocument {
         this.mainCategory = taskEntity.getCategory().getMainCategory().getName();
         this.subCategory = taskEntity.getCategory().getName();
         this.status = taskEntity.getTaskStatus().name().toLowerCase();
-        this.processor = taskEntity.getProcessor().getMemberInfo().getNickname();
+        this.processor = taskEntity.getProcessor() != null ? taskEntity.getProcessor().getMemberInfo().getNickname() : "";
         this.createdAt = taskEntity.getCreatedAt();
     }
 }
