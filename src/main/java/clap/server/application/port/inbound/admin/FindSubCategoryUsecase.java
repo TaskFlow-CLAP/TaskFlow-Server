@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface FindSubCategoryUsecase {
     List<FindSubCategoryResponse> findSubCategory();
+    FindSubCategoryResponse findOneSubCategory(Long categoryId);
 }
