@@ -111,14 +111,15 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
 
     @Override
     public List<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime fromDate, FilterTaskBoardRequest request) {
-        return  taskRepository.findTasksByFilter(processorId, statuses, fromDate, request)
+        return taskRepository.findTasksByFilter(processorId, statuses, fromDate, request)
                 .stream()
                 .map(taskPersistenceMapper::toDomain).toList();
     }
 
     @Override
-    public List<TeamTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
-        return taskRepository.findTeamStatus(memberId, filter);
+    public List<Task> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+        return taskRepository.findTeamStatus(memberId, filter).stream()
+                .map(taskPersistenceMapper::toDomain).toList();
     }
 
 

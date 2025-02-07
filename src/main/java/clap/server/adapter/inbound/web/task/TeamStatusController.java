@@ -2,7 +2,7 @@ package clap.server.adapter.inbound.web.task;
 
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamStatusResponse;
-import clap.server.application.service.task.TeamStatusService;
+import clap.server.application.port.inbound.task.FilterTeamStatusUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,13 +20,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @WebAdapter
 public class TeamStatusController {
+    private final FilterTeamStatusUsecase filterTeamStatusUsecase;
 
-    private final TeamStatusService teamStatusService;
     @Operation(summary = "팀 현황 필터링 조회 API")
     @GetMapping("/filter")
     @Secured("ROLE_MANAGER")
     public ResponseEntity<TeamStatusResponse> filterTeamStatus(@ModelAttribute FilterTeamStatusRequest filter) {
-        TeamStatusResponse response = teamStatusService.filterTeamStatus(filter);
+        TeamStatusResponse response = filterTeamStatusUsecase.filterTeamStatus(filter);
         return ResponseEntity.ok(response != null ? response : new TeamStatusResponse(List.of(), 0, 0, 0));
     }
 

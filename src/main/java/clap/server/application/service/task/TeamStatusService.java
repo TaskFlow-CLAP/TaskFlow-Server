@@ -3,49 +3,40 @@ package clap.server.application.service.task;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamStatusResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
+import clap.server.application.mapper.response.TeamTaskResponseMapper;
 import clap.server.application.port.inbound.task.FilterTeamStatusUsecase;
-import clap.server.application.port.inbound.task.LoadTeamStatusUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.domain.model.task.Task;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static clap.server.adapter.inbound.web.dto.task.request.SortBy.CONTRIBUTE;
 
 @ApplicationService
-public class TeamStatusService implements LoadTeamStatusUsecase, FilterTeamStatusUsecase {
+@RequiredArgsConstructor
+public class TeamStatusService implements FilterTeamStatusUsecase {
 
     private final LoadTaskPort loadTaskPort;
-
-    public TeamStatusService(LoadTaskPort loadTaskPort) {
-        this.loadTaskPort = loadTaskPort;
-    }
-
-    @Override
-    public TeamStatusResponse getTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
-        List<TeamTaskResponse> members = loadTaskPort.findTeamStatus(memberId, filter);
-        if (members == null) {
-            members = List.of();
-        }
-        return new TeamStatusResponse(members);
-    }
 
     @Override
     @Transactional(readOnly = true)
     public TeamStatusResponse filterTeamStatus(FilterTeamStatusRequest filter) {
-        List<TeamTaskResponse> members = loadTaskPort.findTeamStatus(null, filter);
+        List<Task> tasks = loadTaskPort.findTeamStatus(null, filter);
 
-        if (members == null) {
-            members = List.of();
-        }
+        List<TeamTaskResponse> taskItemResponses = TeamTaskResponseMapper.toTeamTaskResponses(tasks);
 
-        // 전체 팀의 진행 중 & 검토 중 작업 수 계산
-        int totalInProgressTaskCount = members.stream().mapToInt(TeamTaskResponse::inProgressTaskCount).sum();
-        int totalInReviewingTaskCount = members.stream().mapToInt(TeamTaskResponse::inReviewingTaskCount).sum();
-        if (filter.sortBy().equals(CONTRIBUTE)) members.sort((a, b) -> b.totalTaskCount() - a.totalTaskCount());
+        int totalInProgressTaskCount = taskItemResponses.stream().mapToInt(TeamTaskResponse::inProgressTaskCount).sum();
+        int totalInReviewingTaskCount = taskItemResponses.stream().mapToInt(TeamTaskResponse::inReviewingTaskCount).sum();
 
-        return new TeamStatusResponse(members, totalInProgressTaskCount, totalInReviewingTaskCount);
+        if (filter.sortBy().equals(CONTRIBUTE))
+            taskItemResponses.sort((a, b) -> b.totalTaskCount() - a.totalTaskCount());
+        else taskItemResponses.sort(Comparator.comparing(TeamTaskResponse::nickname));
+
+        return new TeamStatusResponse(taskItemResponses, totalInProgressTaskCount, totalInReviewingTaskCount);
     }
 
 

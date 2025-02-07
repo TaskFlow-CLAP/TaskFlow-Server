@@ -49,9 +49,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
     Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderAsc(
             Long processorId, TaskStatus taskStatus, Long processorOrder);
 
-//    @Query("SELECT t FROM TaskEntity t JOIN FETCH t.processor p WHERE (:memberId IS NULL OR p.memberId = :memberId) ")
-    List<TeamTaskResponse> findTeamStatus(@Param("memberId") Long memberId, FilterTeamStatusRequest filter);
-
     Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndTaskIdLessThanOrderByTaskIdDesc(Long processorId, TaskStatus taskStatus, Long taskId);
 
     Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndTaskIdGreaterThanOrderByTaskIdAsc(Long processorId, TaskStatus status, Long taskId);

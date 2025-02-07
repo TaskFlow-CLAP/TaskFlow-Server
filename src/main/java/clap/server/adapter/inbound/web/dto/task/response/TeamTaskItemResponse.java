@@ -24,5 +24,4 @@ public record TeamTaskItemResponse(
             LabelColor labelColor
     ) {
     }
-
 }
