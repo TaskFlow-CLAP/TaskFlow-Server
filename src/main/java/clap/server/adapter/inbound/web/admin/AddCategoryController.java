@@ -25,14 +25,14 @@ public class AddCategoryController {
     private final AddSubCategoryUsecase addSubCategoryUsecase;
 
     @Operation(summary = "1차 카테고리 추가")
-    @PostMapping("/main-categories")
+    @PostMapping("/main-category")
     @Secured("ROLE_ADMIN")
     public void addMainCategory(@AuthenticationPrincipal SecurityUserDetails userInfo, @Valid @RequestBody AddMainCategoryRequest addMainCategoryRequest) {
         addMainCategoryUsecase.addMainCategory(userInfo.getUserId(), addMainCategoryRequest.code(), addMainCategoryRequest.name());
     }
 
     @Operation(summary = "2차 카테고리 추가")
-    @PostMapping("/sub-categories")
+    @PostMapping("/sub-category")
     @Secured("ROLE_ADMIN")
     public void addSubCategory(@AuthenticationPrincipal SecurityUserDetails userInfo, @Valid @RequestBody AddSubCategoryRequest addCategoryRequest) {
         addSubCategoryUsecase.addSubCategory(userInfo.getUserId(),
