@@ -4,6 +4,7 @@ public record FindSubCategoryResponse(
         Long id,
         Long mainCategoryId,
         String name,
-        String code
+        String code,
+        String descriptionExample
 ) {
 }

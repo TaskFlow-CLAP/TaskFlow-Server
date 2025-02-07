@@ -70,7 +70,8 @@ class AddCategoryServiceTest {
     @Test
     void addSubCategory() {
         MemberEntity admin = entityManager.find(MemberEntity.class, 1);
-        addCategoryService.addSubCategory(admin.getMemberId(), 1L, "CR", "생성");
+        addCategoryService.addSubCategory(admin.getMemberId(), 1L,
+                "CR", "생성", "vm이름:\n이미지:\n인스턴스 유형\n볼륨 용량\nvpc이름:\n보안그룸:");
 
         CategoryEntity category = entityManager.find(CategoryEntity.class, 2);
         assertThat(category.getCategoryId()).isEqualTo(2);

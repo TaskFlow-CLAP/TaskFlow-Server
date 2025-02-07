@@ -36,14 +36,14 @@ public class AddCategoryService implements AddMainCategoryUsecase, AddSubCategor
 
     @Override
     @Transactional
-    public void addSubCategory(Long adminId, Long mainCategoryId, String code, String name) {
+    public void addSubCategory(Long adminId, Long mainCategoryId, String code, String name, String descriptionExample) {
         Optional<Member> activeMember = loadMemberPort.findActiveMemberById(adminId);
         Optional<Category> mainCategory = loadCategoryPort.findById(mainCategoryId);
 
         Category subCategory = Category.createSubCategory(
                 activeMember.orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND)),
                 mainCategory.orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND)),
-                code, name);
+                code, name, descriptionExample);
         commandCategoryPort.save(subCategory);
     }
 }

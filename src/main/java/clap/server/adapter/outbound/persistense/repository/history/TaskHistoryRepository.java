@@ -8,5 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TaskHistoryRepository extends JpaRepository<TaskHistoryEntity, Long> , TaskHistoryCustomRepository{
+public interface TaskHistoryRepository extends JpaRepository<TaskHistoryEntity, Long>, TaskHistoryCustomRepository {
+    @Modifying
+    @Query("UPDATE TaskHistoryEntity t SET t.isDeleted = true WHERE t.comment.commentId = :commentId")
+    void updateByComment_CommentId(@Param("commentId") Long commentId);
 }

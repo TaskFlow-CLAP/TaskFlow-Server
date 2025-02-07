@@ -27,6 +27,10 @@ public class UpdateCategoryController {
     @Secured("ROLE_ADMIN")
     public void updateCategory(@AuthenticationPrincipal SecurityUserDetails userInfo, @PathVariable Long categoryId,
                                @Valid @RequestBody UpdateCategoryRequest updateCategoryRequest) {
-        updateCategoryUsecase.updateCategory(userInfo.getUserId(), categoryId, updateCategoryRequest.name(), updateCategoryRequest.code());
+        updateCategoryUsecase.updateCategory(userInfo.getUserId(),
+                categoryId,
+                updateCategoryRequest.name(),
+                updateCategoryRequest.code(),
+                updateCategoryRequest.descriptionExample());
     }
 }

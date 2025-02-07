@@ -55,13 +55,16 @@ public class CommandCommentService implements EditCommentUsecase, DeleteCommentU
         Member member = memberService.findActiveMember(userId);
         Comment comment = commentService.findById(commentId);
 
-        if (Objects.equals(comment.getMember().getMemberId(), member.getMemberId())) {
+        if (Member.checkCommenter(comment.getTask(), member)) {
+            // 첨부파일이 있을 경우 삭제
             if (loadAttachmentPort.exitsByCommentId(commentId)) {
                 deleteAttachments(commentId);
             }
-            commandCommentPort.deleteCommentWithTaskHistory(commentId);
-        }else{
-            throw new DomainException(MemberErrorCode.NOT_A_COMMENTER);
+            // comment 삭제
+            commandCommentPort.deleteComment(comment);
+            // comment와 관련된 taskHistory도 함께 삭제
+
+            commandTaskHistoryPort.deleteTaskHistoryByCommentId(commentId);
         }
     }
 

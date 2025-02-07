@@ -22,6 +22,6 @@ public class CategoryResponseMapper {
     }
 
     public static FindSubCategoryResponse toFindSubCategoryResponse(Category category) {
-        return new FindSubCategoryResponse(category.getCategoryId(), category.getMainCategory().getCategoryId(), category.getName(), category.getCode());
+        return new FindSubCategoryResponse(category.getCategoryId(), category.getMainCategory().getCategoryId(), category.getName(), category.getCode(), category.getDescriptionExample());
     }
 }
