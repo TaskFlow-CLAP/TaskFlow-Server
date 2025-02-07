@@ -7,8 +7,6 @@ import clap.server.adapter.outbound.persistense.repository.history.TaskHistoryRe
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.port.outbound.taskhistory.LoadTaskHistoryPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
-
-
 import clap.server.domain.model.task.TaskHistory;
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +20,7 @@ public class TaskHistoryPersistenceAdapter implements LoadTaskHistoryPort, Comma
     private final TaskHistoryPersistenceMapper taskHistoryPersistenceMapper;
 
     @Override
-    public List<TaskHistory> findAllTaskHistoriesByTaskId(Long taskId) {
+    public List<TaskHistory> findAllTaskHistoriesByTaskId(final Long taskId) {
         return taskHistoryRepository.findAllTaskHistoriesByTaskId(taskId)
                 .stream()
                 .map(taskHistoryPersistenceMapper::toDomain)
@@ -30,14 +28,14 @@ public class TaskHistoryPersistenceAdapter implements LoadTaskHistoryPort, Comma
     }
 
     @Override
-    public TaskHistory save(TaskHistory taskHistory) {
+    public TaskHistory save(final TaskHistory taskHistory) {
         TaskHistoryEntity taskHistoryEntity = taskHistoryPersistenceMapper.toEntity(taskHistory);
         TaskHistoryEntity savedTaskHistoryEntity = taskHistoryRepository.save(taskHistoryEntity);
         return taskHistoryPersistenceMapper.toDomain(savedTaskHistoryEntity);
     }
 
     @Override
-    public void deleteTaskHistoryByCommentId(Long commentId) {
+    public void deleteTaskHistoryByCommentId(final Long commentId) {
         taskHistoryRepository.updateByComment_CommentId(commentId);
     }
 }

@@ -1,7 +1,7 @@
-package clap.server.adapter.outbound.api;
+package clap.server.adapter.outbound.api.email;
 
-import clap.server.adapter.outbound.api.dto.EmailTemplate;
-import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
+import clap.server.adapter.outbound.api.data.EmailTemplate;
+import clap.server.adapter.outbound.api.data.PushNotificationTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

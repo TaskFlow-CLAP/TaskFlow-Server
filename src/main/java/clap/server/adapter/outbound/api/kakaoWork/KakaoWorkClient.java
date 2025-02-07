@@ -1,6 +1,6 @@
-package clap.server.adapter.outbound.api;
+package clap.server.adapter.outbound.api.kakaoWork;
 
-import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
+import clap.server.adapter.outbound.api.data.PushNotificationTemplate;
 import clap.server.application.port.outbound.webhook.SendKaKaoWorkPort;
 import clap.server.common.annotation.architecture.ExternalApiAdapter;
 import clap.server.exception.AdapterException;
