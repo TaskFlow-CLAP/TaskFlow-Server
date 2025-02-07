@@ -23,11 +23,17 @@ class UpdateMemberInfoService implements UpdateMemberInfoUsecase {
     private final CommandMemberPort commandMemberPort;
 
     @Override
-    public void updateMemberInfo(Long memberId, UpdateMemberInfoRequest request, MultipartFile profileImage) throws IOException {
+    public void updateMemberInfo(Long memberId, UpdateMemberInfoRequest request, MultipartFile profileImage) {
         Member member = memberService.findActiveMember(memberId);
-        String profileImageUrl = profileImage != null ? s3UploadPort.uploadSingleFile(FilePathPolicyConstants.MEMBER_IMAGE, profileImage) : null;
+        if(request.isProfileImageDeleted()){
+            member.setImageUrl(null);
+        }
+        else {
+            String profileImageUrl = profileImage != null ? s3UploadPort.uploadSingleFile(FilePathPolicyConstants.MEMBER_IMAGE, profileImage) : member.getImageUrl();
+            member.setImageUrl(profileImageUrl);
+        }
         member.updateMemberInfo(request.name(), request.agitNotification(), request.emailNotification(),
-                request.kakaoWorkNotification(), profileImageUrl);
+                request.kakaoWorkNotification());
         commandMemberPort.save(member);
     }
 }
