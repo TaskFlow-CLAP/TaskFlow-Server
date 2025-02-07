@@ -77,9 +77,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean isAnonymousRequest(HttpServletRequest request) {
         String requestUri = request.getRequestURI();
         boolean isAnonymousURI = Arrays.stream(ANONYMOUS_ENDPOINTS)
-                .anyMatch(endpoint -> new AntPathMatcher().match(endpoint, request.getRequestURI()));
+                .anyMatch(endpoint -> new AntPathMatcher().match(endpoint, requestUri));
         boolean isAnonymous = request.getHeader(HttpHeaders.AUTHORIZATION) == null;
-        return (isAnonymousURI && isAnonymous) || requestUri==REISSUANCE_ENDPOINT;
+        return (isAnonymousURI && isAnonymous) || requestUri.equals(REISSUANCE_ENDPOINT);
     }
 
     @Override
