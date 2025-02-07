@@ -5,7 +5,6 @@ import clap.server.application.port.inbound.admin.RegisterMemberCSVUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import clap.server.common.utils.FileTypeValidator;
 import clap.server.exception.AdapterException;
-import clap.server.exception.ApplicationException;
 import clap.server.exception.code.FileErrorcode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
