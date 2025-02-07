@@ -1,4 +1,4 @@
-package clap.server.application.mapper;
+package clap.server.application.mapper.response;
 
 
 import clap.server.adapter.inbound.web.dto.admin.response.MemberDetailsResponse;
@@ -9,7 +9,7 @@ import clap.server.domain.model.member.MemberInfo;
 
 public class MemberResponseMapper {
     private MemberResponseMapper() {
-        throw new IllegalArgumentException();
+        throw new IllegalStateException("Utility class");
     }
 
     public static MemberProfileResponse toMemberProfileResponse(Member member) {

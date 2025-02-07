@@ -22,9 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "03. Task History")
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comments")
+@RequestMapping("/api/tasks")
 public class PostCommentController {
 
     private final SaveCommentUsecase saveCommentUsecase;
@@ -32,7 +31,7 @@ public class PostCommentController {
     @LogType(LogStatus.COMMENT_ADDED)
     @Operation(summary = "댓글 작성")
     @Parameter(name = "taskId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
-    @PostMapping("/{taskId}")
+    @PostMapping("/{taskId}/comments")
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public void createComment(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
@@ -43,7 +42,7 @@ public class PostCommentController {
 
     @Operation(summary = "댓글 작성(첨부 파일)")
     @Parameter(name = "taskId", description = "댓글 작성할 작업 고유 ID", required = true, in = ParameterIn.PATH)
-    @PostMapping(value = "/attachment/{taskId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/{taskId}/comments/attachment", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public void createAttachmentComment(
             @AuthenticationPrincipal SecurityUserDetails userInfo,

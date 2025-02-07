@@ -1,7 +1,7 @@
 package clap.server.application.service.label;
 
 import clap.server.adapter.inbound.web.dto.label.response.FindLabelListResponse;
-import clap.server.application.mapper.LabelResponseMapper;
+import clap.server.application.mapper.response.LabelResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.label.FindLabelListUsecase;
 import clap.server.application.port.outbound.task.LoadLabelPort;
@@ -20,8 +20,8 @@ public class FindLabelListService implements FindLabelListUsecase {
     private final MemberService memberService;
 
     @Override
-    public List<FindLabelListResponse> findLabelList(Long userId) {
-        memberService.findActiveMember(userId);
+    public List<FindLabelListResponse> findLabelList(Long memberId) {
+        memberService.findActiveMember(memberId);
         return loadLabelPort.findLabelList()
                 .stream()
                 .map(LabelResponseMapper::toFindLabelListResponse)

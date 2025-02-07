@@ -7,7 +7,7 @@ import clap.server.adapter.inbound.web.dto.task.response.FilterAllTasksResponse;
 import clap.server.adapter.inbound.web.dto.task.response.FilterAssignedTaskListResponse;
 import clap.server.adapter.inbound.web.dto.task.response.FilterPendingApprovalResponse;
 import clap.server.adapter.inbound.web.dto.task.response.FilterRequestedTasksResponse;
-import clap.server.application.mapper.TaskResponseMapper;
+import clap.server.application.mapper.response.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 
 import clap.server.application.port.inbound.task.FindTaskListUsecase;

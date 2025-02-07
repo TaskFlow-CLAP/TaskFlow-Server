@@ -29,6 +29,64 @@ class FindTaskProcessServiceTest {
     private FindTaskProcessService findTaskProcessService;
 
     @Test
+    @DisplayName("기간별 요청량")
+    void aggregatePeriodTaskRequest() {
+        //given
+        Map<String, Long> statistics = new TreeMap<>();
+        statistics.put("2025-02-03", 8L);
+        statistics.put("2025-02-04", 7L);
+        statistics.put("2025-02-05", 6L);
+
+        when(taskDocumentPort.findPeriodTaskRequestByPeriod(eq("week"))).thenReturn(statistics);
+
+        Map<String, Long> formattedStatistics = new TreeMap<>();
+        formattedStatistics.put("2월 3일", 8L);
+        formattedStatistics.put("2월 4일", 7L);
+        formattedStatistics.put("2월 5일", 6L);
+        when(taskStatisticsPolicy.formatStatistics(statistics)).thenReturn(formattedStatistics);
+
+        //when
+        List<StatisticsResponse> week = findTaskProcessService.aggregatePeriodTaskRequest("week");
+
+        //then
+        assertThat(week.get(0).key()).isEqualTo("2월 3일");
+        assertThat(week.get(0).count()).isEqualTo(8L);
+        assertThat(week.get(1).key()).isEqualTo("2월 4일");
+        assertThat(week.get(1).count()).isEqualTo(7L);
+        assertThat(week.get(2).key()).isEqualTo("2월 5일");
+        assertThat(week.get(2).count()).isEqualTo(6L);
+    }
+
+    @Test
+    @DisplayName("기간별 처리량")
+    void aggregatePeriodTaskProcess() {
+        //given
+        Map<String, Long> statistics = new TreeMap<>();
+        statistics.put("2025-02-03", 8L);
+        statistics.put("2025-02-04", 7L);
+        statistics.put("2025-02-05", 6L);
+
+        when(taskDocumentPort.findPeriodTaskProcessByPeriod(eq("week"))).thenReturn(statistics);
+
+        Map<String, Long> formattedStatistics = new TreeMap<>();
+        formattedStatistics.put("2월 3일", 8L);
+        formattedStatistics.put("2월 4일", 7L);
+        formattedStatistics.put("2월 5일", 6L);
+        when(taskStatisticsPolicy.formatStatistics(statistics)).thenReturn(formattedStatistics);
+
+        //when
+        List<StatisticsResponse> week = findTaskProcessService.aggregatePeriodTaskProcess("week");
+
+        //then
+        assertThat(week.get(0).key()).isEqualTo("2월 3일");
+        assertThat(week.get(0).count()).isEqualTo(8L);
+        assertThat(week.get(1).key()).isEqualTo("2월 4일");
+        assertThat(week.get(1).count()).isEqualTo(7L);
+        assertThat(week.get(2).key()).isEqualTo("2월 5일");
+        assertThat(week.get(2).count()).isEqualTo(6L);
+    }
+
+    @Test
     @DisplayName("카테고리별 요청량")
     void aggregateCategoryTaskRequest() {
         //given
@@ -72,63 +130,5 @@ class FindTaskProcessServiceTest {
         assertThat(week.get(1).count()).isEqualTo(8L);
         assertThat(week.get(2).key()).isEqualTo("tony.tsx");
         assertThat(week.get(2).count()).isEqualTo(7L);
-    }
-
-    @Test
-    @DisplayName("기간별 처리량")
-    void aggregatePeriodTaskProcess() {
-        //given
-        Map<String, Long> statistics = new TreeMap<>();
-        statistics.put("2025-02-01", 8L);
-        statistics.put("2025-01-30", 7L);
-        statistics.put("2025-01-31", 6L);
-
-        when(taskDocumentPort.findPeriodTaskProcessByPeriod(eq("week"))).thenReturn(statistics);
-
-        Map<String, Long> formattedStatistics = new TreeMap<>();
-        formattedStatistics.put("2월 1일", 8L);
-        formattedStatistics.put("1월 30일", 7L);
-        formattedStatistics.put("1월 31일", 6L);
-        when(taskStatisticsPolicy.formatStatistics(statistics)).thenReturn(formattedStatistics);
-
-        //when
-        List<StatisticsResponse> week = findTaskProcessService.aggregatePeriodTaskProcess("week");
-
-        //then
-        assertThat(week.get(0).key()).isEqualTo("1월 30일");
-        assertThat(week.get(0).count()).isEqualTo(7L);
-        assertThat(week.get(1).key()).isEqualTo("1월 31일");
-        assertThat(week.get(1).count()).isEqualTo(6L);
-        assertThat(week.get(2).key()).isEqualTo("2월 1일");
-        assertThat(week.get(2).count()).isEqualTo(8L);
-    }
-
-    @Test
-    @DisplayName("기간별 요청량")
-    void aggregatePeriodTaskRequest() {
-        //given
-        Map<String, Long> statistics = new TreeMap<>();
-        statistics.put("2025-02-01", 8L);
-        statistics.put("2025-01-30", 7L);
-        statistics.put("2025-01-31", 6L);
-
-        when(taskDocumentPort.findPeriodTaskRequestByPeriod(eq("week"))).thenReturn(statistics);
-
-        Map<String, Long> formattedStatistics = new TreeMap<>();
-        formattedStatistics.put("2월 1일", 8L);
-        formattedStatistics.put("1월 30일", 7L);
-        formattedStatistics.put("1월 31일", 6L);
-        when(taskStatisticsPolicy.formatStatistics(statistics)).thenReturn(formattedStatistics);
-
-        //when
-        List<StatisticsResponse> week = findTaskProcessService.aggregatePeriodTaskRequest("week");
-
-        //then
-        assertThat(week.get(0).key()).isEqualTo("1월 30일");
-        assertThat(week.get(0).count()).isEqualTo(7L);
-        assertThat(week.get(1).key()).isEqualTo("1월 31일");
-        assertThat(week.get(1).count()).isEqualTo(6L);
-        assertThat(week.get(2).key()).isEqualTo("2월 1일");
-        assertThat(week.get(2).count()).isEqualTo(8L);
     }
 }

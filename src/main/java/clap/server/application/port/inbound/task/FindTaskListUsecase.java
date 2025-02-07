@@ -13,7 +13,7 @@ public interface FindTaskListUsecase {
 
     PageResponse<FilterAssignedTaskListResponse> findTasksAssignedByManager(Long memberId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
 
-    PageResponse<FilterPendingApprovalResponse> findPendingApprovalTasks(Long userId, Pageable pageable, FilterTaskListRequest filterTaskListRequest);
+    PageResponse<FilterPendingApprovalResponse> findPendingApprovalTasks(Long memberId, Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 
-    PageResponse<FilterAllTasksResponse> findAllTasks(Long userId, Pageable pageable, FilterTaskListRequest filterTaskListRequest);
+    PageResponse<FilterAllTasksResponse> findAllTasks(Long memberId, Pageable pageable, FilterTaskListRequest filterTaskListRequest);
 }

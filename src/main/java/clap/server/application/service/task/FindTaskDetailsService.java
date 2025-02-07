@@ -2,7 +2,7 @@ package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.response.FindTaskDetailsForManagerResponse;
 import clap.server.adapter.inbound.web.dto.task.response.FindTaskDetailsResponse;
-import clap.server.application.mapper.TaskResponseMapper;
+import clap.server.application.mapper.response.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.FindTaskDetailsUsecase;
 import clap.server.application.port.outbound.task.LoadAttachmentPort;

@@ -1,4 +1,4 @@
-package clap.server.application.mapper;
+package clap.server.application.mapper.response;
 
 import clap.server.adapter.inbound.web.dto.common.SliceResponse;
 import clap.server.adapter.inbound.web.dto.notification.response.CountNotificationResponse;
@@ -6,8 +6,8 @@ import clap.server.adapter.inbound.web.dto.notification.response.FindNotificatio
 import clap.server.domain.model.notification.Notification;
 import org.springframework.data.domain.Slice;
 
-public class NotificationMapper {
-    private NotificationMapper() {throw  new IllegalArgumentException();}
+public class NotificationResponseMapper {
+    private NotificationResponseMapper() {throw new IllegalStateException("Utility class");}
 
     public static FindNotificationListResponse toFindNoticeListResponse(Notification notification) {
         return new FindNotificationListResponse(
@@ -31,9 +31,9 @@ public class NotificationMapper {
         );
     }
 
-    public static CountNotificationResponse toCountNotificationResponse(Long userId, Integer count) {
+    public static CountNotificationResponse toCountNotificationResponse(Long memberId, Integer count) {
         return new CountNotificationResponse(
-                userId,
+                memberId,
                 count
         );
     }

@@ -1,4 +1,4 @@
-package clap.server.application.mapper;
+package clap.server.application.mapper.response;
 
 import clap.server.adapter.inbound.web.dto.history.response.FindTaskHistoryResponse;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class TaskHistoryResponseMapper {
 
     private TaskHistoryResponseMapper() {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Utility class");
     }
 
     public static FindTaskHistoryResponse toFindTaskHistoryResponse(List<TaskHistory> taskHistories, List<Attachment> attachments) {

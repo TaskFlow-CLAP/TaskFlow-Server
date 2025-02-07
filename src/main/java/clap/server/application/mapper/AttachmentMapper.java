@@ -1,8 +1,6 @@
 package clap.server.application.mapper;
 
-import clap.server.adapter.inbound.web.dto.task.response.AttachmentResponse;
 import clap.server.domain.model.task.Attachment;
-import clap.server.domain.model.task.Comment;
 import clap.server.domain.model.task.Task;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,7 +8,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static clap.server.domain.model.task.Attachment.createAttachment;
-import static clap.server.domain.model.task.Attachment.createCommentAttachment;
 
 public class AttachmentMapper {
     private AttachmentMapper() {
@@ -24,19 +21,6 @@ public class AttachmentMapper {
                         files.get(i).getOriginalFilename(),
                         fileUrls.get(i),
                         files.get(i).getSize()
-                ))
-                .toList();
-    }
-
-
-    public static List<AttachmentResponse> toAttachmentResponseList(List<Attachment> attachments) {
-        return attachments.stream()
-                .map(attachment -> new AttachmentResponse(
-                        attachment.getAttachmentId(),
-                        attachment.getOriginalName(),
-                        attachment.getFileSize(),
-                        attachment.getFileUrl(),
-                        attachment.getCreatedAt()
                 ))
                 .toList();
     }

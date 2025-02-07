@@ -24,7 +24,6 @@ import java.time.LocalDate;
 
 @Tag(name = "02. Task [담당자]")
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/task-board")
 public class TaskBoardController {

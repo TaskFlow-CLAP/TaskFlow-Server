@@ -11,7 +11,7 @@ import clap.server.exception.code.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import static clap.server.application.mapper.AuthResponseMapper.toReissueTokenResponse;
+import static clap.server.application.mapper.response.AuthResponseMapper.toReissueTokenResponse;
 
 @ApplicationService
 @RequiredArgsConstructor

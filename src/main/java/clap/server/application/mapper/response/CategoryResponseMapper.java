@@ -1,4 +1,4 @@
-package clap.server.application.mapper;
+package clap.server.application.mapper.response;
 
 import clap.server.adapter.inbound.web.dto.admin.response.FindAllCategoryResponse;
 import clap.server.adapter.inbound.web.dto.admin.response.FindMainCategoryResponse;
@@ -8,6 +8,7 @@ import clap.server.domain.model.task.Category;
 import java.util.List;
 
 public class CategoryResponseMapper {
+    private CategoryResponseMapper() {throw new IllegalStateException("Utility class");}
 
     public static FindAllCategoryResponse toFindAllCategoryResponse(
             Long id,

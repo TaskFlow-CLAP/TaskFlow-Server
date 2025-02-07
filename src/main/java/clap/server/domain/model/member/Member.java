@@ -28,8 +28,7 @@ public class Member extends BaseTime {
     private String password;
     private Department department;
 
-
-
+    @Builder
     public Member(MemberInfo memberInfo, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoworkNotificationEnabled,
                   Member admin, String imageUrl, MemberStatus status, String password) {
         this.memberInfo = memberInfo;
@@ -118,24 +117,6 @@ public class Member extends BaseTime {
         }
         else {
             this.emailNotificationEnabled = false;
-        }
-    }
-
-    public static Boolean checkCommenter(Task task, Member member) {
-        // 일반 회원일 경우 => 요청자인지 확인
-        if ((member.getMemberInfo().getRole() == MemberRole.ROLE_USER)
-                && !(Objects.equals(member.getMemberId(), task.getRequester().getMemberId()))) {
-            throw new DomainException(MemberErrorCode.NOT_A_COMMENTER);
-        }
-        else {
-            return true;
-        }
-
-    }
-
-    public void verifyPassword(String encodedPassword) {
-        if(!encodedPassword.equals(this.password)) {
-            throw new DomainException(MemberErrorCode.PASSWORD_VERIFY_FAILED);
         }
     }
 

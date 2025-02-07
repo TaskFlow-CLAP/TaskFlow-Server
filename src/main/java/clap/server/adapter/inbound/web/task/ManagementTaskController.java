@@ -31,7 +31,6 @@ import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_MAX_FILE_C
 
 @Tag(name = "02. Task [생성/수정]", description = "작업 생성/수정 API")
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks")
 public class ManagementTaskController {

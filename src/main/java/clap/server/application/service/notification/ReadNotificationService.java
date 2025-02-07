@@ -25,9 +25,9 @@ public class ReadNotificationService implements UpdateNotificationUsecase, Updat
 
     @Transactional
     @Override
-    public void updateNotification(Long userId, Long notificationId) {
+    public void updateNotification(Long memberId, Long notificationId) {
 
-        memberService.findActiveMember(userId);
+        memberService.findActiveMember(memberId);
         Notification notification = loadNotificationPort.findById(notificationId)
                 .orElseThrow(() -> new ApplicationException(NotificationErrorCode.NOTIFICATION_NOT_FOUND));
         notification.updateNotificationIsRead();

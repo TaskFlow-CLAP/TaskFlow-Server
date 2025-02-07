@@ -1,11 +1,14 @@
-package clap.server.application.mapper;
+package clap.server.application.mapper.response;
 
 import clap.server.adapter.inbound.web.dto.log.response.AnonymousLogResponse;
 import clap.server.adapter.inbound.web.dto.log.response.MemberLogResponse;
 import clap.server.domain.model.log.AnonymousLog;
 import clap.server.domain.model.log.MemberLog;
 
-public class LogMapper {
+public class LogResponseMapper {
+    private LogResponseMapper() {
+        throw new IllegalStateException("Utility class");
+    }
     public static AnonymousLogResponse toAnonymousLogResponse(AnonymousLog anonymousLog) {
         return new AnonymousLogResponse(
                 anonymousLog.getLogId(),

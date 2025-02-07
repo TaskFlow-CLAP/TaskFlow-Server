@@ -6,13 +6,12 @@ import clap.server.adapter.inbound.web.dto.task.response.FindApprovalFormRespons
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
-import clap.server.application.mapper.TaskResponseMapper;
+import clap.server.application.mapper.response.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.LabelService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
-import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
