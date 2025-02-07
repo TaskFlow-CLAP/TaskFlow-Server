@@ -1,7 +1,7 @@
 package clap.server.adapter.outbound.persistense;
 
-import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
+import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
@@ -12,19 +12,14 @@ import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
 import clap.server.domain.model.task.Task;
-import clap.server.exception.ApplicationException;
-import clap.server.exception.code.NotificationErrorCode;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +29,6 @@ import java.util.Optional;
 public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     private final TaskRepository taskRepository;
     private final TaskPersistenceMapper taskPersistenceMapper;
-    private final ObjectMapper objectMapper;
 
     @Override
     public Task save(Task task) {
@@ -74,7 +68,8 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public List<Task> findYesterdayTaskByDate(LocalDateTime now) {
+    public List<Task> findYesterdayTaskByDate() {
+        LocalDateTime now = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0, 0));
         return taskRepository.findYesterdayTaskByUpdatedAtIsBetween(now.minusDays(1), now)
                 .stream().map(taskPersistenceMapper::toDomain).toList();
     }

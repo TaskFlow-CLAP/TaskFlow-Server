@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface LoadTaskPort {
     Optional<Task> findById(Long id);
 
-    List<Task> findYesterdayTaskByDate(LocalDateTime now);
+    List<Task> findYesterdayTaskByDate();
 
     Page<Task> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest findTaskListRequest);
 

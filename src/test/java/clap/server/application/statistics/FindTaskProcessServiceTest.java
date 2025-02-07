@@ -86,9 +86,10 @@ class FindTaskProcessServiceTest {
         when(taskDocumentPort.findPeriodTaskProcessByPeriod(eq("week"))).thenReturn(statistics);
 
         Map<String, Long> formattedStatistics = new TreeMap<>();
+        formattedStatistics.put("2월 1일", 8L);
         formattedStatistics.put("1월 30일", 7L);
         formattedStatistics.put("1월 31일", 6L);
-        when(taskStatisticsPolicy.filterAndFormatWeekdayStatistics(statistics)).thenReturn(formattedStatistics);
+        when(taskStatisticsPolicy.formatStatistics(statistics)).thenReturn(formattedStatistics);
 
         //when
         List<StatisticsResponse> week = findTaskProcessService.aggregatePeriodTaskProcess("week");
@@ -98,6 +99,8 @@ class FindTaskProcessServiceTest {
         assertThat(week.get(0).count()).isEqualTo(7L);
         assertThat(week.get(1).key()).isEqualTo("1월 31일");
         assertThat(week.get(1).count()).isEqualTo(6L);
+        assertThat(week.get(2).key()).isEqualTo("2월 1일");
+        assertThat(week.get(2).count()).isEqualTo(8L);
     }
 
     @Test
@@ -112,9 +115,10 @@ class FindTaskProcessServiceTest {
         when(taskDocumentPort.findPeriodTaskRequestByPeriod(eq("week"))).thenReturn(statistics);
 
         Map<String, Long> formattedStatistics = new TreeMap<>();
+        formattedStatistics.put("2월 1일", 8L);
         formattedStatistics.put("1월 30일", 7L);
         formattedStatistics.put("1월 31일", 6L);
-        when(taskStatisticsPolicy.filterAndFormatWeekdayStatistics(statistics)).thenReturn(formattedStatistics);
+        when(taskStatisticsPolicy.formatStatistics(statistics)).thenReturn(formattedStatistics);
 
         //when
         List<StatisticsResponse> week = findTaskProcessService.aggregatePeriodTaskRequest("week");
@@ -124,5 +128,7 @@ class FindTaskProcessServiceTest {
         assertThat(week.get(0).count()).isEqualTo(7L);
         assertThat(week.get(1).key()).isEqualTo("1월 31일");
         assertThat(week.get(1).count()).isEqualTo(6L);
+        assertThat(week.get(2).key()).isEqualTo("2월 1일");
+        assertThat(week.get(2).count()).isEqualTo(8L);
     }
 }

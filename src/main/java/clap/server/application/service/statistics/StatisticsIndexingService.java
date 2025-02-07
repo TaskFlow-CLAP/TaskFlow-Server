@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @ApplicationService
 @RequiredArgsConstructor
 public class StatisticsIndexingService {
@@ -19,7 +17,7 @@ public class StatisticsIndexingService {
     @Transactional
     public void IndexStatistics() {
         taskDocumentPort.saveStatistics(
-                loadTaskPort.findYesterdayTaskByDate(LocalDateTime.now().withNano(0))
+                loadTaskPort.findYesterdayTaskByDate()
         );
     }
 }

@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 @Getter
 @RequiredArgsConstructor
 public enum PeriodConfig {
-    DAY(1, CalendarInterval.Hour, 11, 16),
+    DAY(1, CalendarInterval.Hour, 11, 13),
     WEEK(7, CalendarInterval.Day, 0, 10),
     MONTH(-1, CalendarInterval.Day, 0, 10);
 

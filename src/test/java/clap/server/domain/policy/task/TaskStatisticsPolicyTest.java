@@ -11,7 +11,7 @@ class TaskStatisticsPolicyTest {
     private final TaskStatisticsPolicy taskStatisticsPolicy = new TaskStatisticsPolicy();
 
     @Test
-    void filterAndFormatWeekdayStatistics() {
+    void formatStatistics() {
         //given
         Map<String, Long> statistics = new TreeMap<>();
         statistics.put("2025-02-01", 8L);
@@ -19,11 +19,12 @@ class TaskStatisticsPolicyTest {
         statistics.put("2025-01-31", 6L);
 
         Map<String, Long> formattedStatistics = new TreeMap<>();
+        formattedStatistics.put("2월 1일", 8L);
         formattedStatistics.put("1월 30일", 7L);
         formattedStatistics.put("1월 31일", 6L);
 
         //when
-        Map<String, Long> weekdayStatistics = taskStatisticsPolicy.filterAndFormatWeekdayStatistics(statistics);
+        Map<String, Long> weekdayStatistics = taskStatisticsPolicy.formatStatistics(statistics);
 
         //then
         assertThat(weekdayStatistics).isEqualTo(formattedStatistics);

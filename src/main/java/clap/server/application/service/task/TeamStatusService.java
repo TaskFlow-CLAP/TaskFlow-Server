@@ -14,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 
-import static clap.server.adapter.inbound.web.dto.task.request.SortBy.CONTRIBUTE;
-
 @ApplicationService
 @RequiredArgsConstructor
 public class TeamStatusService implements FilterTeamStatusUsecase {

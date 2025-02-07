@@ -11,7 +11,6 @@ import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Task;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +20,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static clap.server.adapter.inbound.web.dto.task.request.SortBy.CONTRIBUTE;
 import static clap.server.adapter.outbound.persistense.entity.task.QTaskEntity.taskEntity;
 import static com.querydsl.core.types.Order.ASC;
 import static com.querydsl.core.types.Order.DESC;
@@ -94,7 +95,6 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 builder.and(taskEntity.category.categoryId.in(filter.categoryIds()));
             }
         }
-
         return builder;
     }
 
