@@ -79,15 +79,17 @@ public class Member extends BaseTime {
         this.status = MemberStatus.APPROVAL_REQUEST;
     }
 
-    public void updateMemberInfo(String name, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoWorkNotificationEnabled, String imageUrl) {
+    public void updateMemberInfo(String name, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoWorkNotificationEnabled) {
         this.memberInfo.updateName(name);
         this.agitNotificationEnabled = agitNotificationEnabled;
         this.emailNotificationEnabled = emailNotificationEnabled;
         this.kakaoworkNotificationEnabled = kakaoWorkNotificationEnabled;
-        if (imageUrl != null) {
-            this.imageUrl = imageUrl;
-        }
     }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public void setStatusDeleted() {
         this.status = MemberStatus.DELETED;
     }
