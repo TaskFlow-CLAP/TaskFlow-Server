@@ -21,8 +21,6 @@ public interface LoadMemberPort {
 
     List<Task> findTasksByMemberIdAndStatus(Long memberId, List<TaskStatus> taskStatuses);
 
-    int getRemainingTasks(Long memberId);
-
     Optional<Member> findReviewerById(Long id);
 
     Optional<Member> findByNickname(String nickname);
@@ -33,5 +31,7 @@ public interface LoadMemberPort {
 
     Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest, String sortDirection);
 
-    Optional<Member> findByNicknameOrEmail(String nickname, String email);
+    Optional<Member> findByNicknameAndEmail(String nickname, String email);
+
+    Optional<Member> findByNameAndEmail(String name, String email);
 }

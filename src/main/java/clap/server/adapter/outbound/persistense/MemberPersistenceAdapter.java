@@ -87,12 +87,6 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
-    public int getRemainingTasks(Long memberId) {
-        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEWING);
-        return findTasksByMemberIdAndStatus(memberId, targetStatuses).size();
-    }
-
-    @Override
     public List<Task> findTasksByMemberIdAndStatus(Long memberId, List<TaskStatus> taskStatuses) {
         List<TaskEntity> taskEntities = taskRepository.findByProcessor_MemberIdAndTaskStatusIn(memberId, taskStatuses);
         return taskEntities.stream()
@@ -111,8 +105,13 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
-    public Optional<Member> findByNicknameOrEmail(String nickname, String email) {
+    public Optional<Member> findByNicknameAndEmail(String nickname, String email) {
         return memberRepository.findByNicknameAndEmail(nickname, email).map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Member> findByNameAndEmail(String name, String email) {
+        return memberRepository.findByNameAndEmail(name, email).map(memberPersistenceMapper::toDomain);
     }
 }
 

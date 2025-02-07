@@ -70,5 +70,22 @@ public class EmailClient implements SendEmailPort, SendWebhookEmailPort {
         }
     }
 
+    @Override
+    public void sendNewPasswordEmail(String memberEmail, String receiverName, String newPassword) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            EmailTemplate template = emailTemplateBuilder.createNewPasswordTemplate(memberEmail, receiverName, newPassword);
+            helper.setTo(template.email());
+            helper.setSubject(template.subject());
+            helper.setText(template.body(), true);
+
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            throw new AdapterException(NotificationErrorCode.EMAIL_SEND_FAILED);
+        }
+    }
+
 
 }

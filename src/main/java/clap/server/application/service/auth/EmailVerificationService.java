@@ -1,8 +1,7 @@
 package clap.server.application.service.auth;
 
-import clap.server.adapter.inbound.web.dto.member.response.SendVerificationCodeRequest;
-import clap.server.adapter.inbound.web.dto.member.response.VerifyCodeRequest;
-import clap.server.application.port.inbound.domain.MemberService;
+import clap.server.adapter.inbound.web.dto.member.request.SendVerificationCodeRequest;
+import clap.server.adapter.inbound.web.dto.member.request.VerifyCodeRequest;
 import clap.server.application.port.inbound.member.SendVerificationEmailUsecase;
 import clap.server.application.port.inbound.member.VerifyEmailCodeUsecase;
 import clap.server.application.port.outbound.auth.otp.CommandOtpPort;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @ApplicationService
 @RequiredArgsConstructor
  public class EmailVerificationService implements SendVerificationEmailUsecase, VerifyEmailCodeUsecase {
-    private final MemberService memberService;
     private final LoadMemberPort loadMemberPort;
     private final SendEmailPort sendEmailPort;
     private final CommandOtpPort commandOtpPort;
@@ -31,7 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
     @Override
     @Transactional
     public void sendVerificationCode(SendVerificationCodeRequest request) {
-        Member member = loadMemberPort.findByNicknameOrEmail(request.nickname(), request.email())
+        Member member = loadMemberPort.
+                findByNicknameAndEmail(request.nickname(), request.email())
                 .orElseThrow(() -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
         String verificationCode = VerificationCodeGenerator.generateRandomCode();
         commandOtpPort.save(new Otp(member.getMemberInfo().getEmail(), verificationCode));
