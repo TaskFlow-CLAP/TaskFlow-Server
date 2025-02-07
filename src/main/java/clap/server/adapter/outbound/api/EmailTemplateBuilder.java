@@ -3,6 +3,7 @@ package clap.server.adapter.outbound.api;
 import clap.server.adapter.outbound.api.dto.EmailTemplate;
 import clap.server.adapter.outbound.api.dto.PushNotificationTemplate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -12,6 +13,9 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 public class EmailTemplateBuilder {
 
     private final SpringTemplateEngine templateEngine;
+
+    @Value("${redirect.url.login}")
+    private String REDIRECT_URL_LOGIN;
 
     public EmailTemplate createWebhookTemplate(PushNotificationTemplate request, String taskDetailUrl) {
         Context context = new Context();
@@ -66,7 +70,7 @@ public class EmailTemplateBuilder {
         String templateName = "invitation";
         String subject = "[TaskFlow 초대] 회원가입을 환영합니다.";
         context.setVariable("userNickname", userNickname);
-        context.setVariable("invitationLink", "http://localhost:5173/login");
+        context.setVariable("invitationLink", REDIRECT_URL_LOGIN);
         context.setVariable("initialPassword", initialPassword);
         context.setVariable("receiverName", receiverName);
         String body = templateEngine.process(templateName, context);
