@@ -56,6 +56,7 @@ public class CreateTaskService implements CreateTaskUsecase {
     }
 
     @Override
+    @Transactional
     public CreateTaskResponse createTaskWithScanner(Long requesterId, CreateTaskRequest createTaskRequest, List<MultipartFile> files) {
         Member member = memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(createTaskRequest.categoryId());
@@ -73,7 +74,7 @@ public class CreateTaskService implements CreateTaskUsecase {
     }
 
     private void saveAttachments(List<MultipartFile> files, Task task) {
-        List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicy.TASK_IMAGE, files);
+        List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicy.TASK_FILE, files);
         List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
         commandAttachmentPort.saveAll(attachments);
     }

@@ -1,6 +1,7 @@
 package clap.server.adapter.outbound.infrastructure.clamav;
 
 import clap.server.exception.AdapterException;
+import clap.server.exception.ClamAVException;
 import clap.server.exception.code.FileErrorcode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,6 +39,10 @@ public class FileVirusScanner implements FileVirusScannerPort {
                 .collect(Collectors.toList());
     }
 
+    public MultipartFile scanSingleFile(MultipartFile file) throws ExecutionException, InterruptedException {
+        return scanFile(file).get();
+    }
+
     @Async("clamavExecutor")
     protected CompletableFuture<MultipartFile> scanFile(MultipartFile file) {
         return CompletableFuture.supplyAsync(() -> {
@@ -46,14 +52,11 @@ public class FileVirusScanner implements FileVirusScannerPort {
                 try (InputStream inputStream = file.getInputStream()) {
                     Files.copy(inputStream, tempPath, StandardCopyOption.REPLACE_EXISTING);
                 }
-
-                boolean isSafe = clamAVScanner.scanFileAsync(tempPath.toString()).get();
-                if (isSafe) {
-                    return file;
-                } else {
-                    log.warn("Virus detected in file: {}", file.getOriginalFilename());
-                    throw new AdapterException(FileErrorcode.VIRUS_FILE_DETECTED);
-                }
+                clamAVScanner.scanFileAsync(tempPath.toString()).get();
+                return file;
+            } catch (ClamAVException e) {
+                log.warn("Virus detected in file: {}", file.getOriginalFilename());
+                throw new AdapterException(FileErrorcode.FILE_SCAN_FAILED);
             } catch (Exception e) {
                 log.error("Failed to scan file: {}", file.getOriginalFilename(), e);
                 return null;

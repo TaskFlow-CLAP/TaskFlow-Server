@@ -1,5 +1,7 @@
 package clap.server.adapter.outbound.infrastructure.clamav;
 
+import clap.server.exception.ClamAVException;
+import clap.server.exception.code.FileErrorcode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -20,10 +22,10 @@ import java.util.concurrent.CompletableFuture;
 @Component
 @RequiredArgsConstructor
 public class ClamAVScanner {
-    private final ClamavClient client;
+    private final ClamavClient clamavClient;
     private final ThreadPoolTaskExecutor clamavExecutor;
 
-    public CompletableFuture<Boolean> scanFileAsync(String filePath) {
+    public CompletableFuture<Void> scanFileAsync(String filePath) {
         return CompletableFuture.supplyAsync(() -> {
             Path originalPath = Paths.get(filePath);
             Path tempPath = null;
@@ -35,25 +37,23 @@ public class ClamAVScanner {
 
                 Files.copy(originalPath, tempPath, StandardCopyOption.REPLACE_EXISTING);
 
-                ScanResult result = client.scan(tempPath);
+                ScanResult result = clamavClient.scan(tempPath);
                 if (result instanceof ScanResult.OK) {
                     log.info("파일이 안전합니다: {}", originalFileName);
-                    return true;
                 } else if (result instanceof ScanResult.VirusFound virusFound) {
                     log.warn("바이러스 발견: {} in {}", virusFound.getFoundViruses(), originalFileName);
-                    return false;
+                    throw new ClamAVException(FileErrorcode.VIRUS_FILE_DETECTED);
+                } else {
+                    log.warn("알 수 없는 스캔 결과 타입: {}", result.getClass().getName());
+                    throw new ClamAVException(FileErrorcode.FILE_SCAN_FAILED);
                 }
-                log.warn("알 수 없는 스캔 결과 타입: {}", result.getClass().getName());
-                return false;
+                return null;
             } catch (IOException e) {
                 log.error("파일 처리 중 오류 발생: {}", filePath, e);
-                return false;
+                throw new ClamavException(e);
             } catch (ClamavException e) {
                 log.error("ClamAV 스캔 중 오류 발생: {}", filePath, e);
-                return false;
-            } catch (Exception e) {
-                log.error("예상치 못한 오류 발생: {}", filePath, e);
-                return false;
+                throw new ClamavException(e);
             } finally {
                 if (tempPath != null) {
                     try {
