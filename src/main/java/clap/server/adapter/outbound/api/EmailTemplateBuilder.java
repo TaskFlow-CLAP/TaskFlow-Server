@@ -24,14 +24,14 @@ public class EmailTemplateBuilder {
         switch (request.notificationType()) {
             case TASK_REQUESTED:
                 templateName = "task-request";
-                subject = "[TaskFlow] 신규 작업"+ request.taskName()+ "요청되었습니다.";
+                subject = "[TaskFlow] 신규 작업 "+ request.taskName()+ "이 요청되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
                 break;
             case STATUS_SWITCHED:
                 templateName = "status-switched";
-                subject = "[TaskFlow] "+ request.taskName()+ " " + request.message()+ "으로 변경되었습니다.";
+                subject = "[TaskFlow] "+ request.taskName()+ " 작업의 상태가 " + request.message() + "으로 변경되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
@@ -39,22 +39,23 @@ public class EmailTemplateBuilder {
                 break;
             case PROCESSOR_CHANGED:
                 templateName = "processor-changed";
-                subject = "[TaskFlow] "+ request.taskName()+ "담당자" + request.message() + " 변경되었습니다.";
+                subject = "[TaskFlow] "+ request.taskName()+ " 작업의 담당자가 " + request.message() + "으로 변경되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("processorName", request.message());
                 context.setVariable("title", request.taskName());
                 break;
             case PROCESSOR_ASSIGNED:
                 templateName = "processor-assigned";
-                subject = "[TaskFlow] "+ request.taskName()+ "담당자" + request.message() + " 지정되었습니다..";
+                subject = "[TaskFlow] "+ request.taskName()+ " 작업의 담당자가 " + request.message() + "으로 선정되었습니다..";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("processorName", request.message());
                 context.setVariable("title", request.taskName());
                 break;
             case COMMENT:
                 templateName = "comment";
-                subject = "[TaskFlow 알림] 댓글이 작성되었습니다.";
+                subject = "[TaskFlow] " + request.taskName() + " 작업에 " + request.commenterName() + "님이 댓글을 작성하였습니다";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
+                context.setVariable("commenter", request.commenterName());
                 context.setVariable("comment", request.message());
                 context.setVariable("title", request.taskName());
                 break;
