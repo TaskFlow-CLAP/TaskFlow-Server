@@ -10,6 +10,7 @@ import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -85,6 +86,7 @@ public class SendNotificationService {
     }
 
     @Async("notificationExecutor")
+    @Transactional
     public void sendAgitNotification(NotificationType notificationType,
                                      Task task, String message, String commenterName) {
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(

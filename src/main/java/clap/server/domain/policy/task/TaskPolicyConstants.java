@@ -20,4 +20,6 @@ public class TaskPolicyConstants {
             TaskStatus.IN_REVIEWING,
             TaskStatus.COMPLETED
     );
+
+    public static final int TASK_MAX_FILE_COUNT = 5;
 }
