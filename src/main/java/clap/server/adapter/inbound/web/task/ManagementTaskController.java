@@ -4,9 +4,11 @@ import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.request.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.response.CreateTaskResponse;
+import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.task.CreateTaskUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
+import clap.server.common.annotation.log.LogType;
 import clap.server.exception.AdapterException;
 import clap.server.exception.code.TaskErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +39,7 @@ public class ManagementTaskController {
     private final CreateTaskUsecase createTaskUsecase;
     private final UpdateTaskUsecase updateTaskUsecase;
 
+    @LogType(LogStatus.REQUEST_CREATED)
     @Operation(summary = "작업 요청 생성")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
@@ -51,7 +54,7 @@ public class ManagementTaskController {
         }
         return ResponseEntity.ok(createTaskUsecase.createTask(userInfo.getUserId(), createTaskRequest, attachments));
     }
-
+    @LogType(LogStatus.REQUEST_UPDATED)
     @Operation(summary = "작업 수정")
     @PatchMapping(value = "/{taskId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @Secured({"ROLE_MANAGER", "ROLE_USER"})

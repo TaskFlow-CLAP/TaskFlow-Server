@@ -31,7 +31,6 @@ public class FindTaskController {
     private final FindTaskListUsecase taskListUsecase;
 
     @Operation(summary = "사용자 요청 작업 목록 조회")
-    @LogType(LogStatus.TASK_VIEWED)
     @Secured({"ROLE_USER", "ROLE_MANAGER"})
     @GetMapping("/requests")
     public ResponseEntity<PageResponse<FilterRequestedTasksResponse>> findTasksRequestedByUser(
