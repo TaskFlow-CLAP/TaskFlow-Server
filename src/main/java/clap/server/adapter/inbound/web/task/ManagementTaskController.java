@@ -4,10 +4,11 @@ import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.request.CreateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.response.CreateTaskResponse;
-import clap.server.adapter.inbound.web.dto.task.response.UpdateTaskResponse;
-import clap.server.application.port.inbound.task.*;
+import clap.server.application.port.inbound.task.CreateTaskUsecase;
+import clap.server.application.port.inbound.task.UpdateTaskUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +38,7 @@ public class ManagementTaskController {
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public ResponseEntity<CreateTaskResponse> createTask(
             @RequestPart(name = "taskInfo") @Valid CreateTaskRequest createTaskRequest,
-            @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
+            @Schema(description = "파일은 5개 이하만 업로드 가능합니다.") @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo
             ){
             return ResponseEntity.ok(createTaskUsecase.createTask(userInfo.getUserId(), createTaskRequest, attachments));
@@ -48,7 +49,7 @@ public class ManagementTaskController {
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public ResponseEntity<CreateTaskResponse> createTaskWithScanner(
             @RequestPart(name = "taskInfo") @Valid CreateTaskRequest createTaskRequest,
-            @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
+            @Schema(description = "파일은 5개 이하만 업로드 가능합니다.") @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo
     ){
         return ResponseEntity.ok(createTaskUsecase.createTaskWithScanner(userInfo.getUserId(), createTaskRequest, attachments));
