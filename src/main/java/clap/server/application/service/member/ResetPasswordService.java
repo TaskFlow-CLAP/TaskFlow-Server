@@ -5,7 +5,6 @@ import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.member.ResetInitialPasswordUsecase;
 import clap.server.application.port.inbound.member.ResetPasswordUsecase;
 import clap.server.application.port.inbound.member.SendNewPasswordUsecase;
-import clap.server.application.port.outbound.email.SendEmailPort;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -28,7 +27,7 @@ class ResetPasswordService implements ResetPasswordUsecase, ResetInitialPassword
     private final CommandMemberPort commandMemberPort;
     private final LoadMemberPort loadMemberPort;
     private final InitialPasswordGenerator initialPasswordGenerator;
-    private final SendEmailPort sendEmailPort;
+    private final SendPasswordEmailService sendPasswordEmailService;
 
     @Override
     public void resetPassword(Long memberId, String inputPassword) {
@@ -52,7 +51,7 @@ class ResetPasswordService implements ResetPasswordUsecase, ResetInitialPassword
                         () -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         String newPassword = initialPasswordGenerator.generateRandomPassword();
-        sendEmailPort.sendNewPasswordEmail(request.email(), request.name(), newPassword);
+        sendPasswordEmailService.sendNewPasswordEmail(request.email(), request.name(), newPassword);
         String encodedPassword = passwordEncoder.encode(newPassword);
         member.resetPassword(encodedPassword);
         commandMemberPort.save(member);
