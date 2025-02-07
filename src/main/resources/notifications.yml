@@ -13,7 +13,7 @@ spring:
 
 webhook:
   kakaowork:
-    url: https://api.kakaowork.com/v1/messages.send_by_email
+    url: ${KAKAOWORK_WEBHOOK_URL}
     auth: ${KAKAOWORK_WEBHOOK_AUTH}
   agit:
     url: ${AGIT_WEBHOOK_URL}
