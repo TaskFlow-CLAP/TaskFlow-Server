@@ -82,4 +82,15 @@ public class EmailTemplateBuilder {
         String body = templateEngine.process(templateName, context);
         return new EmailTemplate(receiver, subject, body);
     }
+
+    public EmailTemplate createNewPasswordTemplate(String receiver, String receiverName, String newPassword) {
+        Context context = new Context();
+        String templateName = "new-password";
+        String subject = "[TaskFlow] 비밀번호 재설정";
+        context.setVariable("loginLink", "http://localhost:5173/login");
+        context.setVariable("newPassword", newPassword);
+        context.setVariable("receiverName", receiverName);
+        String body = templateEngine.process(templateName, context);
+        return new EmailTemplate(receiver, subject, body);
+    }
 }
