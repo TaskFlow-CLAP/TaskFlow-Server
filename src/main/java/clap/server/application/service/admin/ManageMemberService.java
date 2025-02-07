@@ -2,7 +2,7 @@ package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.request.UpdateMemberRequest;
 import clap.server.adapter.inbound.web.dto.admin.response.MemberDetailsResponse;
-import clap.server.application.mapper.MemberResponseMapper;
+import clap.server.application.mapper.response.MemberResponseMapper;
 import clap.server.application.port.inbound.admin.MemberDetailUsecase;
 import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
 import clap.server.application.port.inbound.domain.MemberService;

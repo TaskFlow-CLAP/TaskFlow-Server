@@ -1,7 +1,7 @@
 package clap.server.application.service.statistics;
 
 import clap.server.adapter.inbound.web.dto.statistics.StatisticsResponse;
-import clap.server.application.mapper.FindTaskStatisticsMapper;
+import clap.server.application.mapper.response.StatisticsResponseMapper;
 import clap.server.application.port.inbound.statistics.FindSubCategoryTaskRequestUsecase;
 import clap.server.application.port.outbound.task.TaskDocumentPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -16,6 +16,6 @@ public class FindSubCategoryTaskRequestService implements FindSubCategoryTaskReq
 
     @Override
     public List<StatisticsResponse> aggregateSubCategoryTaskRequest(String period, String mainCategory) {
-        return FindTaskStatisticsMapper.toStatisticsResponse(taskDocumentPort.findSubCategoryTaskRequestByPeriod(period, mainCategory));
+        return StatisticsResponseMapper.toStatisticsResponse(taskDocumentPort.findSubCategoryTaskRequestByPeriod(period, mainCategory));
     }
 }

@@ -2,7 +2,7 @@ package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.response.TaskBoardResponse;
-import clap.server.application.mapper.TaskResponseMapper;
+import clap.server.application.mapper.response.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.task.FilterTaskBoardUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;

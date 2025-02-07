@@ -1,7 +1,7 @@
 package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.response.FindAllDepartmentsResponse;
-import clap.server.application.mapper.DepartmentResponseMapper;
+import clap.server.application.mapper.response.DepartmentResponseMapper;
 import clap.server.application.port.inbound.admin.FindAllDepartmentsUsecase;
 import clap.server.application.port.outbound.member.LoadDepartmentPort;
 import clap.server.common.annotation.architecture.ApplicationService;

@@ -1,7 +1,7 @@
 package clap.server.application.service.notification;
 
 import clap.server.adapter.inbound.web.dto.notification.response.CountNotificationResponse;
-import clap.server.application.mapper.NotificationMapper;
+import clap.server.application.mapper.response.NotificationResponseMapper;
 import clap.server.application.port.inbound.notification.CountNotificationUseCase;
 import clap.server.application.port.outbound.notification.LoadNotificationPort;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -20,6 +20,6 @@ public class CountNotificationService implements CountNotificationUseCase {
     public CountNotificationResponse countNotification(Long userId) {
         Integer count = loadNotificationPort.countNotification(userId);
 
-        return NotificationMapper.toCountNotificationResponse(userId, count);
+        return NotificationResponseMapper.toCountNotificationResponse(userId, count);
     }
 }

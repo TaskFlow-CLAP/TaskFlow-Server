@@ -1,4 +1,4 @@
-package clap.server.application.mapper;
+package clap.server.application.mapper.response;
 
 
 import clap.server.adapter.inbound.web.dto.task.response.*;
@@ -14,8 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static clap.server.application.mapper.AttachmentMapper.toAttachmentResponseList;
 
 public class TaskResponseMapper {
     private TaskResponseMapper() {
@@ -74,7 +72,7 @@ public class TaskResponseMapper {
     }
 
     public static FindTaskDetailsResponse toFindTaskDetailResponse(Task task, List<Attachment> attachments) {
-        List<AttachmentResponse> attachmentResponses = toAttachmentResponseList(attachments);
+        List<AttachmentResponse> attachmentResponses = AttachmentResponseMapper.toAttachmentResponseList(attachments);
         return new FindTaskDetailsResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
@@ -158,7 +156,7 @@ public class TaskResponseMapper {
     }
 
     public static FindTaskDetailsForManagerResponse toFindTaskDetailForManagerResponse(Task task, List<Attachment> attachments) {
-        List<AttachmentResponse> attachmentResponses = toAttachmentResponseList(attachments);
+        List<AttachmentResponse> attachmentResponses =  AttachmentResponseMapper.toAttachmentResponseList(attachments);
         return new FindTaskDetailsForManagerResponse(
                 task.getTaskId(),
                 task.getTaskCode(),

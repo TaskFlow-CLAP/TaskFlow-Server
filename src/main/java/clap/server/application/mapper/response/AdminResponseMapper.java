@@ -1,20 +1,22 @@
-package clap.server.application.mapper;
+package clap.server.application.mapper.response;
 
 import clap.server.adapter.inbound.web.dto.admin.response.RetrieveAllMemberResponse;
 import clap.server.domain.model.member.Member;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
-public class RetrieveAllMemberMapper {
-    public List<RetrieveAllMemberResponse> toResponseList(List<Member> members) {
+public class AdminResponseMapper {
+    private AdminResponseMapper() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static List<RetrieveAllMemberResponse> toResponseList(List<Member> members) {
         return members.stream()
-                .map(this::toResponse)
+                .map(AdminResponseMapper::toRetrieveAllMemberResponse)
                 .toList();
     }
 
-    public RetrieveAllMemberResponse toResponse(Member member) {
+    public static RetrieveAllMemberResponse toRetrieveAllMemberResponse(Member member) {
         return new RetrieveAllMemberResponse(
                 member.getMemberId(),
                 member.getMemberInfo().getName(),
