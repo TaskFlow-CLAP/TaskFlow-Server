@@ -4,9 +4,9 @@ import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.task.request.ApprovalTaskRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskLabelRequest;
 import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskProcessorRequest;
+import clap.server.adapter.inbound.web.dto.task.request.UpdateTaskStatusRequest;
 import clap.server.adapter.inbound.web.dto.task.response.ApprovalTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.port.inbound.task.ApprovalTaskUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskLabelUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskProcessorUsecase;
@@ -36,6 +36,7 @@ public class ChangeTaskController {
     private final UpdateTaskProcessorUsecase updateTaskProcessorUsecase;
     private final UpdateTaskLabelUsecase updateTaskLabelUsecase;
     private final ApprovalTaskUsecase approvalTaskUsecase;
+
     @LogType(LogStatus.STATUS_CHANGED)
     @Operation(summary = "작업 상태 변경")
     @Secured("ROLE_MANAGER")
@@ -45,13 +46,13 @@ public class ChangeTaskController {
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @Parameter(description = "변경하고 싶은 작업 상태",
                     schema = @Schema(allowableValues = {"IN_PROGRESS", "IN_REVIEWING", "COMPLETED"}))
-            @RequestBody TaskStatus taskStatus) {
+            @RequestBody @Valid UpdateTaskStatusRequest request) {
 
-        updateTaskStatusUsecase.updateTaskStatus(userInfo.getUserId(), taskId, taskStatus);
+        updateTaskStatusUsecase.updateTaskStatus(userInfo.getUserId(), taskId, request.taskStatus());
     }
 
     @LogType(LogStatus.ASSIGNER_CHANGED)
-    @Operation(summary = "작업 처리자 변경")
+    @Operation(summary = "작업 담당자 변경")
     @Secured({"ROLE_MANAGER"})
     @PatchMapping("/{taskId}/processor")
     public void updateTaskProcessor(
@@ -70,6 +71,7 @@ public class ChangeTaskController {
             @Valid @RequestBody UpdateTaskLabelRequest updateTaskLabelRequest) {
         updateTaskLabelUsecase.updateTaskLabel(taskId, userInfo.getUserId(), updateTaskLabelRequest);
     }
+
     @LogType(LogStatus.REQUEST_APPROVED)
     @Operation(summary = "작업 승인")
     @Secured({"ROLE_MANAGER"})

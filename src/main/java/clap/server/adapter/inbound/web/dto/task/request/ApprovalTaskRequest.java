@@ -12,7 +12,7 @@ public record ApprovalTaskRequest(
         Long categoryId,
 
         @NotNull
-        @Schema(description = "처리자 ID",
+        @Schema(description = "담당자 ID",
                 example = "2")
         Long processorId,
 
