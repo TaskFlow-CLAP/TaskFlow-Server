@@ -7,7 +7,7 @@ import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.policy.attachment.FilePathPolicy;
+import clap.server.domain.policy.attachment.FilePathPolicyConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +25,7 @@ class UpdateMemberInfoService implements UpdateMemberInfoUsecase {
     @Override
     public void updateMemberInfo(Long memberId, UpdateMemberInfoRequest request, MultipartFile profileImage) throws IOException {
         Member member = memberService.findActiveMember(memberId);
-        String profileImageUrl = profileImage != null ? s3UploadPort.uploadSingleFile(FilePathPolicy.MEMBER_IMAGE, profileImage) : null;
+        String profileImageUrl = profileImage != null ? s3UploadPort.uploadSingleFile(FilePathPolicyConstants.MEMBER_IMAGE, profileImage) : null;
         member.updateMemberInfo(request.name(), request.agitNotification(), request.emailNotification(),
                 request.kakaoWorkNotification(), profileImageUrl);
         commandMemberPort.save(member);

@@ -24,7 +24,7 @@ import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.*;
-import clap.server.domain.policy.attachment.FilePathPolicy;
+import clap.server.domain.policy.attachment.FilePathPolicyConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_MAX_FILE_COUNT;
 import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_UPDATABLE_STATUS;
 
 
@@ -55,17 +56,21 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Override
     @Transactional
-    public void updateTask(Long requesterId, Long taskId, UpdateTaskRequest updateTaskRequest, List<MultipartFile> files) {
+    public void updateTask(Long requesterId, Long taskId, UpdateTaskRequest request, List<MultipartFile> files) {
         memberService.findActiveMember(requesterId);
-        Category category = categoryService.findById(updateTaskRequest.categoryId());
+        Category category = categoryService.findById(request.categoryId());
         Task task = taskService.findById(taskId);
 
-        task.updateTask(requesterId, category, updateTaskRequest.title(), updateTaskRequest.description());
-        taskService.upsert(task);
-
-        if (!updateTaskRequest.attachmentsToDelete().isEmpty()) {
-            updateAttachments(updateTaskRequest.attachmentsToDelete(), files, task);
+        int attachmentToAdd = files==null? 0 : files.size();
+        int attachmentCount = task.getAttachmentCount() - request.attachmentsToDelete().size() + attachmentToAdd;
+        if (attachmentCount > TASK_MAX_FILE_COUNT) {
+            throw new ApplicationException(TaskErrorCode.FILE_COUNT_EXCEEDED);
         }
+        if (!request.attachmentsToDelete().isEmpty()) {
+            updateAttachments(request.attachmentsToDelete(), files, task);
+        }
+        task.updateTask(requesterId, category, request.title(), request.description(), attachmentCount);
+        taskService.upsert(task);
     }
 
     @Override
@@ -75,14 +80,14 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
 
-        if(!TASK_UPDATABLE_STATUS.contains(taskStatus)){
+        if (!TASK_UPDATABLE_STATUS.contains(taskStatus)) {
             throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
         }
 
-        if(!task.getTaskStatus().equals(taskStatus)){
+        if (!task.getTaskStatus().equals(taskStatus)) {
             task.updateTaskStatus(taskStatus);
             Task updateTask = taskService.upsert(task);
-            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, taskStatus.getDescription(), null,null);
+            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, taskStatus.getDescription(), null, null);
             commandTaskHistoryPort.save(taskHistory);
 
             List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
@@ -101,7 +106,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
         task.updateProcessor(processor);
         Task updateTask = taskService.upsert(task);
-        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor,null);
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor, null);
         commandTaskHistoryPort.save(taskHistory);
 
         List<Member> receivers = List.of(updateTask.getRequester(), updateTask.getProcessor());
@@ -122,13 +127,16 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
         List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
-        attachmentsToDelete.forEach(Attachment::softDelete);
+        attachmentsToDelete.stream()
+                .peek(Attachment::softDelete)
+                .forEach(commandAttachmentPort::save);
 
         if (files != null) {
-            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicy.TASK_IMAGE, files);
+            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicyConstants.TASK_FILE, files);
             List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
             commandAttachmentPort.saveAll(attachments);
         }
+
     }
 
     private List<Attachment> validateAndGetAttachments(List<Long> attachmentIdsToDelete, Task task) {

@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum AuthErrorCode implements BaseErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH_001", "인증 과정에서 오류가 발생하였습니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "AUTH_002", "접근이 거부되었습니다"),
-    EMPTY_ACCESS_KEY(HttpStatus.FORBIDDEN, "AUTH_003", "AccessToken 이 비어있습니다."),
+    EMPTY_ACCESS_KEY(HttpStatus.UNAUTHORIZED, "AUTH_003", "AccessToken 이 비어있습니다."),
 //    LOGOUT_ERROR(HttpStatus.FORBIDDEN, "AUTH_004", "로그 아웃된 사용자입니다."),
     EXPIRED_TOKEN(HttpStatus.FORBIDDEN, "AUTH_005", "사용기간이 만료된 토큰입니다."),
     TAKEN_AWAY_TOKEN(HttpStatus.FORBIDDEN, "AUTH_006", "탈취당한 토큰입니다. 다시 로그인 해주세요."),
