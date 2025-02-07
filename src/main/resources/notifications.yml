@@ -17,3 +17,11 @@ webhook:
     auth: ${KAKAOWORK_WEBHOOK_AUTH}
   agit:
     url: ${AGIT_WEBHOOK_URL}
+
+redirect:
+  url:
+    user: ${USER_URL}
+    manger: ${MANAGER_URL}
+    login: ${LOGIN_URL}
+    task:
+      request: ${TASK_REQUEST_URL}
