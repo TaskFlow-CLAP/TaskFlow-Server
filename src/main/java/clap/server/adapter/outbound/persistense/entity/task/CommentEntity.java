@@ -17,7 +17,6 @@ import org.hibernate.annotations.Where;
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE comment_id = ?")
 @SQLRestriction("is_deleted = false")
 public class CommentEntity extends BaseTimeEntity {
     @Id
