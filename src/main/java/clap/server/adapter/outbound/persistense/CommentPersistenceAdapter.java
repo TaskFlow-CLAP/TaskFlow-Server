@@ -19,24 +19,24 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CommandCommen
     private final CommentPersistenceMapper commentPersistenceMapper;
 
     @Override
-    public Optional<Comment> findById(Long commentId) {
+    public Optional<Comment> findById(final Long commentId) {
         Optional<CommentEntity> commentEntity = commentRepository.findById(commentId);
         return commentEntity.map(commentPersistenceMapper::toDomain);
     }
 
     @Override
-    public Comment saveComment(Comment comment) {
+    public Comment saveComment(final Comment comment) {
         CommentEntity commentEntity = commentRepository.save(commentPersistenceMapper.toEntity(comment));
         return commentPersistenceMapper.toDomain(commentEntity);
     }
 
     @Override
-    public void deleteCommentWithTaskHistory(Long commentId) {
+    public void deleteCommentWithTaskHistory(final Long commentId) {
         commentRepository.deleteCommentWithTaskHistory(commentId);
     }
 
     @Override
-    public void deleteComment(Comment comment) {
+    public void deleteComment(final Comment comment) {
         commentRepository.delete(commentPersistenceMapper.toEntity(comment));
     }
 }
