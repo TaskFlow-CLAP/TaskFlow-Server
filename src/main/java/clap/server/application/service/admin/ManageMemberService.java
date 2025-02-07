@@ -32,7 +32,7 @@ class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
 
         //TODO: 인프라팀만 담당자가 될 수 있도록 수정해야함
         member.getMemberInfo().updateMemberInfoByAdmin(
-                request.name(), request.email(), request.isReviewer(),
+                request.name(), request.isReviewer(),
                 department, request.role(), request.departmentRole());
         commandMemberPort.save(member);
     }

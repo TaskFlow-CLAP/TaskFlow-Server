@@ -1,12 +1,12 @@
 package clap.server.adapter.inbound.web.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.response.FindAllDepartmentsResponse;
-import clap.server.application.mapper.DepartmentResponseMapper;
 import clap.server.application.port.inbound.admin.FindAllDepartmentsUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +23,7 @@ public class FindDepartmentController {
     @Operation(summary = "부서 조회 API")
     @Secured("ROLE_ADMIN")
     @GetMapping("/departments")
-    public List<FindAllDepartmentsResponse> findAllDepartments() {
-        return findAllDepartmentsUsecase.findAllDepartments()
-                .stream()
-                .map(DepartmentResponseMapper::toFindAllDepartmentsResponse)
-                .toList();
+    public ResponseEntity<List<FindAllDepartmentsResponse>> findAllDepartments() {
+        return ResponseEntity.ok(findAllDepartmentsUsecase.findAllDepartments());
     }
 }

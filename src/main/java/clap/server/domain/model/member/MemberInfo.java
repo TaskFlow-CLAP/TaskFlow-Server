@@ -47,11 +47,10 @@ public class MemberInfo {
                 .build();
     }
 
-    public void updateMemberInfoByAdmin(String name, String email, boolean isReviewer,
+    public void updateMemberInfoByAdmin(String name, boolean isReviewer,
                                         Department department, MemberRole role, String departmentRole) {
         assertReviewerIsManager(isReviewer, role);
         this.name = name;
-        this.email = email;
         this.isReviewer = isReviewer;
         this.department = department;
         this.role = role;

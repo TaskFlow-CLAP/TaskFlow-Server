@@ -32,7 +32,6 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     private final MemberPersistenceMapper memberPersistenceMapper;
     private final TaskRepository taskRepository;
     private final TaskPersistenceMapper taskPersistenceMapper;
-    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public Optional<Member> findById(final Long id) {
@@ -109,6 +108,11 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     @Override
     public Page<Member> findMembersWithFilter(Pageable pageable, FindMemberRequest filterRequest, String sortDirection) {
         return memberRepository.findMembersWithFilter(pageable, filterRequest,sortDirection).map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Member> findByNicknameOrEmail(String nickname, String email) {
+        return memberRepository.findByNicknameAndEmail(nickname, email).map(memberPersistenceMapper::toDomain);
     }
 }
 

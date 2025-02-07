@@ -30,19 +30,6 @@ public class MemberService {
         return loadMemberPort.findTasksByMemberIdAndStatus(memberId, targetStatuses).size();
     }
 
-    public String getMemberNickname(Long memberId) {
-        Member member = findById(memberId);
-        if (member.getMemberInfo() == null) {
-            throw new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND);
-        }
-        return member.getMemberInfo().getNickname();
-    }
-
-    public String getMemberImageUrl(Long memberId) {
-        Member member = findById(memberId);
-        return member.getImageUrl() != null ? member.getImageUrl() : "default-image-url";
-    }
-
     public List<Member> findActiveManagers() {
         List<Member> activeManagers = loadMemberPort.findActiveManagers();
 

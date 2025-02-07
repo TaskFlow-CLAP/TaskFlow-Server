@@ -1,5 +1,7 @@
 package clap.server.application.port.inbound.member;
 
+import clap.server.adapter.inbound.web.dto.member.response.VerifyCodeRequest;
+
 public interface VerifyEmailCodeUsecase {
-    void verifyEmailCode(Long memberId, String code);
+    void verifyEmailCode(VerifyCodeRequest request);
 }
