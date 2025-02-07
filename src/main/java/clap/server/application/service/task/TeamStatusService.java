@@ -1,6 +1,7 @@
 package clap.server.application.service.task;
 
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
+import clap.server.adapter.inbound.web.dto.task.request.SortBy;
 import clap.server.adapter.inbound.web.dto.task.response.TeamStatusResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.application.mapper.response.TeamTaskResponseMapper;
@@ -30,7 +31,7 @@ public class TeamStatusService implements FilterTeamStatusUsecase {
         int totalInProgressTaskCount = taskItemResponses.stream().mapToInt(TeamTaskResponse::inProgressTaskCount).sum();
         int totalInReviewingTaskCount = taskItemResponses.stream().mapToInt(TeamTaskResponse::inReviewingTaskCount).sum();
 
-        if (filter.sortBy().equals(CONTRIBUTE))
+        if (filter.sortBy().equals(SortBy.CONTRIBUTE))
             taskItemResponses.sort((a, b) -> b.totalTaskCount() - a.totalTaskCount());
         else taskItemResponses.sort(Comparator.comparing(TeamTaskResponse::nickname));
 
