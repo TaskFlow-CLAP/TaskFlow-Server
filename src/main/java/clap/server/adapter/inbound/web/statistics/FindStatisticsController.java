@@ -40,12 +40,12 @@ public class FindStatisticsController {
         return switch (statisticsType) {
             case REQUEST_BY_PERIOD ->
                     ResponseEntity.ok(findTaskProcessUsecase.aggregatePeriodTaskRequest(periodType.getType()));
-            case PROCESS_BY_PERIOD -> ResponseEntity.ok(findTaskProcessUsecase
-                    .aggregatePeriodTaskProcess(periodType.getType()));
+            case PROCESS_BY_PERIOD ->
+                    ResponseEntity.ok(findTaskProcessUsecase.aggregatePeriodTaskProcess(periodType.getType()));
             case REQUEST_BY_CATEGORY ->
                     ResponseEntity.ok(findTaskProcessUsecase.aggregateCategoryTaskRequest(periodType.getType()));
-            case PROCESS_BY_MANAGER -> ResponseEntity.ok(findTaskProcessUsecase
-                    .aggregateManagerTaskProcess(periodType.getType()));
+            case PROCESS_BY_MANAGER ->
+                    ResponseEntity.ok(findTaskProcessUsecase.aggregateManagerTaskProcess(periodType.getType()));
             default -> throw new StatisticsException(STATISTICS_BAD_REQUEST);
         };
     }
