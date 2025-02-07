@@ -31,9 +31,9 @@ public class NotificationResponseMapper {
         );
     }
 
-    public static CountNotificationResponse toCountNotificationResponse(Long userId, Integer count) {
+    public static CountNotificationResponse toCountNotificationResponse(Long memberId, Integer count) {
         return new CountNotificationResponse(
-                userId,
+                memberId,
                 count
         );
     }

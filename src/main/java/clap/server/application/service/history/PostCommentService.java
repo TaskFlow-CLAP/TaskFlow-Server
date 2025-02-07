@@ -40,9 +40,9 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
     @Transactional
     @Override
-    public void save(Long userId, Long taskId, CreateCommentRequest request) {
+    public void save(Long memberId, Long taskId, CreateCommentRequest request) {
         Task task = taskService.findById(taskId);
-        Member member = memberService.findActiveMember(userId);
+        Member member = memberService.findActiveMember(memberId);
 
         // 일반 회원일 경우 => 요청자인지 확인
         taskCommentPolicy.validateCommentPermission(task, member);
@@ -64,9 +64,9 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
     @Transactional
     @Override
-    public void saveCommentAttachment(Long userId, Long taskId, MultipartFile file) {
+    public void saveCommentAttachment(Long memberId, Long taskId, MultipartFile file) {
         Task task = taskService.findById(taskId);
-        Member member = memberService.findActiveMember(userId);
+        Member member = memberService.findActiveMember(memberId);
 
         taskCommentPolicy.validateCommentPermission(task, member);
         Comment comment = Comment.createComment(member, task, null);

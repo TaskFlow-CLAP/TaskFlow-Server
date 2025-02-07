@@ -97,9 +97,9 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Transactional
     @Override
-    public void updateTaskProcessor(Long taskId, Long userId, UpdateTaskProcessorRequest request) {
-        memberService.findActiveMember(userId);
-        memberService.findReviewer(userId);
+    public void updateTaskProcessor(Long taskId, Long memberId, UpdateTaskProcessorRequest request) {
+        memberService.findActiveMember(memberId);
+        memberService.findReviewer(memberId);
 
         Task task = taskService.findById(taskId);
         Member processor = memberService.findById(request.processorId());
@@ -115,9 +115,9 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Transactional
     @Override
-    public void updateTaskLabel(Long taskId, Long userId, UpdateTaskLabelRequest request) {
-        memberService.findActiveMember(userId);
-        memberService.findReviewer(userId);
+    public void updateTaskLabel(Long taskId, Long memberId, UpdateTaskLabelRequest request) {
+        memberService.findActiveMember(memberId);
+        memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
         Label label = labelService.findById(request.labelId());
 

@@ -34,8 +34,8 @@ public class CommandCommentService implements EditCommentUsecase, DeleteCommentU
 
     @Transactional
     @Override
-    public void editComment(Long userId, Long commentId, EditCommentRequest request) {
-        Member member = memberService.findActiveMember(userId);
+    public void editComment(Long memberId, Long commentId, EditCommentRequest request) {
+        Member member = memberService.findActiveMember(memberId);
         Comment comment = commentService.findById(commentId);
 
         if (comment.getMember().getMemberId().equals(member.getMemberId())) {
@@ -48,8 +48,8 @@ public class CommandCommentService implements EditCommentUsecase, DeleteCommentU
 
     @Transactional
     @Override
-    public void deleteComment(Long userId, Long commentId) {
-        Member member = memberService.findActiveMember(userId);
+    public void deleteComment(Long memberId, Long commentId) {
+        Member member = memberService.findActiveMember(memberId);
         Comment comment = commentService.findById(commentId);
 
         if (comment.getMember().getMemberId().equals(member.getMemberId())) {
