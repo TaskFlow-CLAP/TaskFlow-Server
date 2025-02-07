@@ -1,14 +1,12 @@
-package clap.server.application.mapper;
+package clap.server.application.mapper.response;
 
 import clap.server.adapter.inbound.web.dto.auth.response.LoginResponse;
-import clap.server.adapter.inbound.web.dto.auth.response.MemberInfoResponse;
 import clap.server.adapter.inbound.web.dto.auth.response.ReissueTokenResponse;
 import clap.server.domain.model.auth.CustomJwts;
-import clap.server.domain.model.member.Member;
 
 public class AuthResponseMapper {
     private AuthResponseMapper() {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Utility class");
     }
 
     public static LoginResponse toLoginResponse(final String accessToken, final String refreshToken) {

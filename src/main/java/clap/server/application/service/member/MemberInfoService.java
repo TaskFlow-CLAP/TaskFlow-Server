@@ -10,8 +10,8 @@ import clap.server.domain.model.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import static clap.server.application.mapper.MemberResponseMapper.toMemberDetailInfoResponse;
-import static clap.server.application.mapper.MemberResponseMapper.toMemberProfileResponse;
+import static clap.server.application.mapper.response.MemberResponseMapper.toMemberDetailInfoResponse;
+import static clap.server.application.mapper.response.MemberResponseMapper.toMemberProfileResponse;
 
 @ApplicationService
 @RequiredArgsConstructor

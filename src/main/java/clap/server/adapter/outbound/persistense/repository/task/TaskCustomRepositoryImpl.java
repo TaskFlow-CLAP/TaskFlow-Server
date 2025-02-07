@@ -8,6 +8,7 @@ import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
+import clap.server.domain.model.task.Task;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.DateTimePath;
@@ -58,8 +59,15 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     }
 
     @Override
-    public List<TeamTaskResponse> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
-        // filter가 null인 경우에도 기본적으로 모든 데이터를 조회하도록 처리
+    public List<TaskEntity> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+        BooleanBuilder builder = createFilterBuilder(memberId, filter);
+        return queryFactory
+                .selectFrom(taskEntity)
+                .where(builder)
+                .fetch();
+    }
+
+    private BooleanBuilder createFilterBuilder(Long memberId, FilterTeamStatusRequest filter) {
         BooleanBuilder builder = new BooleanBuilder();
 
         // 필터가 null인 경우, 기본적으로 모든 데이터 조회
@@ -87,74 +95,7 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 builder.and(taskEntity.category.categoryId.in(filter.categoryIds()));
             }
         }
-
-        // 정렬 조건 적용
-        SortBy sortBy = (filter != null && filter.sortBy() != null) ? filter.sortBy() : SortBy.DEFAULT;
-
-        assert filter != null;
-        // 쿼리 실행
-        List<TaskEntity> taskEntities = queryFactory
-                .selectFrom(taskEntity)
-                .where(builder)
-                .fetch();
-
-        // null 또는 빈 리스트 처리
-        if (taskEntities == null || taskEntities.isEmpty()) {
-            return List.of(); // 빈 리스트 반환
-        }
-
-        List<TeamTaskResponse> members = taskEntities.stream()
-                .collect(Collectors.groupingBy(t -> t.getProcessor().getMemberId(), LinkedHashMap::new, Collectors.toList()))
-                .entrySet().stream()
-                .map(entry -> {
-                    List<TeamTaskItemResponse> taskResponses = entry.getValue().stream()
-                            .map(taskEntity -> new TeamTaskItemResponse(
-                                    taskEntity.getTaskId(),
-                                    taskEntity.getTaskCode(),
-                                    taskEntity.getTitle(),
-                                    taskEntity.getCategory().getMainCategory().getName(),
-                                    taskEntity.getCategory().getName(),
-                                    taskEntity.getLabel() != null ?
-                                            new TeamTaskItemResponse.LabelInfo(
-                                                    taskEntity.getLabel().getLabelName(),
-                                                    taskEntity.getLabel().getLabelColor()
-                                            ) : null,
-                                    taskEntity.getRequester().getNickname(),
-                                    taskEntity.getRequester().getImageUrl(),
-                                    taskEntity.getRequester().getDepartment().getName(),
-                                    taskEntity.getProcessorOrder(),
-                                    taskEntity.getTaskStatus(),
-                                    taskEntity.getCreatedAt()
-                            )).collect(Collectors.toList());
-
-                    int inProgressTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count();
-                    int inReviewingTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_REVIEWING).count();
-                    int totalTaskCount = inProgressTaskCount + inReviewingTaskCount;
-
-                    return new TeamTaskResponse(
-                            entry.getKey(),
-                            entry.getValue().get(0).getProcessor().getNickname(),
-                            entry.getValue().get(0).getProcessor().getImageUrl(),
-                            entry.getValue().get(0).getProcessor().getDepartment().getName(),
-                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count(),
-                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_REVIEWING).count(),
-                            entry.getValue().size(),
-                            taskResponses
-                    );
-                }).collect(Collectors.toList());
-
-        // 기여도순 (진행 중 + 검토 중 작업 개수 합 기준 내림차순)
-        if (sortBy.equals(CONTRIBUTE)) members.sort((a, b) -> b.totalTaskCount() - a.totalTaskCount());
-        // 기본순 (닉네임 오름차순)
-        else members.sort(Comparator.comparing(TeamTaskResponse::nickname));
-
-        return members;
-    }
-
-
-
-    private boolean isValidTitle(FilterTeamStatusRequest filter) {
-        return filter.taskTitle() != null && !filter.taskTitle().isEmpty();
+        return builder;
     }
 
     @Override

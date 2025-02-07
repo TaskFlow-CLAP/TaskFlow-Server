@@ -1,9 +1,7 @@
-package clap.server.application.mapper;
+package clap.server.application.mapper.response;
 
 
 import clap.server.adapter.inbound.web.dto.task.response.*;
-import clap.server.adapter.outbound.persistense.entity.task.LabelEntity;
-import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Attachment;
@@ -14,8 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static clap.server.application.mapper.AttachmentMapper.toAttachmentResponseList;
 
 public class TaskResponseMapper {
     private TaskResponseMapper() {
@@ -74,7 +70,7 @@ public class TaskResponseMapper {
     }
 
     public static FindTaskDetailsResponse toFindTaskDetailResponse(Task task, List<Attachment> attachments) {
-        List<AttachmentResponse> attachmentResponses = toAttachmentResponseList(attachments);
+        List<AttachmentResponse> attachmentResponses = AttachmentResponseMapper.toAttachmentResponseList(attachments);
         return new FindTaskDetailsResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
@@ -158,7 +154,7 @@ public class TaskResponseMapper {
     }
 
     public static FindTaskDetailsForManagerResponse toFindTaskDetailForManagerResponse(Task task, List<Attachment> attachments) {
-        List<AttachmentResponse> attachmentResponses = toAttachmentResponseList(attachments);
+        List<AttachmentResponse> attachmentResponses =  AttachmentResponseMapper.toAttachmentResponseList(attachments);
         return new FindTaskDetailsForManagerResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
@@ -195,61 +191,5 @@ public class TaskResponseMapper {
                 remainingTasks
         );
     }
-
-    public static TeamStatusResponse toTeamStatusResponse(List<TaskEntity> taskEntities) {
-        // 담당자별로 그룹화
-        Map<Long, List<TaskEntity>> tasksByProcessor = taskEntities.stream()
-                .collect(Collectors.groupingBy(taskEntity -> taskEntity.getProcessor().getMemberId()));
-
-        List<TeamTaskResponse> memberResponses = tasksByProcessor.entrySet().stream()
-                .map(entry -> {
-                    List<TeamTaskItemResponse> teamtaskItemResponses = entry.getValue().stream()
-                            .map(TaskResponseMapper::toTeamTaskItemResponse)
-                            .collect(Collectors.toList());
-
-                    return new TeamTaskResponse(
-                            entry.getKey(),
-                            entry.getValue().get(0).getProcessor().getNickname(),
-                            entry.getValue().get(0).getProcessor().getImageUrl(),
-                            entry.getValue().get(0).getProcessor().getDepartment().getName(),
-                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count(),
-                            (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_REVIEWING).count(),
-                            entry.getValue().size(),
-                            teamtaskItemResponses
-                    );
-                })
-                .collect(Collectors.toList());
-
-        return new TeamStatusResponse(memberResponses);
-    }
-
-    public static TeamTaskItemResponse toTeamTaskItemResponse(TaskEntity taskEntity) {
-        return new TeamTaskItemResponse(
-                taskEntity.getTaskId(),
-                taskEntity.getTaskCode(),
-                taskEntity.getTitle(),
-                taskEntity.getCategory().getMainCategory().getName(),
-                taskEntity.getCategory().getName(),
-                taskEntity.getLabel() != null ? toLabelInfo(taskEntity.getLabel()) : null,
-                taskEntity.getRequester().getNickname(),
-                taskEntity.getRequester().getImageUrl(),
-                taskEntity.getRequester().getDepartment().getName(),
-                taskEntity.getProcessorOrder(),
-                taskEntity.getTaskStatus(),
-                taskEntity.getCreatedAt()
-        );
-    }
-
-    public static TeamTaskItemResponse.LabelInfo toLabelInfo(LabelEntity label) { // Label → LabelEntity로 변경
-        return new TeamTaskItemResponse.LabelInfo(
-                label.getLabelName(),
-                label.getLabelColor()
-        );
-    }
-
-
-
-
-
 
 }

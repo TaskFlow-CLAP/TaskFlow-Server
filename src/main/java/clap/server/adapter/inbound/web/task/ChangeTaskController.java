@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "02. Task [검토자]")
 @WebAdapter
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks")
 public class ChangeTaskController {

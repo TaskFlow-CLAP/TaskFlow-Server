@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "05. Admin [로깅]")
 @WebAdapter
-@RestController
 @RequestMapping("/api/managements/logs")
 @RequiredArgsConstructor
 public class LogController {

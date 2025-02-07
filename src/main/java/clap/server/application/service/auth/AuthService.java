@@ -2,7 +2,7 @@ package clap.server.application.service.auth;
 
 import clap.server.adapter.inbound.web.dto.auth.response.LoginResponse;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
-import clap.server.application.mapper.AuthResponseMapper;
+import clap.server.application.mapper.response.AuthResponseMapper;
 import clap.server.application.port.inbound.auth.LoginUsecase;
 import clap.server.application.port.inbound.auth.LogoutUsecase;
 import clap.server.application.port.outbound.auth.forbidden.ForbiddenTokenPort;

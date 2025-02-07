@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static clap.server.application.mapper.TaskResponseMapper.toFindManagersResponse;
+import static clap.server.application.mapper.response.TaskResponseMapper.toFindManagersResponse;
 
 @ApplicationService
 @RequiredArgsConstructor
