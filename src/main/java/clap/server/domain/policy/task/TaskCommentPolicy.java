@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Policy
 public class TaskCommentPolicy {
-    public void validateCommentPermission(Task task, Member member) {
+    public void validateCommentPermission(final Task task,final Member member) {
         boolean isUser = member.getMemberInfo().getRole() == MemberRole.ROLE_USER;
         boolean isNotRequester = !Objects.equals(member.getMemberId(), task.getRequester().getMemberId());
 

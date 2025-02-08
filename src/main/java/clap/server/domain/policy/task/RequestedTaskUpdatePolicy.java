@@ -8,7 +8,7 @@ import clap.server.exception.code.TaskErrorCode;
 
 @Policy
 public class RequestedTaskUpdatePolicy {
-    public void validateTaskRequested(Task task) {
+    public void validateTaskRequested(final Task task) {
         if (task.getTaskStatus() != TaskStatus.REQUESTED) {
             throw new DomainException(TaskErrorCode.TASK_STATUS_MISMATCH);
         }
