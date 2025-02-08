@@ -1,14 +1,14 @@
 package clap.server.domain.model.auth;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LoginLog {
 	private String clientIp;
@@ -16,16 +16,6 @@ public class LoginLog {
 	private LocalDateTime lastAttemptAt;
 	private int failedCount;
 	private boolean isLocked;
-
-	@Builder
-	private LoginLog(String clientIp, String attemptNickname, LocalDateTime lastAttemptAt,
-					 int failedCount, boolean isLocked) {
-		this.clientIp = clientIp;
-		this.attemptNickname = attemptNickname;
-		this.lastAttemptAt = lastAttemptAt;
-		this.failedCount = failedCount;
-		this.isLocked = isLocked;
-	}
 
 	public static LoginLog createLoginLog(String clientIp, String attemptNickname) {
 		return LoginLog.builder()
