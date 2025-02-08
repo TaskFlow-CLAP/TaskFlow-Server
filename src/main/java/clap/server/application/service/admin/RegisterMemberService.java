@@ -17,6 +17,8 @@ import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @ApplicationService
 @RequiredArgsConstructor
 class RegisterMemberService implements RegisterMemberUsecase {
@@ -33,11 +35,10 @@ class RegisterMemberService implements RegisterMemberUsecase {
         Department department = loadDepartmentPort.findById(request.departmentId())
                 .orElseThrow(() -> new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
-        loadMemberPort.findByNickname(request.nickname()).ifPresent(
-                member -> {
-                    throw new ApplicationException(MemberErrorCode.DUPLICATE_NICKNAME);
-                }
-        );
+        if (loadMemberPort.existsByNicknamesOrEmails(Set.of(request.nickname()), Set.of(request.email()))) {
+            throw new ApplicationException(MemberErrorCode.DUPLICATE_NICKNAME_OR_EMAIL);
+        }
+
         managerDepartmentPolicy.validateDepartment(department, request.role());
         MemberInfo memberInfo = MemberInfo.toMemberInfo(request.name(), request.email(), request.nickname(), request.isReviewer(),
                 department, request.role(), request.departmentRole());
