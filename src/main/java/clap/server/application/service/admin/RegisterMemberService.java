@@ -10,17 +10,12 @@ import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
+import clap.server.domain.policy.member.ManagerDepartmentPolicy;
 import clap.server.exception.ApplicationException;
-import clap.server.exception.AuthException;
-import clap.server.exception.code.AuthErrorCode;
 import clap.server.exception.code.DepartmentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-
-
-import java.util.List;
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -29,6 +24,7 @@ class RegisterMemberService implements RegisterMemberUsecase {
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
     private final LoadMemberPort loadMemberPort;
+    private final ManagerDepartmentPolicy managerDepartmentPolicy;
 
     @Override
     @Transactional
@@ -42,8 +38,7 @@ class RegisterMemberService implements RegisterMemberUsecase {
                     throw new ApplicationException(MemberErrorCode.DUPLICATE_NICKNAME);
                 }
         );
-
-        // TODO: 인프라팀만 담당자가 될 수 있도록 수정해야함
+        managerDepartmentPolicy.validateDepartment(department, request.role());
         MemberInfo memberInfo = MemberInfo.toMemberInfo(request.name(), request.email(), request.nickname(), request.isReviewer(),
                 department, request.role(), request.departmentRole());
         Member member = Member.createMember(admin, memberInfo);

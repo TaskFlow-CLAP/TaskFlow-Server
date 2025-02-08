@@ -39,7 +39,8 @@ public class RegisterMemberCSVService implements RegisterMemberCSVUsecase {
         });
 
         List<Member> newMembers = members.stream()
-                .map(memberData -> Member.createMember(admin, memberData.getMemberInfo()))
+                .map(memberData ->
+                        Member.createMember(admin, memberData.getMemberInfo()))
                 .toList();
 
         commandMemberPort.saveAll(newMembers);

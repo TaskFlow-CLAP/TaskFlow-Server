@@ -129,7 +129,7 @@ public class TestDataFactory {
     public static Department createDepartment() {
         return Department.builder()
                 .departmentId(1L)
-                .admin(null)
+                .adminId(null)
                 .name("IT 부서")
                 .status(DepartmentStatus.ACTIVE)
                 .build();
