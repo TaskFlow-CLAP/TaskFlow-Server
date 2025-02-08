@@ -1,6 +1,5 @@
 package clap.server;
 
-import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.outbound.persistense.entity.member.constant.DepartmentStatus;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
@@ -80,25 +79,57 @@ public class TestDataFactory {
     }
 
     public static MemberInfo createAdminInfo() {
-        return new MemberInfo("홍길동(관리자)", "atom8426@naver.com", "atom.admin", false, null, MemberRole.ROLE_ADMIN, "인프라");
+        return MemberInfo.builder()
+                .name("홍길동(관리자)")
+                .email("atom8426@naver.com")
+                .nickname("atom.admin")
+                .isReviewer(false)
+                .department(null)
+                .role(MemberRole.ROLE_ADMIN)
+                .departmentRole("인프라")
+                .build();
     }
 
     public static MemberInfo createManagerWithReviewerInfo() {
-        return new MemberInfo("홍길동(리뷰어)", "atom8426@naver.com", "atom.manager", true, null, MemberRole.ROLE_MANAGER, "인프라");
+        return MemberInfo.builder()
+                .name("홍길동(리뷰어)")
+                .email("atom8426@naver.com")
+                .nickname("atom.manager")
+                .isReviewer(true)
+                .department(null)
+                .role(MemberRole.ROLE_MANAGER)
+                .departmentRole("인프라")
+                .build();
     }
 
     public static MemberInfo createManagerInfo() {
-        return new MemberInfo("홍길동(매니저)", "atom8426@naver.com", "atom.manager", false, null, MemberRole.ROLE_MANAGER, "인프라");
+        return MemberInfo.builder()
+                .name("홍길동(매니저)")
+                .email("atom8426@naver.com")
+                .nickname("atom.manager")
+                .isReviewer(false)
+                .department(null)
+                .role(MemberRole.ROLE_MANAGER)
+                .departmentRole("인프라")
+                .build();
     }
 
     public static MemberInfo createUserInfo() {
-        return new MemberInfo("홍길동(사용자)", "atom8426@naver.com", "atom.user", false, null, MemberRole.ROLE_USER, "인프라");
+        return MemberInfo.builder()
+                .name("홍길동(사용자)")
+                .email("atom8426@naver.com")
+                .nickname("atom.user")
+                .isReviewer(false)
+                .department(null)
+                .role(MemberRole.ROLE_USER)
+                .departmentRole("인프라")
+                .build();
     }
 
     public static Department createDepartment() {
         return Department.builder()
                 .departmentId(1L)
-                .adminId(1L)
+                .admin(null)
                 .name("IT 부서")
                 .status(DepartmentStatus.ACTIVE)
                 .build();
