@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -29,14 +31,7 @@ public class RegisterMemberCSVService implements RegisterMemberCSVUsecase {
         List<Member> members = csvParser.parseDataAndMapToMember(file);
         Member admin = memberService.findActiveMember(adminId);
 
-        members.forEach(member -> {
-            String nickname = member.getMemberInfo().getNickname();
-            String email = member.getMemberInfo().getEmail();
-            if (loadMemberPort.findByNickname(nickname).isPresent() ||
-                    loadMemberPort.findByEmail(email).isPresent()) {
-                throw new ApplicationException(MemberErrorCode.DUPLICATE_NICKNAME_OR_EMAIL);
-            }
-        });
+        validateMembers(members);
 
         List<Member> newMembers = members.stream()
                 .map(memberData ->
@@ -46,4 +41,19 @@ public class RegisterMemberCSVService implements RegisterMemberCSVUsecase {
         commandMemberPort.saveAll(newMembers);
         return members.size();
     }
+
+    public void validateMembers(List<Member> members) {
+        Set<String> nicknames = new HashSet<>();
+        Set<String> emails = new HashSet<>();
+
+        for (Member member : members) {
+            nicknames.add(member.getMemberInfo().getNickname());
+            emails.add(member.getMemberInfo().getEmail());
+        }
+
+        if(loadMemberPort.existsByNicknamesOrEmails(nicknames, emails)) {
+            throw new ApplicationException(MemberErrorCode.DUPLICATE_NICKNAME_OR_EMAIL);
+        }
+    }
+
 }
