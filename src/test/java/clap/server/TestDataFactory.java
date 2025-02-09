@@ -28,7 +28,7 @@ public class TestDataFactory {
                 .emailNotificationEnabled(true)
                 .imageUrl(null)
                 .status(MemberStatus.ACTIVE)
-                .password("1111")
+                .password("Password123!")
                 .department(createDepartment())
                 .build();
     }
@@ -43,7 +43,7 @@ public class TestDataFactory {
                 .emailNotificationEnabled(true)
                 .imageUrl(null)
                 .status(MemberStatus.ACTIVE)
-                .password("1111")
+                .password("Password456!")
                 .department(createDepartment())
                 .build();
     }
@@ -58,7 +58,7 @@ public class TestDataFactory {
                 .emailNotificationEnabled(true)
                 .imageUrl(null)
                 .status(MemberStatus.ACTIVE)
-                .password("1111")
+                .password("Password789!")
                 .department(createDepartment())
                 .build();
     }
@@ -73,7 +73,7 @@ public class TestDataFactory {
                 .emailNotificationEnabled(true)
                 .imageUrl(null)
                 .status(MemberStatus.ACTIVE)
-                .password("1111")
+                .password("Password000!")
                 .department(createDepartment())
                 .build();
     }
@@ -86,6 +86,33 @@ public class TestDataFactory {
                 .isReviewer(false)
                 .department(null)
                 .role(MemberRole.ROLE_ADMIN)
+                .departmentRole("인프라")
+                .build();
+    }
+
+    public static Member createNotApprovedUser() {
+        return Member.builder()
+                .memberId(4L)
+                .memberInfo(createNotApprovedUserInfo())
+                .admin(createAdmin())
+                .kakaoworkNotificationEnabled(true)
+                .agitNotificationEnabled(true)
+                .emailNotificationEnabled(true)
+                .imageUrl(null)
+                .status(MemberStatus.APPROVAL_REQUEST)
+                .password("Password000!")
+                .department(createDepartment())
+                .build();
+    }
+
+    public static MemberInfo createNotApprovedUserInfo() {
+        return MemberInfo.builder()
+                .name("홍길동(등록 대기중인 사용자)")
+                .email("atom8426@naver.com")
+                .nickname("atom.user")
+                .isReviewer(false)
+                .department(null)
+                .role(MemberRole.ROLE_USER)
                 .departmentRole("인프라")
                 .build();
     }
