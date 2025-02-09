@@ -1,27 +1,29 @@
 # github repository actions 페이지에 나타날 이름
-name: CD to dev using github actions
+name: CD for Release
 
 # event trigger
-# develop 브랜치에 pull_request가 닫혔을 때 실행
 on:
-  pull_request:
-    types: [ closed ]
-    branches: [ "develop" ]
+  release:
+    types: [created]
 
 permissions:
   contents: read
 
 jobs:
-  DEV-CD:
-    if: github.event.pull_request.merged == true
+  Release-CD:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: 'Set up jdk'
+
+      - name: 'Set up JDK'
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin' # https://github.com/actions/setup-java
+          distribution: 'temurin'
+
+      - name: Extract release version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - run: touch ./Dockerfile
       - run: echo "${{ secrets.DEV_DOCKERFILE }}" > ./Dockerfile
@@ -37,21 +39,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      ## gradle build
+      # gradle build
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
           ./gradlew build -x test
 
-        ## docker build & push to production
-      - name: Docker build & push to dev
+      # docker build & push
+      - name: Docker build & push
         run: |
           docker login clap.kr-central-2.kcr.dev -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }} .
-          docker push ${{ secrets.DOCKER_REPO }}
+          docker build -t ${{ secrets.DOCKER_REPO }}:${{ steps.version.outputs.VERSION }} -t ${{ secrets.DOCKER_REPO }}:latest .
+          docker push ${{ secrets.DOCKER_REPO }}:${{ steps.version.outputs.VERSION }}
+          docker push ${{ secrets.DOCKER_REPO }}:latest
 
-        ## deploy to dev
-      - name: Deploy to prod
+      # deploy
+      - name: Deploy
         uses: appleboy/ssh-action@master
         id: deploy
         with:
@@ -61,8 +64,9 @@ jobs:
           port: ${{ secrets.DEV_HOST_PORT }}
           script: |
             docker rm -f taskflow
-            docker image rm ${{ secrets.DOCKER_REPO }} -f
+            docker image rm ${{ secrets.DOCKER_REPO }}:${{ steps.version.outputs.VERSION }} -f
             docker run --name taskflow -d -p 9090:9090 \
               --env-file /home/ubuntu/.env \
-              ${{ secrets.DOCKER_REPO }} \
+              ${{ secrets.DOCKER_REPO }}:${{ steps.version.outputs.VERSION }} \
               --restart on-failure
+
