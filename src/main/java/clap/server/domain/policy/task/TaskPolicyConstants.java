@@ -15,7 +15,6 @@ public class TaskPolicyConstants {
             TaskStatus.COMPLETED);
 
     public static final List<TaskStatus> TASK_UPDATABLE_STATUS = List.of(
-            TaskStatus.REQUESTED,
             TaskStatus.IN_PROGRESS,
             TaskStatus.IN_REVIEWING,
             TaskStatus.COMPLETED
