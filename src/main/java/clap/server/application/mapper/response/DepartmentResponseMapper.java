@@ -7,7 +7,11 @@ public class DepartmentResponseMapper {
     private DepartmentResponseMapper() {
         throw new IllegalStateException("Utility class");
     }
+
     public static FindAllDepartmentsResponse toFindAllDepartmentsResponse(Department department) {
-        return new FindAllDepartmentsResponse(department.getDepartmentId(), department.getName());
+        return new FindAllDepartmentsResponse(
+                department.getDepartmentId(),
+                department.getName(),
+                department.isManager());
     }
 }
