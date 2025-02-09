@@ -23,8 +23,6 @@ public record MemberDetailInfoResponse(
         NotificationSettingInfoResponse notificationSettingInfo
 ) {
     public static record NotificationSettingInfoResponse(
-            @Schema(description = "아지트 알림 수신 여부")
-            boolean agit,
             @Schema(description = "이메일 알림 수신 여부")
             boolean email,
             @Schema(description = "카카오 워크 알림 수신 여부")

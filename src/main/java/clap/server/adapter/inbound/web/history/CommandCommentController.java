@@ -24,6 +24,7 @@ public class CommandCommentController {
     private final EditCommentUsecase editCommentUsecase;
     private final DeleteCommentUsecase deleteCommentUsecase;
 
+    @Deprecated
     @Operation(summary = "댓글 수정")
     @Parameter(name = "commentId", description = "수정할 댓글 고유 ID", required = true, in = ParameterIn.PATH)
     @PatchMapping("/{commentId}")

@@ -1,7 +1,6 @@
 package clap.server.application.service.notification;
 
 import clap.server.application.port.inbound.domain.MemberService;
-import clap.server.application.port.inbound.notification.EnableAgitUsecase;
 import clap.server.application.port.inbound.notification.EnableEmailUsecase;
 import clap.server.application.port.inbound.notification.EnableKakaoUsecase;
 import clap.server.application.port.outbound.member.CommandMemberPort;
@@ -11,19 +10,13 @@ import lombok.RequiredArgsConstructor;
 
 @ApplicationService
 @RequiredArgsConstructor
-public class UpdateNotificationService implements EnableKakaoUsecase, EnableAgitUsecase, EnableEmailUsecase {
+public class UpdateNotificationService implements EnableKakaoUsecase, EnableEmailUsecase {
 
     private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
 
     @Override
-    public void enableAgit(Long memberId) {
-        Member member = memberService.findActiveMember(memberId);
-        member.updateAgitEnabled();
-        commandMemberPort.save(member);
-    }
-
-    @Override
+    @Deprecated
     public void enableEmail(Long memberId) {
         Member member = memberService.findActiveMember(memberId);
         member.updateEmailEnabled();
@@ -31,6 +24,7 @@ public class UpdateNotificationService implements EnableKakaoUsecase, EnableAgit
     }
 
     @Override
+    @Deprecated
     public void enableKakao(Long memberId) {
         Member member = memberService.findActiveMember(memberId);
         member.updateKaKaoEnabled();
