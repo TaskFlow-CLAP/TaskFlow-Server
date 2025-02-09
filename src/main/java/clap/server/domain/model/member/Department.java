@@ -15,4 +15,5 @@ public class Department extends BaseTime {
     private Long adminId;
     private String name;
     private DepartmentStatus status;
+    private boolean isManager;
 }

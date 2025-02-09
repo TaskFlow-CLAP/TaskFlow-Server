@@ -40,4 +40,6 @@ public interface LoadTaskPort {
     List<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime untilDateTime, FilterTaskBoardRequest request);
 
     List<Task> findTeamStatus(Long memberId, FilterTeamStatusRequest filter);
+
+    List<Task> findTasksByMemberIdAndStatus(Long memberId, List<TaskStatus> taskStatuses);
 }

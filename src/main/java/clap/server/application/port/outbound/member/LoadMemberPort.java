@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
+import java.util.Set;
 
 public interface LoadMemberPort {
     Optional<Member> findById(Long id);
@@ -18,8 +19,6 @@ public interface LoadMemberPort {
     Optional<Member> findActiveMemberById(Long id);
 
     List<Member> findActiveManagers();
-
-    List<Task> findTasksByMemberIdAndStatus(Long memberId, List<TaskStatus> taskStatuses);
 
     Optional<Member> findReviewerById(Long id);
 
@@ -37,4 +36,5 @@ public interface LoadMemberPort {
 
     Optional<Member> findByEmail(String email);
 
+    boolean existsByNicknamesOrEmails(Set<String> nicknames, Set<String> emails);
 }

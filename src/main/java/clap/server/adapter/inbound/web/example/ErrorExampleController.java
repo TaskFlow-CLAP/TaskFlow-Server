@@ -53,7 +53,7 @@ public class ErrorExampleController {
     @GetMapping("/statistic")
     @DevelopOnlyApi
     @Operation(summary = "작업 통계 관련 에러 코드 나열")
-    @ApiErrorCodes(LabelErrorCode.class)
+    @ApiErrorCodes(StatisticsErrorCode.class)
     public void getStatisticsErrorCode() {}
 
     @GetMapping("/label")

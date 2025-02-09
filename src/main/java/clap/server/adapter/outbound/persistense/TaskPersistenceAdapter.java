@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @PersistenceAdapter
@@ -116,5 +117,12 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
                 .map(taskPersistenceMapper::toDomain).toList();
     }
 
+    @Override
+    public List<Task> findTasksByMemberIdAndStatus(final Long memberId, final List<TaskStatus> taskStatuses) {
+        List<TaskEntity> taskEntities = taskRepository.findByProcessor_MemberIdAndTaskStatusIn(memberId, taskStatuses);
+        return taskEntities.stream()
+                .map(taskPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
+    }
 
 }

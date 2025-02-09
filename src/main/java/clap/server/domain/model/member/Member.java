@@ -1,15 +1,12 @@
 package clap.server.domain.model.member;
 
-import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
-import clap.server.domain.model.task.Task;
-import clap.server.exception.DomainException;
-import clap.server.exception.code.MemberErrorCode;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.Objects;
 
 
 @Getter
@@ -28,7 +25,6 @@ public class Member extends BaseTime {
     private String password;
     private Department department;
 
-    @Builder
     public Member(MemberInfo memberInfo, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoworkNotificationEnabled,
                   Member admin, String imageUrl, MemberStatus status, String password) {
         this.memberInfo = memberInfo;

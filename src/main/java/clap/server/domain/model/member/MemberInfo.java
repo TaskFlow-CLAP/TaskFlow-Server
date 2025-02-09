@@ -4,7 +4,6 @@ import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRol
 import clap.server.exception.DomainException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -20,18 +19,6 @@ public class MemberInfo {
     private Department department;
     private MemberRole role;
     private String departmentRole;
-
-    @Builder
-    public MemberInfo(String name, String email, String nickname, boolean isReviewer,
-                      Department department, MemberRole role, String departmentRole) {
-        this.name = name;
-        this.email = email;
-        this.nickname = nickname;
-        this.isReviewer = isReviewer;
-        this.department = department;
-        this.role = role;
-        this.departmentRole = departmentRole;
-    }
 
     public static MemberInfo toMemberInfo(String name, String email, String nickname, boolean isReviewer,
                                           Department department, MemberRole role, String departmentRole) {
@@ -64,7 +51,7 @@ public class MemberInfo {
     public static void assertReviewerIsManager(boolean isReviewer, MemberRole role) {
         if (isReviewer) {
             if (role != MemberRole.ROLE_MANAGER) {
-                throw new DomainException(MemberErrorCode.MEMBER_REGISTRATION_FAILED);
+                throw new DomainException(MemberErrorCode.REVIEW_PERMISSION_DENIED);
             }
         }
     }
