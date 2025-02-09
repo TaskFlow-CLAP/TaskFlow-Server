@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static clap.server.exception.code.MemberErrorCode.ACTIVE_MEMBER_NOT_FOUND;
+import static clap.server.exception.code.TaskErrorCode.CATEGORY_DUPLICATE;
 import static clap.server.exception.code.TaskErrorCode.CATEGORY_NOT_FOUND;
 
 @ApplicationService
@@ -28,6 +29,7 @@ public class AddCategoryService implements AddMainCategoryUsecase, AddSubCategor
     @Transactional
     public void addMainCategory(Long adminId, String code, String name) {
         Optional<Member> activeMember = loadMemberPort.findActiveMemberById(adminId);
+        if (loadCategoryPort.existsByNameOrCode(name, code)) throw new ApplicationException(CATEGORY_DUPLICATE);
         Category mainCategory = Category.createMainCategory(
                 activeMember.orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND)),
                 code, name);
@@ -39,7 +41,7 @@ public class AddCategoryService implements AddMainCategoryUsecase, AddSubCategor
     public void addSubCategory(Long adminId, Long mainCategoryId, String code, String name, String descriptionExample) {
         Optional<Member> activeMember = loadMemberPort.findActiveMemberById(adminId);
         Optional<Category> mainCategory = loadCategoryPort.findById(mainCategoryId);
-
+        if (loadCategoryPort.existsByNameOrCode(name, code)) throw new ApplicationException(CATEGORY_DUPLICATE);
         Category subCategory = Category.createSubCategory(
                 activeMember.orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND)),
                 mainCategory.orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND)),
