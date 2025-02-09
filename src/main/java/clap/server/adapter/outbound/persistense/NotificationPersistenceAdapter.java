@@ -23,32 +23,32 @@ public class NotificationPersistenceAdapter implements LoadNotificationPort, Com
 
 
     @Override
-    public Optional<Notification> findById(Long notificationId) {
+    public Optional<Notification> findById(final Long notificationId) {
         return notificationRepository.findById(notificationId)
                 .map(notificationPersistenceMapper::toDomain);
     }
 
     @Override
-    public Slice<Notification> findAllByReceiverId(Long receiverId, Pageable pageable) {
+    public Slice<Notification> findAllByReceiverId(final Long receiverId, final Pageable pageable) {
         return notificationRepository
                 .findAllByReceiver_MemberIdOrderByCreatedAtDesc(receiverId, pageable)
                 .map(notificationPersistenceMapper::toDomain);
     }
 
     @Override
-    public List<Notification> findNotificationsByMemberId(Long memberId) {
+    public List<Notification> findNotificationsByMemberId(final Long memberId) {
         return notificationRepository.findAllByReceiver_MemberId(memberId)
                 .stream().map(notificationPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Integer countNotification(Long memberId) {
+    public Integer countNotification(final Long memberId) {
         return notificationRepository.countByIsReadFalseAndReceiver_MemberId(memberId);
     }
 
     @Override
-    public void save(Notification notification) {
+    public void save(final Notification notification) {
         notificationRepository.save(notificationPersistenceMapper.toEntity(notification));
     }
 }

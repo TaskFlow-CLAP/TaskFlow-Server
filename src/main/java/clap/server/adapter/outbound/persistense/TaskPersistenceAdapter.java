@@ -3,7 +3,6 @@ package clap.server.adapter.outbound.persistense;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
-import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
 import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
@@ -31,38 +30,38 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     private final TaskPersistenceMapper taskPersistenceMapper;
 
     @Override
-    public Task save(Task task) {
+    public Task save(final Task task) {
         TaskEntity taskEntity = taskPersistenceMapper.toEntity(task);
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
         return taskPersistenceMapper.toDomain(savedTaskEntity);
     }
 
     @Override
-    public Optional<Task> findById(Long id) {
+    public Optional<Task> findById(final Long id) {
         Optional<TaskEntity> taskEntity = taskRepository.findById(id);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Page<Task> findTasksRequestedByUser(Long requesterId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+    public Page<Task> findTasksRequestedByUser(final Long requesterId, final Pageable pageable, final FilterTaskListRequest filterTaskListRequest) {
         return taskRepository.findTasksRequestedByUser(requesterId, pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Page<Task> findTasksAssignedByManager(Long processorId, Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+    public Page<Task> findTasksAssignedByManager(final Long processorId, final Pageable pageable, final FilterTaskListRequest filterTaskListRequest) {
         return taskRepository.findTasksAssignedByManager(processorId, pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Page<Task> findPendingApprovalTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+    public Page<Task> findPendingApprovalTasks(final Pageable pageable, final FilterTaskListRequest filterTaskListRequest) {
         return taskRepository.findPendingApprovalTasks(pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Optional<Task> findByIdAndStatus(Long id, TaskStatus status) {
+    public Optional<Task> findByIdAndStatus(final Long id, final TaskStatus status) {
         Optional<TaskEntity> taskEntity = taskRepository.findByTaskIdAndTaskStatus(id, status);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
@@ -75,44 +74,44 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
     }
 
     @Override
-    public Page<Task> findAllTasks(Pageable pageable, FilterTaskListRequest filterTaskListRequest) {
+    public Page<Task> findAllTasks(final Pageable pageable, final FilterTaskListRequest filterTaskListRequest) {
         return taskRepository.findAllTasks(pageable, filterTaskListRequest)
                 .map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Optional<Task> findPrevOrderTaskByProcessorOrderAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
+    public Optional<Task> findPrevOrderTaskByProcessorOrderAndStatus(final Long processorId, final TaskStatus taskStatus, final Long processorOrder) {
         Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderAsc(processorId, taskStatus, processorOrder);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Optional<Task> findNextOrderTaskByProcessorOrderAndStatus(Long processorId, TaskStatus taskStatus, Long processorOrder) {
+    public Optional<Task> findNextOrderTaskByProcessorOrderAndStatus(final Long processorId, final TaskStatus taskStatus, final Long processorOrder) {
         Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderAfterOrderByProcessorOrderAsc(processorId, taskStatus, processorOrder);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Optional<Task> findPrevOrderTaskByTaskIdAndStatus(Long processorId, TaskStatus taskStatus, Long taskId) {
+    public Optional<Task> findPrevOrderTaskByTaskIdAndStatus(final Long processorId, final TaskStatus taskStatus, final Long taskId) {
         Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndTaskIdLessThanOrderByTaskIdDesc(processorId, taskStatus, taskId);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public Optional<Task> findNextOrderTaskByTaskIdAndStatus(Long processorId, TaskStatus taskStatus, Long taskId) {
+    public Optional<Task> findNextOrderTaskByTaskIdAndStatus(final Long processorId, final TaskStatus taskStatus, final Long taskId) {
         Optional<TaskEntity> taskEntity = taskRepository.findTopByProcessor_MemberIdAndTaskStatusAndTaskIdGreaterThanOrderByTaskIdAsc(processorId, taskStatus, taskId);
         return taskEntity.map(taskPersistenceMapper::toDomain);
     }
 
     @Override
-    public List<Task> findTaskBoardByFilter(Long processorId, List<TaskStatus> statuses, LocalDateTime fromDate, FilterTaskBoardRequest request) {
+    public List<Task> findTaskBoardByFilter(final Long processorId, final List<TaskStatus> statuses, final LocalDateTime fromDate, final FilterTaskBoardRequest request) {
         return taskRepository.findTasksByFilter(processorId, statuses, fromDate, request)
                 .stream()
                 .map(taskPersistenceMapper::toDomain).toList();
     }
 
     @Override
-    public List<Task> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
+    public List<Task> findTeamStatus(final Long memberId, final FilterTeamStatusRequest filter) {
         return taskRepository.findTeamStatus(memberId, filter).stream()
                 .map(taskPersistenceMapper::toDomain).toList();
     }

@@ -17,9 +17,9 @@ public class CountNotificationService implements CountNotificationUseCase {
 
     @Transactional
     @Override
-    public CountNotificationResponse countNotification(Long userId) {
-        Integer count = loadNotificationPort.countNotification(userId);
+    public CountNotificationResponse countNotification(Long memberId) {
+        Integer count = loadNotificationPort.countNotification(memberId);
 
-        return NotificationResponseMapper.toCountNotificationResponse(userId, count);
+        return NotificationResponseMapper.toCountNotificationResponse(memberId, count);
     }
 }

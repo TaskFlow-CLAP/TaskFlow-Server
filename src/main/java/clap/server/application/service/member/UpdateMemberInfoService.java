@@ -7,12 +7,10 @@ import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.policy.attachment.FilePathPolicyConstants;
+import clap.server.common.constants.FilePathConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -23,11 +21,17 @@ class UpdateMemberInfoService implements UpdateMemberInfoUsecase {
     private final CommandMemberPort commandMemberPort;
 
     @Override
-    public void updateMemberInfo(Long memberId, UpdateMemberInfoRequest request, MultipartFile profileImage) throws IOException {
+    public void updateMemberInfo(Long memberId, UpdateMemberInfoRequest request, MultipartFile profileImage) {
         Member member = memberService.findActiveMember(memberId);
-        String profileImageUrl = profileImage != null ? s3UploadPort.uploadSingleFile(FilePathPolicyConstants.MEMBER_IMAGE, profileImage) : null;
+        if(request.isProfileImageDeleted()){
+            member.setImageUrl(null);
+        }
+        else {
+            String profileImageUrl = profileImage != null ? s3UploadPort.uploadSingleFile(FilePathConstants.MEMBER_IMAGE, profileImage) : member.getImageUrl();
+            member.setImageUrl(profileImageUrl);
+        }
         member.updateMemberInfo(request.name(), request.agitNotification(), request.emailNotification(),
-                request.kakaoWorkNotification(), profileImageUrl);
+                request.kakaoWorkNotification());
         commandMemberPort.save(member);
     }
 }

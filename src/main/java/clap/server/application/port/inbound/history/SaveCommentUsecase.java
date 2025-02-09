@@ -4,5 +4,5 @@ import clap.server.adapter.inbound.web.dto.history.request.CreateCommentRequest;
 
 public interface SaveCommentUsecase {
 
-    void save(Long userId, Long taskId, CreateCommentRequest request);
+    void save(Long memberId, Long taskId, CreateCommentRequest request);
 }

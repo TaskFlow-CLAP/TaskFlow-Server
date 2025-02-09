@@ -29,8 +29,8 @@ public class LogService {
         commandLogPort.saveAnonymousLog(anonymousLog);
     }
 
-    public void createMemberLog(HttpServletRequest request, int statusCode, String customCode,LogStatus logStatus, Object responseBody, String requestBody, Long userId) {
-        Member member = memberService.findById(userId);
+    public void createMemberLog(HttpServletRequest request, int statusCode, String customCode,LogStatus logStatus, Object responseBody, String requestBody, Long memberId) {
+        Member member = memberService.findById(memberId);
         MemberLog memberLog = MemberLog.createMemberLog(request, statusCode, customCode, logStatus,  responseBody, requestBody, member);
         commandLogPort.saveMemberLog(memberLog);
     }

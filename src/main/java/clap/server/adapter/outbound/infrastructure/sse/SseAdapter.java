@@ -13,12 +13,12 @@ public class SseAdapter implements CommandSsePort {
     private final EmitterRepository emitterRepository;
 
     @Override
-    public void save(Long receiverId, SseEmitter emitter) {
+    public void save(final Long receiverId,final SseEmitter emitter) {
         emitterRepository.save(receiverId, emitter);
     }
 
     @Override
-    public void delete(Long receiverId) {
+    public void delete(final Long receiverId) {
         emitterRepository.delete(receiverId);
     }
 }

@@ -4,5 +4,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface SaveCommentAttachmentUsecase {
 
-    void saveCommentAttachment(Long userId, Long taskId, MultipartFile file);
+    void saveCommentAttachment(Long memberId, Long taskId, MultipartFile file);
 }

@@ -20,8 +20,8 @@ public class FindLabelListService implements FindLabelListUsecase {
     private final MemberService memberService;
 
     @Override
-    public List<FindLabelListResponse> findLabelList(Long userId) {
-        memberService.findActiveMember(userId);
+    public List<FindLabelListResponse> findLabelList(Long memberId) {
+        memberService.findActiveMember(memberId);
         return loadLabelPort.findLabelList()
                 .stream()
                 .map(LabelResponseMapper::toFindLabelListResponse)

@@ -21,7 +21,7 @@ public class LabelPersistenceAdapter implements LoadLabelPort, CommandLabelPort 
     private final LabelPersistenceMapper labelPersistenceMapper;
 
     @Override
-    public Optional<Label> findById(Long labelId) {
+    public Optional<Label> findById(final Long labelId) {
         Optional<LabelEntity> labelEntity = labelRepository.findById(labelId);
         return labelEntity.map(labelPersistenceMapper::toDomain);
     }

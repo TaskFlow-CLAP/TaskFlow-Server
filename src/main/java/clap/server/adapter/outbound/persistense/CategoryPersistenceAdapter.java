@@ -20,7 +20,7 @@ public class CategoryPersistenceAdapter implements LoadCategoryPort, CommandCate
     private final CategoryPersistenceMapper categoryPersistenceMapper;
 
     @Override
-    public Optional<Category> findById(Long id) {
+    public Optional<Category> findById(final Long id) {
         Optional<CategoryEntity> categoryEntity = categoryRepository.findById(id);
         return categoryEntity.map(categoryPersistenceMapper::toDomain);
     }
@@ -50,7 +50,7 @@ public class CategoryPersistenceAdapter implements LoadCategoryPort, CommandCate
     }
 
     @Override
-    public void save(Category category) {
+    public void save(final Category category) {
         categoryRepository.save(categoryPersistenceMapper.toEntity(category));
     }
 }

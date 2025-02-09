@@ -1,4 +1,4 @@
-package clap.server.adapter.outbound.api.dto;
+package clap.server.adapter.outbound.api.data;
 
 public record EmailTemplate(
         String email,

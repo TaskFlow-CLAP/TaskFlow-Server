@@ -28,7 +28,6 @@ public class ClientIpParseUtil {
         for (String header : headersToCheck) {
             ip = request.getHeader(header);
             if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-                // X-Forwarded-For 헤더에서 첫 번째 IP만 추출
                 if (ip.contains(",")) {
                     ip = ip.split(",")[0].trim();
                 }

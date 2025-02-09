@@ -6,6 +6,7 @@ import clap.server.application.port.inbound.task.FilterTeamStatusUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -25,7 +26,7 @@ public class TeamStatusController {
     @Operation(summary = "팀 현황 조회 API")
     @GetMapping()
     @Secured("ROLE_MANAGER")
-    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@ModelAttribute FilterTeamStatusRequest filter) {
+    public ResponseEntity<TeamStatusResponse> filterTeamStatus(@ModelAttribute @Valid FilterTeamStatusRequest filter) {
         TeamStatusResponse response = filterTeamStatusUsecase.filterTeamStatus(filter);
         return ResponseEntity.ok(response != null ? response : new TeamStatusResponse(List.of(), 0, 0, 0));
     }

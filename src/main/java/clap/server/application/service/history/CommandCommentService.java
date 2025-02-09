@@ -18,6 +18,7 @@ import clap.server.exception.ApplicationException;
 import clap.server.exception.DomainException;
 import clap.server.exception.code.CommentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
+import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,36 +36,34 @@ public class CommandCommentService implements EditCommentUsecase, DeleteCommentU
     private final CommandCommentPort commandCommentPort;
     private final LoadAttachmentPort loadAttachmentPort;
     private final CommandAttachmentPort commandAttachmentPort;
-    private final CommandTaskHistoryPort commandTaskHistoryPort;
 
     @Transactional
     @Override
-    public void editComment(Long userId, Long commentId, EditCommentRequest request) {
-        Member member = memberService.findActiveMember(userId);
+    public void editComment(Long memberId, Long commentId, EditCommentRequest request) {
+        Member member = memberService.findActiveMember(memberId);
         Comment comment = commentService.findById(commentId);
 
-        if (Member.checkCommenter(comment.getTask(), member)) {
+        if (comment.getMember().getMemberId().equals(member.getMemberId())) {
             comment.updateComment(request.content());
             commandCommentPort.saveComment(comment);
-        };
+        }
+        else throw new ApplicationException(CommentErrorCode.NOT_A_COMMENT_WRITER);
+
     }
 
     @Transactional
     @Override
-    public void deleteComment(Long userId, Long commentId) {
-        Member member = memberService.findActiveMember(userId);
+    public void deleteComment(Long memberId, Long commentId) {
+        Member member = memberService.findActiveMember(memberId);
         Comment comment = commentService.findById(commentId);
-
-        if (Member.checkCommenter(comment.getTask(), member)) {
-            // 첨부파일이 있을 경우 삭제
+        
+        if (comment.getMember().getMemberId().equals(member.getMemberId())) {
             if (loadAttachmentPort.exitsByCommentId(commentId)) {
                 deleteAttachments(commentId);
             }
-            // comment 삭제
-            commandCommentPort.deleteComment(comment);
-            // comment와 관련된 taskHistory도 함께 삭제
-
-            commandTaskHistoryPort.deleteTaskHistoryByCommentId(commentId);
+            commandCommentPort.deleteCommentWithTaskHistory(commentId);
+        }else{
+            throw new ApplicationException(CommentErrorCode.NOT_A_COMMENT_WRITER);
         }
     }
 

@@ -4,5 +4,5 @@ import clap.server.adapter.inbound.web.dto.history.request.EditCommentRequest;
 
 public interface EditCommentUsecase {
 
-    void editComment(Long userId, Long commentId, EditCommentRequest request);
+    void editComment(Long memberId, Long commentId, EditCommentRequest request);
 }

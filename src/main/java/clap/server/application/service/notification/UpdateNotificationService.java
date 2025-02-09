@@ -17,22 +17,22 @@ public class UpdateNotificationService implements EnableKakaoUsecase, EnableAgit
     private final CommandMemberPort commandMemberPort;
 
     @Override
-    public void enableAgit(Long userId) {
-        Member member = memberService.findActiveMember(userId);
+    public void enableAgit(Long memberId) {
+        Member member = memberService.findActiveMember(memberId);
         member.updateAgitEnabled();
         commandMemberPort.save(member);
     }
 
     @Override
-    public void enableEmail(Long userId) {
-        Member member = memberService.findActiveMember(userId);
+    public void enableEmail(Long memberId) {
+        Member member = memberService.findActiveMember(memberId);
         member.updateEmailEnabled();
         commandMemberPort.save(member);
     }
 
     @Override
-    public void enableKakao(Long userId) {
-        Member member = memberService.findActiveMember(userId);
+    public void enableKakao(Long memberId) {
+        Member member = memberService.findActiveMember(memberId);
         member.updateKaKaoEnabled();
         commandMemberPort.save(member);
     }

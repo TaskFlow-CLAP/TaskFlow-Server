@@ -4,5 +4,5 @@ import clap.server.adapter.inbound.web.dto.notification.response.CountNotificati
 
 public interface CountNotificationUseCase {
 
-    CountNotificationResponse countNotification(Long userId);
+    CountNotificationResponse countNotification(Long memberId);
 }

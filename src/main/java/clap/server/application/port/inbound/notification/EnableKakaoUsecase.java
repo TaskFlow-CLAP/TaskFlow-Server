@@ -2,5 +2,5 @@ package clap.server.application.port.inbound.notification;
 
 public interface EnableKakaoUsecase {
 
-    void enableKakao(Long userId);
+    void enableKakao(Long memberId);
 }

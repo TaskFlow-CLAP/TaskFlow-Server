@@ -24,7 +24,7 @@ import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.*;
-import clap.server.domain.policy.attachment.FilePathPolicyConstants;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -97,9 +97,9 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Transactional
     @Override
-    public void updateTaskProcessor(Long taskId, Long userId, UpdateTaskProcessorRequest request) {
-        memberService.findActiveMember(userId);
-        memberService.findReviewer(userId);
+    public void updateTaskProcessor(Long taskId, Long memberId, UpdateTaskProcessorRequest request) {
+        memberService.findActiveMember(memberId);
+        memberService.findReviewer(memberId);
 
         Task task = taskService.findById(taskId);
         Member processor = memberService.findById(request.processorId());
@@ -115,9 +115,9 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Transactional
     @Override
-    public void updateTaskLabel(Long taskId, Long userId, UpdateTaskLabelRequest request) {
-        memberService.findActiveMember(userId);
-        memberService.findReviewer(userId);
+    public void updateTaskLabel(Long taskId, Long memberId, UpdateTaskLabelRequest request) {
+        memberService.findActiveMember(memberId);
+        memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
         Label label = labelService.findById(request.labelId());
 
@@ -132,7 +132,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
                 .forEach(commandAttachmentPort::save);
 
         if (files != null) {
-            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathPolicyConstants.TASK_FILE, files);
+            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_FILE, files);
             List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
             commandAttachmentPort.saveAll(attachments);
         }
