@@ -79,6 +79,8 @@ Coming Soon...
 <aside>
 ➡️ Inbound Port
 
+- **Security**
+    - 외부 요청의 보안 처리 및 인증과 인가를 담당
 - **Web**
     - 사용자 인터페이스 또는 REST API를 처리하는 컨트롤러
     - 입력 유효성 검증을 진행
@@ -91,10 +93,11 @@ Coming Soon...
     - 데이터베이스와의 상호작용을 위한 orm 데이터베이스 매핑 및 repository
 - **Api**
     - 외부 서비스와의 통신을 위한 클라이언트
-
 - **Infrastructure**
     - 데이터베이스, 외부 API, 파일 시스템 등 외부 세계와의 연결을 처리
     - 다른 레이어에 대해 의존하지 않습니다.
+- **JWT**
+    - JWT 토큰 생성 및 토큰의 유효성을 검증
 </aside>
 
 
@@ -105,14 +108,29 @@ Coming Soon...
 ├── 💽 TaskflowApplication
 ├── 🗂️adapter
 │   ├── 🗂️inbound
+│   │   └── 📂security
 │   │   └── 📂web
 │   │       ├── admin
 │   │       ├── auth
-│   │       └── dto
+│   │       ├── dto
+│   │       ├── example
+│   │       ├── history
+│   │       ├── label
+│   │       ├── log
+│   │       ├── member
+│   │       ├── label
+│   │       ├── notification
+│   │       ├── statistics
+│   │       └── task
 │   │          
 │   └──  🗂️outbound
 │       ├── 📂api
 │       ├── 📂infrastructure
+│       │   ├── elastic
+│       │   ├── redis
+│       │   ├── s3
+│       │   └── sse
+│       └── 📂️jwt
 │       └── 📂️security
 │       └── 📂persistense
 │           ├── entity
@@ -131,20 +149,23 @@ Coming Soon...
 ├── 🗂️application
 │   ├── 🗂️mapper
 │   └── 🗂️port
-│       ├── 📂inbound
-│       └── 📂outbound
+│   │   ├── 📂inbound
+│   │   └── 📂outbound
+│   └── 🗂️service
 ├── 🗂️common
 │   └── 🗂️annotation
 │   ├── 🗂️exception
 │   └── 🗂️response
 ├── 🗂️config
 ├── 🗂️domain
-│   ├── 🗂️model
-│       ├── 📂common
-│       ├── 📂log
-│       ├── 📂member
-│       ├── 📂notification
-│       └── 📂task
+│   └── 🗂️model
+│   │    ├── 📂auth
+│   │    ├── 📂common
+│   │    ├── 📂log
+│   │    ├── 📂member
+│   │    ├── 📂notification
+│   │    └── 📂task
+│   └── 🗂️policy
 └── 🗂️exception
 ```
 

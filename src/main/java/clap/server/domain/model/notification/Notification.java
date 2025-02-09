@@ -1,19 +1,14 @@
 package clap.server.domain.model.notification;
 
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.task.Category;
 import clap.server.domain.model.task.Task;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @SuperBuilder
@@ -26,16 +21,6 @@ public class Notification extends BaseTime {
     private String message;
     private String taskTitle;
     private boolean isRead;
-
-    @Builder
-    public Notification(Task task, NotificationType type, Member receiver, String message, String taskTitle) {
-        this.task = task;
-        this.type = type;
-        this.receiver = receiver;
-        this.message = message;
-        this.taskTitle = taskTitle;
-        this.isRead = false;
-    }
 
     public void updateNotificationIsRead() {
         this.isRead = true;

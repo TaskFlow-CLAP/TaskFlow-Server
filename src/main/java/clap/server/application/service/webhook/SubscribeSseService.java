@@ -8,6 +8,7 @@ import clap.server.exception.code.NotificationErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Deprecated
 @ApplicationService
 @RequiredArgsConstructor
 public class SubscribeSseService implements SubscribeSseUsecase {

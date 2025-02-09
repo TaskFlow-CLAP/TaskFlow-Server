@@ -1,21 +1,22 @@
 package clap.server.application.service.auth;
 
+import clap.server.application.port.inbound.auth.CheckAccountLockStatusUseCase;
 import clap.server.application.port.outbound.auth.loginLog.CommandLoginLogPort;
 import clap.server.application.port.outbound.auth.loginLog.LoadLoginLogPort;
 import clap.server.domain.model.auth.LoginLog;
 import clap.server.exception.AuthException;
 import clap.server.exception.code.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @RequiredArgsConstructor
-@Component
+@Service
 @Transactional
-public class LoginAttemptService {
+public class LoginAttemptService implements CheckAccountLockStatusUseCase {
     private final LoadLoginLogPort loadLoginLogPort;
     private final CommandLoginLogPort commandLoginLogPort;
     private static final int MAX_FAILED_ATTEMPTS = 5;
@@ -36,6 +37,7 @@ public class LoginAttemptService {
         commandLoginLogPort.save(loginLog);
     }
 
+    @Override
     public void checkAccountIsLocked(String clientIp) {
         LoginLog loginLog = loadLoginLogPort.findByClientIp(clientIp).orElse(null);
         if (loginLog == null) {

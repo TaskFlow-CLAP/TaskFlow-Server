@@ -2,7 +2,6 @@ package clap.server.domain.model.task;
 
 import clap.server.domain.model.common.BaseTime;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -18,16 +17,6 @@ public class Attachment extends BaseTime {
     private String fileUrl;
     private String fileSize;
     private boolean isDeleted;
-
-    @Builder
-    public Attachment(Task task, Comment comment, String originalName, String fileUrl, String fileSize, boolean isDeleted) {
-        this.task = task;
-        this.comment = comment;
-        this.originalName = originalName;
-        this.fileUrl = fileUrl;
-        this.fileSize = fileSize;
-        this.isDeleted = isDeleted;
-    }
 
     public static Attachment createAttachment(Task task, String originalName, String fileUrl, long fileSize) {
         return Attachment.builder()

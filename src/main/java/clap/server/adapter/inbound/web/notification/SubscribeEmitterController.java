@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Deprecated
 @Tag(name = "SSE 관리 - 회원 등록(최초 접속시)")
 @WebAdapter
 @RequestMapping("/api/sse")

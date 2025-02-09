@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Policy
 public class ProcessorValidationPolicy {
-    public void validateProcessor(Long processorId, Task targetTask) {
+    public void validateProcessor(final Long processorId,final Task targetTask) {
         if (!Objects.equals(processorId, targetTask.getProcessor().getMemberId())) {
             throw new ApplicationException(TaskErrorCode.NOT_A_PROCESSOR);
         }

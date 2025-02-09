@@ -30,4 +30,7 @@ public class DepartmentEntity extends BaseTimeEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private DepartmentStatus status;
+
+    @Column(nullable = false)
+    private boolean isManager;
 }
