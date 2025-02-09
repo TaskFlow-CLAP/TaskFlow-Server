@@ -45,15 +45,12 @@ public abstract class MemberPersistenceMapper {
         if (admin == null) return null;
         return Member.builder()
                 .memberId(admin.getMemberId())
-                .memberInfo(new MemberInfo(
-                        admin.getName(),
-                        admin.getEmail(),
-                        admin.getNickname(),
-                        admin.isReviewer(),
-                        departmentPersistenceMapper.toDomain(admin.getDepartment()),
-                        admin.getRole(),
-                        admin.getDepartmentRole()
-                ))
+                .memberInfo(MemberInfo.builder()
+                        .name(admin.getName())
+                        .email(admin.getEmail())
+                        .nickname(admin.getNickname())
+                        .isReviewer(admin.isReviewer())
+                        .build())
                 .createdAt(admin.getCreatedAt())
                 .updatedAt(admin.getUpdatedAt())
                 .build();

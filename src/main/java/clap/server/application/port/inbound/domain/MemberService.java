@@ -25,11 +25,6 @@ public class MemberService {
                 () -> new ApplicationException(MemberErrorCode.ACTIVE_MEMBER_NOT_FOUND));
     }
 
-    public int getRemainingTasks(Long memberId) {
-        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEWING);
-        return loadMemberPort.findTasksByMemberIdAndStatus(memberId, targetStatuses).size();
-    }
-
     public List<Member> findActiveManagers() {
         List<Member> activeManagers = loadMemberPort.findActiveManagers();
 

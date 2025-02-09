@@ -14,13 +14,6 @@ public class RefreshToken {
 	private String token;
 	private  long ttl;
 
-	@Builder
-	private RefreshToken(Long memberId, String token, long ttl) {
-		this.memberId = memberId;
-		this.token = token;
-		this.ttl = ttl;
-	}
-
 	public static RefreshToken of(Long memberId, String token, long ttl) {
 		return RefreshToken.builder()
 			.memberId(memberId)

@@ -4,23 +4,19 @@ import clap.server.adapter.inbound.web.dto.admin.request.FindMemberRequest;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
-import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.adapter.outbound.persistense.mapper.MemberPersistenceMapper;
-import clap.server.adapter.outbound.persistense.mapper.TaskPersistenceMapper;
 import clap.server.adapter.outbound.persistense.repository.member.MemberRepository;
-import clap.server.adapter.outbound.persistense.repository.task.TaskRepository;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.PersistenceAdapter;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @PersistenceAdapter
@@ -28,8 +24,6 @@ import java.util.stream.Collectors;
 public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
     private final MemberRepository memberRepository;
     private final MemberPersistenceMapper memberPersistenceMapper;
-    private final TaskRepository taskRepository;
-    private final TaskPersistenceMapper taskPersistenceMapper;
 
     @Override
     public Optional<Member> findById(final Long id) {
@@ -84,14 +78,6 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
-    public List<Task> findTasksByMemberIdAndStatus(final Long memberId, final List<TaskStatus> taskStatuses) {
-        List<TaskEntity> taskEntities = taskRepository.findByProcessor_MemberIdAndTaskStatusIn(memberId, taskStatuses);
-        return taskEntities.stream()
-                .map(taskPersistenceMapper::toDomain)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Page<Member> findAllMembers(final Pageable pageable) {
         return memberRepository.findAllMembers(pageable).map(memberPersistenceMapper::toDomain);
     }
@@ -117,4 +103,8 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
                 .map(memberPersistenceMapper::toDomain);
     }
 
+    @Override
+    public boolean existsByNicknamesOrEmails(Set<String> nicknames, Set<String> emails) {
+        return memberRepository.existsByNicknamesOrEmails(nicknames, emails);
+    }
 }
