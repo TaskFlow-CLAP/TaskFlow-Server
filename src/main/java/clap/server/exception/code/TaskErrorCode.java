@@ -18,7 +18,8 @@ public enum TaskErrorCode implements BaseErrorCode {
     NOT_A_REVIEWER(HttpStatus.FORBIDDEN, "TASK_009", "작업 승인 및 수정 권한이 없습니다."),
     NOT_A_REQUESTER(HttpStatus.FORBIDDEN, "TASK_010", "작업 수정 및 취소 권한이 없습니다."),
     TASK_STATUS_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "TASK_011", "변경할 수 없는 작업 상태입니다. 다른 API를 사용해주세요"),
-    FILE_COUNT_EXCEEDED(HttpStatus.BAD_REQUEST, "TASK_012", "파일은 5개 이상 첨부 가능합니다.")
+    FILE_COUNT_EXCEEDED(HttpStatus.BAD_REQUEST, "TASK_012", "파일은 5개 이상 첨부 가능합니다."),
+    CATEGORY_DUPLICATE(HttpStatus.BAD_REQUEST, "TASK_013", "카테고리 이름 또는 코드는 중복될 수 없습니다.")
     ;
 
     private final HttpStatus httpStatus;

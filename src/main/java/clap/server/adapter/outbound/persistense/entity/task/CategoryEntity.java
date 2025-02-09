@@ -23,10 +23,10 @@ public class CategoryEntity extends BaseTimeEntity {
     @JoinColumn(name = "admin_id", nullable = false)
     private MemberEntity admin;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String code;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
