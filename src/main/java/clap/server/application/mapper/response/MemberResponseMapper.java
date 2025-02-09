@@ -38,23 +38,10 @@ public class MemberResponseMapper {
 
     public static MemberDetailInfoResponse.NotificationSettingInfoResponse toNotificationSettingInfoResponse(Member member) {
         return new MemberDetailInfoResponse.NotificationSettingInfoResponse(
-                member.getAgitNotificationEnabled(),
                 member.getEmailNotificationEnabled(),
                 member.getKakaoworkNotificationEnabled()
         );
 
-    }
-    public static Member toMember(MemberInfo memberInfo) {
-        return Member.builder()
-                .memberInfo(memberInfo)
-                .agitNotificationEnabled(null)
-                .emailNotificationEnabled(null)
-                .kakaoworkNotificationEnabled(null)
-                .admin(null)
-                .imageUrl(null)
-                .status(null)
-                .password(null)
-                .build();
     }
 
     public static MemberDetailsResponse toMemberDetailsResponse(Member member) {
