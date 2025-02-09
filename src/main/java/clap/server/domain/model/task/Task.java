@@ -71,6 +71,9 @@ public class Task extends BaseTime {
         if (status.equals(TaskStatus.COMPLETED)) {
             this.finishedAt = LocalDateTime.now();
         }
+        if (this.taskStatus == TaskStatus.TERMINATED || this.taskStatus == TaskStatus.COMPLETED) {
+            this.finishedAt = null;
+        }
         this.taskStatus = status;
     }
 
