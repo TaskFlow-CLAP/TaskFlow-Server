@@ -1,5 +1,6 @@
 package clap.server.adapter.inbound.security.filter;
 
+import clap.server.application.port.inbound.auth.CheckAccountLockStatusUseCase;
 import clap.server.application.service.auth.LoginAttemptService;
 import clap.server.exception.AuthException;
 import jakarta.servlet.FilterChain;
@@ -25,7 +26,7 @@ import static clap.server.common.utils.ClientIpParseUtil.getClientIp;
 @Slf4j
 public class LoginAttemptFilter extends OncePerRequestFilter {
 
-    private final LoginAttemptService loginAttemptService;
+    private final CheckAccountLockStatusUseCase checkAccountLockStatusUseCase;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,7 +35,7 @@ public class LoginAttemptFilter extends OncePerRequestFilter {
             if (request.getRequestURI().equals(LOGIN_ENDPOINT)) {
                 String clientIp = getClientIp(request);
 
-                loginAttemptService.checkAccountIsLocked(clientIp);
+                checkAccountLockStatusUseCase.checkAccountIsLocked(clientIp);
 
             }
         } catch (AuthException e) {
