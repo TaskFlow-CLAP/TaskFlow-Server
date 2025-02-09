@@ -3,7 +3,7 @@ package clap.server.config.aop;
 import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 
 import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
-import clap.server.application.port.inbound.domain.LogService;
+import clap.server.application.port.outbound.log.LoggingPort;
 import clap.server.common.annotation.log.LogType;
 import clap.server.exception.BaseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +34,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class LoggingAspect {
     private final ObjectMapper objectMapper;
-    private final LogService logService;
+    private final LoggingPort loggingPort;
 
     @Pointcut("execution(* clap.server.adapter.inbound.web..*Controller.*(..))")
     public void controllerMethods() {
@@ -77,7 +77,7 @@ public class LoggingAspect {
                     } else {
                         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                         if (principal instanceof SecurityUserDetails userDetails) {
-                            logService.createMemberLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), userDetails.getUserId());
+                            loggingPort.createMemberLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), userDetails.getUserId());
                         }
                     }
                 }
@@ -88,9 +88,9 @@ public class LoggingAspect {
 
     private void handleLoginLog(int statusCode, HttpServletRequest request, String customCode, LogStatus logStatus, Object result) throws JsonProcessingException {
         if (statusCode == HttpStatus.SC_OK) {
-            logService.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
+            loggingPort.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
         } else {
-            logService.createLoginFailedLog(request, statusCode, customCode, logStatus, getRequestBody(request), getNicknameFromRequestBody(request));
+            loggingPort.createLoginFailedLog(request, statusCode, customCode, logStatus, getRequestBody(request), getNicknameFromRequestBody(request));
         }
     }
 
