@@ -47,7 +47,6 @@ class RegisterMemberCSVServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // 예시로 Department가 빌더를 제공한다고 가정
         dummyDepartment = Department.builder().departmentId(100L).build();
     }
 
@@ -142,7 +141,6 @@ class RegisterMemberCSVServiceTest {
         Member adminMember = mock(Member.class);
         when(memberService.findActiveMember(adminId)).thenReturn(adminMember);
 
-        // 중복 체크: 닉네임 또는 email 중 하나라도 중복이 있으면 에러 발생
         when(loadMemberPort.existsByNicknamesOrEmails(Set.of(dummyMemberInfo1.getNickname()), Set.of(dummyMemberInfo1.getEmail())))
                 .thenReturn(true);
 
