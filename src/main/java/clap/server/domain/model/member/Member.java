@@ -18,17 +18,15 @@ public class Member extends BaseTime {
     private MemberInfo memberInfo;
     private Member admin;
     private Boolean kakaoworkNotificationEnabled;
-    private Boolean agitNotificationEnabled;
     private Boolean emailNotificationEnabled;
     private String imageUrl;
     private MemberStatus status;
     private String password;
     private Department department;
 
-    public Member(MemberInfo memberInfo, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoworkNotificationEnabled,
+    public Member(MemberInfo memberInfo, Boolean emailNotificationEnabled, Boolean kakaoworkNotificationEnabled,
                   Member admin, String imageUrl, MemberStatus status, String password) {
         this.memberInfo = memberInfo;
-        this.agitNotificationEnabled = agitNotificationEnabled;
         this.emailNotificationEnabled = emailNotificationEnabled;
         this.kakaoworkNotificationEnabled = kakaoworkNotificationEnabled;
         this.admin = admin;
@@ -40,7 +38,6 @@ public class Member extends BaseTime {
     public static Member createMember(Member admin, MemberInfo memberInfo) {
         return Member.builder()
                 .memberInfo(memberInfo)
-                .agitNotificationEnabled(false)
                 .emailNotificationEnabled(false)
                 .kakaoworkNotificationEnabled(false)
                 .admin(admin)
@@ -57,7 +54,6 @@ public class Member extends BaseTime {
     public void resetPasswordAndActivateMember(String newEncodedPassword) {
         this.password = newEncodedPassword;
         this.status = MemberStatus.ACTIVE;
-        this.agitNotificationEnabled = true;
         this.emailNotificationEnabled = true;
         this.kakaoworkNotificationEnabled = true;
     }
@@ -76,7 +72,6 @@ public class Member extends BaseTime {
 
     public void updateMemberInfo(String name, Boolean agitNotificationEnabled, Boolean emailNotificationEnabled, Boolean kakaoWorkNotificationEnabled) {
         this.memberInfo.updateName(name);
-        this.agitNotificationEnabled = agitNotificationEnabled;
         this.emailNotificationEnabled = emailNotificationEnabled;
         this.kakaoworkNotificationEnabled = kakaoWorkNotificationEnabled;
     }
@@ -95,15 +90,6 @@ public class Member extends BaseTime {
         }
         else {
             this.kakaoworkNotificationEnabled = false;
-        }
-    }
-
-    public void updateAgitEnabled() {
-        if (!this.agitNotificationEnabled) {
-            this.agitNotificationEnabled = true;
-        }
-        else {
-            this.agitNotificationEnabled = false;
         }
     }
 
