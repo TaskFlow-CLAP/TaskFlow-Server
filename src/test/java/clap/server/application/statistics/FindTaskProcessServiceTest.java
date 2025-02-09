@@ -29,7 +29,7 @@ class FindTaskProcessServiceTest {
     private FindTaskProcessService findTaskProcessService;
 
     @Test
-    @DisplayName("기간별 요청량")
+    @DisplayName("기간별 요청량 조회")
     void aggregatePeriodTaskRequest() {
         //given
         Map<String, Long> statistics = new TreeMap<>();
@@ -58,7 +58,7 @@ class FindTaskProcessServiceTest {
     }
 
     @Test
-    @DisplayName("기간별 처리량")
+    @DisplayName("기간별 처리량 조회")
     void aggregatePeriodTaskProcess() {
         //given
         Map<String, Long> statistics = new TreeMap<>();
@@ -87,7 +87,7 @@ class FindTaskProcessServiceTest {
     }
 
     @Test
-    @DisplayName("카테고리별 요청량")
+    @DisplayName("카테고리별 요청량 조회")
     void aggregateCategoryTaskRequest() {
         //given
         Map<String, Long> statistics = new TreeMap<>();
@@ -110,7 +110,7 @@ class FindTaskProcessServiceTest {
     }
 
     @Test
-    @DisplayName("담당자별 처리량")
+    @DisplayName("담당자별 처리량 조회")
     void aggregateManagerTaskProcess() {
         //given
         Map<String, Long> statistics = new TreeMap<>();

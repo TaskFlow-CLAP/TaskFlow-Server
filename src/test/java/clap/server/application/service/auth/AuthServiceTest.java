@@ -47,7 +47,7 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("닉네임과 비밀번호를 올바르게 입력하면 로그인 성공한다.")
+    @DisplayName("로그인 성공")
     void loginSuccess() {
         // Given
         String nickname = "atom.user";
