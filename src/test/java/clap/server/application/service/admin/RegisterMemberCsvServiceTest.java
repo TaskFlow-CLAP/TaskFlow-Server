@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -142,8 +143,8 @@ class RegisterMemberCSVServiceTest {
         when(memberService.findActiveMember(adminId)).thenReturn(adminMember);
 
         // 중복 체크: 닉네임 또는 email 중 하나라도 중복이 있으면 에러 발생
-        when(loadMemberPort.findByNickname(dummyMemberInfo1.getNickname()))
-                .thenReturn(Optional.of(mock(Member.class)));
+        when(loadMemberPort.existsByNicknamesOrEmails(Set.of(dummyMemberInfo1.getNickname()), Set.of(dummyMemberInfo1.getEmail())))
+                .thenReturn(true);
 
         ApplicationException exception = assertThrows(ApplicationException.class, () ->
                 registerMemberCSVService.registerMembersFromCsv(adminId, file)
