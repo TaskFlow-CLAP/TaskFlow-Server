@@ -149,7 +149,8 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
                 .withQuery(q -> q
                         .term(v -> v
                                 .field("main_category")
-                                .value(mainCategory))).build();
+                                .value(mainCategory)))
+                .build();
 
         return NativeQuery.builder()
                 .withQuery(q -> q
@@ -164,7 +165,7 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
     }
 
     private NativeQuery buildManagerTaskProcessQuery(PeriodConfig config) {
-        return NativeQuery.builder()
+        NativeQuery rangeQuery = NativeQuery.builder()
                 .withQuery(q -> q
                         .range(r -> r
                                 .date(d -> d
@@ -172,6 +173,19 @@ public class TaskDocumentAdapter implements TaskDocumentPort {
                                         .timeZone(TIME_ZONE)
                                         .gte(String.valueOf(LocalDate.now().minusDays(config.getDaysToSubtract())))
                                         .lt(String.valueOf(LocalDate.now())))))
+                .build();
+        NativeQuery statusQuery = NativeQuery.builder()
+                .withQuery(q -> q
+                        .term(v -> v
+                                .field("status")
+                                .value("completed")))
+                .build();
+
+        return NativeQuery.builder()
+                .withQuery(q -> q
+                        .bool(b -> b
+                                .must(rangeQuery.getQuery(), statusQuery.getQuery()))
+                )
                 .withAggregation("manager_task", AggregationBuilders.terms()
                         .field("processor")
                         .build()._toAggregation())
