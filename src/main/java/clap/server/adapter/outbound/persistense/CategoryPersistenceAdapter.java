@@ -51,7 +51,7 @@ public class CategoryPersistenceAdapter implements LoadCategoryPort, CommandCate
 
     @Override
     public boolean existsByNameOrCode(String name, String code) {
-        return categoryRepository.existsByNameOrCode(name, code);
+        return categoryRepository.existsByNameOrCodeAndIsDeletedFalse(name, code);
     }
 
     @Override
