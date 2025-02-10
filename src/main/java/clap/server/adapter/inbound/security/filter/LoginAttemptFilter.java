@@ -2,7 +2,6 @@ package clap.server.adapter.inbound.security.filter;
 
 import clap.server.application.port.inbound.auth.CheckAccountLockStatusUseCase;
 import clap.server.exception.AuthException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 
 import static clap.server.adapter.inbound.security.WebSecurityUrl.LOGIN_ENDPOINT;
 import static clap.server.common.utils.ClientIpParseUtil.getClientIp;
-import static clap.server.common.utils.ParseNicknameUtil.getNicknameFromRequestBody;
 
 
 @RequiredArgsConstructor
