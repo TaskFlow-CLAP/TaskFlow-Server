@@ -10,21 +10,21 @@ import static clap.server.domain.policy.task.TaskPolicyConstants.DEFAULT_PROCESS
 @Policy
 public class TaskOrderCalculationPolicy {
 
-    public long calculateOrderForTop(Task prevTask, Task nextTask) {
+    public long calculateOrderForTop(final Task prevTask,final Task nextTask) {
         Long prevTaskOrder = prevTask == null ? null : prevTask.getProcessorOrder();
         if (prevTaskOrder == null) {
             return nextTask.getProcessorOrder() - DEFAULT_PROCESSOR_ORDER_GAP;
         } else return calculateNewProcessorOrder(prevTaskOrder, nextTask.getProcessorOrder());
     }
 
-    public long calculateOrderForBottom(Task prevTask, Task nextTask) {
+    public long calculateOrderForBottom(final Task prevTask,final Task nextTask) {
         Long nextTaskOrder = nextTask == null ? null : nextTask.getProcessorOrder();
         if (nextTaskOrder == null) {
             return prevTask.getProcessorOrder() + DEFAULT_PROCESSOR_ORDER_GAP;
         } else return calculateNewProcessorOrder(prevTask.getProcessorOrder(), nextTaskOrder);
     }
 
-    public long calculateNewProcessorOrder(Long prevTaskOrder, Long nextTaskOrder) {
+    public long calculateNewProcessorOrder(final Long prevTaskOrder,final Long nextTaskOrder) {
         if (prevTaskOrder != null && nextTaskOrder != null) {
             if (nextTaskOrder - prevTaskOrder < 2) {
                 throw new DomainException(TaskErrorCode.INVALID_TASK_ORDER);
