@@ -7,8 +7,11 @@ import clap.server.common.utils.FileTypeValidator;
 import clap.server.exception.AdapterException;
 import clap.server.exception.code.FileErrorcode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,6 +34,7 @@ public class RegisterMemberCsvController {
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> registerMembersFromCsv(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
+            @Parameter(description = "csv, 엑셀 포맷 파일만 입력 가능합니다.", content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @RequestParam("file") MultipartFile file) throws IOException {
         if (!FileTypeValidator.validCSVFile(file.getInputStream())) {
             throw new AdapterException(FileErrorcode.UNSUPPORTED_FILE_TYPE);}
