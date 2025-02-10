@@ -53,8 +53,6 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     @Override
     @Transactional
     public void updateTaskOrder(Long processorId, UpdateTaskOrderRequest request) {
-        // 요청 유효성 검증
-        validateRequest(request, null);
         Member processor = memberService.findActiveMember(processorId);
         Task targetTask = taskService.findById(request.targetTaskId());
         processorValidationPolicy.validateProcessor(processorId, targetTask);
@@ -103,7 +101,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     @Override
     @Transactional
     public void updateTaskOrderAndStatus(Long processorId, UpdateTaskOrderRequest request, TaskStatus targetStatus) {
-        validateRequest(request, targetStatus);
+        validateRequest(targetStatus);
         Member processor = memberService.findActiveMember(processorId);
         Task targetTask = taskService.findById(request.targetTaskId());
         processorValidationPolicy.validateProcessor(processorId, targetTask);
@@ -174,7 +172,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
     /**
      * 순서 변경 요청의 유효성을 검증하는 메서드
      */
-    public void validateRequest(UpdateTaskOrderRequest request, TaskStatus targetStatus) {
+    public void validateRequest(TaskStatus targetStatus) {
         // 타겟 상태가 유효한지 검증
         if (targetStatus != null && !TaskPolicyConstants.TASK_BOARD_STATUS_FILTER.contains(targetStatus)) {
             throw new ApplicationException(TaskErrorCode.INVALID_TASK_STATUS_TRANSITION);
