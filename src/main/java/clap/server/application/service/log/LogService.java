@@ -35,7 +35,7 @@ public class LogService implements LoggingPort {
     }
 
     public void createLoginFailedLog(HttpServletRequest request, int statusCode, String customCode, LogStatus logStatus, String requestBody, String nickName) {
-        LoginLog loginLog = loadLoginLogPort.findByClientIp(ClientIpParseUtil.getClientIp(request)).orElse(null);
+        LoginLog loginLog = loadLoginLogPort.findByNickname(nickName).orElse(null);
         String responseBody = loginLog != null ? loginLog.toSummaryString() : null;
         AnonymousLog anonymousLog = AnonymousLog.createAnonymousLog(request, statusCode,customCode, logStatus, responseBody, requestBody, nickName);
         commandLogPort.saveAnonymousLog(anonymousLog);

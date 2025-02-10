@@ -1,7 +1,6 @@
 package clap.server.adapter.inbound.security.filter;
 
 import clap.server.application.port.inbound.auth.CheckAccountLockStatusUseCase;
-import clap.server.application.service.auth.LoginAttemptService;
 import clap.server.exception.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,8 +13,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static clap.server.adapter.inbound.security.WebSecurityUrl.LOGIN_ENDPOINT;
@@ -33,9 +34,8 @@ public class LoginAttemptFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             if (request.getRequestURI().equals(LOGIN_ENDPOINT)) {
-                String clientIp = getClientIp(request);
-
-                checkAccountLockStatusUseCase.checkAccountIsLocked(clientIp);
+                String nickname = request.getParameter("nickname");
+                checkAccountLockStatusUseCase.checkAccountIsLocked(nickname);
 
             }
         } catch (AuthException e) {
@@ -52,6 +52,16 @@ public class LoginAttemptFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         filterChain.doFilter(request, response);
+    }
+
+    private String getRequestBody(HttpServletRequest request) {
+        try {
+            ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper) request;
+            byte[] content = cachingRequest.getContentAsByteArray();
+            return new String(content, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return "요청 바디의 내용을 읽을 수 없음";
+        }
     }
 
 }
