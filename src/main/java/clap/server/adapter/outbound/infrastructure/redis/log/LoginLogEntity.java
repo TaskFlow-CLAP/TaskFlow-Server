@@ -14,15 +14,15 @@ import org.springframework.data.redis.core.RedisHash;
 import java.time.LocalDateTime;
 
 @Getter
-@RedisHash("loginLog")
+@RedisHash(value = "loginLog", timeToLive = 3600)
 @Builder
-@ToString(of = {"clientIp", "attemptNickname", "lastAttemptAt", "failedCount", "isLocked"})
-@EqualsAndHashCode(of = {"clientIp"})
+@ToString(of = {"nickname", "clientIp", "lastAttemptAt", "failedCount", "isLocked"})
+@EqualsAndHashCode(of = {"nickname"})
 public class LoginLogEntity {
 	@Id
-	private String clientIp;
+	private String nickname;
 
-	private String attemptNickname;
+	private String clientIp;
 
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)

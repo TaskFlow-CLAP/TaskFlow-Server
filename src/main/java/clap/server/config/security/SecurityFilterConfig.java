@@ -6,6 +6,7 @@ import clap.server.adapter.inbound.security.filter.JwtExceptionFilter;
 import clap.server.application.port.outbound.auth.forbidden.ForbiddenTokenPort;
 import clap.server.application.port.outbound.auth.JwtProvider;
 import clap.server.application.service.auth.LoginAttemptService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,11 +1,9 @@
 package clap.server.adapter.inbound.web.dto.auth.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record LoginRequest(
-        @NotNull
-        String nickname,
-        @NotNull
+        @NotBlank
         String password
 ) {
 }

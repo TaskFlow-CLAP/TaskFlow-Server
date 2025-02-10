@@ -22,10 +22,10 @@ public class LoginAttemptService implements CheckAccountLockStatusUseCase {
     private static final int MAX_FAILED_ATTEMPTS = 5;
     private static final long LOCK_TIME_DURATION = 30 * 60 * 1000; // 30분 (밀리초)
 
-    public void recordFailedAttempt(String clientIp, String attemptNickname) {
-        LoginLog loginLog = loadLoginLogPort.findByClientIp(clientIp).orElse(null);
+    public void recordFailedAttempt(String nickname, String clientIp) {
+        LoginLog loginLog = loadLoginLogPort.findByNickname(nickname).orElse(null);
         if (loginLog == null) {
-            loginLog = LoginLog.createLoginLog(clientIp, attemptNickname);
+            loginLog = LoginLog.createLoginLog(nickname, clientIp);
         } else {
             int attemptCount = loginLog.recordFailedAttempt();
             if (attemptCount >= MAX_FAILED_ATTEMPTS) {
@@ -38,8 +38,8 @@ public class LoginAttemptService implements CheckAccountLockStatusUseCase {
     }
 
     @Override
-    public void checkAccountIsLocked(String clientIp) {
-        LoginLog loginLog = loadLoginLogPort.findByClientIp(clientIp).orElse(null);
+    public void checkAccountIsLocked(String nickname) {
+        LoginLog loginLog = loadLoginLogPort.findByNickname(nickname).orElse(null);
         if (loginLog == null) {
             return;
         }
@@ -53,12 +53,12 @@ public class LoginAttemptService implements CheckAccountLockStatusUseCase {
             if (minutesSinceLastAttemptInMillis <= LOCK_TIME_DURATION) {
                 throw new AuthException(AuthErrorCode.ACCOUNT_IS_LOCKED);
             }
-            else commandLoginLogPort.deleteById(clientIp);
+            else commandLoginLogPort.deleteById(nickname);
         }
     }
 
 
-    public void resetFailedAttempts(String clientIp) {
-        commandLoginLogPort.deleteById(clientIp);
+    public void resetFailedAttempts(String nickname) {
+        commandLoginLogPort.deleteById(nickname);
     }
 }
