@@ -29,10 +29,10 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
 
-      - name: Checkout main code
+      - name: Checkout release code
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: release
 
       - name: Issue Parser
         uses: stefanbuck/github-issue-praser@v3
@@ -74,10 +74,10 @@ jobs:
       - name: Log created issue
         run: echo "Jira Issue ${{ steps.issue-parser.outputs.parentKey }}/${{ steps.create.outputs.issue }} was created"
 
-      - name: Checkout develop code
+      - name: Checkout release code
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: release
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: Create branch with Ticket number
