@@ -54,7 +54,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
         Member processor = task.getProcessor();
         Member requester = task.getRequester();
-        if (member.getMemberInfo().getRole() == MemberRole.ROLE_USER) {
+        if (member.getMemberInfo().getRole() == requester.getMemberInfo().getRole()) {
             publishNotification(processor, task, request.content(), requester.getNickname());
         } else {
             publishNotification(requester, task, request.content(), processor.getNickname());
