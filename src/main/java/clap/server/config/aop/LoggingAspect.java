@@ -7,7 +7,6 @@ import clap.server.application.port.outbound.log.LoggingPort;
 import clap.server.common.annotation.log.LogType;
 import clap.server.exception.BaseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -88,9 +87,9 @@ public class LoggingAspect {
 
     private void handleLoginLog(int statusCode, HttpServletRequest request, String customCode, LogStatus logStatus, Object result) throws JsonProcessingException {
         if (statusCode == HttpStatus.SC_OK) {
-            loggingPort.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromRequestBody(request));
+            loggingPort.createAnonymousLog(request, statusCode, customCode, logStatus, result, getRequestBody(request), getNicknameFromParameter(request));
         } else {
-            loggingPort.createLoginFailedLog(request, statusCode, customCode, logStatus, getRequestBody(request), getNicknameFromRequestBody(request));
+            loggingPort.createLoginFailedLog(request, statusCode, customCode, logStatus, getRequestBody(request), getNicknameFromParameter(request));
         }
     }
 
@@ -102,14 +101,8 @@ public class LoggingAspect {
         }
     }
 
-    private String getNicknameFromRequestBody(HttpServletRequest request) {
-        try {
-            String requestBody = getRequestBody(request);
-            JsonNode jsonNode = objectMapper.readTree(requestBody);
-            return jsonNode.has("nickname") ? jsonNode.get("nickname").asText() : null;
-        } catch (Exception e) {
-            return null;
-        }
+    private String getNicknameFromParameter(HttpServletRequest request) {
+        return request.getParameter("nickname");
     }
 
     private String getRequestBody(HttpServletRequest request) {

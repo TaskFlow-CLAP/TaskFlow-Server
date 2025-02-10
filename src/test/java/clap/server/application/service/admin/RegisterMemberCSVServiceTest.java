@@ -3,6 +3,8 @@ package clap.server.application.service.admin;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
+import clap.server.application.service.admin.CsvParseService;
+import clap.server.application.service.admin.RegisterMemberCSVService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
