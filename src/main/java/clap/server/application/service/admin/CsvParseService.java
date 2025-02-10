@@ -61,7 +61,7 @@ public class CsvParseService {
                 .findFirst()
                 .orElseThrow(() -> new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
-        managerDepartmentPolicy.validateDepartment(department, MemberRole.valueOf(fields[3].trim()));
+        managerDepartmentPolicy.validateDepartment(department, MemberRole.valueOf(fields[5].trim()));
         MemberInfo memberInfo = toMemberInfo(
                 fields[0].trim(), // name
                 fields[4].trim(), // email
