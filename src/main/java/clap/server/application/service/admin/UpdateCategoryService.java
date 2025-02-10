@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import static clap.server.exception.code.MemberErrorCode.ACTIVE_MEMBER_NOT_FOUND;
+import static clap.server.exception.code.TaskErrorCode.CATEGORY_DUPLICATE;
 import static clap.server.exception.code.TaskErrorCode.CATEGORY_NOT_FOUND;
 
 @ApplicationService
@@ -25,6 +26,7 @@ public class UpdateCategoryService implements UpdateCategoryUsecase {
     @Transactional
     public void updateCategory(Long adminId, Long categoryId, String name, String code, String descriptionExample) {
         Member admin = loadMemberPort.findActiveMemberById(adminId).orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND));
+        if (loadCategoryPort.existsByNameOrCode(name, code)) throw new ApplicationException(CATEGORY_DUPLICATE);
         Category category = loadCategoryPort.findById(categoryId)
                 .orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND));
         category.updateCategory(admin, name, code, descriptionExample);

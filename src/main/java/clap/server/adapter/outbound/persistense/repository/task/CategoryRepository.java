@@ -12,5 +12,5 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
     List<CategoryEntity> findByIsDeletedFalseAndMainCategoryIsNull();
     List<CategoryEntity> findByIsDeletedFalseAndMainCategoryIsNotNull();
 
-    boolean existsByNameOrCode(String name, String code);
+    boolean existsByNameOrCodeAndIsDeletedFalse(String name, String code);
 }
