@@ -12,6 +12,8 @@ import clap.server.common.utils.FileTypeValidator;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.FileErrorcode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -50,6 +52,7 @@ public class MemberInfoController {
     @PatchMapping(value = "/info", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public void updateMemberDetailInfo(
             @RequestPart(name = "memberInfo") UpdateMemberInfoRequest request,
+            @Parameter(description = "image/jpeg, image/pjpeg, image/png, image/gif, image/bmp, image/x-windows-bmp 형식만 가능합니다.", content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @RequestPart(name = "profileImage", required = false) MultipartFile profileImage,
             @AuthenticationPrincipal SecurityUserDetails userInfo) throws IOException {
         if (profileImage !=null && !FileTypeValidator.validImageFile(profileImage.getInputStream())) {

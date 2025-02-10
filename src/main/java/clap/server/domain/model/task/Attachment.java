@@ -45,9 +45,13 @@ public class Attachment extends BaseTime {
     }
 
     public static String formatFileSize(long size) {
-        if (size < 1024) return size + " B";
-        int z = (63 - Long.numberOfLeadingZeros(size)) / 10;
-        return String.format("%.1f %sB", (double) size / (1L << (z * 10)), " KMGTPE".charAt(z));
+        if (size < 1024) {
+            return size + " B";
+        } else if (size < 1024 * 1024) {
+            return String.format("%.1f KB", size / 1024.0);
+        } else {
+            return String.format("%.1f MB", size / (1024.0 * 1024.0));
+        }
     }
 
 }

@@ -5,7 +5,6 @@ import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.auth.loginLog.LoadLoginLogPort;
 import clap.server.application.port.outbound.log.CommandLogPort;
 import clap.server.application.port.outbound.log.LoggingPort;
-import clap.server.common.utils.ClientIpParseUtil;
 import clap.server.domain.model.auth.LoginLog;
 import clap.server.domain.model.log.AnonymousLog;
 import clap.server.domain.model.log.MemberLog;
