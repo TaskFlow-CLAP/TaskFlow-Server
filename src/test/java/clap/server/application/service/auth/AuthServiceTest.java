@@ -67,7 +67,7 @@ class AuthServiceTest {
         assertNotNull(response);
         assertEquals(jwtTokens.accessToken(), response.accessToken());
         assertEquals(jwtTokens.refreshToken(), response.refreshToken());
-        verify(loginAttemptService).resetFailedAttempts(clientIp);
+        verify(loginAttemptService).resetFailedAttempts(nickname);
         verify(refreshTokenService).saveRefreshToken(any());
     }
 
@@ -85,7 +85,7 @@ class AuthServiceTest {
 
         // When & Then
         assertThrows(AuthException.class, () -> authService.login(nickname, inputPassword, clientIp));
-        verify(loginAttemptService).recordFailedAttempt(clientIp, nickname);
+        verify(loginAttemptService).recordFailedAttempt(nickname, clientIp);
     }
 
 

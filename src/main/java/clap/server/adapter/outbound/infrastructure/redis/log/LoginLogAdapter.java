@@ -25,7 +25,8 @@ public class LoginLogAdapter implements LoadLoginLogPort, CommandLoginLogPort {
 		loginLogRepository.deleteById(clientIp);
 	}
 
-	public Optional<LoginLog> findByClientIp(String clientIp) {
-		return loginLogRepository.findById(clientIp).map(loginLogMapper::toDomain);
+	@Override
+	public Optional<LoginLog> findByNickname(String nickname) {
+		return loginLogRepository.findById(nickname).map(loginLogMapper::toDomain);
 	}
 }

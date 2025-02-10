@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +33,11 @@ public class AuthController {
     @LogType(LogStatus.LOGIN)
     @Operation(summary = "로그인 API")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(
+    public ResponseEntity<LoginResponse> login(@RequestParam @NotBlank String nickname,
                                                @RequestBody LoginRequest request,
                                                HttpServletRequest httpRequest) {
         String clientIp = getClientIp(httpRequest);
-        LoginResponse response = loginUsecase.login(request.nickname(), request.password(), clientIp);
+        LoginResponse response = loginUsecase.login(nickname, request.password(), clientIp);
         return ResponseEntity.ok(response);
     }
 

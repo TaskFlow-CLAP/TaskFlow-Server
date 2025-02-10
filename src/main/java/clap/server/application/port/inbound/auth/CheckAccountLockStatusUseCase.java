@@ -1,5 +1,5 @@
 package clap.server.application.port.inbound.auth;
 
 public interface CheckAccountLockStatusUseCase {
-    void checkAccountIsLocked(String clientIp);
+    void checkAccountIsLocked(String nickname);
 }
