@@ -25,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
+
 @ApplicationService
 @RequiredArgsConstructor
 public class PostCommentService implements SaveCommentUsecase, SaveCommentAttachmentUsecase {
@@ -54,10 +56,10 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
         Member processor = task.getProcessor();
         Member requester = task.getRequester();
-        if (member.getMemberInfo().getRole() == requester.getMemberInfo().getRole()) {
-            publishNotification(processor, task, request.content(), requester.getNickname());
+        if (Objects.equals(member.getMemberId(), requester.getMemberId())) {
+            publishNotification(processor, task, request.content(), member.getNickname());
         } else {
-            publishNotification(requester, task, request.content(), processor.getNickname());
+            publishNotification(requester, task, request.content(), member.getNickname());
         }
 
     }
