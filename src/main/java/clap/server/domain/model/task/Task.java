@@ -117,6 +117,7 @@ public class Task extends BaseTime {
             throw new DomainException(NOT_A_REQUESTER);
         }
         this.taskStatus = TaskStatus.TERMINATED;
+        this.isDeleted = true;
         this.finishedAt = LocalDateTime.now();
     }
 }
