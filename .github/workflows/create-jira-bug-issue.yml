@@ -29,10 +29,10 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
 
-      - name: Checkout main code
+      - name: Checkout release code
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: release
 
       - name: Issue Parser
         uses: stefanbuck/github-issue-praser@v3
