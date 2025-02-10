@@ -36,6 +36,7 @@ public class Task extends BaseTime {
     private LocalDateTime dueDate;
     private LocalDateTime finishedAt;
     private int attachmentCount;
+    private boolean isDeleted;
 
     public static Task createTask(Member member, Category category, String title, String description, int attachmentCount) {
         return Task.builder()
