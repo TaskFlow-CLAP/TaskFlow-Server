@@ -23,7 +23,7 @@ public class LoginAttemptService implements CheckAccountLockStatusUseCase {
     private static final long LOCK_TIME_DURATION = 30 * 60 * 1000; // 30분 (밀리초)
 
     public void recordFailedAttempt(String nickname, String clientIp) {
-        LoginLog loginLog = loadLoginLogPort.findByNickname(clientIp).orElse(null);
+        LoginLog loginLog = loadLoginLogPort.findByNickname(nickname).orElse(null);
         if (loginLog == null) {
             loginLog = LoginLog.createLoginLog(nickname, clientIp);
         } else {

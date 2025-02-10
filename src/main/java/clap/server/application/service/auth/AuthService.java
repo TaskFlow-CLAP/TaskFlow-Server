@@ -78,7 +78,7 @@ class AuthService implements LoginUsecase, LogoutUsecase {
 
     private void validatePassword(String inputPassword, String encodedPassword, String inputNickname, String clientIp) {
         if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
-            loginAttemptService.recordFailedAttempt(clientIp, inputNickname);
+            loginAttemptService.recordFailedAttempt(inputNickname, clientIp);
             throw new AuthException(AuthErrorCode.LOGIN_REQUEST_FAILED);
         }
     }
