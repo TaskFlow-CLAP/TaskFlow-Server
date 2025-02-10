@@ -46,7 +46,7 @@ class AuthService implements LoginUsecase, LogoutUsecase {
 
         CustomJwts jwtTokens = manageTokenService.issueTokens(member);
         refreshTokenService.saveRefreshToken(manageTokenService.issueRefreshToken(member.getMemberId()));
-        loginAttemptService.resetFailedAttempts(clientIp);
+        loginAttemptService.resetFailedAttempts(nickname);
         return AuthResponseMapper.toLoginResponse(jwtTokens.accessToken(), jwtTokens.refreshToken());
     }
 
@@ -71,7 +71,7 @@ class AuthService implements LoginUsecase, LogoutUsecase {
     private Member getMember(String inputNickname, String clientIp) {
         return loadMemberPort.findByNickname(inputNickname).orElseThrow(() ->
         {
-            loginAttemptService.recordFailedAttempt(clientIp, inputNickname);
+            loginAttemptService.recordFailedAttempt(inputNickname, clientIp);
             return new AuthException(AuthErrorCode.LOGIN_REQUEST_FAILED);
         });
     }

@@ -31,14 +31,15 @@ class LoginAttemptServiceTest {
     @Mock
     private CommandLoginLogPort commandLoginLogPort;
 
-    private final String clientIp = "192.168.1.1";
+    private static final String nickname = "testUser";
+    private static final String clientIp = "192.168.1.1";
     private LoginLog existingLoginLog;
     private LoginLog lockedAccountLoginLog;
     private LoginLog lockTimeExpiredLoginLog;
 
-    public static LoginLog createLoginLog(String clientIp, int count, boolean isLocked, LocalDateTime lastAttemptAt){
+    public static LoginLog createLoginLog(int count, boolean isLocked, LocalDateTime lastAttemptAt){
         return LoginLog.builder()
-                .attemptNickname("testUser")
+                .nickname(nickname)
                 .lastAttemptAt(lastAttemptAt)
                 .failedCount(count)
                 .isLocked(isLocked)
@@ -48,18 +49,18 @@ class LoginAttemptServiceTest {
 
     @BeforeEach
     void setUp() {
-        existingLoginLog = createLoginLog(clientIp, 3, false, LocalDateTime.now());
-        lockedAccountLoginLog = createLoginLog(clientIp, 5, true, LocalDateTime.now());
-        lockTimeExpiredLoginLog = createLoginLog(clientIp, 5, true, LocalDateTime.now().minusMinutes(31));
+        existingLoginLog = createLoginLog(3, false, LocalDateTime.now());
+        lockedAccountLoginLog = createLoginLog(5, true, LocalDateTime.now());
+        lockTimeExpiredLoginLog = createLoginLog(5, true, LocalDateTime.now().minusMinutes(31));
     }
 
     @Test
-    @DisplayName("로그인에 실패하면 IP를 통해 로그인 실패 기록이 저장된다.")
+    @DisplayName("로그인에 실패하면 nickname을 통해 로그인 실패 기록이 저장된다.")
     void recordFailedAttempt_NewIP() {
         String nickname = "testUser";
-        when(loadLoginLogPort.findByClientIp(clientIp)).thenReturn(Optional.empty());
+        when(loadLoginLogPort.findByNickname(nickname)).thenReturn(Optional.empty());
 
-        loginAttemptService.recordFailedAttempt(clientIp, nickname);
+        loginAttemptService.recordFailedAttempt(nickname, nickname);
 
         verify(commandLoginLogPort).save(any(LoginLog.class));
     }
@@ -67,12 +68,11 @@ class LoginAttemptServiceTest {
     @Test
     @DisplayName("기존 IP로 로그인에 실패하면 로그인 실패 기록이 갱신된다.")
     void recordFailedAttempt_ExistingIP_BeforeLock() {
-        String nickname = "testUser";
         LoginLog existingLog = existingLoginLog;;
 
-        when(loadLoginLogPort.findByClientIp(clientIp)).thenReturn(Optional.of(existingLog));
+        when(loadLoginLogPort.findByNickname(nickname)).thenReturn(Optional.of(existingLog));
 
-        loginAttemptService.recordFailedAttempt(clientIp, nickname);
+        loginAttemptService.recordFailedAttempt(nickname, clientIp);
 
         verify(commandLoginLogPort).save(existingLog);
         assertEquals(4, existingLog.getFailedCount());
@@ -80,15 +80,14 @@ class LoginAttemptServiceTest {
     }
 
     @Test
-    @DisplayName("기존 IP로 로그인에 5회 실패하면 계정이 잠긴다.")
+    @DisplayName("로그인에 5회 실패하면 계정이 잠긴다.")
     void recordFailedAttempt_AccountLock() {
-        String nickname = "testUser";
         LoginLog existingLog = existingLoginLog;
         existingLog.recordFailedAttempt();
 
-        when(loadLoginLogPort.findByClientIp(clientIp)).thenReturn(Optional.of(existingLog));
+        when(loadLoginLogPort.findByNickname(nickname)).thenReturn(Optional.of(existingLog));
 
-        assertThrows(AuthException.class, () -> loginAttemptService.recordFailedAttempt(clientIp, nickname));
+        assertThrows(AuthException.class, () -> loginAttemptService.recordFailedAttempt(nickname,clientIp ));
 
         verify(commandLoginLogPort).save(existingLog);
         assertTrue(existingLog.isLocked());
@@ -100,9 +99,9 @@ class LoginAttemptServiceTest {
         LoginLog loginLog = existingLoginLog;
         loginLog.setLocked(false);
 
-        when(loadLoginLogPort.findByClientIp(clientIp)).thenReturn(Optional.of(loginLog));
+        when(loadLoginLogPort.findByNickname(loginLog.getNickname())).thenReturn(Optional.of(loginLog));
 
-        assertDoesNotThrow(() -> loginAttemptService.checkAccountIsLocked(clientIp));
+        assertDoesNotThrow(() -> loginAttemptService.checkAccountIsLocked(loginLog.getNickname()));
     }
 
     @Test
@@ -110,10 +109,10 @@ class LoginAttemptServiceTest {
     void checkAccountIsLocked_Locked() {
         LoginLog loginLog = lockedAccountLoginLog;
 
-        when(loadLoginLogPort.findByClientIp(clientIp)).thenReturn(Optional.of(loginLog));
+        when(loadLoginLogPort.findByNickname(loginLog.getNickname())).thenReturn(Optional.of(loginLog));
 
         AuthException exception = assertThrows(AuthException.class, () ->
-                loginAttemptService.checkAccountIsLocked(clientIp)
+                loginAttemptService.checkAccountIsLocked(loginLog.getNickname())
         );
 
         assertEquals(AuthErrorCode.ACCOUNT_IS_LOCKED.getMessage(), exception.getMessage(),
@@ -125,11 +124,11 @@ class LoginAttemptServiceTest {
     void checkAccountIsLocked_LockTimeExpired() {
         LoginLog loginLog = lockTimeExpiredLoginLog;
 
-        when(loadLoginLogPort.findByClientIp(clientIp)).thenReturn(Optional.of(loginLog));
+        when(loadLoginLogPort.findByNickname(loginLog.getNickname())).thenReturn(Optional.of(loginLog));
 
-        loginAttemptService.checkAccountIsLocked(clientIp);
+        loginAttemptService.checkAccountIsLocked(loginLog.getNickname());
 
-        verify(commandLoginLogPort).deleteById(clientIp);
+        verify(commandLoginLogPort).deleteById(loginLog.getNickname());
     }
 
 }
