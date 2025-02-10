@@ -6,7 +6,7 @@ name: CI for dev using github actions
 on:
   pull_request:
     types: [opened, synchronize]
-    branches: [ "develop" ]
+    branches: [ "develop", "release" ]
 
 permissions:
   contents: read
