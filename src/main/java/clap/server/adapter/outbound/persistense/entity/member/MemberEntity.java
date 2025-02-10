@@ -56,10 +56,6 @@ public class MemberEntity extends BaseTimeEntity {
     @Builder.Default
     private Boolean kakaoworkNotificationEnabled = Boolean.TRUE;;
 
-    @Column(name = "agit_notification_enabled")
-    @Builder.Default
-    private Boolean agitNotificationEnabled = Boolean.TRUE;;
-
     @Column(name = "email_notification_enabled")
     @Builder.Default
     private Boolean emailNotificationEnabled = Boolean.TRUE;;

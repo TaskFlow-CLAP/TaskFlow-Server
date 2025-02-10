@@ -30,7 +30,7 @@ class UpdateMemberInfoService implements UpdateMemberInfoUsecase {
             String profileImageUrl = profileImage != null ? s3UploadPort.uploadSingleFile(FilePathConstants.MEMBER_IMAGE, profileImage) : member.getImageUrl();
             member.setImageUrl(profileImageUrl);
         }
-        member.updateMemberInfo(request.name(), request.agitNotification(), request.emailNotification(),
+        member.updateMemberInfo(request.name(), request.emailNotification(),
                 request.kakaoWorkNotification());
         commandMemberPort.save(member);
     }

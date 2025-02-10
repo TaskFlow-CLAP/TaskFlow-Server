@@ -23,7 +23,6 @@ public class ManagementNotificationController {
     private final UpdateNotificationUsecase updateNotificationUsecase;
     private final UpdateAllNotificationUsecase updateAllNotificationUsecase;
     private final EnableKakaoUsecase enableKakaoUsecase;
-    private final EnableAgitUsecase enableAgitUsecase;
     private final EnableEmailUsecase enableEmailUsecase;
 
     @Operation(summary = "알림 목록에서 한 개 눌렀을 때 읽음 처리")
@@ -40,18 +39,14 @@ public class ManagementNotificationController {
         updateAllNotificationUsecase.updateAllNotification(userInfo.getUserId());
     }
 
+    @Deprecated
     @Operation(summary = "카카오 푸시 알림 활성화/비활성화 API", description = "알림 거부였을 시 -> 승인으로 변경, 알림 승인이였을 시 -> 거부로 변경")
     @PatchMapping("/kakao")
     public void enableKaKaoWork(@AuthenticationPrincipal SecurityUserDetails userInfo) {
         enableKakaoUsecase.enableKakao(userInfo.getUserId());
     }
 
-    @Operation(summary = "아지트 푸시 알림 활성화/비활성화 API", description = "알림 거부였을 시 -> 승인으로 변경, 알림 승인이였을 시 -> 거부로 변경")
-    @PatchMapping("/agit")
-    public void enableAgit(@AuthenticationPrincipal SecurityUserDetails userInfo) {
-        enableAgitUsecase.enableAgit(userInfo.getUserId());
-    }
-
+    @Deprecated
     @Operation(summary = "이메일 푸시 알림 활성화/비활성화 API", description = "알림 거부였을 시 -> 승인으로 변경, 알림 승인이였을 시 -> 거부로 변경")
     @PatchMapping("/email")
     public void enableEmail(@AuthenticationPrincipal SecurityUserDetails userInfo) {

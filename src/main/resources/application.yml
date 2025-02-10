@@ -17,8 +17,6 @@ spring:
     multipart:
       max-file-size: 5MB
 
-
-
 server:
   port: ${APPLICATION_PORT:8080}
   tomcat:
@@ -29,6 +27,10 @@ server:
   domain:
     local: ${TASKFLOW_LOCAL_SERVER:127.0.0.1:8080}
     service: ${TASKFLOW_SERVICE_SERVER:127.0.0.1:8080}
+  servlet.session.cookie:
+    http-only: true
+    path: /
+    secure: true
 
 web:
   domain:
