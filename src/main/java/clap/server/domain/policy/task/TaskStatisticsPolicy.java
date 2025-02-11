@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @Policy
@@ -20,7 +19,7 @@ public class TaskStatisticsPolicy {
                         entry -> formatDate(entry.getKey()),
                         Entry::getValue,
                         (v1, v2) -> v1,
-                        TreeMap::new
+                        LinkedHashMap::new
                 ));
     }
 
