@@ -33,7 +33,6 @@ public class FindTaskHistoriesService implements FindTaskHistoriesUsecase {
         memberService.findActiveMember(memberId);
         Task task = loadTaskPort.findById(taskId)
                 .orElseThrow(()-> new DomainException(TaskErrorCode.TASK_NOT_FOUND));
-        //List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNotNull(task.getTaskId());
         List<TaskHistory> taskHistories = loadTaskHistoryPort.findAllTaskHistoriesByTaskId(task.getTaskId());
         return TaskHistoryResponseMapper.toFindTaskHistoryResponse(taskHistories);
     }

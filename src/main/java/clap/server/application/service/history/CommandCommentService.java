@@ -32,10 +32,7 @@ public class CommandCommentService implements EditCommentUsecase, DeleteCommentU
 
     private final MemberService memberService;
     private final CommentService commentService;
-
     private final CommandCommentPort commandCommentPort;
-    private final LoadAttachmentPort loadAttachmentPort;
-    private final CommandAttachmentPort commandAttachmentPort;
 
     @Transactional
     @Override
@@ -54,23 +51,8 @@ public class CommandCommentService implements EditCommentUsecase, DeleteCommentU
     @Transactional
     @Override
     public void deleteComment(Long memberId, Long commentId) {
-        Member member = memberService.findActiveMember(memberId);
-        Comment comment = commentService.findById(commentId);
-        
-        if (comment.getMember().getMemberId().equals(member.getMemberId())) {
-            if (loadAttachmentPort.exitsByCommentId(commentId)) {
-                deleteAttachments(commentId);
-            }
-            commandCommentPort.deleteCommentWithTaskHistory(commentId);
-        }else{
-            throw new ApplicationException(CommentErrorCode.NOT_A_COMMENT_WRITER);
-        }
-    }
-
-    private void deleteAttachments(Long commentId) {
-        Attachment attachment = loadAttachmentPort.findByCommentId(commentId)
-                .orElseThrow(() -> new ApplicationException(CommentErrorCode.COMMENT_ATTACHMENT_NOT_FOUND));
-        attachment.softDelete();
-        commandAttachmentPort.save(attachment);
+        memberService.findActiveMember(memberId);
+        commentService.findById(commentId);
+        commandCommentPort.deleteCommentWithTaskHistory(commentId);
     }
 }
