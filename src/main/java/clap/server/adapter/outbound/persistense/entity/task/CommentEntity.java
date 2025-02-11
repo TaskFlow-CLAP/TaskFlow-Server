@@ -35,8 +35,18 @@ public class CommentEntity extends BaseTimeEntity {
     @Column(name = "content")
     private String content;
 
+    @Column
+    private String originalName;
+
+    @Column
+    private String fileUrl;
+
+    @Column
+    private String fileSize;
+
     @Column(name = "is_modified", nullable = false)
-    private boolean isModified;
+    @Builder.Default
+    private boolean isModified = Boolean.FALSE;
 
     @Column(name="is_deleted", nullable = false)
     @Builder.Default

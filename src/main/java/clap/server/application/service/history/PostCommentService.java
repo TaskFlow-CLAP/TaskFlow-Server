@@ -90,7 +90,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
     private String saveAttachment(MultipartFile file, Task task, Comment comment) {
         String fileUrl = s3UploadPort.uploadSingleFile(FilePathConstants.TASK_COMMENT, file);
-        Attachment attachment = Attachment.createCommentAttachment(task, comment, file.getOriginalFilename(), fileUrl, file.getSize());
+        Attachment attachment = Attachment.createCommentAttachment(task, file.getOriginalFilename(), fileUrl, file.getSize());
         commandAttachmentPort.save(attachment);
         return file.getOriginalFilename();
     }
