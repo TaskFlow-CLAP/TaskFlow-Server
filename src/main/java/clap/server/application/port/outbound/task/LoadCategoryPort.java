@@ -12,5 +12,7 @@ public interface LoadCategoryPort {
     List<Category> findMainCategory();
     List<Category> findSubCategory();
 
-    boolean existsByNameOrCode(String name, String code);
+    boolean existsMainCategoryByNameOrCode(String name, String code);
+
+    boolean existsSubCategoryByNameOrCode(Category category, String name, String code);
 }
