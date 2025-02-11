@@ -73,7 +73,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         taskCommentPolicy.validateCommentPermission(task, member);
         Comment comment = Comment.createComment(member, task, null);
         Comment savedComment = commandCommentPort.saveComment(comment);
-        String fileName = saveAttachment(file, task, savedComment);
+        String fileName = saveAttachment(file, task);
 
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, task, null, member, savedComment);
         commandTaskHistoryPort.save(taskHistory);
@@ -88,7 +88,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
     }
 
-    private String saveAttachment(MultipartFile file, Task task, Comment comment) {
+    private String saveAttachment(MultipartFile file, Task task) {
         String fileUrl = s3UploadPort.uploadSingleFile(FilePathConstants.TASK_COMMENT, file);
         Attachment attachment = Attachment.createCommentAttachment(task, file.getOriginalFilename(), fileUrl, file.getSize());
         commandAttachmentPort.save(attachment);
