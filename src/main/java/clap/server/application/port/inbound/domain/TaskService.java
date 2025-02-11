@@ -1,5 +1,6 @@
 package clap.server.application.port.inbound.domain;
 
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.port.outbound.task.CommandTaskPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.domain.model.task.Task;
@@ -22,5 +23,9 @@ public class TaskService {
     
     public Task upsert(Task task) {
         return commandTaskPort.save(task);
+    }
+
+    public Task findByIdAndStatus(Long taskId, TaskStatus status) {
+        return loadTaskPort.findByIdAndStatus(taskId, status).orElseThrow(() -> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
     }
 }
