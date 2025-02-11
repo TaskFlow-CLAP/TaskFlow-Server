@@ -52,17 +52,33 @@ jobs:
           docker build -t ${{ secrets.DOCKER_REPO }}:${{ steps.version.outputs.VERSION }} -t ${{ secrets.DOCKER_REPO }}:latest .
           docker push ${{ secrets.DOCKER_REPO }}:${{ steps.version.outputs.VERSION }}
           docker push ${{ secrets.DOCKER_REPO }}:latest
-
+      - name: Update Kubernetes Deployment
+        run: |
+          envsubst < ./taskflow.yaml
+        env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
       # deploy
+      - name: Transport taskflow.yaml to kubectl server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.KUBE_HOST }}
+          username: ${{ secrets.KUBE_HOST_USERNAME }}
+          key: ${{ secrets.KUBE_HOST_KEY }}
+          port: ${{ secrets.KUBE_HOST_PORT }}
+          overwrite: true
+          source: ./taskflow.yaml
+          target: ~/taskflow-back.yaml
+
       - name: Deploy
         uses: appleboy/ssh-action@master
         id: deploy
         with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_HOST_USERNAME }}
-          key: ${{ secrets.DEV_HOST_KEY }}
-          port: ${{ secrets.DEV_HOST_PORT }}
+          host: ${{ secrets.KUBE_HOST }}
+          username: ${{ secrets.KUBE_HOST_USERNAME }}
+          key: ${{ secrets.KUBE_HOST_KEY }}
+          port: ${{ secrets.KUBE_HOST_PORT }}
           script: |
+            kubectl apply --filename /home/gytjd/바탕화면/TaskFlow-Server/taskflow.yaml
             docker rm -f taskflow
             docker image rm ${{ secrets.DOCKER_REPO }}:${{ steps.version.outputs.VERSION }} -f
             docker run --name taskflow -d -p 9090:9090 \
