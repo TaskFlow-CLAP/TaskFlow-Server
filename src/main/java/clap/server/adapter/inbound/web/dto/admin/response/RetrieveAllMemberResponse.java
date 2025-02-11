@@ -1,6 +1,7 @@
 package clap.server.adapter.inbound.web.dto.admin.response;
 
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,10 @@ public record RetrieveAllMemberResponse(
         String departmentRole,
 
         @Schema(description = "가입일", example = "2024-01-01T12:00:00")
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+
+        @Schema(description = "회원 상태", example = "ACTIVE")
+        MemberStatus memberStatus
 
 
 ) {}

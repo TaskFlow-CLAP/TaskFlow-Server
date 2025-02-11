@@ -75,7 +75,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         receivers.forEach(receiver -> {
             boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
             sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
-                    task, processorName, null, isManager);
+                    task, processorName, null, null, isManager);
         });
         sendNotificationService.sendAgitNotification(NotificationType.PROCESSOR_ASSIGNED,
                 task, processorName, null);

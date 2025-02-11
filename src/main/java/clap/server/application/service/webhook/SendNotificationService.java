@@ -37,7 +37,7 @@ public class SendNotificationService {
 
     @Async("notificationExecutor")
     public void sendPushNotification(Member receiver, NotificationType notificationType,
-                                        Task task, String message, String commenterName, Boolean isManager) {
+                                        Task task, String message, String reason, String commenterName, Boolean isManager) {
 
         String email = receiver.getMemberInfo().getEmail();
         String taskTitle = task.getTitle();
@@ -48,7 +48,7 @@ public class SendNotificationService {
         Notification notification = createTaskNotification(task, receiver, notificationType, message, taskTitle);
 
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
-                email, notificationType, taskTitle, requesterNickname, message, commenterName
+                email, notificationType, taskTitle, requesterNickname, message, commenterName, reason
         );
 
         CompletableFuture<Void> saveNotification = CompletableFuture.runAsync(() -> {
@@ -95,7 +95,8 @@ public class SendNotificationService {
                 task.getTitle(),
                 task.getRequester().getNickname(),
                 message,
-                commenterName
+                commenterName,
+                null
         );
 
         String taskDetailUrl = extractTaskUrl(notificationType, task, true);

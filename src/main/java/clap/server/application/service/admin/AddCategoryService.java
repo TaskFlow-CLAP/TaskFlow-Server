@@ -29,7 +29,7 @@ public class AddCategoryService implements AddMainCategoryUsecase, AddSubCategor
     @Transactional
     public void addMainCategory(Long adminId, String code, String name) {
         Optional<Member> activeMember = loadMemberPort.findActiveMemberById(adminId);
-        if (loadCategoryPort.existsByNameOrCode(name, code)) throw new ApplicationException(CATEGORY_DUPLICATE);
+        if (loadCategoryPort.existsMainCategoryByNameOrCode(name, code)) throw new ApplicationException(CATEGORY_DUPLICATE);
         Category mainCategory = Category.createMainCategory(
                 activeMember.orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND)),
                 code, name);
@@ -39,13 +39,11 @@ public class AddCategoryService implements AddMainCategoryUsecase, AddSubCategor
     @Override
     @Transactional
     public void addSubCategory(Long adminId, Long mainCategoryId, String code, String name, String descriptionExample) {
-        Optional<Member> activeMember = loadMemberPort.findActiveMemberById(adminId);
-        Optional<Category> mainCategory = loadCategoryPort.findById(mainCategoryId);
-        if (loadCategoryPort.existsByNameOrCode(name, code)) throw new ApplicationException(CATEGORY_DUPLICATE);
-        Category subCategory = Category.createSubCategory(
-                activeMember.orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND)),
-                mainCategory.orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND)),
-                code, name, descriptionExample);
+        Member activeMember = loadMemberPort.findActiveMemberById(adminId).orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND));
+        Category mainCategory = loadCategoryPort.findById(mainCategoryId).orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND));
+
+        if (loadCategoryPort.existsSubCategoryByNameOrCode(mainCategory, name, code)) throw new ApplicationException(CATEGORY_DUPLICATE);
+        Category subCategory = Category.createSubCategory(activeMember, mainCategory,code, name, descriptionExample);
         commandCategoryPort.save(subCategory);
     }
 }

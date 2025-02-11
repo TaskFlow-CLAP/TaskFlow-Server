@@ -12,7 +12,8 @@ import clap.server.common.annotation.log.LogType;
 import clap.server.exception.AdapterException;
 import clap.server.exception.code.TaskErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -43,8 +44,9 @@ public class ManagementTaskController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public ResponseEntity<CreateTaskResponse> createTask(
+            @Parameter(description = "작업 내용", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
             @RequestPart(name = "taskInfo") @Valid CreateTaskRequest createTaskRequest,
-            @Schema(description = "파일은 5개 이하만 업로드 가능합니다.")
+            @Parameter(description = "파일은 5개 이하만 업로드 가능합니다.", content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo
     ) {
@@ -60,7 +62,7 @@ public class ManagementTaskController {
     public void updateTask(
             @PathVariable @NotNull Long taskId,
             @RequestPart(name = "taskInfo") @Valid UpdateTaskRequest updateTaskRequest,
-            @Schema(description = "하나의 작업에는 총 5개 이하만 업로드 가능합니다.")
+            @Parameter(description = "파일은 5개 이하만 업로드 가능합니다.", content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @RequestPart(name = "attachment", required = false) List<MultipartFile> attachments,
             @AuthenticationPrincipal SecurityUserDetails userInfo) {
         if (attachments != null && attachments.size() > 5) {

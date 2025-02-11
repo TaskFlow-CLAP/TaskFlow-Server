@@ -19,11 +19,7 @@ public class SendInvitationEmailService {
             try {
                 sendEmailPort.sendInvitationEmail(memberEmail, receiverName, initialPassword, userNickname);
             } catch (Exception e) {
-                log.error("Failed to send new password email to: {}", memberEmail, e);
             }
-        }).exceptionally(ex -> {
-            log.error("Unexpected error occurred while sending new password email", ex);
-            return null;
-        });
+        }).exceptionally(ex -> null);
     }
 }
