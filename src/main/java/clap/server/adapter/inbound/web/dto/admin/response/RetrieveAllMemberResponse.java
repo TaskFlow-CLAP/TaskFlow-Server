@@ -34,8 +34,8 @@ public record RetrieveAllMemberResponse(
         @Schema(description = "가입일", example = "2024-01-01T12:00:00")
         LocalDateTime createdAt,
 
-        @Schema(description = "회원 상태", example = "APPROVAL_REQUEST")
-        String memberStatus
+        @Schema(description = "회원 상태", example = "ACTIVE")
+        MemberStatus memberStatus
 
 
 ) {}

@@ -28,7 +28,7 @@ public class AdminResponseMapper {
                 member.getMemberInfo().getRole(),
                 member.getMemberInfo().getDepartmentRole(),
                 member.getCreatedAt(),
-                member.getStatus().name()
+                member.getStatus()
         );
     }
 }
