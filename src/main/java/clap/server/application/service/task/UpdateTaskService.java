@@ -77,7 +77,6 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Transactional
     public void updateTaskStatus(Long memberId, Long taskId, TaskStatus taskStatus) {
         memberService.findActiveMember(memberId);
-        memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
 
         if (!TASK_UPDATABLE_STATUS.contains(taskStatus)) {
@@ -99,7 +98,6 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     @Override
     public void updateTaskProcessor(Long taskId, Long memberId, UpdateTaskProcessorRequest request) {
         memberService.findActiveMember(memberId);
-        memberService.findReviewer(memberId);
 
         Task task = taskService.findById(taskId);
         Member processor = memberService.findById(request.processorId());
