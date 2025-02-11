@@ -26,9 +26,15 @@ public class UpdateCategoryService implements UpdateCategoryUsecase {
     @Transactional
     public void updateCategory(Long adminId, Long categoryId, String name, String code, String descriptionExample) {
         Member admin = loadMemberPort.findActiveMemberById(adminId).orElseThrow(() -> new ApplicationException(ACTIVE_MEMBER_NOT_FOUND));
-        if (loadCategoryPort.existsByNameOrCode(name, code)) throw new ApplicationException(CATEGORY_DUPLICATE);
-        Category category = loadCategoryPort.findById(categoryId)
-                .orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND));
+        Category category = loadCategoryPort.findById(categoryId).orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND));
+        boolean isDuplicate;
+        if (category.getMainCategory() == null) {
+            isDuplicate = loadCategoryPort.existsMainCategoryByNameOrCode(name, code);
+        } else {
+            isDuplicate = loadCategoryPort.existsSubCategoryByNameOrCode(category.getMainCategory(), name, code);
+        }
+        if (isDuplicate) throw new ApplicationException(CATEGORY_DUPLICATE);
+
         category.updateCategory(admin, name, code, descriptionExample);
         commandCategoryPort.save(category);
     }

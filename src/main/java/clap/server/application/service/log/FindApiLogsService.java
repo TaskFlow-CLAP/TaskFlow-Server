@@ -24,7 +24,7 @@ public class FindApiLogsService implements FindApiLogsUsecase {
     @Override
     public PageResponse<AnonymousLogResponse> filterAnonymousLogs(FilterLogRequest anonymousLogRequest, Pageable pageable, String sortDirection) {
         Page<AnonymousLog> anonymousLogs = loadLogPort.filterAnonymousLogs(anonymousLogRequest, pageable, sortDirection);
-        Page<AnonymousLogResponse> anonymousLogResponses = anonymousLogs.map(anonymousLog -> LogResponseMapper.toAnonymousLogResponse(anonymousLog));
+        Page<AnonymousLogResponse> anonymousLogResponses = anonymousLogs.map(LogResponseMapper::toAnonymousLogResponse);
         return PageResponse.from(anonymousLogResponses);
     }
 

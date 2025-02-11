@@ -14,8 +14,7 @@ public record FilterLogRequest(
         Integer term,
 
         @NotNull
-        @Schema(description = "로그 상태 목록",
-                example = "[\"LOGIN\", \"ASSIGNER_CHANGED\", \"COMMENT_ADDED\"]")
+        @Schema(description = "로그 상태 목록")
         List<LogStatus> logStatus,
 
         @NotNull

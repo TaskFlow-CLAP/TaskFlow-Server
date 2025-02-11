@@ -9,6 +9,7 @@ public record PushNotificationTemplate(
         String taskName,
         String senderName,
         String message,
-        String commenterName
+        String commenterName,
+        String reason
 ) {
 }
