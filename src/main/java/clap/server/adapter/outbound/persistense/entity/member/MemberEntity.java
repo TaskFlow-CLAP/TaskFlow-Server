@@ -54,11 +54,11 @@ public class MemberEntity extends BaseTimeEntity {
 
     @Column(name = "kakaowork_notification_enabled")
     @Builder.Default
-    private Boolean kakaoworkNotificationEnabled = Boolean.TRUE;;
+    private Boolean kakaoworkNotificationEnabled = Boolean.TRUE;
 
     @Column(name = "email_notification_enabled")
     @Builder.Default
-    private Boolean emailNotificationEnabled = Boolean.TRUE;;
+    private Boolean emailNotificationEnabled = Boolean.TRUE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")

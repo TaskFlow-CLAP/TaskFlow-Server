@@ -14,7 +14,7 @@ public class TaskHistoryResponseMapper {
         throw new IllegalArgumentException("Utility class");
     }
 
-    public static FindTaskHistoryResponse toFindTaskHistoryResponse(List<TaskHistory> taskHistories, List<Attachment> attachments) {
+    public static FindTaskHistoryResponse toFindTaskHistoryResponse(List<TaskHistory> taskHistories) {
         List<FindTaskHistoryResponse.TaskHistoryResponse> historyResponses = taskHistories.stream()
                 .map(taskHistory -> {
                     FindTaskHistoryResponse.Details details =
@@ -47,19 +47,14 @@ public class TaskHistoryResponseMapper {
                                 case COMMENT_FILE -> new FindTaskHistoryResponse.Details(
                                         null,
                                         null,
-                                        attachments.stream()
-                                                .filter(attachment -> attachment.getComment().getCommentId().equals(taskHistory.getComment().getCommentId()))
-                                                .findFirst()
-                                                .map(attachment -> new FindTaskHistoryResponse.CommentFileDetails(
-                                                        taskHistory.getComment().getCommentId(),
-                                                        taskHistory.getComment().getMember().getNickname(),
-                                                        taskHistory.getComment().getMember().getImageUrl(),
-                                                        taskHistory.getComment().isModified(),
-                                                        attachment.getOriginalName(),
-                                                        attachment.getFileUrl(),
-                                                        attachment.getFileSize()
-                                                ))
-                                                .orElse(null)
+                                        new FindTaskHistoryResponse.CommentFileDetails(
+                                                taskHistory.getComment().getCommentId(),
+                                                taskHistory.getComment().getMember().getNickname(),
+                                                taskHistory.getComment().getMember().getImageUrl(),
+                                                taskHistory.getComment().getOriginalName(),
+                                                taskHistory.getComment().getFileUrl(),
+                                                taskHistory.getComment().getFileSize()
+                                        )
                                 );
                             };
                     return new FindTaskHistoryResponse.TaskHistoryResponse(
