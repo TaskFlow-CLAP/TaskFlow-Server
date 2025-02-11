@@ -151,7 +151,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         receivers.forEach(receiver -> {
             boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
             sendNotificationService.sendPushNotification(receiver, notificationType,
-                    task, message, null, isManager);
+                    task, message, null, null, isManager);
         });
 
         sendNotificationService.sendAgitNotification(notificationType, task, message, null);
