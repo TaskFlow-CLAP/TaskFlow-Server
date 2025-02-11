@@ -29,9 +29,6 @@ public class AnonymousLogCustomRepositoryImpl implements AnonymousLogCustomRepos
             LocalDateTime fromDate = LocalDateTime.now().minusHours(request.term());
             builder.and(anonymousLogEntity.requestAt.after(fromDate));
         }
-        if (!request.logStatus().isEmpty()) {
-            builder.and(anonymousLogEntity.logStatus.in(request.logStatus()));
-        }
         if (!request.nickName().isEmpty()) {
             builder.and(anonymousLogEntity.loginNickname.contains(request.nickName()));
         }

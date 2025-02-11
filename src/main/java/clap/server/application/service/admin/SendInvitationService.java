@@ -32,9 +32,11 @@ public class SendInvitationService implements SendInvitationUsecase {
         String encodedPassword = passwordEncoder.encode(initialPassword);
 
         member.resetPassword(encodedPassword);
-        commandMemberPort.save(member);
 
         member.changeToApproveRequested();
+
+        commandMemberPort.save(member);
+
 
         sendInvitationEmailService.sendInvitationEmail(
                 member.getMemberInfo().getEmail(),
