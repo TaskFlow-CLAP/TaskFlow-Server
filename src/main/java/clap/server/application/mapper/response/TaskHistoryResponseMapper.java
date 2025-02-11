@@ -59,8 +59,8 @@ public class TaskHistoryResponseMapper {
                             };
                     return new FindTaskHistoryResponse.TaskHistoryResponse(
                             taskHistory.getTaskHistoryId(),
-                            taskHistory.getUpdatedAt().toLocalDate(),
-                            taskHistory.getUpdatedAt().toLocalTime(),
+                            taskHistory.getCreatedAt().toLocalDate(),
+                            taskHistory.getCreatedAt().toLocalTime(),
                             taskHistory.getType(),
                             details
                     );

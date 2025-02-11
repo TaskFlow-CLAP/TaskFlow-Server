@@ -27,6 +27,7 @@ public class Attachment extends BaseTime {
                 .build();
     }
 
+    @Deprecated
     public static Attachment createCommentAttachment(Task task, Comment comment, String originalName, String fileUrl, long fileSize) {
         return Attachment.builder()
                 .task(task)
@@ -50,5 +51,4 @@ public class Attachment extends BaseTime {
             return String.format("%.1f MB", size / (1024.0 * 1024.0));
         }
     }
-
 }
