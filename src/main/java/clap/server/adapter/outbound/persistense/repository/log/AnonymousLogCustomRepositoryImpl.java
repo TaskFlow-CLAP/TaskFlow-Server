@@ -36,7 +36,7 @@ public class AnonymousLogCustomRepositoryImpl implements AnonymousLogCustomRepos
             builder.and(anonymousLogEntity.loginNickname.contains(request.nickName()));
         }
         if (!request.clientIp().isEmpty()) {
-            builder.and(anonymousLogEntity.clientIp.contains(request.clientIp()));
+            builder.and(anonymousLogEntity.clientIp.startsWith(request.clientIp()));
         }
         OrderSpecifier<LocalDateTime> orderSpecifier = sortDirection.equalsIgnoreCase("ASC")
                 ? anonymousLogEntity.requestAt.asc()

@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum LogStatus {
     LOGIN("로그인"),
-    LOGOUT("로그아웃"),
     REQUEST_CREATED("요청 생성"),
     REQUEST_UPDATED("요청 수정"),
     REQUEST_CANCELLED("요청 취소"),

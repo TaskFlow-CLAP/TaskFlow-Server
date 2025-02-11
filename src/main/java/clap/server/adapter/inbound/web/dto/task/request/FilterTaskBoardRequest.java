@@ -2,9 +2,11 @@ package clap.server.adapter.inbound.web.dto.task.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import org.springdoc.core.annotations.ParameterObject;
 
 import java.util.List;
 
+@ParameterObject
 public record FilterTaskBoardRequest(
         @Schema(description = "라벨 ID")
         Long labelId,
