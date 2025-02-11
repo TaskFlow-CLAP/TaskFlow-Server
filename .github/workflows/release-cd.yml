@@ -78,11 +78,6 @@ jobs:
           key: ${{ secrets.KUBE_HOST_KEY }}
           port: ${{ secrets.KUBE_HOST_PORT }}
           script: |
-            kubectl apply --filename /home/gytjd/바탕화면/TaskFlow-Server/taskflow.yaml
-            docker rm -f taskflow
-            docker image rm ${{ secrets.DOCKER_REPO }}:${{ steps.version.outputs.VERSION }} -f
-            docker run --name taskflow -d -p 9090:9090 \
-              --env-file /home/ubuntu/.env \
-              ${{ secrets.DOCKER_REPO }}:${{ steps.version.outputs.VERSION }} \
-              --restart on-failure
+            kubectl apply --filename taskflow-back.yaml
+            
 
