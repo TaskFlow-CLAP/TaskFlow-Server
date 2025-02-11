@@ -70,7 +70,7 @@ public class CreateTaskService implements CreateTaskUsecase {
         reviewers.forEach(reviewer -> {
             boolean isManager = reviewer.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
             sendNotificationService.sendPushNotification(reviewer, NotificationType.TASK_REQUESTED,
-                    task, null, null, isManager);
+                    task, null, null, null, isManager);
         });
 
         sendNotificationService.sendAgitNotification(NotificationType.TASK_REQUESTED,

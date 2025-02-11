@@ -3,9 +3,11 @@ package clap.server.adapter.inbound.web.dto.task.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springdoc.core.annotations.ParameterObject;
 
 import java.util.List;
 
+@ParameterObject
 public record FilterTeamStatusRequest(
         @Schema(description = "정렬 기준 (기여도순, 기본)", example = "DEFAULT")
         @NotNull

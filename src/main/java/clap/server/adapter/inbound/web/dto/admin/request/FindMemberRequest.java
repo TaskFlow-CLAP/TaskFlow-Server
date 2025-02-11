@@ -3,7 +3,9 @@ package clap.server.adapter.inbound.web.dto.admin.request;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import org.springdoc.core.annotations.ParameterObject;
 
+@ParameterObject
 public record FindMemberRequest(
         @NotNull
         @Schema(description = "회원 이름", example = "양시훈")

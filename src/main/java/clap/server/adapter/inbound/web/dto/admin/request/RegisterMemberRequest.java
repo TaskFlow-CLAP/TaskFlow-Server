@@ -24,7 +24,7 @@ public record RegisterMemberRequest(
         Long departmentId,
         @NotNull @Schema(description = "회원 역할")
         MemberRole role,
-        @NotBlank @Schema(description = "회원 직책")
+        @Schema(description = "회원 직책")
         String departmentRole
 ) {
 }

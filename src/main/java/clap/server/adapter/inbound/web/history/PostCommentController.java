@@ -10,6 +10,7 @@ import clap.server.common.annotation.log.LogType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -47,6 +48,7 @@ public class PostCommentController {
     public void createAttachmentComment(
             @AuthenticationPrincipal SecurityUserDetails userInfo,
             @PathVariable Long taskId,
+            @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @RequestPart(name = "attachment") @NotNull MultipartFile attachment) {
         saveCommentAttachmentUsecase.saveCommentAttachment(userInfo.getUserId(), taskId, attachment);
     }

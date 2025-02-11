@@ -5,6 +5,7 @@ import clap.server.domain.model.member.Member;
 
 import java.util.List;
 
+
 public class AdminResponseMapper {
     private AdminResponseMapper() {
         throw new IllegalStateException("Utility class");
@@ -26,7 +27,8 @@ public class AdminResponseMapper {
                 member.getMemberInfo().getDepartment().getName(),
                 member.getMemberInfo().getRole(),
                 member.getMemberInfo().getDepartmentRole(),
-                member.getCreatedAt()
+                member.getCreatedAt(),
+                member.getStatus()
         );
     }
 }

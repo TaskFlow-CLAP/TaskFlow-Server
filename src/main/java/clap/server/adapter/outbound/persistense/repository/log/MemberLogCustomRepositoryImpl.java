@@ -40,7 +40,7 @@ public class MemberLogCustomRepositoryImpl implements MemberLogCustomRepository{
             builder.and(memberEntity.nickname.contains(request.nickName()));
         }
         if (!request.clientIp().isEmpty()) {
-            builder.and(memberLogEntity.clientIp.contains(request.clientIp()));
+            builder.and(memberLogEntity.clientIp.startsWith(request.clientIp()));
         }
         OrderSpecifier<LocalDateTime> orderSpecifier = sortDirection.equalsIgnoreCase("ASC")
                 ? memberLogEntity.requestAt.asc()
@@ -56,6 +56,7 @@ public class MemberLogCustomRepositoryImpl implements MemberLogCustomRepository{
                 .fetch();
         long total = queryFactory
                 .selectFrom(memberLogEntity)
+                .leftJoin(memberLogEntity.member, memberEntity)
                 .where(builder)
                 .fetch().size();
         return new PageImpl<>(result, pageable, total);

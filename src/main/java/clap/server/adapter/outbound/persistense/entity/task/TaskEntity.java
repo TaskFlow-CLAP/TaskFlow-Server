@@ -5,9 +5,11 @@ import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("is_deleted = false")
 public class TaskEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,4 +71,8 @@ public class TaskEntity extends BaseTimeEntity {
 
     @Column(nullable = false)
     private int attachmentCount;
+
+    @Column(name="is_deleted", nullable = false)
+    @Builder.Default
+    private boolean isDeleted = Boolean.FALSE;
 }
