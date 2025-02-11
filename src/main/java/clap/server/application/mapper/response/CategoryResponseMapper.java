@@ -11,11 +11,11 @@ public class CategoryResponseMapper {
     private CategoryResponseMapper() {throw new IllegalStateException("Utility class");}
 
     public static FindAllCategoryResponse toFindAllCategoryResponse(
-            Long id,
+            Long mainCategoryId,
             String name,
             String code,
             List<FindSubCategoryResponse> subCategoryResponses) {
-        return new FindAllCategoryResponse(id, name, code, subCategoryResponses);
+        return new FindAllCategoryResponse(mainCategoryId, name, code, subCategoryResponses);
     }
 
     public static FindMainCategoryResponse toFindMainCategoryResponse(Category category) {
