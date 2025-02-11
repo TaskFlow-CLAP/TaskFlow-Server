@@ -30,12 +30,20 @@ public class EmailTemplateBuilder {
                 context.setVariable("title", request.taskName());
                 break;
             case STATUS_SWITCHED:
-                templateName = "status-switched";
-                subject = "[TaskFlow] "+ request.taskName()+ " 작업의 상태가 " + request.message() + "으로 변경되었습니다.";
-                context.setVariable("taskDetailUrl", taskDetailUrl);
-                context.setVariable("receiverName", request.senderName());
-                context.setVariable("title", request.taskName());
-                context.setVariable("status", request.message());
+                if (request.message().equals("TERMINATED")) {
+                    templateName = "task-terminated";
+                    subject = "[TaskFlow] " + request.taskName() + " 작업이 종료되었습니다.";
+                    context.setVariable("taskDetailUrl", taskDetailUrl);
+                    context.setVariable("reason", request.reason());
+                    context.setVariable("title", request.taskName());
+                } else {
+                    templateName = "status-switched";
+                    subject = "[TaskFlow] "+ request.taskName()+ " 작업의 상태가 " + request.message() + "으로 변경되었습니다.";
+                    context.setVariable("taskDetailUrl", taskDetailUrl);
+                    context.setVariable("receiverName", request.senderName());
+                    context.setVariable("title", request.taskName());
+                    context.setVariable("status", request.message());
+                }
                 break;
             case PROCESSOR_CHANGED:
                 templateName = "processor-changed";

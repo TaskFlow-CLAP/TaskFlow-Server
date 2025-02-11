@@ -42,19 +42,19 @@ public class AgitTemplateBuilder {
 
     public String createMessage(PushNotificationTemplate request, String taskDetailUrl) {
 
-        return  switch (request.notificationType()) {
-            case TASK_REQUESTED -> "📌 *새 작업 요청:* `" + request.taskName() + "`\\n"
-                    + "\\t\\t*•요청자: " + request.senderName() + "*\\n"
-                    + "[확인하러 가기](" + taskDetailUrl + ")";
-            case STATUS_SWITCHED -> "⚙️ *작업 상태 변경:* `" + request.taskName() + "\\n"
-                    + "\\t\\t*•작업 상태: " + request.message() + "*\\n"
-                    + "[확인하러 가기](" + taskDetailUrl + ")";
-            case PROCESSOR_CHANGED -> "🔄 *담당자 변경:* `" + request.taskName() + "\\n"
-                    + "\\t\\t*•새 담당자: " + request.message() + "*\\n"
-                    + "[확인하러 가기](" + taskDetailUrl + ")";
-            case PROCESSOR_ASSIGNED -> "👤 *작업 담당자 배정:* `" + request.taskName() + "\\n"
-                    + "\\t\\t*•담당자: " + request.message() + "*\\n"
-                    + "[확인하러 가기](" + taskDetailUrl + ")";
+        return switch (request.notificationType()) {
+            case TASK_REQUESTED -> "📌 *새 작업이 요청되었습니다.*\\n"
+                    + "\\t\\t*• 🔖  작업명:*  " + "*" + request.taskName() + "*" + "\\n"
+                    + "\\t\\t*• 🙋  요청자:*  " + "*" + request.senderName() + "*" + "\\n\\n"
+                    + "\\t[자세히 보기](" + taskDetailUrl + ")";
+
+            case STATUS_SWITCHED -> "작업 상태가 " + "*" + request.message() + "*" + "으로 변경되었습니다.";
+
+            case PROCESSOR_CHANGED -> "담당자가 " + "*" + request.message() + "*" + "으로 변경되었습니다.";
+
+            case PROCESSOR_ASSIGNED -> "작업이 *승인*되었습니다.*\n"
+                    + "\\t\\t*• 👤 담당자:* " + "*" + request.message() + "*";
+
             default -> null;
         };
     }

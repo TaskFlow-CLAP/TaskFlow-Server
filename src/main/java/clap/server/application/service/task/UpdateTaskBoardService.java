@@ -159,7 +159,7 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
 
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, updatedTask, targetStatus.getDescription(), null,null);
         commandTaskHistoryPort.save(taskHistory);
-        publishNotification(targetTask, NotificationType.STATUS_SWITCHED, String.valueOf(updatedTask.getTaskStatus()));
+        publishNotification(targetTask);
     }
 
     /**
@@ -181,14 +181,14 @@ class UpdateTaskBoardService implements UpdateTaskBoardUsecase, UpdateTaskOrderA
         }
     }
 
-    private void publishNotification(Task task, NotificationType notificationType, String message) {
+    private void publishNotification(Task task) {
         List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
         receivers.forEach(receiver -> {
             boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
-            sendNotificationService.sendPushNotification(receiver, notificationType, task, message, null, isManager);
+            sendNotificationService.sendPushNotification(receiver, NotificationType.STATUS_SWITCHED, task, String.valueOf(task.getTaskStatus()), null, null, isManager);
         });
-        sendNotificationService.sendAgitNotification(notificationType,
-                task, message, null);
+        sendNotificationService.sendAgitNotification(NotificationType.STATUS_SWITCHED,
+                task, String.valueOf(task.getTaskStatus()), null);
     }
 
 }
