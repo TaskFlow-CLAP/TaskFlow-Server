@@ -63,6 +63,19 @@ public class SecurityConfig {
 
     private HttpSecurity defaultSecurity(HttpSecurity http) throws Exception {
         return http
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp ->
+                                csp.policyDirectives(
+                                        "default-src 'self'; " +
+                                                "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+                                                "style-src 'self' 'unsafe-inline'; " +
+                                                "img-src 'self' data: https:; " +
+                                                "font-src 'self' data: https:; " +
+                                                "object-src 'none'; " +
+                                                "base-uri 'self';"
+                                )
+                        )
+                )
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(
