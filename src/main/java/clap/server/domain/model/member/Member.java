@@ -2,6 +2,7 @@ package clap.server.domain.model.member;
 
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
+import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,8 @@ public class Member extends BaseTime {
     private MemberStatus status;
     private String password;
     private Department department;
+    private Integer inProgressTaskCount;
+    private Integer inReviewingTaskCount;
 
     public Member(MemberInfo memberInfo, Boolean emailNotificationEnabled, Boolean kakaoworkNotificationEnabled,
                   Member admin, String imageUrl, MemberStatus status, String password) {

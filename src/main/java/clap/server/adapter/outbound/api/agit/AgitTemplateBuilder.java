@@ -52,8 +52,8 @@ public class AgitTemplateBuilder {
 
             case PROCESSOR_CHANGED -> "담당자가 " + "*" + request.message() + "*" + "으로 변경되었습니다.";
 
-            case PROCESSOR_ASSIGNED -> "작업이 *승인*되었습니다.*\n"
-                    + "\\t\\t*• 👤 담당자:* " + "*" + request.message() + "*";
+            case PROCESSOR_ASSIGNED -> "*작업*이 *승인*되었습니다.\\n"
+                    + "\\t\\t*•담당자:* " + "*" + request.message() + "*";
 
             default -> null;
         };

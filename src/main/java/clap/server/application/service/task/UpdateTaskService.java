@@ -63,14 +63,16 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         memberService.findActiveMember(requesterId);
         Category category = categoryService.findById(request.categoryId());
         Task task = taskService.findById(taskId);
+        int attachmentCount = getAttachmentCount(request, files, task);
 
-        int attachmentToAdd = files==null? 0 : files.size();
-        int attachmentCount = task.getAttachmentCount() - request.attachmentsToDelete().size() + attachmentToAdd;
-        if (attachmentCount > TASK_MAX_FILE_COUNT) {
-            throw new ApplicationException(TaskErrorCode.FILE_COUNT_EXCEEDED);
-        }
         if (!request.attachmentsToDelete().isEmpty()) {
-            updateAttachments(request.attachmentsToDelete(), files, task);
+            List<Attachment> attachmentsToDelete = validateAndGetAttachments(request.attachmentsToDelete(), task);
+            attachmentsToDelete.stream()
+                    .peek(Attachment::softDelete)
+                    .forEach(commandAttachmentPort::save);
+        }
+        if (files != null) {
+            updateAttachments(files, task);
         }
         task.updateTask(requesterId, category, request.title(), request.description(), attachmentCount);
         taskService.upsert(task);
@@ -126,18 +128,19 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         taskService.upsert(task);
     }
 
-    private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
-        List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
-        attachmentsToDelete.stream()
-                .peek(Attachment::softDelete)
-                .forEach(commandAttachmentPort::save);
+    private void updateAttachments(List<MultipartFile> files, Task task) {
+        List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_FILE, files);
+        List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
+        commandAttachmentPort.saveAll(attachments);
+    }
 
-        if (files != null) {
-            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_FILE, files);
-            List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
-            commandAttachmentPort.saveAll(attachments);
+    private static int getAttachmentCount(UpdateTaskRequest request, List<MultipartFile> files, Task task) {
+        int attachmentToAdd = files == null ? 0 : files.size();
+        int attachmentCount = task.getAttachmentCount() - request.attachmentsToDelete().size() + attachmentToAdd;
+        if (attachmentCount > TASK_MAX_FILE_COUNT) {
+            throw new ApplicationException(TaskErrorCode.FILE_COUNT_EXCEEDED);
         }
-
+        return attachmentCount;
     }
 
     private List<Attachment> validateAndGetAttachments(List<Long> attachmentIdsToDelete, Task task) {

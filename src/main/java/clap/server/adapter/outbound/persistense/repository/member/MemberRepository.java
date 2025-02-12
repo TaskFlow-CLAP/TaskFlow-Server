@@ -32,7 +32,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long>,  Me
 
     Optional<MemberEntity> findByEmail(String email);
 
-    @Query("SELECT COUNT(m) > 0 FROM MemberEntity m WHERE m.nickname IN :nicknames OR m.email IN :emails")
+    @Query("SELECT COUNT(m) > 0 FROM MemberEntity m WHERE m.status <> 'DELETED' AND (m.nickname IN :nicknames OR m.email IN :emails)")
     boolean existsByNicknamesOrEmails(@Param("nicknames") Set<String> nicknames, @Param("emails") Set<String> emails);
 }
 
