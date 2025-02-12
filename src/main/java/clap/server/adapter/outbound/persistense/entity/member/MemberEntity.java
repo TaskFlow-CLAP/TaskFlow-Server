@@ -63,4 +63,10 @@ public class MemberEntity extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
     private MemberEntity admin;
+
+    @Column(nullable = true)
+    private Integer inProgressTaskCount;
+
+    @Column(nullable = true)
+    private Integer inReviewingTaskCount;
 }
