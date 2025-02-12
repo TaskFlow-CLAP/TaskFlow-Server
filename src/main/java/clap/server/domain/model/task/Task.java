@@ -69,10 +69,9 @@ public class Task extends BaseTime {
     }
 
     public void updateTaskStatus(TaskStatus status) {
-        if (status.equals(TaskStatus.COMPLETED)) {
+        if (TaskStatus.COMPLETED.equals(status)) {
             this.finishedAt = LocalDateTime.now();
-        }
-        if (this.taskStatus == TaskStatus.TERMINATED || this.taskStatus == TaskStatus.COMPLETED) {
+        } else if (TaskStatus.TERMINATED.equals(this.taskStatus) || TaskStatus.COMPLETED.equals(this.taskStatus)) {
             this.finishedAt = null;
         }
         this.taskStatus = status;
