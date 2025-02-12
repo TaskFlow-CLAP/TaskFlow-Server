@@ -1,20 +1,9 @@
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        default_batch_fetch_size: 100
-#        format_sql: true
-        show_sql: true
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:taskflow}?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&autoReconnect=true
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
-    data-source-properties:
-      rewrite-batched-statements: true
 
 ---
 spring.config.activate.on-profile: local
@@ -29,11 +18,12 @@ spring:
     open-in-view: false
     generate-ddl: false
     hibernate:
-      ddl-auto: none
-    show-sql: true
+      ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        default_batch_fetch_size: 100
+        format_sql: true
+        show_sql: true
 
 logging:
   level:
@@ -57,11 +47,10 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: validate
-    show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-
+        format_sql: false
+        show_sql: true
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -76,13 +65,12 @@ spring:
     open-in-view: false
     generate-ddl: false
     hibernate:
-      ddl-auto: none
-    show-sql: true
+      ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-
+        format_sql: false
+        show_sql: false
   flyway:
     enabled: false
-    baseline-on-migrate: true
+    baseline-on-migrate: false
     locations: classpath:db/migration/prod
