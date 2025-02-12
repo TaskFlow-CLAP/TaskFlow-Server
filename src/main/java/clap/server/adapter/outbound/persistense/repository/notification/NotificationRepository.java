@@ -24,6 +24,11 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     Slice<NotificationEntity> findAllByReceiver_MemberIdOrderByCreatedAtDesc(
             @Param("receiverId") Long receiverId, Pageable pageable);
 
+    @Query("SELECT n FROM NotificationEntity n " +
+            "JOIN FETCH n.task t " +
+            "JOIN FETCH n.receiver r " +
+            "WHERE n.receiver.memberId = :receiverId " +
+            "AND t.isDeleted = false ")
     List<NotificationEntity> findAllByReceiver_MemberId(Long memberId);
 
     Integer countByIsReadFalseAndReceiver_MemberId(Long memberId);
