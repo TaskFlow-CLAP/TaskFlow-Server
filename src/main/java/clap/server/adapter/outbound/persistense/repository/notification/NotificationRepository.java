@@ -27,5 +27,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
             "AND n.task.isDeleted = false")
     List<NotificationEntity> findAllByReceiver_MemberId(Long memberId);
 
+    List<NotificationEntity> findByTask_TaskId(Long taskId);
+
     Integer countByIsReadFalseAndReceiver_MemberId(Long memberId);
 }

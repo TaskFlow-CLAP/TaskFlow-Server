@@ -5,4 +5,6 @@ import java.util.Optional;
 
 public interface CommandNotificationPort {
     void save(Notification notification);
+
+    void delete(Notification notification);
 }
