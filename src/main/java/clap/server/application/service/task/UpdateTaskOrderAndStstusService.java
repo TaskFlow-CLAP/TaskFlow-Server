@@ -141,7 +141,7 @@ public class UpdateTaskOrderAndStstusService implements UpdateTaskOrderAndStatus
         List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
         receivers.forEach(receiver -> {
             boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
-            sendNotificationService.sendPushNotification(receiver, notificationType, task, message, null, isManager);
+            sendNotificationService.sendPushNotification(receiver, notificationType, task, message, null, null, isManager);
         });
         sendNotificationService.sendAgitNotification(notificationType,
                 task, message, null);

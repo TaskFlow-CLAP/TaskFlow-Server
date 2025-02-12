@@ -405,7 +405,7 @@ public class KakaoWorkBlockBuilder {
                         "inlines", new Object[]{
                                 Map.of(
                                         "type", "styled",
-                                        "text", " - 거절 사유 : " + request.reason(),
+                                        "text", " - 반려 사유 : " + request.reason(),
                                         "bold", false
                                 )
                         }
