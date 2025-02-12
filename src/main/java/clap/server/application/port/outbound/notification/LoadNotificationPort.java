@@ -16,5 +16,7 @@ public interface LoadNotificationPort {
 
     List<Notification> findNotificationsByMemberId(Long memberId);
 
+    List<Notification> findNotificationsByTaskId(Long taskId);
+
     Integer countNotification(Long memberId);
 }
