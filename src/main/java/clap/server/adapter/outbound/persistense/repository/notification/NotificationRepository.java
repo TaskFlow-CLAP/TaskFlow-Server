@@ -29,5 +29,9 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 
     List<NotificationEntity> findByTask_TaskId(Long taskId);
 
-    Integer countByIsReadFalseAndReceiver_MemberId(Long memberId);
+    @Query("SELECT COUNT(n) FROM NotificationEntity n " +
+            "WHERE n.isRead = false " +
+            "AND n.receiver.memberId = :memberId " +
+            "AND n.task.isDeleted = false")
+    Integer countUnreadByMemberId(@Param("memberId") Long memberId);
 }

@@ -51,7 +51,7 @@ public class NotificationPersistenceAdapter implements LoadNotificationPort, Com
 
     @Override
     public Integer countNotification(final Long memberId) {
-        return notificationRepository.countByIsReadFalseAndReceiver_MemberId(memberId);
+        return notificationRepository.countUnreadByMemberId(memberId);
     }
 
     @Override
