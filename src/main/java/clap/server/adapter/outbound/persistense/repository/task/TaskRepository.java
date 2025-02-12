@@ -28,20 +28,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
 
     List<TaskEntity> findByProcessor_MemberIdAndTaskStatusIn(Long memberId, Collection<TaskStatus> taskStatuses);
 
-
-    @Query("SELECT t FROM TaskEntity t " +
-            "WHERE t.processor.memberId = :processorId " +
-            "AND t.taskStatus IN :taskStatus " +
-            "AND (:fromDateTime IS NULL OR t.taskStatus != 'COMPLETED' OR " +
-            "    (t.taskStatus = 'COMPLETED' AND t.finishedAt >= :fromDateTime)) " +
-            "ORDER BY t.processorOrder ASC ")
-    List<TaskEntity> findTasksWithTaskStatusAndCompletedAt(
-            @Param("processorId") Long processorId,
-            @Param("taskStatus") List<TaskStatus> taskStatus,
-            @Param("fromDateTime") LocalDateTime fromDateTime
-    );
-
-
     Optional<TaskEntity> findByTaskIdAndTaskStatus(Long id, TaskStatus status);
 
     Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndProcessorOrderLessThanOrderByProcessorOrderAsc(Long processorId, TaskStatus taskStatus, Long processorOrder);
