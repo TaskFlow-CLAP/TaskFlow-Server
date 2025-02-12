@@ -43,6 +43,13 @@ public class NotificationPersistenceAdapter implements LoadNotificationPort, Com
     }
 
     @Override
+    public List<Notification> findNotificationsByTaskId(Long taskId) {
+        return notificationRepository.findByTask_TaskId(taskId)
+                .stream().map(notificationPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Integer countNotification(final Long memberId) {
         return notificationRepository.countByIsReadFalseAndReceiver_MemberId(memberId);
     }
@@ -50,5 +57,10 @@ public class NotificationPersistenceAdapter implements LoadNotificationPort, Com
     @Override
     public void save(final Notification notification) {
         notificationRepository.save(notificationPersistenceMapper.toEntity(notification));
+    }
+
+    @Override
+    public void delete(Notification notification) {
+        notificationRepository.delete(notificationPersistenceMapper.toEntity(notification));
     }
 }
