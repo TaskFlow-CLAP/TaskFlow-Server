@@ -70,10 +70,14 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             throw new ApplicationException(TaskErrorCode.FILE_COUNT_EXCEEDED);
         }
         if (!request.attachmentsToDelete().isEmpty()) {
-            updateAttachments(request.attachmentsToDelete(), files, task);
+            List<Attachment> attachmentsToDelete = validateAndGetAttachments(request.attachmentsToDelete(), task);
+            attachmentsToDelete.stream()
+                    .peek(Attachment::softDelete)
+                    .forEach(commandAttachmentPort::save);
+            updateAttachments(files, task);
         }
         else {
-            updateAttachmentWithoutAttachmentsToDelete(files, task);
+            updateAttachments(files, task);
         }
         task.updateTask(requesterId, category, request.title(), request.description(), attachmentCount);
         taskService.upsert(task);
@@ -129,20 +133,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         taskService.upsert(task);
     }
 
-    private void updateAttachments(List<Long> attachmentIdsToDelete, List<MultipartFile> files, Task task) {
-        List<Attachment> attachmentsToDelete = validateAndGetAttachments(attachmentIdsToDelete, task);
-        attachmentsToDelete.stream()
-                .peek(Attachment::softDelete)
-                .forEach(commandAttachmentPort::save);
-
-        if (files != null) {
-            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_FILE, files);
-            List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
-            commandAttachmentPort.saveAll(attachments);
-        }
-    }
-
-    private void updateAttachmentWithoutAttachmentsToDelete(List<MultipartFile> files, Task task) {
+    private void updateAttachments(List<MultipartFile> files, Task task) {
         if (files != null) {
             List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_FILE, files);
             List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
