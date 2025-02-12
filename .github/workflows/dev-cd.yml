@@ -15,6 +15,9 @@ jobs:
   DEV-CD:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    env:
+      DOCKER_CLIENT_TIMEOUT: 600
+      COMPOSE_HTTP_TIMEOUT: 600
     steps:
       - uses: actions/checkout@v4
       - name: 'Set up jdk'

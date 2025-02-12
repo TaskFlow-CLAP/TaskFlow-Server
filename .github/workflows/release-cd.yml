@@ -12,6 +12,9 @@ permissions:
 jobs:
   Release-CD:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_CLIENT_TIMEOUT: 600
+      COMPOSE_HTTP_TIMEOUT: 600
     steps:
       - uses: actions/checkout@v4
 
@@ -56,7 +59,7 @@ jobs:
         run: |
           envsubst < ./taskflow.yaml
         env:
-          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+          IMAGE_TAG: ${{ steps.version.outputs.VERSION }}
       # deploy
       - name: Transport taskflow.yaml to kubectl server
         uses: appleboy/scp-action@master
