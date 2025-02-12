@@ -16,19 +16,15 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<NotificationEntity, Long> {
 
     @Query("SELECT n FROM NotificationEntity n " +
-            "JOIN FETCH n.task t " +
-            "JOIN FETCH n.receiver r " +
             "WHERE n.receiver.memberId = :receiverId " +
-            "AND t.isDeleted = false " +
+            "AND n.task.isDeleted = false " +
             "ORDER BY n.createdAt DESC")
     Slice<NotificationEntity> findAllByReceiver_MemberIdOrderByCreatedAtDesc(
             @Param("receiverId") Long receiverId, Pageable pageable);
 
     @Query("SELECT n FROM NotificationEntity n " +
-            "JOIN FETCH n.task t " +
-            "JOIN FETCH n.receiver r " +
             "WHERE n.receiver.memberId = :receiverId " +
-            "AND t.isDeleted = false ")
+            "AND n.task.isDeleted = false")
     List<NotificationEntity> findAllByReceiver_MemberId(Long memberId);
 
     Integer countByIsReadFalseAndReceiver_MemberId(Long memberId);
