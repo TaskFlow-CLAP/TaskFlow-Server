@@ -86,7 +86,6 @@ public class SendNotificationService {
     }
 
     @Async("notificationExecutor")
-    @Transactional
     public void sendAgitNotification(NotificationType notificationType,
                                      Task task, String message, String commenterName) {
         PushNotificationTemplate pushNotificationTemplate = new PushNotificationTemplate(
