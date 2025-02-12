@@ -31,6 +31,12 @@ public class JacksonConfig {
         @Override
         public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             String value = p.getText();
+            if (value == null) {
+                return null;
+            }
+            if (value.toLowerCase().startsWith("javascript:")) {
+                return "";
+            }
             return Jsoup.clean(value, Safelist.basic());
         }
     }
