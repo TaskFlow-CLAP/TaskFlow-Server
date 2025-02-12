@@ -1,4 +1,4 @@
-package clap.server.adapter.inbound.web;
+package clap.server.adapter.inbound.web.xss;
 
 import jakarta.validation.constraints.NotNull;
 
