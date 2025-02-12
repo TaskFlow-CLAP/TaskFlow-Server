@@ -72,6 +72,9 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         if (!request.attachmentsToDelete().isEmpty()) {
             updateAttachments(request.attachmentsToDelete(), files, task);
         }
+        else {
+            updateAttachmentWithoutAttachmentsToDelete(files, task);
+        }
         task.updateTask(requesterId, category, request.title(), request.description(), attachmentCount);
         taskService.upsert(task);
     }
@@ -137,7 +140,14 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
             commandAttachmentPort.saveAll(attachments);
         }
+    }
 
+    private void updateAttachmentWithoutAttachmentsToDelete(List<MultipartFile> files, Task task) {
+        if (files != null) {
+            List<String> fileUrls = s3UploadPort.uploadFiles(FilePathConstants.TASK_FILE, files);
+            List<Attachment> attachments = AttachmentMapper.toTaskAttachments(task, files, fileUrls);
+            commandAttachmentPort.saveAll(attachments);
+        }
     }
 
     private List<Attachment> validateAndGetAttachments(List<Long> attachmentIdsToDelete, Task task) {
