@@ -39,7 +39,7 @@ spec:
           image: clap.kr-central-2.kcr.dev/taskflow/taskflow-server:${IMAGE_TAG}
           imagePullPolicy: Always
           command: [ "java", "-jar", "app.jar" ]
-          args: [ "--spring.profiles.active=dev" ]
+          args: [ "--spring.profiles.active=prod" ]
           env:
             - name: TZ
               value: "Asia/Seoul"

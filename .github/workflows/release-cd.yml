@@ -57,7 +57,7 @@ jobs:
           docker push ${{ secrets.DOCKER_REPO }}:latest
       - name: Update Kubernetes Deployment
         run: |
-          envsubst < ./taskflow.yaml
+          envsubst < ./taskflow.yaml > ./taskflow-back.yaml
         env:
           IMAGE_TAG: ${{ steps.version.outputs.VERSION }}
       # deploy
@@ -69,8 +69,8 @@ jobs:
           key: ${{ secrets.KUBE_HOST_KEY }}
           port: ${{ secrets.KUBE_HOST_PORT }}
           overwrite: true
-          source: ./taskflow.yaml
-          target: ~/taskflow-back.yaml
+          source: ./taskflow-back.yaml
+          target: ~/
 
       - name: Deploy
         uses: appleboy/ssh-action@master
