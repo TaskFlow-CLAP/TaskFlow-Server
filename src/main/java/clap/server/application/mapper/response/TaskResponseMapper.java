@@ -22,15 +22,11 @@ public class TaskResponseMapper {
         return new CreateTaskResponse(task.getTaskId(), task.getCategory().getCategoryId(), task.getTitle());
     }
 
-    public static UpdateTaskResponse toUpdateTaskResponse(Task task) {
-        return new UpdateTaskResponse(task.getTaskId(), task.getCategory().getCategoryId(), task.getTitle());
-    }
-
     public static FilterRequestedTasksResponse toFilterRequestedTasksResponse(Task task) {
         return new FilterRequestedTasksResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
-                task.getUpdatedAt(),
+                task.getCreatedAt(),
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getTitle(),
@@ -45,7 +41,7 @@ public class TaskResponseMapper {
         return new FilterAssignedTaskListResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
-                task.getUpdatedAt(),
+                task.getCreatedAt(),
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getTitle(),
@@ -60,7 +56,7 @@ public class TaskResponseMapper {
         return new FilterPendingApprovalResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
-                task.getUpdatedAt(),
+                task.getCreatedAt(),
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getTitle(),
@@ -104,7 +100,7 @@ public class TaskResponseMapper {
         return new FilterAllTasksResponse(
                 task.getTaskId(),
                 task.getTaskCode(),
-                task.getUpdatedAt(),
+                task.getCreatedAt(),
                 task.getCategory().getMainCategory().getName(),
                 task.getCategory().getName(),
                 task.getTitle(),
