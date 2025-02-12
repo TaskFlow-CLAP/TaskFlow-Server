@@ -71,6 +71,6 @@ spring:
         format_sql: false
         show_sql: false
   flyway:
-    enabled: false
-    baseline-on-migrate: false
+    enabled: true
+    baseline-on-migrate: true
     locations: classpath:db/migration/prod
