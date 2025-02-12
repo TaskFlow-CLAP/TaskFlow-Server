@@ -25,7 +25,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     @Query("SELECT n FROM NotificationEntity n " +
             "WHERE n.receiver.memberId = :receiverId " +
             "AND n.task.isDeleted = false")
-    List<NotificationEntity> findAllByReceiver_MemberId(Long memberId);
+    List<NotificationEntity> findAllByReceiver_MemberId(Long receiverId);
 
     List<NotificationEntity> findByTask_TaskId(Long taskId);
 

@@ -7,6 +7,7 @@ import clap.server.application.port.outbound.webhook.SendAgitPort;
 import clap.server.domain.model.task.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class SendAgitService {
     private final SendAgitPort agitPort;
     private final TaskService taskService;
 
+    @Transactional
     public void sendAgit(PushNotificationTemplate request, Task task, String taskDetailUrl) {
         Long agitPostId = agitPort.sendAgit(request, task, taskDetailUrl);
 
