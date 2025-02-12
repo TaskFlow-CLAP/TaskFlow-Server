@@ -28,7 +28,6 @@ public class TerminateTaskService implements TerminateTaskUsecase {
 
     @Override
     public void terminateTask(Long memberId, Long taskId, String reason) {
-        memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
         task.terminateTask();
         taskService.upsert(task);
@@ -42,5 +41,6 @@ public class TerminateTaskService implements TerminateTaskUsecase {
 
     private void publishNotification(Member receiver, Task task, String message, String reason) {
         sendNotificationService.sendPushNotification(receiver, NotificationType.STATUS_SWITCHED, task, message, reason, null, false);
+        sendNotificationService.sendAgitNotification(NotificationType.STATUS_SWITCHED, task, message, null);
     }
 }
