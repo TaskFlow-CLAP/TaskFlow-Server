@@ -201,6 +201,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         long total = queryFactory
                 .select(taskEntity.count())
                 .from(taskEntity)
+                .leftJoin(taskEntity.processor)
+                .leftJoin(taskEntity.requester)
                 .where(builder)
                 .fetchOne();
         return new PageImpl<>(result, pageable, total);
