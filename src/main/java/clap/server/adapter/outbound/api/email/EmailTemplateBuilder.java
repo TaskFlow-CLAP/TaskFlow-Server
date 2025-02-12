@@ -24,7 +24,7 @@ public class EmailTemplateBuilder {
         switch (request.notificationType()) {
             case TASK_REQUESTED:
                 templateName = "task-request";
-                subject = "[TaskFlow] 신규 작업 "+ request.taskName()+ "이 요청되었습니다.";
+                subject = "[TaskFlow] 신규 작업 "+ request.taskName()+ "가 요청되었습니다.";
                 context.setVariable("taskDetailUrl", taskDetailUrl);
                 context.setVariable("receiverName", request.senderName());
                 context.setVariable("title", request.taskName());
