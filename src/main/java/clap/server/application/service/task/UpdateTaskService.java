@@ -33,6 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_MAX_FILE_COUNT;
 import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_UPDATABLE_STATUS;
@@ -89,7 +92,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
             TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, taskStatus.getDescription(), null, null);
             commandTaskHistoryPort.save(taskHistory);
 
-            List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
+            List<Member> receivers = List.of(task.getRequester());
             publishNotification(receivers, updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
         }
     }
@@ -107,7 +110,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor, null);
         commandTaskHistoryPort.save(taskHistory);
 
-        List<Member> receivers = List.of(updateTask.getRequester(), updateTask.getProcessor());
+        List<Member> receivers = List.of(updateTask.getRequester());
         publishNotification(receivers, updateTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());
     }
 

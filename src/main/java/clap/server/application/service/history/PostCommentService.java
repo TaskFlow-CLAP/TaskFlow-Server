@@ -58,12 +58,11 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
         Member processor = task.getProcessor();
         Member requester = task.getRequester();
-        if (Objects.equals(member.getMemberId(), requester.getMemberId())) {
-            publishNotification(processor, task, request.content(), member.getNickname());
-        } else {
-            publishNotification(requester, task, request.content(), member.getNickname());
-        }
+        Member receiver = Objects.equals(member.getMemberId(), requester.getMemberId()) ? processor : requester;
 
+        if (receiver != null) {
+            publishNotification(receiver, task, request.content(), member.getNickname());
+        }
     }
 
     @Transactional
@@ -85,10 +84,11 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
 
         Member processor = task.getProcessor();
         Member requester = task.getRequester();
-        if (member.getMemberInfo().getRole() == requester.getMemberInfo().getRole()) {
-            publishNotification(processor, task, fileName + "(첨부파일)", requester.getNickname());
-        } else {
-            publishNotification(requester, task, fileName + "(첨부파일)", processor.getNickname());
+        Member receiver = Objects.equals(member.getMemberId(), requester.getMemberId()) ? processor : requester;
+        String senderNickname = Objects.equals(member.getMemberId(), requester.getMemberId()) ? requester.getNickname() : processor.getNickname();
+
+        if (receiver != null) {
+            publishNotification(receiver, task, fileName + "(첨부파일)", senderNickname);
         }
 
     }
