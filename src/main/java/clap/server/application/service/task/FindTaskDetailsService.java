@@ -31,7 +31,7 @@ public class FindTaskDetailsService implements FindTaskDetailsUsecase {
         memberService.findActiveMember(requesterId);
         Task task = loadTaskPort.findById(taskId)
                 .orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
-        List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNull(taskId);
+        List<Attachment> attachments = loadAttachmentPort.findAllByTaskId(taskId);
         return TaskResponseMapper.toFindTaskDetailResponse(task, attachments);
     }
 
@@ -40,7 +40,7 @@ public class FindTaskDetailsService implements FindTaskDetailsUsecase {
         memberService.findActiveMember(requesterId);
         Task task = loadTaskPort.findById(taskId)
                 .orElseThrow(() -> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
-        List<Attachment> attachments = loadAttachmentPort.findAllByTaskIdAndCommentIsNull(taskId);
+        List<Attachment> attachments = loadAttachmentPort.findAllByTaskId(taskId);
         return TaskResponseMapper.toFindTaskDetailForManagerResponse(task, attachments);
     }
 }

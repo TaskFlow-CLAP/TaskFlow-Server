@@ -12,7 +12,6 @@ import lombok.experimental.SuperBuilder;
 public class Attachment extends BaseTime {
     private Long attachmentId;
     private Task task;
-    private Comment comment;
     private String originalName;
     private String fileUrl;
     private String fileSize;
@@ -21,7 +20,6 @@ public class Attachment extends BaseTime {
     public static Attachment createAttachment(Task task, String originalName, String fileUrl, long fileSize) {
         return Attachment.builder()
                 .task(task)
-                .comment(null)
                 .originalName(originalName)
                 .fileUrl(fileUrl)
                 .fileSize(formatFileSize(fileSize))
@@ -29,10 +27,10 @@ public class Attachment extends BaseTime {
                 .build();
     }
 
+    @Deprecated
     public static Attachment createCommentAttachment(Task task, Comment comment, String originalName, String fileUrl, long fileSize) {
         return Attachment.builder()
                 .task(task)
-                .comment(comment)
                 .originalName(originalName)
                 .fileUrl(fileUrl)
                 .fileSize(formatFileSize(fileSize))
@@ -53,5 +51,4 @@ public class Attachment extends BaseTime {
             return String.format("%.1f MB", size / (1024.0 * 1024.0));
         }
     }
-
 }

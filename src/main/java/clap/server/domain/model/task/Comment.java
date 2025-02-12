@@ -2,6 +2,7 @@ package clap.server.domain.model.task;
 
 import clap.server.domain.model.common.BaseTime;
 import clap.server.domain.model.member.Member;
+import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,15 +16,20 @@ public class Comment extends BaseTime {
     private Member member;
     private Task task;
     private String content;
+    private String originalName;
+    private String fileUrl;
+    private String fileSize;
     private boolean isModified;
     private boolean isDeleted;
 
-    public static Comment createComment(Member member, Task task, String content) {
+    public static Comment createComment(Member member, Task task, String content, String originalName, String fileUrl, String fileSize) {
         return Comment.builder()
                 .member(member)
                 .task(task)
                 .content(content)
-                .isModified(false)
+                .originalName(originalName)
+                .fileUrl(fileUrl)
+                .fileSize(fileSize)
                 .build();
     }
 

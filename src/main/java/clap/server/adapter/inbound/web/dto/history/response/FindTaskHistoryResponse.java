@@ -39,7 +39,6 @@ public record FindTaskHistoryResponse(
             Long commentId,
             String nickName,
             String profileImageUrl,
-            boolean isModified,
             String fileName,
             String url,
             String size

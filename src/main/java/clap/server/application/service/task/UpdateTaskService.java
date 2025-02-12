@@ -138,7 +138,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     }
 
     private List<Attachment> validateAndGetAttachments(List<Long> attachmentIdsToDelete, Task task) {
-        List<Attachment> attachmentsOfTask = loadAttachmentPort.findAllByTaskIdAndCommentIsNullAndAttachmentId(task.getTaskId(), attachmentIdsToDelete);
+        List<Attachment> attachmentsOfTask = loadAttachmentPort.findAllByTaskIdAndAttachmentId(task.getTaskId(), attachmentIdsToDelete);
         if (attachmentsOfTask.size() != attachmentIdsToDelete.size()) {
             throw new ApplicationException(TaskErrorCode.TASK_ATTACHMENT_NOT_FOUND);
         }

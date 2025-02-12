@@ -37,37 +37,18 @@ public class AttachmentPersistenceAdapter implements CommandAttachmentPort, Load
     }
 
     @Override
-    public List<Attachment> findAllByTaskIdAndCommentIsNull(final Long taskId) {
-        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNull(taskId);
+    public List<Attachment> findAllByTaskId(final Long taskId) {
+        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskId(taskId);
         return attachmentEntities.stream()
                 .map(attachmentPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Attachment> findAllByTaskIdAndCommentIsNullAndAttachmentId(final Long taskId, final List<Long> attachmentIds) {
-        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNullAndAttachmentIdIn(taskId, attachmentIds);
+    public List<Attachment> findAllByTaskIdAndAttachmentId(final Long taskId, final List<Long> attachmentIds) {
+        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndAttachmentIdIn(taskId, attachmentIds);
         return attachmentEntities.stream()
                 .map(attachmentPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<Attachment> findByCommentId(final Long commentId) {
-        Optional<AttachmentEntity> attachmentEntity = attachmentRepository.findByComment_CommentId(commentId);
-        return attachmentEntity.map(attachmentPersistenceMapper::toDomain);
-    }
-
-    @Override
-    public List<Attachment> findAllByTaskIdAndCommentIsNotNull(final Long taskId) {
-        List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByTask_TaskIdAndCommentIsNotNull(taskId);
-        return attachmentEntities.stream()
-                .map(attachmentPersistenceMapper::toDomain)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean exitsByCommentId(final Long commentId) {
-        return attachmentRepository.existsByComment_CommentId(commentId);
     }
 }
