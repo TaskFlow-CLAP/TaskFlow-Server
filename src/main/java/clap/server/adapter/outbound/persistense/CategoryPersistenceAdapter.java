@@ -50,14 +50,22 @@ public class CategoryPersistenceAdapter implements LoadCategoryPort, CommandCate
     }
 
     @Override
-    public boolean existsMainCategoryByNameOrCode(String name, String code) {
-        return categoryRepository.existsByNameOrCodeAndMainCategoryIsNullAndIsDeletedFalse(name, code);
+    public boolean existsMainCategoryByNameOrCode(Category category, String name, String code) {
+        if (category == null) {
+            return categoryRepository.existsByNameOrCodeAndMainCategoryIsNullAndIsDeletedFalse(name, code);
+        }
+        CategoryEntity categoryEntity = categoryPersistenceMapper.toEntity(category);
+        return categoryRepository.existsByNameOrCodeAndMainCategoryIsNullAndIsDeletedFalse(categoryEntity, name, code);
     }
 
     @Override
-    public boolean existsSubCategoryByNameOrCode(Category category, String name, String code) {
+    public boolean existsSubCategoryByNameOrCode(Category category, Category mainCategory, String name, String code) {
+        CategoryEntity mainCategoryEntity = categoryPersistenceMapper.toEntity(mainCategory);
+        if (category == null) {
+            return categoryRepository.existsByMainCategoryAndIsDeletedFalseAndNameOrCode(mainCategoryEntity, name, code);
+        }
         CategoryEntity categoryEntity = categoryPersistenceMapper.toEntity(category);
-        return categoryRepository.existsByMainCategoryAndIsDeletedFalseAndNameOrCode(categoryEntity, name, code);
+        return categoryRepository.existsByMainCategoryAndIsDeletedFalseAndNameOrCode(categoryEntity, mainCategoryEntity, name, code);
     }
 
 
