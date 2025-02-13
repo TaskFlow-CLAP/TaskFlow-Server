@@ -47,6 +47,8 @@ public class Member extends BaseTime {
                 .imageUrl(null)
                 .status(MemberStatus.PENDING)
                 .password(null)
+                .inReviewingTaskCount(null)
+                .inProgressTaskCount(null)
                 .build();
     }
 
@@ -59,6 +61,8 @@ public class Member extends BaseTime {
         this.status = MemberStatus.ACTIVE;
         this.emailNotificationEnabled = true;
         this.kakaoworkNotificationEnabled = true;
+        this.inProgressTaskCount = 0;
+        this.inReviewingTaskCount = 0;
     }
 
     public String getNickname() {
@@ -107,5 +111,19 @@ public class Member extends BaseTime {
 
     public void register(Member admin) {
         this.admin = admin;
+    }
+
+    public void incrementInProgressTaskCount() {
+        this.inProgressTaskCount++;
+    }
+    public void incrementInReviewingTaskCount() {
+        this.inReviewingTaskCount++;
+    }
+
+    public void decrementInProgressTaskCount() {
+        this.inProgressTaskCount--;
+    }
+    public void decrementInReviewingTaskCount() {
+        this.inReviewingTaskCount--;
     }
 }
