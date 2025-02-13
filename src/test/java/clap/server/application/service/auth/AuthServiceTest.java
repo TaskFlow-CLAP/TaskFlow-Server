@@ -56,7 +56,7 @@ class AuthServiceTest {
         Member member = user;
         CustomJwts jwtTokens = new CustomJwts("accessToken", "refreshToken");
 
-        when(loadMemberPort.findByNickname(nickname)).thenReturn(Optional.of(member));
+        when(loadMemberPort.findActiveMemberByNickname(nickname)).thenReturn(Optional.of(member));
         when(passwordEncoder.matches(inputPassword, member.getPassword())).thenReturn(true);
         when(manageTokenService.issueTokens(member)).thenReturn(jwtTokens);
 
@@ -80,7 +80,7 @@ class AuthServiceTest {
         String clientIp = "127.0.0.1";
         Member member = user;
 
-        when(loadMemberPort.findByNickname(nickname)).thenReturn(Optional.of(member));
+        when(loadMemberPort.findActiveMemberByNickname(nickname)).thenReturn(Optional.of(member));
         when(passwordEncoder.matches(inputPassword, member.getPassword())).thenReturn(false);
 
         // When & Then
@@ -100,7 +100,7 @@ class AuthServiceTest {
         Member member = notApprovedUser;
         String temporaryToken = "temporaryToken";
 
-        when(loadMemberPort.findByNickname(nickname)).thenReturn(Optional.of(member));
+        when(loadMemberPort.findActiveMemberByNickname(nickname)).thenReturn(Optional.of(member));
         when(passwordEncoder.matches(inputPassword, member.getPassword())).thenReturn(true);
         when(manageTokenService.issueTemporaryToken(notApprovedUser.getMemberId())).thenReturn(temporaryToken);
 
