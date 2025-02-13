@@ -35,7 +35,6 @@ springdoc:
     path: /swagger/v3/api-docs
 
 ---
----
 spring.config.activate.on-profile: "prod"
 swagger.server.url: ${SWAGGER_SERVER_URL:http://localhost:8080}
 
