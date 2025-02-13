@@ -100,7 +100,7 @@ public class EmailTemplateBuilder {
         Context context = new Context();
         String templateName = "new-password";
         String subject = "[TaskFlow] 비밀번호 재설정";
-        context.setVariable("loginLink", "http://localhost:5173/login");
+        context.setVariable("loginLink", REDIRECT_URL_LOGIN);
         context.setVariable("newPassword", newPassword);
         context.setVariable("receiverName", receiverName);
         String body = templateEngine.process(templateName, context);
