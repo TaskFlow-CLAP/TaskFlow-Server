@@ -56,6 +56,11 @@ public class CsvParseService {
     }
 
     private Member mapToMember(String[] fields, List<Department> departments) {
+
+        if (!validateEmailAndNickname(fields[4].trim(), fields[1].trim())) {
+            throw new ApplicationException(MemberErrorCode.INVALID_EMAIL_NICKNAME_MATCH);
+        }
+
         Long departmentId = Long.parseLong(fields[2].trim());
         Department department = departments.stream()
                 .filter(dept -> dept.getDepartmentId().equals(departmentId))
@@ -76,5 +81,13 @@ public class CsvParseService {
         return Member.builder()
                 .memberInfo(memberInfo)
                 .build();
+    }
+
+    private boolean validateEmailAndNickname(String email, String nickname) {
+        String extractedEmail = email.split("@")[0].replace(".", "");
+        String extractedNickname = nickname.replace(".", "");
+        System.out.println(extractedNickname);
+        System.out.println(extractedEmail);
+        return extractedEmail.equals(extractedNickname);
     }
 }

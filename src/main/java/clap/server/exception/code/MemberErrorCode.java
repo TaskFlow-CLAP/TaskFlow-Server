@@ -19,7 +19,8 @@ public enum MemberErrorCode implements BaseErrorCode {
     DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST,"MEMBER_011", "중복된 닉네임입니다"),
     DUPLICATE_NICKNAME_OR_EMAIL(HttpStatus.BAD_REQUEST, "MEMBER_012", "중복된 닉네임이나 email이 존재합니다"),
     MANAGER_PERMISSION_DENIED(HttpStatus.BAD_REQUEST, "MEMBER_013", "담당자 권한이 없는 부서입니다."),
-            ;
+    INVALID_EMAIL_NICKNAME_MATCH(HttpStatus.BAD_REQUEST, "MEMBER_014", "닉네임과 이메일이 일치하지 않습니다"),
+    ;
 
     private final HttpStatus httpStatus;
     private final String customCode;
