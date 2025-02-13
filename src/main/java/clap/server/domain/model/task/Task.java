@@ -100,12 +100,18 @@ public class Task extends BaseTime {
         this.dueDate = dueDate;
         this.category = category;
         this.label = label;
+        this.taskCode = toTaskCodeWithApproval(category);
         this.taskStatus = TaskStatus.IN_PROGRESS;
     }
 
     private static String toTaskCode(Category category) {
         return category.getMainCategory().getCode() + category.getCode() + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
     }
+
+    private String toTaskCodeWithApproval(Category category) {
+        return category.getMainCategory().getCode() + category.getCode() + super.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
+    }
+
 
     public void updateProcessorOrder(long newProcessorOrder) {
         this.processorOrder = newProcessorOrder;
