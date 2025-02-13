@@ -69,7 +69,7 @@ class AuthService implements LoginUsecase, LogoutUsecase {
     }
 
     private Member getMember(String inputNickname, String clientIp) {
-        return loadMemberPort.findByNickname(inputNickname).orElseThrow(() ->
+        return loadMemberPort.findActiveMemberByNickname(inputNickname).orElseThrow(() ->
         {
             loginAttemptService.recordFailedAttempt(inputNickname, clientIp);
             return new AuthException(AuthErrorCode.LOGIN_REQUEST_FAILED);
