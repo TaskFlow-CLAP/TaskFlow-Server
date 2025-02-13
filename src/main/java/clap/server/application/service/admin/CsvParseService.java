@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class CsvParseService {
         List<Member> members = new ArrayList<>();
         List<Department> departments = loadDepartmentPort.findActiveDepartments();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), Charset.forName("EUC-KR")))) {
             String headerLine = reader.readLine();
             if (headerLine == null) {
                 throw new ApplicationException(MemberErrorCode.INVALID_CSV_FORMAT);
