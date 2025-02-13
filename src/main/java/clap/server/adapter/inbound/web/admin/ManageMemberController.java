@@ -24,7 +24,7 @@ public class ManageMemberController {
     private final MemberDetailUsecase memberDetailUsecase;
 
     @Operation(summary = "회원 정보 수정 API")
-    @PostMapping("/{memberId}")
+    @PatchMapping("/{memberId}")
     @Secured("ROLE_ADMIN")
     public void registerMember(@AuthenticationPrincipal SecurityUserDetails userInfo,
                                @PathVariable Long memberId,

@@ -15,7 +15,7 @@ public record UpdateMemberRequest(
         Long departmentId,
         @NotNull @Schema(description = "회원 역할")
         MemberRole role,
-        @NotBlank @Schema(description = "회원 직책")
+        @NotNull @Schema(description = "회원 직책")
         String departmentRole
 ) {
 }
