@@ -6,6 +6,7 @@ import clap.server.adapter.inbound.web.dto.task.response.FindApprovalFormRespons
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.application.mapper.response.TaskResponseMapper;
 import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.LabelService;
@@ -35,9 +36,11 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     private final TaskService taskService;
     private final CategoryService categoryService;
     private final LabelService labelService;
+
     private final RequestedTaskUpdatePolicy requestedTaskUpdatePolicy;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final SendNotificationService sendNotificationService;
+    private final UpdateProcessorTaskCountService updateProcessorTaskCountService;
 
     @Override
     @Transactional
@@ -52,8 +55,10 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         }
 
         requestedTaskUpdatePolicy.validateTaskRequested(task);
+        updateProcessorTaskCountService.handleTaskStatusChange(processor, TaskStatus.REQUESTED, TaskStatus.IN_PROGRESS);
+
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
-        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_ASSIGNED, task, null, processor,null);
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_ASSIGNED, task, null, processor, null);
         commandTaskHistoryPort.save(taskHistory);
 
         List<Member> receivers = List.of(task.getRequester(), processor);
@@ -71,7 +76,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         return TaskResponseMapper.toFindApprovalFormResponse(task);
     }
 
-    private void publishNotification(List<Member> receivers, Task task, String processorName){
+    private void publishNotification(List<Member> receivers, Task task, String processorName) {
         receivers.forEach(receiver -> {
             boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
             sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,

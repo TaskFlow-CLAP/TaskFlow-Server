@@ -22,9 +22,9 @@ import clap.server.application.port.outbound.task.LoadAttachmentPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.*;
-import clap.server.common.constants.FilePathConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -33,12 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_MAX_FILE_COUNT;
-import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_UPDATABLE_STATUS;
+import static clap.server.domain.policy.task.TaskPolicyConstants.*;
 
 
 @ApplicationService
@@ -50,6 +46,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
     private final CategoryService categoryService;
     private final TaskService taskService;
     private final SendNotificationService sendNotificationService;
+    private final UpdateProcessorTaskCountService updateProcessorTaskCountService;
 
     private final LoadAttachmentPort loadAttachmentPort;
     private final LabelService labelService;
@@ -80,22 +77,24 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
     @Override
     @Transactional
-    public void updateTaskStatus(Long memberId, Long taskId, TaskStatus taskStatus) {
+    public void updateTaskStatus(Long memberId, Long taskId, TaskStatus targetTaskStatus) {
         memberService.findActiveMember(memberId);
         Task task = taskService.findById(taskId);
 
-        if (!TASK_UPDATABLE_STATUS.contains(taskStatus)) {
+        if (!TASK_UPDATABLE_STATUS.contains(targetTaskStatus)) {
             throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
         }
 
-        if (!task.getTaskStatus().equals(taskStatus)) {
-            task.updateTaskStatus(taskStatus);
-            Task updateTask = taskService.upsert(task);
-            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, taskStatus.getDescription(), null, null);
+        if (!task.getTaskStatus().equals(targetTaskStatus)) {
+            updateProcessorTaskCountService.handleTaskStatusChange(task.getProcessor(), task.getTaskStatus(), targetTaskStatus);
+            task.updateTaskStatus(targetTaskStatus);
+            Task updatedTask = taskService.upsert(task);
+
+            TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, targetTaskStatus.getDescription(), null, null);
             commandTaskHistoryPort.save(taskHistory);
 
             List<Member> receivers = List.of(task.getRequester());
-            publishNotification(receivers, updateTask, NotificationType.STATUS_SWITCHED, String.valueOf(updateTask.getTaskStatus()));
+            publishNotification(receivers, updatedTask, NotificationType.STATUS_SWITCHED, String.valueOf(updatedTask.getTaskStatus()));
         }
     }
 
@@ -106,14 +105,18 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
 
         Task task = taskService.findById(taskId);
         Member processor = memberService.findById(request.processorId());
+        if (REMAINING_TASK_STATUS.contains(task.getTaskStatus())) {
+            updateProcessorTaskCountService.handleProcessorChange(task.getProcessor(), processor, task.getTaskStatus());
+        }
 
         task.updateProcessor(processor);
-        Task updateTask = taskService.upsert(task);
+        Task updatedTask = taskService.upsert(task);
+
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor, null);
         commandTaskHistoryPort.save(taskHistory);
 
-        List<Member> receivers = List.of(updateTask.getRequester());
-        publishNotification(receivers, updateTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());
+        List<Member> receivers = List.of(updatedTask.getRequester());
+        publishNotification(receivers, updatedTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());
     }
 
     @Transactional
