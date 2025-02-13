@@ -25,7 +25,7 @@ public class AttachmentEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String originalName;
 
-    @Column(nullable = false)
+    @Column(name = "file_url", nullable = false, length = 2048)
     private String fileUrl;
 
     @Column(nullable = false)

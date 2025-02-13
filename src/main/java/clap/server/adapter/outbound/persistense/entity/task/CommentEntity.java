@@ -38,7 +38,7 @@ public class CommentEntity extends BaseTimeEntity {
     @Column
     private String originalName;
 
-    @Column
+    @Column(name = "file_url", length = 2048)
     private String fileUrl;
 
     @Column
