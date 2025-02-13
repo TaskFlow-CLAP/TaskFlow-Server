@@ -29,9 +29,9 @@ public class UpdateCategoryService implements UpdateCategoryUsecase {
         Category category = loadCategoryPort.findById(categoryId).orElseThrow(() -> new ApplicationException(CATEGORY_NOT_FOUND));
         boolean isDuplicate;
         if (category.getMainCategory() == null) {
-            isDuplicate = loadCategoryPort.existsMainCategoryByNameOrCode(name, code);
+            isDuplicate = loadCategoryPort.existsMainCategoryByNameOrCode(category, name, code);
         } else {
-            isDuplicate = loadCategoryPort.existsSubCategoryByNameOrCode(category.getMainCategory(), name, code);
+            isDuplicate = loadCategoryPort.existsSubCategoryByNameOrCode(category, category.getMainCategory(), name, code);
         }
         if (isDuplicate) throw new ApplicationException(CATEGORY_DUPLICATE);
 
