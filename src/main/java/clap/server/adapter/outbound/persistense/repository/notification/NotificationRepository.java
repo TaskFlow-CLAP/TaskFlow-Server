@@ -17,21 +17,18 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 
     @Query("SELECT n FROM NotificationEntity n " +
             "WHERE n.receiver.memberId = :receiverId " +
-            "AND n.task.isDeleted = false " +
             "ORDER BY n.createdAt DESC")
     Slice<NotificationEntity> findAllByReceiver_MemberIdOrderByCreatedAtDesc(
             @Param("receiverId") Long receiverId, Pageable pageable);
 
     @Query("SELECT n FROM NotificationEntity n " +
-            "WHERE n.receiver.memberId = :receiverId " +
-            "AND n.task.isDeleted = false")
+            "WHERE n.receiver.memberId = :receiverId")
     List<NotificationEntity> findAllByReceiver_MemberId(Long receiverId);
 
     List<NotificationEntity> findByTask_TaskId(Long taskId);
 
     @Query("SELECT COUNT(n) FROM NotificationEntity n " +
             "WHERE n.isRead = false " +
-            "AND n.receiver.memberId = :memberId " +
-            "AND n.task.isDeleted = false")
+            "AND n.receiver.memberId = :memberId")
     Integer countUnreadByMemberId(@Param("memberId") Long memberId);
 }
