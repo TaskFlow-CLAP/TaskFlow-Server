@@ -105,7 +105,7 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         memberService.findActiveMember(memberId);
 
         Task task = taskService.findById(taskId);
-        Member processor = memberService.findById(request.processorId());
+        Member processor = memberService.findActiveMember(request.processorId());
 
         task.updateProcessor(processor);
         Task updateTask = taskService.upsert(task);
