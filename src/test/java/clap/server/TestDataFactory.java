@@ -194,6 +194,7 @@ public class TestDataFactory {
                 .requester(createUser())
                 .processor(processor)
                 .label(createLabel())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
