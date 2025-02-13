@@ -24,11 +24,11 @@ public class FindManagersService implements FindManagersUsecase {
     @Transactional
     @Override
     public List<FindManagersResponse> findManagers() {
-        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEWING);
+//        List<TaskStatus> targetStatuses = List.of(TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEWING);
         List<Member> managers = memberService.findActiveManagers();
         return managers.stream()
                 .map(manager -> {
-                    int remainingTasks = loadTaskPort.findTasksByMemberIdAndStatus(manager.getMemberId(), targetStatuses).size();
+                    int remainingTasks = manager.getInProgressTaskCount() + manager.getInReviewingTaskCount();
                     return toFindManagersResponse(manager, remainingTasks);
                 }).toList();
     }
