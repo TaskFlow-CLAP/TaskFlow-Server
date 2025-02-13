@@ -23,10 +23,10 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String email;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false)
