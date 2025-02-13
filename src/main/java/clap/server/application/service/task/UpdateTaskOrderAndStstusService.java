@@ -106,7 +106,7 @@ public class UpdateTaskOrderAndStstusService implements UpdateTaskOrderAndStatus
             targetTask.updateTaskStatus(targetStatus);
             updatedTask = taskService.upsert(targetTask);
         } else if (prevTask == null) {
-            long newOrder = taskOrderCalculationPolicy.calculateOrderForBottom(null, nextTask);
+            long newOrder = taskOrderCalculationPolicy.calculateOrderForTop(null, nextTask);
             updatedTask = updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
         } else if (nextTask == null) {
             long newOrder = taskOrderCalculationPolicy.calculateOrderForBottom(prevTask, null);
