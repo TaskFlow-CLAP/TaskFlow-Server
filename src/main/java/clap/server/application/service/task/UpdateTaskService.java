@@ -5,15 +5,10 @@ import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRol
 import clap.server.adapter.outbound.persistense.entity.notification.constant.NotificationType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
-import clap.server.application.port.inbound.domain.CategoryService;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.UpdateTaskProcessorUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskStatusUsecase;
-import clap.server.application.port.inbound.task.UpdateTaskUsecase;
-import clap.server.application.port.outbound.s3.S3UploadPort;
-import clap.server.application.port.outbound.task.CommandAttachmentPort;
-import clap.server.application.port.outbound.task.LoadAttachmentPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -41,8 +36,6 @@ public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskPro
     private final SendNotificationService sendNotificationService;
     private final UpdateProcessorTaskCountService updateProcessorTaskCountService;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
-
-
 
     @Override
     @Transactional

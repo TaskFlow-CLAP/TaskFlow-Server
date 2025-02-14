@@ -29,9 +29,7 @@ import java.util.List;
 
 @ApplicationService
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ApprovalTaskService implements ApprovalTaskUsecase {
-
     private final MemberService memberService;
     private final TaskService taskService;
     private final CategoryService categoryService;
