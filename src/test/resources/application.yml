@@ -54,8 +54,3 @@ jwt:
     access-token: 43200000 # 1000 * 60 * 60 * 12 = 43200000 (12 hours)
     temporary-token: 300000
     refresh-token: 1209600000 # 1000 * 60 * 60 * 24 * 14 = 1209600000 (14 days)
-
-password:
-  policy:
-    length: 12
-    characters: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+
