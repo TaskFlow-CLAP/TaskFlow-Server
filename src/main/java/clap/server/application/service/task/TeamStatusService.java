@@ -35,7 +35,7 @@ public class TeamStatusService implements FilterTeamStatusUsecase {
             taskItemResponses.sort((a, b) -> b.totalTaskCount() - a.totalTaskCount());
         else taskItemResponses.sort(Comparator.comparing(TeamTaskResponse::nickname));
 
-        return new TeamStatusResponse(taskItemResponses, totalInProgressTaskCount, totalInReviewingTaskCount);
+        return TeamTaskResponseMapper.toTeamStatusResponse(taskItemResponses, totalInProgressTaskCount, totalInReviewingTaskCount);
     }
 
 
