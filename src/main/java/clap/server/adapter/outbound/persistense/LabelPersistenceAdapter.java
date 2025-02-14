@@ -36,6 +36,11 @@ public class LabelPersistenceAdapter implements LoadLabelPort, CommandLabelPort 
     }
 
     @Override
+    public boolean existsByLabelName(String labelName) {
+        return labelRepository.existsByLabelName(labelName);
+    }
+
+    @Override
     public void save(Label label) {
         LabelEntity labelEntity = labelPersistenceMapper.toEntity(label);
         labelRepository.save(labelEntity);
