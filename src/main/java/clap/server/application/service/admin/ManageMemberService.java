@@ -2,6 +2,7 @@ package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.request.UpdateMemberRequest;
 import clap.server.adapter.inbound.web.dto.admin.response.MemberDetailsResponse;
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.application.mapper.response.MemberResponseMapper;
 import clap.server.application.port.inbound.admin.MemberDetailUsecase;
 import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
@@ -11,6 +12,7 @@ import clap.server.application.port.outbound.member.LoadDepartmentPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
+import clap.server.domain.policy.member.ManagerInfoUpdatePolicy;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.DepartmentErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
     private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
+    private final ManagerInfoUpdatePolicy managerInfoUpdatePolicy;
 
     @Override
     @Transactional
@@ -29,7 +32,13 @@ class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
         Member member = memberService.findById(memberId);
         Department department = loadDepartmentPort.findById(request.departmentId()).orElseThrow(() ->
                 new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-        
+
+        managerInfoUpdatePolicy.validateDepartment(department, request.role());
+        if(member.getMemberInfo().getRole().equals(MemberRole.ROLE_MANAGER) &&
+                !request.role().equals(MemberRole.ROLE_MANAGER)){
+            managerInfoUpdatePolicy.validateNoRemainingTasks(member);
+        }
+
         member.getMemberInfo().updateMemberInfoByAdmin(
                 request.name(), request.isReviewer(),
                 department, request.role(), request.departmentRole());

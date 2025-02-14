@@ -10,7 +10,7 @@ import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
-import clap.server.domain.policy.member.ManagerDepartmentPolicy;
+import clap.server.domain.policy.member.ManagerInfoUpdatePolicy;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.DepartmentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
@@ -26,7 +26,7 @@ class RegisterMemberService implements RegisterMemberUsecase {
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
     private final LoadMemberPort loadMemberPort;
-    private final ManagerDepartmentPolicy managerDepartmentPolicy;
+    private final ManagerInfoUpdatePolicy managerInfoUpdatePolicy;
 
     @Override
     @Transactional
@@ -39,7 +39,7 @@ class RegisterMemberService implements RegisterMemberUsecase {
             throw new ApplicationException(MemberErrorCode.DUPLICATE_NICKNAME_OR_EMAIL);
         }
 
-        managerDepartmentPolicy.validateDepartment(department, request.role());
+        managerInfoUpdatePolicy.validateDepartment(department, request.role());
         MemberInfo memberInfo = MemberInfo.toMemberInfo(request.name(), request.email(), request.nickname(), request.isReviewer(),
                 department, request.role(), request.departmentRole());
         Member member = Member.createMember(admin, memberInfo);

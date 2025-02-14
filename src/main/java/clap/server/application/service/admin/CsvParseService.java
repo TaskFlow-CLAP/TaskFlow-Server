@@ -5,7 +5,7 @@ import clap.server.application.port.outbound.member.LoadDepartmentPort;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
-import clap.server.domain.policy.member.ManagerDepartmentPolicy;
+import clap.server.domain.policy.member.ManagerInfoUpdatePolicy;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.DepartmentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
@@ -30,7 +30,7 @@ import static clap.server.domain.model.member.MemberInfo.toMemberInfo;
 public class CsvParseService {
 
     private final LoadDepartmentPort loadDepartmentPort;
-    private final ManagerDepartmentPolicy managerDepartmentPolicy;
+    private final ManagerInfoUpdatePolicy managerInfoUpdatePolicy;
 
     public List<Member> parseDataAndMapToMember(MultipartFile file) {
         List<Member> members = new ArrayList<>();
@@ -67,7 +67,7 @@ public class CsvParseService {
                 .findFirst()
                 .orElseThrow(() -> new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
-        managerDepartmentPolicy.validateDepartment(department, MemberRole.valueOf(fields[5].trim()));
+        managerInfoUpdatePolicy.validateDepartment(department, MemberRole.valueOf(fields[5].trim()));
         MemberInfo memberInfo = toMemberInfo(
                 fields[0].trim(), // name
                 fields[4].trim(), // email
