@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "02. Task [거부 & 종료]")
+@Tag(name = "02. Task [종료]")
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
 @WebAdapter
