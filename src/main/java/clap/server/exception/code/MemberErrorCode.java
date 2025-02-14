@@ -13,7 +13,7 @@ public enum MemberErrorCode implements BaseErrorCode {
     COMMENT_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "MEMBER_005", "댓글 작성 권한이 없습니다."),
     PASSWORD_VERIFY_FAILED(HttpStatus.BAD_REQUEST, "MEMBER_006", "비밀번호 검증에 실패하였습니다"),
     INVALID_CSV_FORMAT(HttpStatus.BAD_REQUEST, "MEMBER_007", "CSV 파일 형식이 잘못되었습니다."),
-    CSV_PARSING_ERROR(HttpStatus.BAD_REQUEST, "MEMBER_008", "CSV 데이터 파싱 중 오류가 발생했습니다."),
+    CSV_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "MEMBER_008", "CSV 데이터 파싱 중 오류가 발생했습니다."),
     REVIEW_PERMISSION_DENIED(HttpStatus.BAD_REQUEST, "MEMBER_009", "담당자만 리뷰 권한이 있습니다."),
     NAME_CANNOT_BE_EMPTY(HttpStatus.BAD_REQUEST, "MEMBER_010", "이름은 공백일 수 없습니다."),
     DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST,"MEMBER_011", "중복된 닉네임입니다"),
