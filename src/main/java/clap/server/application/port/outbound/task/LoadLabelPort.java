@@ -14,5 +14,5 @@ public interface LoadLabelPort {
 
     List<Label> findLabelList();
 
-
+    boolean existsByLabelName(String labelName);
 }

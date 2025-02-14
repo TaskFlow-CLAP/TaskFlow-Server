@@ -11,4 +11,5 @@ public interface LabelRepository extends JpaRepository<LabelEntity, Long> {
 
     List<LabelEntity> findByIsDeletedFalse();
 
+    boolean existsByLabelName(String labelName);
 }
