@@ -5,8 +5,8 @@ import clap.server.adapter.inbound.web.dto.admin.response.MemberDetailsResponse;
 import clap.server.adapter.inbound.web.dto.member.response.MemberDetailInfoResponse;
 import clap.server.adapter.inbound.web.dto.member.response.MemberProfileResponse;
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.member.MemberInfo;
 
 public class MemberResponseMapper {
     private MemberResponseMapper() {
@@ -64,6 +64,7 @@ public class MemberResponseMapper {
                 member.getMemberInfo().getDepartment().getDepartmentId(),
                 member.getMemberInfo().getDepartment().getName(),
                 member.getMemberInfo().getDepartmentRole(),
+                member.getStatus().equals(MemberStatus.PENDING) || member.getStatus().equals(MemberStatus.APPROVAL_REQUEST) ? null:
                 member.getInProgressTaskCount() + member.getInReviewingTaskCount()
         );
     }
