@@ -1,6 +1,7 @@
 package clap.server.adapter.inbound.web.dto.admin.request;
 
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
+import clap.server.domain.policy.member.NicknamePolicyConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +16,7 @@ public record RegisterMemberRequest(
         @Schema(description = "회원 이메일", example = "siena@gmail.com")
         String email,
         @NotBlank @Schema(description = "회원 닉네임, 로그인할 때 쓰입니다.", example = "siena.it")
-        @Pattern(regexp = "^[a-z]{3,10}\\.[a-z]{1,5}$",
+        @Pattern(regexp = NicknamePolicyConstants.NICKNAME_REGEX,
                 message = "올바른 닉네임 형식이 아닙니다.")
         String nickname,
         @NotNull @Schema(description = "승인 권한 여부")

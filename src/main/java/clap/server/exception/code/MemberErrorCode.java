@@ -21,6 +21,8 @@ public enum MemberErrorCode implements BaseErrorCode {
     MANAGER_PERMISSION_DENIED(HttpStatus.BAD_REQUEST, "MEMBER_013", "담당자 권한이 없는 부서입니다."),
     INVALID_EMAIL_NICKNAME_MATCH(HttpStatus.BAD_REQUEST, "MEMBER_014", "닉네임과 이메일이 일치하지 않습니다"),
     MANAGER_MEMBER_UPDATE_NOT_ALLOWED_WITH_TASKS(HttpStatus.BAD_REQUEST, "MEMBER_015", "잔여 작업이 남아있어 수정이 불가합니다."),
+    INVALID_NICKNAME_FORMAT(HttpStatus.BAD_REQUEST, "MEMBER_016", "잘못된 닉네임 형식입니다."),
+
     ;
 
     private final HttpStatus httpStatus;

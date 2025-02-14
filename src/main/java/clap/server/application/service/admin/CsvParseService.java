@@ -6,6 +6,7 @@ import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
 import clap.server.domain.policy.member.ManagerInfoUpdatePolicy;
+import clap.server.domain.policy.member.NicknamePolicyConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.DepartmentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
@@ -20,6 +21,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static clap.server.domain.model.member.MemberInfo.toMemberInfo;
 
@@ -31,6 +33,8 @@ public class CsvParseService {
 
     private final LoadDepartmentPort loadDepartmentPort;
     private final ManagerInfoUpdatePolicy managerInfoUpdatePolicy;
+
+    private static final Pattern NICKNAME_PATTERN = Pattern.compile(NicknamePolicyConstants.NICKNAME_REGEX);
 
     public List<Member> parseDataAndMapToMember(MultipartFile file) {
         List<Member> members = new ArrayList<>();
@@ -56,6 +60,11 @@ public class CsvParseService {
     }
 
     private Member mapToMember(String[] fields, List<Department> departments) {
+        String nickname = fields[1].trim();
+
+        if (!NICKNAME_PATTERN.matcher(nickname).matches()) {
+            throw new ApplicationException(MemberErrorCode.INVALID_NICKNAME_FORMAT);
+        }
 
         if (!validateEmailAndNickname(fields[4].trim(), fields[1].trim())) {
             throw new ApplicationException(MemberErrorCode.INVALID_EMAIL_NICKNAME_MATCH);
