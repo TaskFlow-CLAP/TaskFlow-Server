@@ -60,8 +60,6 @@ public class Member extends BaseTime {
         this.status = MemberStatus.ACTIVE;
         this.emailNotificationEnabled = true;
         this.kakaoworkNotificationEnabled = true;
-        this.inProgressTaskCount = 0;
-        this.inReviewingTaskCount = 0;
     }
 
     public String getNickname() {

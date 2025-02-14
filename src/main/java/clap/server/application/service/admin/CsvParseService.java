@@ -6,6 +6,7 @@ import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
 import clap.server.domain.policy.member.ManagerInfoUpdatePolicy;
+import clap.server.domain.policy.member.NicknamePolicyConstants;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.DepartmentErrorCode;
 import clap.server.exception.code.MemberErrorCode;
@@ -33,7 +34,7 @@ public class CsvParseService {
     private final LoadDepartmentPort loadDepartmentPort;
     private final ManagerInfoUpdatePolicy managerInfoUpdatePolicy;
 
-    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[a-z]{3,10}\\.[a-z]{1,5}$");
+    private static final Pattern NICKNAME_PATTERN = Pattern.compile(NicknamePolicyConstants.NICKNAME_REGEX);
 
     public List<Member> parseDataAndMapToMember(MultipartFile file) {
         List<Member> members = new ArrayList<>();
