@@ -29,8 +29,7 @@ class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
         Member member = memberService.findById(memberId);
         Department department = loadDepartmentPort.findById(request.departmentId()).orElseThrow(() ->
                 new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-
-        //TODO: 인프라팀만 담당자가 될 수 있도록 수정해야함
+        
         member.getMemberInfo().updateMemberInfoByAdmin(
                 request.name(), request.isReviewer(),
                 department, request.role(), request.departmentRole());

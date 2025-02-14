@@ -29,6 +29,8 @@ public class TestDataFactory {
                 .status(MemberStatus.ACTIVE)
                 .password("Password123!")
                 .department(createDepartment())
+                .inProgressTaskCount(0)
+                .inReviewingTaskCount(0)
                 .build();
     }
 
@@ -43,6 +45,8 @@ public class TestDataFactory {
                 .status(MemberStatus.ACTIVE)
                 .password("Password456!")
                 .department(createDepartment())
+                .inProgressTaskCount(0)
+                .inReviewingTaskCount(0)
                 .build();
     }
 
@@ -57,6 +61,8 @@ public class TestDataFactory {
                 .status(MemberStatus.ACTIVE)
                 .password("Password789!")
                 .department(createDepartment())
+                .inProgressTaskCount(0)
+                .inReviewingTaskCount(0)
                 .build();
     }
 
@@ -71,6 +77,8 @@ public class TestDataFactory {
                 .status(MemberStatus.ACTIVE)
                 .password("Password000!")
                 .department(createDepartment())
+                .inProgressTaskCount(0)
+                .inReviewingTaskCount(0)
                 .build();
     }
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "02. Task [거부 & 종료]")
+@Tag(name = "02. Task [종료]")
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
 @WebAdapter
@@ -20,7 +20,7 @@ public class CancelTaskController {
     private final CancelTaskUsecase cancelTaskUsecase;
 
     @Operation(summary = "작업 취소")
-    @Secured({"ROLE_USER","ROLE_MANAGER"})
+    @Secured("ROLE_USER")
     @PatchMapping("/{taskId}/cancel")
     public void cancelTask(@PathVariable Long taskId, @AuthenticationPrincipal SecurityUserDetails userDetails) {
         cancelTaskUsecase.cancleTask(taskId, userDetails.getUserId());

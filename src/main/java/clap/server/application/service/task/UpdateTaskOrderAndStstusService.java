@@ -36,6 +36,7 @@ public class UpdateTaskOrderAndStstusService implements UpdateTaskOrderAndStatus
     private final SendNotificationService sendNotificationService;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
 
+    private final UpdateProcessorTaskCountService updateProcessorTaskCountService;
     private final TaskOrderCalculationPolicy taskOrderCalculationPolicy;
     private final ProcessorValidationPolicy processorValidationPolicy;
 
@@ -57,6 +58,7 @@ public class UpdateTaskOrderAndStstusService implements UpdateTaskOrderAndStatus
         Task updatedTask;
         Task prevTask;
         Task nextTask;
+        updateProcessorTaskCountService.handleTaskStatusChange(processor, targetTask.getTaskStatus(), targetStatus);
 
         if (request.prevTaskId() == 0 && request.nextTaskId() == 0) {
             updatedTask = handleSingleTask(processorId, targetStatus, targetTask);

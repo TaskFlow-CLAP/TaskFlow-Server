@@ -21,4 +21,9 @@ public class TaskPolicyConstants {
     );
 
     public static final int TASK_MAX_FILE_COUNT = 5;
+
+    public static final List<TaskStatus> REMAINING_TASK_STATUS = List.of(
+            TaskStatus.IN_PROGRESS,
+            TaskStatus.IN_REVIEWING
+    );
 }
