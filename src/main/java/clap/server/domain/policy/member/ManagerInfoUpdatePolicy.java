@@ -19,10 +19,10 @@ public class ManagerInfoUpdatePolicy {
         }
     }
 
-    // 담당자의 잔여 작업이 남아있는 경우 다른 역할로의 변경이 허용되지 않음
+    // 담당자의 잔여 작업이 남아있는 경우 해당 회원의 데이터 수정이 허용되지 않음
     public void validateNoRemainingTasks(final Member member){
         if(member.getInReviewingTaskCount()>0 || member.getInProgressTaskCount()> 0){
-            throw new DomainException(MemberErrorCode.ROLE_CHANGE_NOT_ALLOWED_WITH_TASKS);
+            throw new DomainException(MemberErrorCode.MANAGER_MEMBER_UPDATE_NOT_ALLOWED_WITH_TASKS);
         }
     }
 }
