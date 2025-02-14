@@ -4,6 +4,7 @@ package clap.server.application.mapper.response;
 import clap.server.adapter.inbound.web.dto.admin.response.MemberDetailsResponse;
 import clap.server.adapter.inbound.web.dto.member.response.MemberDetailInfoResponse;
 import clap.server.adapter.inbound.web.dto.member.response.MemberProfileResponse;
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
 
@@ -32,7 +33,15 @@ public class MemberResponseMapper {
                 member.getMemberInfo().getRole(),
                 member.getMemberInfo().getDepartment().getName(),
                 member.getMemberInfo().getDepartmentRole(),
-                toNotificationSettingInfoResponse(member)
+                toNotificationSettingInfoResponse(member),
+                member.getMemberInfo().getRole()!= MemberRole.ROLE_MANAGER ? null : toMemberRemainingTaskCountsResponse(member)
+        );
+    }
+
+    public static MemberDetailInfoResponse.MemberRemainingTaskCountsResponse toMemberRemainingTaskCountsResponse(Member member){
+        return new MemberDetailInfoResponse.MemberRemainingTaskCountsResponse(
+                member.getInProgressTaskCount(),
+                member.getInReviewingTaskCount()
         );
     }
 
@@ -54,7 +63,8 @@ public class MemberResponseMapper {
                 member.getMemberInfo().getRole(),
                 member.getMemberInfo().getDepartment().getDepartmentId(),
                 member.getMemberInfo().getDepartment().getName(),
-                member.getMemberInfo().getDepartmentRole()
+                member.getMemberInfo().getDepartmentRole(),
+                member.getInProgressTaskCount() + member.getInReviewingTaskCount()
         );
     }
 
