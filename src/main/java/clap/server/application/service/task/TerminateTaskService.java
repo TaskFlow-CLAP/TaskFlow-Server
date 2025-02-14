@@ -27,7 +27,10 @@ public class TerminateTaskService implements TerminateTaskUsecase {
     public void terminateTask(Long memberId, Long taskId, String reason) {
         Task task = taskService.findById(taskId);
 
-        updateProcessorTaskCountService.handleTaskStatusChange(task.getProcessor(), task.getTaskStatus(), TaskStatus.TERMINATED);
+        // 작업 종료의 경우. 작업 반려는 count를 업데이트를 하지 않음
+        if(task.getProcessor()!=null) {
+            updateProcessorTaskCountService.handleTaskStatusChange(task.getProcessor(), task.getTaskStatus(), TaskStatus.TERMINATED);
+        }
         task.terminateTask();
         taskService.upsert(task);
 

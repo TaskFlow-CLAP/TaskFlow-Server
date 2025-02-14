@@ -2,7 +2,6 @@ package clap.server.domain.model.member;
 
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.domain.model.common.BaseTime;
-import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -87,7 +86,7 @@ public class Member extends BaseTime {
         this.imageUrl = imageUrl;
     }
 
-    public void setStatusDeleted() {
+    public void softDelete() {
         this.status = MemberStatus.DELETED;
     }
 

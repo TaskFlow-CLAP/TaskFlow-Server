@@ -21,6 +21,8 @@ public record MemberDetailsResponse(
         @Schema(description = "부서")
         String departmentName,
         @Schema(description = "직무")
-        String departmentRole
+        String departmentRole,
+        @Schema(description = "잔여 작업, 등록이 되지 않은 회원은 Null로 출력됩니다.")
+        Integer remainingTasks
 ) {}
   

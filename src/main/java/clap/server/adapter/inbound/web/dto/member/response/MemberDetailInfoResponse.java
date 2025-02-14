@@ -20,13 +20,23 @@ public record MemberDetailInfoResponse(
         @Schema(description = "직책")
         String departmentRole,
         @Schema(description = "알림 수신 여부")
-        NotificationSettingInfoResponse notificationSettingInfo
+        NotificationSettingInfoResponse notificationSettingInfo,
+        @Schema(description = "진행/검토 작업 수, 담당자가 아닐 경우에는 null입니다.")
+        MemberRemainingTaskCountsResponse remainingTaskCounts
 ) {
     public static record NotificationSettingInfoResponse(
             @Schema(description = "이메일 알림 수신 여부")
             boolean email,
             @Schema(description = "카카오 워크 알림 수신 여부")
             boolean kakaoWork
+    ) {
+    }
+
+    public static record MemberRemainingTaskCountsResponse(
+            @Schema(description = "진행중 작업 수")
+            int totalInProgressTaskCount,
+            @Schema(description = "검토중 작업 수")
+            int totalInReviewingTaskCount
     ) {
     }
 }
