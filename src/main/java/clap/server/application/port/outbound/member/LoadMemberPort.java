@@ -23,6 +23,8 @@ public interface LoadMemberPort {
 
     Optional<Member> findActiveMemberByNickname(String nickname);
 
+    Optional<Member> findApprovalMemberByNickname(String nickname);
+
     List<Member> findReviewers();
 
     Page<Member> findAllMembers(Pageable pageable);

@@ -21,6 +21,9 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long>,  Me
     @Query("SELECT m FROM MemberEntity m WHERE m.nickname = :nickname AND m.status = 'ACTIVE'")
     Optional<MemberEntity> findActiveMemberByNickname(@Param("nickname") String nickname);
 
+    @Query("SELECT m FROM MemberEntity m WHERE m.nickname = :nickname AND m.status = 'APPROVAL_REQUEST'")
+    Optional<MemberEntity> findApprovalRequestMemberByNickname(@Param("nickname") String nickname);
+
     List<MemberEntity> findByIsReviewerTrue();
 
     List<MemberEntity> findAll(); // 전체 회원 조회

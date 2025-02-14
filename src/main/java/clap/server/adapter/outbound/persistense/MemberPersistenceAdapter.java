@@ -44,6 +44,12 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
+    public Optional<Member> findApprovalMemberByNickname(String nickname) {
+        Optional<MemberEntity> memberEntity = memberRepository.findApprovalRequestMemberByNickname(nickname);
+        return memberEntity.map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
     public List<Member> findReviewers() {
         List<MemberEntity> memberEntities = memberRepository.findByIsReviewerTrue();
         return memberEntities.stream()
