@@ -36,7 +36,6 @@ class AuthService implements LoginUsecase, LogoutUsecase {
     @Override
     public LoginResponse login(String nickname, String password, String clientIp) {
         Member member = getMember(nickname,clientIp);
-
         validatePassword(password, member.getPassword(), nickname, clientIp);
 
         if (member.getStatus().equals(MemberStatus.APPROVAL_REQUEST)) {
@@ -69,11 +68,12 @@ class AuthService implements LoginUsecase, LogoutUsecase {
     }
 
     private Member getMember(String inputNickname, String clientIp) {
-        return loadMemberPort.findActiveMemberByNickname(inputNickname).orElseThrow(() ->
-        {
-            loginAttemptService.recordFailedAttempt(inputNickname, clientIp);
-            return new AuthException(AuthErrorCode.LOGIN_REQUEST_FAILED);
-        });
+        return loadMemberPort.findActiveMemberByNickname(inputNickname)
+                .or(() -> loadMemberPort.findApprovalMemberByNickname(inputNickname))
+                .orElseThrow(() -> {
+                    loginAttemptService.recordFailedAttempt(inputNickname, clientIp);
+                    return new AuthException(AuthErrorCode.LOGIN_REQUEST_FAILED);
+                });
     }
 
     private void validatePassword(String inputPassword, String encodedPassword, String inputNickname, String clientIp) {
