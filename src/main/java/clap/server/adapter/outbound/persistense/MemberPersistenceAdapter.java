@@ -38,8 +38,8 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
-    public Optional<Member> findByNickname(final String nickname) {
-        Optional<MemberEntity> memberEntity = memberRepository.findByNickname(nickname);
+    public Optional<Member> findActiveMemberByNickname(final String nickname) {
+        Optional<MemberEntity> memberEntity = memberRepository.findActiveMemberByNickname(nickname);
         return memberEntity.map(memberPersistenceMapper::toDomain);
     }
 

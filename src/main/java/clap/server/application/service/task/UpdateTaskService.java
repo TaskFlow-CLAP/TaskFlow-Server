@@ -104,7 +104,8 @@ public class UpdateTaskService implements UpdateTaskUsecase, UpdateTaskStatusUse
         memberService.findActiveMember(memberId);
 
         Task task = taskService.findById(taskId);
-        Member processor = memberService.findById(request.processorId());
+
+        Member processor = memberService.findActiveMember(request.processorId());
         if (REMAINING_TASK_STATUS.contains(task.getTaskStatus())) {
             updateProcessorTaskCountService.handleProcessorChange(task.getProcessor(), processor, task.getTaskStatus());
         }

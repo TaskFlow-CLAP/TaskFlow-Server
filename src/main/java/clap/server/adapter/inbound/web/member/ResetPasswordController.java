@@ -13,6 +13,7 @@ import clap.server.common.annotation.architecture.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -30,14 +31,14 @@ public class ResetPasswordController {
     @Operation(summary = "초기 로그인 후 비밀번호 재설정 API")
     @PatchMapping("/members/initial-password")
     public void resetPasswordAndActivateMember(@AuthenticationPrincipal SecurityUserDetails userInfo,
-                                               @RequestBody  @Valid UpdateInitialPasswordRequest request) {
-        resetInitialPasswordUsecase.resetPasswordAndActivateMember(userInfo.getUserId(),request.password());
+                                               @RequestBody @Valid UpdateInitialPasswordRequest request) {
+        resetInitialPasswordUsecase.resetPasswordAndActivateMember(userInfo.getUserId(), request.password());
     }
 
     @Operation(summary = "비밀번호 재설정 API")
     @PatchMapping("/members/password")
     public void resetPassword(@AuthenticationPrincipal SecurityUserDetails userInfo,
-                                               @RequestBody @Valid UpdatePasswordRequest request) {
+                              @RequestBody @Valid UpdatePasswordRequest request) {
         resetPasswordUsecase.resetPassword(userInfo.getUserId(), request.password());
     }
 
@@ -45,13 +46,14 @@ public class ResetPasswordController {
     @Operation(summary = "비밀번호 검증 API")
     @PostMapping("/members/password")
     public void verifyPassword(@AuthenticationPrincipal SecurityUserDetails userInfo,
-                              @RequestBody @Valid VerifyPasswordRequest request) {
+                               @RequestBody @Valid VerifyPasswordRequest request) {
         verifyPasswordUseCase.verifyPassword(userInfo.getUserId(), request.password());
     }
 
     @Operation(summary = "비밀번호 재설정 이메일 전송 API")
     @PostMapping("/new-password")
-    public void sendNewPasswordEmail(@RequestBody @Valid SendInitialPasswordRequest request) {
+    public void sendNewPasswordEmail(@RequestParam @NotBlank String nickname,
+                                     @RequestBody @Valid SendInitialPasswordRequest request) {
         sendNewPasswordUsecase.sendInitialPassword(request);
     }
 }

@@ -3,8 +3,6 @@ package clap.server.application.service.admin;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
-import clap.server.application.service.admin.CsvParseService;
-import clap.server.application.service.admin.RegisterMemberCSVService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
@@ -88,7 +86,7 @@ class RegisterMemberCSVServiceTest {
         List<Member> csvMembers = Arrays.asList(csvMember1, csvMember2);
         when(csvParser.parseDataAndMapToMember(file)).thenReturn(csvMembers);
 
-        when(loadMemberPort.findByNickname(anyString())).thenReturn(Optional.empty());
+        when(loadMemberPort.findActiveMemberByNickname(anyString())).thenReturn(Optional.empty());
         when(loadMemberPort.findByEmail(anyString())).thenReturn(Optional.empty());
 
         Member adminMember = mock(Member.class);

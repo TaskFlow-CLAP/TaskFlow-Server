@@ -2,8 +2,7 @@ package clap.server.application.port.outbound.member;
 
 import clap.server.adapter.inbound.web.dto.admin.request.FindMemberRequest;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.task.Task;  // Task 클래스 임포트 확인
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus; // TaskStatus 임포트
+
 import java.util.List;
 // Task 클래스 임포트 확인
 // TaskStatus 임포트
@@ -22,7 +21,7 @@ public interface LoadMemberPort {
 
     Optional<Member> findReviewerById(Long id);
 
-    Optional<Member> findByNickname(String nickname);
+    Optional<Member> findActiveMemberByNickname(String nickname);
 
     List<Member> findReviewers();
 
