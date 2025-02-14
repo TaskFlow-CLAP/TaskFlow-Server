@@ -56,8 +56,8 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
 
         requestedTaskUpdatePolicy.validateTaskRequested(task);
         updateProcessorTaskCountService.handleTaskStatusChange(processor, TaskStatus.REQUESTED, TaskStatus.IN_PROGRESS);
-
         task.approveTask(reviewer, processor, approvalTaskRequest.dueDate(), category, label);
+
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_ASSIGNED, task, null, processor, null);
         commandTaskHistoryPort.save(taskHistory);
 
