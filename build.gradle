@@ -109,6 +109,9 @@ dependencies {
 
     // Jsoup
     implementation 'org.jsoup:jsoup:1.17.1'
+
+    // Jackson 추가
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {
