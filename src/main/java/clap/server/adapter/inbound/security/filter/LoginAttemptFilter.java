@@ -12,14 +12,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-import static clap.server.adapter.inbound.security.WebSecurityUrl.LOGIN_ENDPOINT;
+import static clap.server.adapter.inbound.security.WebSecurityUrl.ANONYMOUS_ENDPOINTS;
 import static clap.server.common.utils.ClientIpParseUtil.getClientIp;
 
 
@@ -33,10 +35,10 @@ public class LoginAttemptFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            if (request.getRequestURI().equals(LOGIN_ENDPOINT)) {
+            if (Arrays.stream(ANONYMOUS_ENDPOINTS)
+                    .anyMatch(endpoint -> new AntPathMatcher().match(endpoint, request.getRequestURI()))) {
                 String nickname = request.getParameter("nickname");
                 checkAccountLockStatusUseCase.checkAccountIsLocked(nickname);
-
             }
         } catch (AuthException e) {
             log.warn("Authentication failed for IP: {}. Error: {}", getClientIp(request), e.getMessage());

@@ -15,4 +15,5 @@ public class WebSecurityUrl {
     public static final String REISSUANCE_ENDPOINT = "/api/auths/reissuance";
     public static final String PASSWORD_EMAIL_ENDPOINT = "/api/new-password";
     public static final String TEMPORARY_TOKEN_ALLOWED_ENDPOINT = "/api/members/initial-password";
+    public static final String[] ANONYMOUS_ENDPOINTS = {LOGIN_ENDPOINT, PASSWORD_EMAIL_ENDPOINT};
 }
