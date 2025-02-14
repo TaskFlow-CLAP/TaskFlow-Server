@@ -1,8 +1,8 @@
 package clap.server.application.mapper.response;
 
+import clap.server.adapter.inbound.web.dto.task.response.TeamStatusResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Task;
 
 import java.util.LinkedHashMap;
@@ -25,10 +25,10 @@ public class TeamTaskResponseMapper {
                 .map(TeamTaskResponseMapper::toTeamTaskItemResponse)
                 .collect(Collectors.toList());
 
-        int inProgressTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_PROGRESS).count();
-        int inReviewingTaskCount = (int) entry.getValue().stream().filter(t -> t.getTaskStatus() == TaskStatus.IN_REVIEWING).count();
-
         Task firstTask = entry.getValue().get(0);
+        int inProgressTaskCount = firstTask.getProcessor().getInProgressTaskCount();
+        int inReviewingTaskCount = firstTask.getProcessor().getInReviewingTaskCount();
+
         return new TeamTaskResponse(
                 entry.getKey(),
                 firstTask.getProcessor().getNickname(),
@@ -64,5 +64,14 @@ public class TeamTaskResponseMapper {
                         task.getLabel().getLabelName(),
                         task.getLabel().getLabelColor()
                 ) : null;
+    }
+
+    public static TeamStatusResponse toTeamStatusResponse(List<TeamTaskResponse> members, int totalInProgressTaskCount, int totalInReviewingTaskCount) {
+        return new TeamStatusResponse(
+                (members == null) ? List.of() : members,
+                totalInProgressTaskCount,
+                totalInReviewingTaskCount,
+                totalInProgressTaskCount + totalInReviewingTaskCount
+        );
     }
 }
