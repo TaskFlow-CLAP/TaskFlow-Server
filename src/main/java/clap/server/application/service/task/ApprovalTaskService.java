@@ -26,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationService
 @RequiredArgsConstructor
@@ -59,7 +61,9 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_ASSIGNED, task, null, processor, null);
         commandTaskHistoryPort.save(taskHistory);
 
-        List<Member> receivers = List.of(task.getRequester(), processor);
+        List<Member> receivers = Stream.of(task.getRequester(), processor)
+                .distinct()
+                .collect(Collectors.toList());
         String processorName = processor.getNickname();
         publishNotification(receivers, task, processorName);
 
