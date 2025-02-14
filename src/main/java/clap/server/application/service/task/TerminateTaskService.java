@@ -34,7 +34,7 @@ public class TerminateTaskService implements TerminateTaskUsecase {
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.TASK_TERMINATED, task, reason, null, null);
         commandTaskHistoryPort.save(taskHistory);
 
-        publishNotification(task.getRequester(), task, String.valueOf(task.getTaskStatus()), reason);
+        publishNotification(task.getRequester(), task, task.getTaskStatus().getDescription(), reason);
 
     }
 
