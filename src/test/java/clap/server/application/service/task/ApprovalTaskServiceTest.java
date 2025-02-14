@@ -78,7 +78,7 @@ class ApprovalTaskServiceTest {
         //given
         Long reviewerId = 2L;
         Long taskId = 1L;
-        ApprovalTaskRequest approvalTaskRequest = new ApprovalTaskRequest(2L, 2L, null, null);
+        ApprovalTaskRequest approvalTaskRequest = new ApprovalTaskRequest(2L, 3L, null, null);
 
         when(memberService.findReviewer(reviewerId)).thenReturn(reviewer);
         when(taskService.findById(taskId)).thenReturn(task);
@@ -102,11 +102,11 @@ class ApprovalTaskServiceTest {
         // given
         Long reviewerId = 2L;
         Long taskId = 1L;
-        ApprovalTaskRequest approvalTaskRequest = new ApprovalTaskRequest(2L, 2L, null, null);
+        ApprovalTaskRequest approvalTaskRequest = new ApprovalTaskRequest(2L, 3L, null, null);
 
         when(memberService.findReviewer(reviewerId)).thenReturn(reviewer);
         when(taskService.findById(taskId)).thenReturn(task);
-        when(memberService.findById(approvalTaskRequest.processorId())).thenReturn(processor);
+        when(memberService.findActiveMember(approvalTaskRequest.processorId())).thenReturn(processor);
         when(categoryService.findById(approvalTaskRequest.categoryId())).thenReturn(category);
         when(taskService.upsert(task)).thenReturn(task);
 
