@@ -50,7 +50,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         return handleExceptionInternalArgs(
                 e,
                 HttpHeaders.EMPTY,
-                GlobalErrorCode.INTERNAL_SERVER_ERROR,
+                GlobalErrorCode.BAD_REQUEST,
                 request,
                 errors
         );
