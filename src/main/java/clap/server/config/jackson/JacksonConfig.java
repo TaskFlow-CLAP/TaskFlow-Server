@@ -46,7 +46,9 @@ public class JacksonConfig {
             if (value.toLowerCase().startsWith("javascript:")) {
                 return "";
             }
-            return Jsoup.clean(value, Safelist.basic());
+
+            // HTML 태그를 제거하면서 개행 유지
+            return Jsoup.parse(value).wholeText();
         }
     }
 }
