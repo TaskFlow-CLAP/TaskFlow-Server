@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -83,7 +84,7 @@ public class UpdateTaskOrderAndStstusService implements UpdateTaskOrderAndStatus
 
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, updatedTask, targetStatus.getDescription(), null,null);
         commandTaskHistoryPort.save(taskHistory);
-        publishNotification(targetTask, NotificationType.STATUS_SWITCHED, updatedTask.getDescription());
+        publishNotification(targetTask);
     }
 
     /**
@@ -139,14 +140,14 @@ public class UpdateTaskOrderAndStstusService implements UpdateTaskOrderAndStatus
         }
     }
 
-    private void publishNotification(Task task, NotificationType notificationType, String message) {
-        List<Member> receivers = List.of(task.getRequester(), task.getProcessor());
+    private void publishNotification(Task task) {
+        List<Member> receivers = List.of(task.getRequester());
         receivers.forEach(receiver -> {
             boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
-            sendNotificationService.sendPushNotification(receiver, notificationType, task, message, null, null, isManager);
+            sendNotificationService.sendPushNotification(receiver, NotificationType.STATUS_SWITCHED, task, task.getTaskStatus().getDescription(), null, null, isManager);
         });
-        sendNotificationService.sendAgitNotification(notificationType,
-                task, message, null);
+        sendNotificationService.sendAgitNotification(NotificationType.STATUS_SWITCHED,
+                task, task.getTaskStatus().getDescription(), null);
     }
 
 }
