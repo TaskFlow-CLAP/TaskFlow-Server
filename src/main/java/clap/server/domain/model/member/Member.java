@@ -123,4 +123,12 @@ public class Member extends BaseTime {
     public void decrementInReviewingTaskCount() {
         this.inReviewingTaskCount--;
     }
+
+    public Integer getRemainingTasks(){
+        // 최종 회원 등록 전의 경우
+        if(this.getStatus().equals(MemberStatus.PENDING) || this.getStatus().equals(MemberStatus.APPROVAL_REQUEST)){
+            return null;
+        }
+        else return this.getInProgressTaskCount() + this.getInReviewingTaskCount();
+    }
 }
