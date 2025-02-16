@@ -23,7 +23,7 @@ public class ManagerInfoUpdatePolicy {
     // 담당자의 잔여 작업이 남아있는 경우 해당 회원의 데이터 수정이 허용되지 않음
     public void validateNoRemainingTasks(final Member member){
         // 최종 회원 등록 전의 경우는 검증하지 않는다.
-        if(member.getStatus().equals(MemberStatus.PENDING) || member.getStatus().equals(MemberStatus.APPROVAL_REQUEST)){
+        if(member.getStatus()==MemberStatus.PENDING || member.getStatus()==MemberStatus.APPROVAL_REQUEST){
             return;
         }
         if(member.getInReviewingTaskCount()>0 || member.getInProgressTaskCount()> 0){

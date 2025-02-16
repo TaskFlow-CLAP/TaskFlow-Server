@@ -26,7 +26,7 @@ public class DeleteMemberService implements DeleteMemberUsecase {
         Member member = loadMemberPort.findById(memberId)
                 .orElseThrow(() -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        if(member.getMemberInfo().getRole().equals(MemberRole.ROLE_MANAGER)){
+        if (member.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER) {
             managerInfoUpdatePolicy.validateNoRemainingTasks(member);
         }
         Hibernate.initialize(member.getDepartment());

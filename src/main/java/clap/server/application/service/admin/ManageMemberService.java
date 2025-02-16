@@ -32,10 +32,8 @@ class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
         Member member = memberService.findById(memberId);
         Department department = loadDepartmentPort.findById(request.departmentId()).orElseThrow(() ->
                 new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-
         managerInfoUpdatePolicy.validateDepartment(department, request.role());
-        if(member.getMemberInfo().getRole().equals(MemberRole.ROLE_MANAGER) &&
-                !request.role().equals(MemberRole.ROLE_MANAGER)){
+        if(member.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER && !(request.role()==MemberRole.ROLE_MANAGER)){
             managerInfoUpdatePolicy.validateNoRemainingTasks(member);
         }
 

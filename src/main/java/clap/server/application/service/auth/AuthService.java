@@ -38,7 +38,7 @@ class AuthService implements LoginUsecase, LogoutUsecase {
         Member member = getMember(nickname,clientIp);
         validatePassword(password, member.getPassword(), nickname, clientIp);
 
-        if (member.getStatus().equals(MemberStatus.APPROVAL_REQUEST)) {
+        if (member.getStatus()==MemberStatus.APPROVAL_REQUEST) {
             String temporaryToken = manageTokenService.issueTemporaryToken(member.getMemberId());
             return AuthResponseMapper.toLoginResponse(temporaryToken, null);
         }

@@ -52,7 +52,7 @@ public class SecurityUserDetails implements UserDetails {
                 .userId(member.getMemberId())
                 .username(member.getName())
                 .authorities(List.of(new CustomGrantedAuthority(member.getRole().name())))
-                .accountNonLocked(member.getStatus().equals(MemberStatus.ACTIVE))
+                .accountNonLocked(member.getStatus()==MemberStatus.ACTIVE)
                 .build();
     }
 
