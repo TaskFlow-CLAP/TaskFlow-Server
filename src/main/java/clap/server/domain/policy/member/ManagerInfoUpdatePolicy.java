@@ -1,6 +1,7 @@
 package clap.server.domain.policy.member;
 
 import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRole;
+import clap.server.adapter.outbound.persistense.entity.member.constant.MemberStatus;
 import clap.server.common.annotation.architecture.Policy;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
@@ -21,6 +22,10 @@ public class ManagerInfoUpdatePolicy {
 
     // 담당자의 잔여 작업이 남아있는 경우 해당 회원의 데이터 수정이 허용되지 않음
     public void validateNoRemainingTasks(final Member member){
+        // 최종 회원 등록 전의 경우는 검증하지 않는다.
+        if(member.getStatus().equals(MemberStatus.PENDING) || member.getStatus().equals(MemberStatus.APPROVAL_REQUEST)){
+            return;
+        }
         if(member.getInReviewingTaskCount()>0 || member.getInProgressTaskCount()> 0){
             throw new DomainException(MemberErrorCode.MANAGER_MEMBER_UPDATE_NOT_ALLOWED_WITH_TASKS);
         }
