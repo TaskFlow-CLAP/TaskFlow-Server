@@ -64,8 +64,7 @@ public class MemberResponseMapper {
                 member.getMemberInfo().getDepartment().getDepartmentId(),
                 member.getMemberInfo().getDepartment().getName(),
                 member.getMemberInfo().getDepartmentRole(),
-                member.getStatus().equals(MemberStatus.PENDING) || member.getStatus().equals(MemberStatus.APPROVAL_REQUEST) ? null:
-                member.getInProgressTaskCount() + member.getInReviewingTaskCount()
+                member.getRemainingTasks()
         );
     }
 
