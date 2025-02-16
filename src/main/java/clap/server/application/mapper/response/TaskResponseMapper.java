@@ -179,12 +179,12 @@ public class TaskResponseMapper {
         );
     }
 
-    public static FindManagersResponse toFindManagersResponse(Member manager, int remainingTasks) {
+    public static FindManagersResponse toFindManagersResponse(Member manager) {
         return new FindManagersResponse(
                 manager.getMemberId(),
                 manager.getNickname(),
                 manager.getImageUrl(),
-                remainingTasks
+                manager.getRemainingTasks()
         );
     }
 
