@@ -94,7 +94,6 @@ public class UpdateTaskContentService implements UpdateTaskLabelUsecase, UpdateT
     @Override
     public void updateTaskLabel(Long taskId, Long memberId, UpdateTaskLabelRequest request) {
         memberService.findActiveMember(memberId);
-        memberService.findReviewer(memberId);
         Task task = taskService.findById(taskId);
         Label label = request.labelId() != null ? labelService.findById(request.labelId()) : null;
 
