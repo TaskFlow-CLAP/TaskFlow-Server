@@ -3,6 +3,7 @@ package clap.server.adapter.inbound.web.dto.task.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -18,10 +19,12 @@ public record UpdateTaskRequest(
         String title,
 
         @Schema(description = "작업 설명", example = "업데이트된 설명.")
+        @Length(max = 200)
         String description,
 
         @Schema(description = "삭제할 파일 ID 목록, 없을 경우 emptylist 전송")
         @NotNull
         List<Long> attachmentsToDelete
-) {}
+) {
+}
 
