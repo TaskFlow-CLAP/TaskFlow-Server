@@ -50,7 +50,7 @@ public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskPro
         if (!task.getTaskStatus().equals(targetTaskStatus)) {
             // 작업 종료에서의 상태 전환은 count를 업데이트를 하지 않음
             if(task.getProcessor()!=null) {
-                updateProcessorTaskCountService.handleTaskStatusChange(task.getProcessor(), task.getTaskStatus(), TaskStatus.TERMINATED);
+                updateProcessorTaskCountService.handleTaskStatusChange(task.getProcessor(), task.getTaskStatus(), targetTaskStatus);
             }
             task.updateTaskStatus(targetTaskStatus);
             Task updatedTask = taskService.upsert(task);
