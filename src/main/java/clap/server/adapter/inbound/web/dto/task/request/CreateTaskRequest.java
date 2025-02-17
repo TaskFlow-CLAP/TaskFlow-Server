@@ -3,6 +3,7 @@ package clap.server.adapter.inbound.web.dto.task.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
 
 
 @Schema(description = "작업 생성 요청")
@@ -16,6 +17,7 @@ public record CreateTaskRequest(
         String title,
 
         @Schema(description = "작업 설명")
+        @Length(max = 200)
         String description
 ) {
 }
