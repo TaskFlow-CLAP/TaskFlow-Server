@@ -25,6 +25,7 @@ import clap.server.domain.policy.task.RequestedTaskUpdatePolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -61,11 +62,8 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_ASSIGNED, task, null, processor, null);
         commandTaskHistoryPort.save(taskHistory);
 
-        List<Member> receivers = Stream.of(task.getRequester(), processor)
-                .distinct()
-                .collect(Collectors.toList());
         String processorName = processor.getNickname();
-        publishNotification(receivers, task, processorName);
+        publishNotification(task, processorName);
 
         return TaskResponseMapper.toApprovalTaskResponse(taskService.upsert(task));
     }
@@ -78,7 +76,14 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
         return TaskResponseMapper.toFindApprovalFormResponse(task);
     }
 
-    private void publishNotification(List<Member> receivers, Task task, String processorName) {
+    private void publishNotification(Task task, String processorName) {
+        List<Member> receivers = new ArrayList<>();
+        receivers.add(task.getRequester());
+
+        if (!task.getRequester().getMemberId().equals(task.getProcessor().getMemberId())) {
+            receivers.add(task.getProcessor());
+        }
+
         receivers.forEach(receiver -> {
             boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
             sendNotificationService.sendPushNotification(receiver, NotificationType.PROCESSOR_ASSIGNED,
