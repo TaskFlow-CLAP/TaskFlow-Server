@@ -78,11 +78,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
 
     private void publishNotification(Task task, String processorName) {
         List<Member> receivers = new ArrayList<>();
-        receivers.add(task.getRequester());
-
-        if (!task.getRequester().getMemberId().equals(task.getProcessor().getMemberId())) {
-            receivers.add(task.getProcessor());
-        }
+        receivers.add(task.getProcessor());
 
         receivers.forEach(receiver -> {
             boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;
