@@ -79,7 +79,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         Comment comment = Comment.createComment(member, task, null, fileName, fileUrl,   formatFileSize(file.getSize()));
         Comment savedComment = commandCommentPort.saveComment(comment);
 
-        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, null, null, null, savedComment);
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, null, null, member, savedComment);
         commandTaskHistoryPort.save(taskHistory);
 
         Member processor = task.getProcessor();
