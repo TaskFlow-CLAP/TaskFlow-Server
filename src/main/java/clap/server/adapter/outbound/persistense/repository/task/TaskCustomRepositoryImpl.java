@@ -57,8 +57,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
                 .selectFrom(taskEntity)
                 .leftJoin(taskEntity.requester).fetchJoin()
                 .leftJoin(taskEntity.processor).fetchJoin()
-                .leftJoin(taskEntity.requester.department)
-                .leftJoin(taskEntity.processor.department)
+                .join(taskEntity.requester.department).fetchJoin()
+                .join(taskEntity.processor.department).fetchJoin()
                 .where(builder)
                 .fetch();
     }
