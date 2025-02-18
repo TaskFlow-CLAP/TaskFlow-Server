@@ -54,7 +54,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
     public List<TaskEntity> findTeamStatus(Long memberId, FilterTeamStatusRequest filter) {
         BooleanBuilder builder = createFilterBuilder(memberId, filter);
         return queryFactory
-                .selectFrom(taskEntity)
+                .select(taskEntity)
+                .from(taskEntity)
                 .leftJoin(taskEntity.requester).fetchJoin()
                 .leftJoin(taskEntity.processor).fetchJoin()
                 .join(taskEntity.requester.department).fetchJoin()
