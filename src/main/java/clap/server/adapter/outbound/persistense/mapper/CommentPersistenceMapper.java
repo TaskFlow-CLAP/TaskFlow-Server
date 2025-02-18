@@ -15,6 +15,7 @@ public interface CommentPersistenceMapper  extends PersistenceMapper<CommentEnti
     @Override
     @Mapping(source = "modified", target = "isModified")
     @Mapping(source = "deleted", target = "isDeleted")
+    @Mapping(target = "task", ignore = true)
     Comment toDomain(final CommentEntity entity);
 
     @Override
