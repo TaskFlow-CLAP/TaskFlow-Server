@@ -25,6 +25,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     private Page<MemberEntity> executeQueryWithPageable(Pageable pageable, BooleanBuilder whereClause, OrderSpecifier<?> orderSpecifier) {
         List<MemberEntity> result = queryFactory
                 .selectFrom(memberEntity)
+                .leftJoin(memberEntity.department).fetchJoin()
                 .where(whereClause)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
