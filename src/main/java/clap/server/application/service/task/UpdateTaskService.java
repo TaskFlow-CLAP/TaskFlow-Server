@@ -9,6 +9,7 @@ import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.task.UpdateTaskProcessorUsecase;
 import clap.server.application.port.inbound.task.UpdateTaskStatusUsecase;
+import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
@@ -41,7 +42,7 @@ public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskPro
     @Transactional
     public void updateTaskStatus(Long memberId, Long taskId, TaskStatus targetTaskStatus) {
         memberService.findActiveMember(memberId);
-        Task task = taskService.findById(taskId);
+        Task task = taskService.findTaskWithProcessorDepartment(taskId);
 
         if (!TASK_UPDATABLE_STATUS.contains(targetTaskStatus)) {
             throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
@@ -49,6 +50,7 @@ public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskPro
 
         if (!task.getTaskStatus().equals(targetTaskStatus)) {
             // 작업 종료에서의 상태 전환은 count를 업데이트를 하지 않음
+            log.debug("왜안돼", task.getProcessor().getMemberId());
             if(task.getProcessor()!=null) {
                 updateProcessorTaskCountService.handleTaskStatusChange(task.getProcessor(), task.getTaskStatus(), targetTaskStatus);
             }
@@ -67,9 +69,9 @@ public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskPro
     public void updateTaskProcessor(Long taskId, Long memberId, UpdateTaskProcessorRequest request) {
         memberService.findActiveMember(memberId);
 
-        Task task = taskService.findById(taskId);
+        Task task = taskService.findTaskWithProcessorDepartment(taskId);
 
-        Member processor = memberService.findActiveMember(request.processorId());
+        Member processor = memberService.findActiveMemberWithDepartment(request.processorId());
         if (REMAINING_TASK_STATUS.contains(task.getTaskStatus())) {
             updateProcessorTaskCountService.handleProcessorChange(task.getProcessor(), processor, task.getTaskStatus());
         }

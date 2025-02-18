@@ -39,5 +39,10 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long>, TaskCus
 
     Optional<TaskEntity> findTopByProcessor_MemberIdAndTaskStatusAndTaskIdGreaterThanOrderByTaskIdAsc(Long processorId, TaskStatus status, Long taskId);
 
-
-}
+    @Query("SELECT t FROM TaskEntity t " +
+            "LEFT JOIN FETCH t.requester rq " +
+            "LEFT JOIN FETCH t.processor p " +
+            "LEFT JOIN FETCH p.department " +
+            "WHERE t.taskId = :taskId")
+    Optional<TaskEntity> findTaskWithProcessorDepartment(@Param("taskId") Long taskId);
+ }

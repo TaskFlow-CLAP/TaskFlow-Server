@@ -2,7 +2,6 @@ package clap.server.application.port.inbound.domain;
 
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.domain.model.member.Member;
-import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +41,16 @@ public class MemberService {
 
     public List<Member> findReviewers() {
         return loadMemberPort.findReviewers();
+    }
+
+    public Member findActiveMemberWithDepartment(Long memberId) {
+        return loadMemberPort.findActiveMemberByIdWithFetchDepartment(memberId).orElseThrow(
+                () -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    public Member findMemberWithDepartment(Long memberId) {
+        return loadMemberPort.findByIdWithFetchDepartment(memberId).orElseThrow(
+                () -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
 }

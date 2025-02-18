@@ -31,7 +31,7 @@ class ResetPasswordService implements ResetPasswordUsecase, ResetInitialPassword
 
     @Override
     public void resetPassword(Long memberId, String inputPassword) {
-        Member member = memberService.findActiveMember(memberId);
+        Member member = memberService.findActiveMemberWithDepartment(memberId);
         String encodedPassword = passwordEncoder.encode(inputPassword);
         member.resetPassword(encodedPassword);
         commandMemberPort.save(member);
@@ -39,7 +39,7 @@ class ResetPasswordService implements ResetPasswordUsecase, ResetInitialPassword
 
     @Override
     public void resetPasswordAndActivateMember(Long memberId, String password) {
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findMemberWithDepartment(memberId);
         member.resetPasswordAndActivateMember(passwordEncoder.encode(password));
         commandMemberPort.save(member);
     }

@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.member.request.UpdateMemberInfoReques
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.member.UpdateMemberInfoUsecase;
 import clap.server.application.port.outbound.member.CommandMemberPort;
+import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.application.port.outbound.s3.S3UploadPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
@@ -22,7 +23,7 @@ class UpdateMemberInfoService implements UpdateMemberInfoUsecase {
 
     @Override
     public void updateMemberInfo(Long memberId, UpdateMemberInfoRequest request, MultipartFile profileImage) {
-        Member member = memberService.findActiveMember(memberId);
+        Member member = memberService.findActiveMemberWithDepartment(memberId);
         if(request.isProfileImageDeleted()){
             member.setImageUrl(null);
         }

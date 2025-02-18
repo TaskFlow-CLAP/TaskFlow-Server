@@ -52,7 +52,7 @@ public class UpdateTaskOrderAndStstusService implements UpdateTaskOrderAndStatus
     @Transactional
     public void updateTaskOrderAndStatus(Long processorId, UpdateTaskOrderRequest request, TaskStatus targetStatus) {
         validateRequest(targetStatus);
-        Member processor = memberService.findActiveMember(processorId);
+        Member processor = memberService.findActiveMemberWithDepartment(processorId);
         Task targetTask = taskService.findById(request.targetTaskId());
         processorValidationPolicy.validateProcessor(processorId, targetTask);
 

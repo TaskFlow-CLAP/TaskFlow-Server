@@ -82,7 +82,7 @@ class ApprovalTaskServiceTest {
 
         when(memberService.findReviewer(reviewerId)).thenReturn(reviewer);
         when(taskService.findById(taskId)).thenReturn(task);
-        when(memberService.findActiveMember(approvalTaskRequest.processorId())).thenReturn(processor);
+        when(memberService.findActiveMemberWithDepartment(approvalTaskRequest.processorId())).thenReturn(processor);
         when(categoryService.findById(approvalTaskRequest.categoryId())).thenReturn(category);
         when(taskService.upsert(task)).thenReturn(task);
 
@@ -106,7 +106,7 @@ class ApprovalTaskServiceTest {
 
         when(memberService.findReviewer(reviewerId)).thenReturn(reviewer);
         when(taskService.findById(taskId)).thenReturn(task);
-        when(memberService.findActiveMember(approvalTaskRequest.processorId())).thenReturn(processor);
+        when(memberService.findActiveMemberWithDepartment(approvalTaskRequest.processorId())).thenReturn(processor);
         when(categoryService.findById(approvalTaskRequest.categoryId())).thenReturn(category);
         when(taskService.upsert(task)).thenReturn(task);
 

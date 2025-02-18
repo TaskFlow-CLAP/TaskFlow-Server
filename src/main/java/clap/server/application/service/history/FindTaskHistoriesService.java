@@ -4,12 +4,10 @@ import clap.server.adapter.inbound.web.dto.history.response.FindTaskHistoryRespo
 import clap.server.application.mapper.response.TaskHistoryResponseMapper;
 import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.history.FindTaskHistoriesUsecase;
-import clap.server.application.port.outbound.task.LoadAttachmentPort;
-
-import clap.server.application.port.outbound.taskhistory.LoadTaskHistoryPort;
 import clap.server.application.port.outbound.task.LoadTaskPort;
+import clap.server.application.port.outbound.taskhistory.LoadTaskHistoryPort;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.domain.model.task.Attachment;
+import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
 import clap.server.exception.DomainException;
@@ -26,7 +24,6 @@ public class FindTaskHistoriesService implements FindTaskHistoriesUsecase {
     private final MemberService memberService;
     private final LoadTaskPort loadTaskPort;
     private final LoadTaskHistoryPort loadTaskHistoryPort;
-    private final LoadAttachmentPort loadAttachmentPort;
 
     @Override
     public FindTaskHistoryResponse findTaskHistories(Long memberId, Long taskId) {
