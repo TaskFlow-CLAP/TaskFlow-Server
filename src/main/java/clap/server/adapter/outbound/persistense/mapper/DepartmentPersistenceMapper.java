@@ -6,10 +6,10 @@ import clap.server.domain.model.member.Department;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {MemberPersistenceMapper.class})
+@Mapper(componentModel = "spring")
 public interface DepartmentPersistenceMapper extends PersistenceMapper<DepartmentEntity, Department> {
 
-    @Mapping(source = "admin.memberId", target = "adminId")
+    @Mapping(target = "adminId", ignore = true)
     @Mapping(source = "manager", target = "isManager")
     Department toDomain(DepartmentEntity entity);
 
