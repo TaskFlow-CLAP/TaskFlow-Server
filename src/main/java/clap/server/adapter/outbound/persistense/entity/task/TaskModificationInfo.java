@@ -1,7 +1,9 @@
 package clap.server.adapter.outbound.persistense.entity.task;
 
-import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,10 +18,6 @@ public class TaskModificationInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     private TaskEntity task;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_member_id")
-    private MemberEntity modifiedMember;
 
     @JoinColumn(name = "modified_status")
     private String modifiedStatus;

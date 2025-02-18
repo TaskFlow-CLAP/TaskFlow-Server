@@ -82,7 +82,7 @@ public class UpdateTaskOrderAndStstusService implements UpdateTaskOrderAndStatus
             updatedTask = updateNewTaskOrderAndStatus(targetStatus, targetTask, newOrder);
         }
 
-        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, updatedTask, targetStatus.getDescription(), null,null);
+        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, updatedTask, targetStatus.getDescription(), null);
         commandTaskHistoryPort.save(taskHistory);
         publishNotification(targetTask);
     }

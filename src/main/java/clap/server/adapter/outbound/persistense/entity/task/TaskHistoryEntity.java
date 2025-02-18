@@ -1,6 +1,7 @@
 package clap.server.adapter.outbound.persistense.entity.task;
 
 import clap.server.adapter.outbound.persistense.entity.common.BaseTimeEntity;
+import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskHistoryType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
@@ -29,6 +29,10 @@ public class TaskHistoryEntity extends BaseTimeEntity {
 
     @Embedded
     private TaskModificationInfo taskModificationInfo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_member_id")
+    private MemberEntity modifiedMember;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")

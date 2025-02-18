@@ -1,5 +1,6 @@
 package clap.server.adapter.outbound.persistense.repository.history;
 
+import clap.server.adapter.outbound.persistense.entity.member.QMemberEntity;
 import clap.server.adapter.outbound.persistense.entity.task.QCommentEntity;
 import clap.server.adapter.outbound.persistense.entity.task.QTaskHistoryEntity;
 import clap.server.adapter.outbound.persistense.entity.task.TaskHistoryEntity;
@@ -18,9 +19,11 @@ public class TaskHistoryCustomRepositoryImpl implements TaskHistoryCustomReposit
     public List<TaskHistoryEntity> findAllTaskHistoriesByTaskId(Long taskId) {
         QTaskHistoryEntity taskHistory = QTaskHistoryEntity.taskHistoryEntity;
         QCommentEntity comment = QCommentEntity.commentEntity;
+        QMemberEntity member = QMemberEntity.memberEntity;
 
         return queryFactory.selectFrom(taskHistory)
-                .leftJoin(taskHistory.comment, comment).fetchJoin() // TaskHistory와 Comment를 조인
+                .leftJoin(taskHistory.comment, comment).fetchJoin()
+                .leftJoin(taskHistory.modifiedMember, member).fetchJoin()
                 .where(
                         // Comment가 없는 경우에는 TaskModificationInfo의 Task 기준
                         taskHistory.comment.isNull()

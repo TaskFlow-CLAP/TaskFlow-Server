@@ -2,10 +2,8 @@ package clap.server.adapter.inbound.web.history;
 
 import clap.server.adapter.inbound.security.service.SecurityUserDetails;
 import clap.server.adapter.inbound.web.dto.history.response.FindTaskHistoryResponse;
-import clap.server.adapter.outbound.persistense.entity.log.constant.LogStatus;
 import clap.server.application.port.inbound.history.FindTaskHistoriesUsecase;
 import clap.server.common.annotation.architecture.WebAdapter;
-import clap.server.common.annotation.log.LogType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 
 @Tag(name = "03. Task History")

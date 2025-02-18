@@ -36,8 +36,8 @@ public class CommandCommentController {
         editCommentUsecase.editComment(userInfo.getUserId(), commentId, request);
     }
 
-    @Operation(summary = "댓글 삭제", description = "첨부파일 댓글일 경우 request body에 삭제할 파일 ID를 리스트로 전달")
-    @Parameter(name = "commentId", description = "수정할 댓글 고유 ID", required = true, in = ParameterIn.PATH)
+    @Operation(summary = "댓글 삭제")
+    @Parameter(name = "commentId", description = "삭제할 댓글 고유 ID", required = true, in = ParameterIn.PATH)
     @DeleteMapping("/{commentId}")
     @Secured({"ROLE_MANAGER", "ROLE_USER"})
     public void deleteComment(
