@@ -57,7 +57,6 @@ class UpdateTaskBoardServiceTest {
         Task nextTask = mock(Task.class);
         Task prevTask = mock(Task.class);
 
-        when(memberService.findActiveMemberWithDepartment(processorId)).thenReturn(processor);
         when(taskService.findById(request.targetTaskId())).thenReturn(targetTask);
         when(targetTask.getTaskStatus()).thenReturn(taskStatus);
         when(taskService.findByIdAndStatus(request.nextTaskId(), taskStatus)).thenReturn(nextTask);
@@ -87,7 +86,6 @@ class UpdateTaskBoardServiceTest {
         Task prevTask = mock(Task.class);
         Task nextTask = mock(Task.class);
 
-        when(memberService.findActiveMemberWithDepartment(processorId)).thenReturn(processor);
         when(taskService.findById(request.targetTaskId())).thenReturn(targetTask);
         when(targetTask.getTaskStatus()).thenReturn(taskStatus);
         when(taskService.findByIdAndStatus(request.prevTaskId(), taskStatus)).thenReturn(prevTask);
@@ -119,7 +117,6 @@ class UpdateTaskBoardServiceTest {
         Task prevTask = mock(Task.class);
         Task nextTask = mock(Task.class);
 
-        when(memberService.findActiveMemberWithDepartment(processorId)).thenReturn(processor);
         when(taskService.findById(request.targetTaskId())).thenReturn(targetTask);
         when(targetTask.getTaskStatus()).thenReturn(taskStatus);
         when(taskService.findByIdAndStatus(request.prevTaskId(), taskStatus)).thenReturn(prevTask);
