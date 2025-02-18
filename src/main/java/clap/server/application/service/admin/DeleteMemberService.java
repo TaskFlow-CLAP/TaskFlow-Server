@@ -10,7 +10,6 @@ import clap.server.domain.policy.member.ManagerInfoUpdatePolicy;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 
 @ApplicationService
@@ -29,7 +28,6 @@ public class DeleteMemberService implements DeleteMemberUsecase {
         if (member.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER) {
             managerInfoUpdatePolicy.validateNoRemainingTasks(member);
         }
-        Hibernate.initialize(member.getDepartment());
         member.softDelete();
         commandMemberPort.save(member);
     }

@@ -32,8 +32,20 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
     }
 
     @Override
+    public Optional<Member> findByIdWithFetchDepartment(Long id) {
+        Optional<MemberEntity> memberEntity = memberRepository.findByIdWithFetchDepartment(id);
+        return memberEntity.map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
     public Optional<Member> findActiveMemberById(final Long id) {
         Optional<MemberEntity> memberEntity = memberRepository.findByStatusAndMemberId(MemberStatus.ACTIVE, id);
+        return memberEntity.map(memberPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Member> findActiveMemberByIdWithFetchDepartment(Long id) {
+        Optional<MemberEntity> memberEntity = memberRepository.findActiveMemberByIdWithFetchDepartment(id);
         return memberEntity.map(memberPersistenceMapper::toDomain);
     }
 
@@ -85,7 +97,7 @@ public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPo
 
     @Override
     public Page<Member> findAllMembers(final Pageable pageable) {
-        return memberRepository.findAllMembers(pageable).map(memberPersistenceMapper::toDomain);
+        return memberRepository.findAllMembersWithFetchDepartment(pageable).map(memberPersistenceMapper::toDomain);
     }
 
     @Override

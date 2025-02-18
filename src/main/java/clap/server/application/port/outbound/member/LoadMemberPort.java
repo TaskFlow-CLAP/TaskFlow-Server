@@ -15,7 +15,11 @@ import java.util.Set;
 public interface LoadMemberPort {
     Optional<Member> findById(Long id);
 
+    Optional<Member> findByIdWithFetchDepartment(Long id);
+
     Optional<Member> findActiveMemberById(Long id);
+
+    Optional<Member> findActiveMemberByIdWithFetchDepartment(Long id);
 
     List<Member> findActiveManagers();
 

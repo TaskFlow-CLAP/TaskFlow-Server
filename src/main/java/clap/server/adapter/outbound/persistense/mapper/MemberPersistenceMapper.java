@@ -1,31 +1,63 @@
 package clap.server.adapter.outbound.persistense.mapper;
 
+import clap.server.adapter.outbound.persistense.entity.member.DepartmentEntity;
 import clap.server.adapter.outbound.persistense.entity.member.MemberEntity;
+import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.model.member.MemberInfo;
+import org.hibernate.Hibernate;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", uses = {DepartmentPersistenceMapper.class})
+@Mapper(componentModel = "spring", uses = DepartmentPersistenceMapper.class)
 public abstract class MemberPersistenceMapper {
 
     @Autowired
     protected DepartmentPersistenceMapper departmentPersistenceMapper;
 
-    @Mapping(source = "name", target = "memberInfo.name")
-    @Mapping(source = "email", target = "memberInfo.email")
-    @Mapping(source = "nickname", target = "memberInfo.nickname")
-    @Mapping(source = "role", target = "memberInfo.role")
-    @Mapping(source = "departmentRole", target = "memberInfo.departmentRole")
-    @Mapping(source = "department", target = "memberInfo.department")
-    @Mapping(source = "reviewer", target = "memberInfo.isReviewer")
-    @Mapping(source = "admin", target = "admin", qualifiedByName = "toDomain")
-    @Mapping(source = "createdAt", target = "createdAt")
-    @Mapping(source = "updatedAt", target = "updatedAt")
-    @Mapping(source = "memberId", target = "memberId")
+    @Mapping(target = "memberInfo", expression = "java(memberEntityToMemberInfo(entity))")
+    @Mapping(target = "department", expression = "java(mapDepartment(entity))")
+    @Mapping(target = "admin", ignore = true)
+    @Mapping(source = "entity.createdAt", target = "createdAt")
+    @Mapping(source = "entity.updatedAt", target = "updatedAt")
+    @Mapping(source = "entity.memberId", target = "memberId")
     public abstract Member toDomain(MemberEntity entity);
+
+    protected MemberInfo memberEntityToMemberInfo(MemberEntity memberEntity) {
+        if (memberEntity == null) {
+            return null;
+        }
+
+        DepartmentEntity departmentEntity = memberEntity.getDepartment();
+        Department department = (departmentEntity != null && Hibernate.isInitialized(departmentEntity))
+                ? departmentPersistenceMapper.toDomain(departmentEntity)
+                : null;
+
+        return MemberInfo.builder()
+                .name(memberEntity.getName())
+                .email(memberEntity.getEmail())
+                .nickname(memberEntity.getNickname())
+                .role(memberEntity.getRole())
+                .departmentRole(memberEntity.getDepartmentRole())
+                .isReviewer(memberEntity.isReviewer())
+                .department(department)
+                .build();
+    }
+
+    protected Department mapDepartment(MemberEntity entity) {
+        DepartmentEntity department = entity.getDepartment();
+        if (department == null) {
+            return null;
+        }
+
+        if (!Hibernate.isInitialized(department)) {
+            return null;
+        }
+
+        return departmentPersistenceMapper.toDomain(department);
+    }
 
     @Mapping(source = "memberInfo.name", target = "name")
     @Mapping(source = "memberInfo.email", target = "email")
@@ -39,6 +71,7 @@ public abstract class MemberPersistenceMapper {
     @Mapping(source = "updatedAt", target = "updatedAt")
     @Mapping(source = "memberId", target = "memberId")
     public abstract MemberEntity toEntity(Member member);
+
 
     @Named("toDomain")
     protected Member toDomainAdmin(MemberEntity admin) {
