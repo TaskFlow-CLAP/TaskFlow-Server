@@ -117,6 +117,8 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         BooleanBuilder builder = createTaskBoardFilter(processorId, statuses, untilDateTime, request);
         return queryFactory
                 .selectFrom(taskEntity)
+                .leftJoin(taskEntity.requester).fetchJoin()
+                .leftJoin(taskEntity.requester.department).fetchJoin()
                 .where(builder)
                 .orderBy(taskEntity.processorOrder.asc())
                 .fetch();
