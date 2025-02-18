@@ -55,10 +55,10 @@ public class TaskCustomRepositoryImpl implements TaskCustomRepository {
         BooleanBuilder builder = createFilterBuilder(memberId, filter);
         return queryFactory
                 .selectFrom(taskEntity)
-                .leftJoin(taskEntity.requester)
-                .leftJoin(taskEntity.requester.department).fetchJoin()
-                .leftJoin(taskEntity.processor)
-                .leftJoin(taskEntity.processor.department).fetchJoin()
+                .leftJoin(taskEntity.requester).fetchJoin()
+                .leftJoin(taskEntity.processor).fetchJoin()
+                .leftJoin(taskEntity.requester.department)
+                .leftJoin(taskEntity.processor.department)
                 .where(builder)
                 .fetch();
     }
