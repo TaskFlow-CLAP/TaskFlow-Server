@@ -4,6 +4,7 @@ import clap.server.adapter.inbound.web.dto.admin.response.RetrieveAllMemberRespo
 import clap.server.adapter.inbound.web.dto.common.PageResponse;
 import org.springframework.data.domain.Pageable;
 
+@Deprecated
 public interface FindAllMembersUsecase {
     PageResponse<RetrieveAllMemberResponse> findAllMembers(Pageable pageable);
 }
