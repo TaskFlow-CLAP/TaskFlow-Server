@@ -9,17 +9,15 @@ import clap.server.application.port.inbound.domain.TaskService;
 import clap.server.application.port.inbound.history.SaveCommentAttachmentUsecase;
 import clap.server.application.port.inbound.history.SaveCommentUsecase;
 import clap.server.application.port.outbound.s3.S3UploadPort;
-import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandCommentPort;
 import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.application.service.webhook.SendNotificationService;
 import clap.server.common.annotation.architecture.ApplicationService;
+import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Comment;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
-import clap.server.common.constants.FilePathConstants;
 import clap.server.domain.policy.task.TaskCommentPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +51,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         Comment comment = Comment.createComment(member, task, request.content(), null, null, null);
         Comment savedComment = commandCommentPort.saveComment(comment);
 
-        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT, task, null, member, savedComment);
+        TaskHistory taskHistory = TaskHistory.createCommentTaskHistory(TaskHistoryType.COMMENT, member, savedComment);
         commandTaskHistoryPort.save(taskHistory);
 
         Member processor = task.getProcessor();
@@ -76,10 +74,10 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         String fileUrl = s3UploadPort.uploadSingleFile(FilePathConstants.TASK_COMMENT, file);
         String fileName = file.getOriginalFilename();
 
-        Comment comment = Comment.createComment(member, task, null, fileName, fileUrl,   formatFileSize(file.getSize()));
+        Comment comment = Comment.createComment(member, task, null, fileName, fileUrl, formatFileSize(file.getSize()));
         Comment savedComment = commandCommentPort.saveComment(comment);
 
-        TaskHistory taskHistory = TaskHistory.createTaskHistory(TaskHistoryType.COMMENT_FILE, null, null, member, savedComment);
+        TaskHistory taskHistory = TaskHistory.createCommentTaskHistory(TaskHistoryType.COMMENT_FILE, member, savedComment);
         commandTaskHistoryPort.save(taskHistory);
 
         Member processor = task.getProcessor();
@@ -92,14 +90,6 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
         }
 
     }
-
-    @Deprecated
-//    private String saveAttachment(MultipartFile file, Task task) {
-//        String fileUrl = s3UploadPort.uploadSingleFile(FilePathConstants.TASK_COMMENT, file);
-//        Attachment attachment = Attachment.createCommentAttachment(task, null, file.getOriginalFilename(), fileUrl, file.getSize());
-//        commandAttachmentPort.save(attachment);
-//        return file.getOriginalFilename();
-//    }
 
     private void publishNotification(Member receiver, Task task, String message, String commenterName) {
         boolean isManager = receiver.getMemberInfo().getRole() == MemberRole.ROLE_MANAGER;

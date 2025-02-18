@@ -57,7 +57,7 @@ public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskPro
             task.updateTaskStatus(targetTaskStatus);
             Task updatedTask = taskService.upsert(task);
 
-            saveTaskHistory(TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, targetTaskStatus.getDescription(), null, null));
+            saveTaskHistory(TaskHistory.createTaskHistory(TaskHistoryType.STATUS_SWITCHED, task, targetTaskStatus.getDescription(), null));
 
             List<Member> receivers = List.of(task.getRequester());
             publishNotification(receivers, updatedTask, NotificationType.STATUS_SWITCHED, targetTaskStatus.getDescription());
@@ -79,7 +79,7 @@ public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskPro
         task.updateProcessor(processor);
         Task updatedTask = taskService.upsert(task);
 
-        saveTaskHistory(TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor, null));
+        saveTaskHistory(TaskHistory.createTaskHistory(TaskHistoryType.PROCESSOR_CHANGED, task, null, processor));
 
         List<Member> receivers = List.of(updatedTask.getRequester());
         publishNotification(receivers, updatedTask, NotificationType.PROCESSOR_CHANGED, processor.getNickname());

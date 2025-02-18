@@ -21,7 +21,7 @@ public class TaskHistoryResponseMapper {
                             switch (taskHistory.getType()) {
                                 case PROCESSOR_CHANGED, PROCESSOR_ASSIGNED -> new FindTaskHistoryResponse.Details(
                                         new FindTaskHistoryResponse.TaskDetails(
-                                                taskHistory.getTaskModificationInfo().getModifiedMember().getNickname()
+                                                taskHistory.getModifiedMember().getNickname()
                                         ),
                                         null,
                                         null
@@ -37,8 +37,8 @@ public class TaskHistoryResponseMapper {
                                         null,
                                         new FindTaskHistoryResponse.CommentDetails(
                                                 taskHistory.getComment().getCommentId(),
-                                                taskHistory.getComment().getMember().getNickname(),
-                                                taskHistory.getComment().getMember().getImageUrl(),
+                                                taskHistory.getModifiedMember().getNickname(),
+                                                taskHistory.getModifiedMember().getImageUrl(),
                                                 taskHistory.getComment().isModified(),
                                                 taskHistory.getComment().getContent()
                                         ),
@@ -49,8 +49,8 @@ public class TaskHistoryResponseMapper {
                                         null,
                                         new FindTaskHistoryResponse.CommentFileDetails(
                                                 taskHistory.getComment().getCommentId(),
-                                                taskHistory.getComment().getMember().getNickname(),
-                                                taskHistory.getComment().getMember().getImageUrl(),
+                                                taskHistory.getModifiedMember().getNickname(),
+                                                taskHistory.getModifiedMember().getImageUrl(),
                                                 taskHistory.getComment().getOriginalName(),
                                                 taskHistory.getComment().getFileUrl(),
                                                 taskHistory.getComment().getFileSize()

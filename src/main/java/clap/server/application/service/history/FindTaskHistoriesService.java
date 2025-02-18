@@ -7,10 +7,9 @@ import clap.server.application.port.inbound.history.FindTaskHistoriesUsecase;
 import clap.server.application.port.outbound.task.LoadTaskPort;
 import clap.server.application.port.outbound.taskhistory.LoadTaskHistoryPort;
 import clap.server.common.annotation.architecture.ApplicationService;
-import clap.server.domain.model.member.Member;
 import clap.server.domain.model.task.Task;
 import clap.server.domain.model.task.TaskHistory;
-import clap.server.exception.DomainException;
+import clap.server.exception.ApplicationException;
 import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +28,7 @@ public class FindTaskHistoriesService implements FindTaskHistoriesUsecase {
     public FindTaskHistoryResponse findTaskHistories(Long memberId, Long taskId) {
         memberService.findActiveMember(memberId);
         Task task = loadTaskPort.findById(taskId)
-                .orElseThrow(()-> new DomainException(TaskErrorCode.TASK_NOT_FOUND));
+                .orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
         List<TaskHistory> taskHistories = loadTaskHistoryPort.findAllTaskHistoriesByTaskId(task.getTaskId());
         return TaskHistoryResponseMapper.toFindTaskHistoryResponse(taskHistories);
     }
