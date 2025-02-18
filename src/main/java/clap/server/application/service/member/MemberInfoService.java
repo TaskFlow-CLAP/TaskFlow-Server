@@ -2,11 +2,13 @@ package clap.server.application.service.member;
 
 import clap.server.adapter.inbound.web.dto.member.response.MemberDetailInfoResponse;
 import clap.server.adapter.inbound.web.dto.member.response.MemberProfileResponse;
-import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.member.MemberDetailInfoUsecase;
 import clap.server.application.port.inbound.member.MemberProfileUsecase;
+import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
+import clap.server.exception.ApplicationException;
+import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,19 +18,21 @@ import static clap.server.application.mapper.response.MemberResponseMapper.toMem
 @ApplicationService
 @RequiredArgsConstructor
 class MemberInfoService implements MemberProfileUsecase , MemberDetailInfoUsecase {
-    private final MemberService memberService;
+    private final LoadMemberPort loadMemberPort;
 
     @Override
     @Transactional(readOnly = true)
     public MemberProfileResponse getMemberProfile(Long memberId) {
-        Member member = memberService.findActiveMember(memberId);
+        Member member = loadMemberPort.findActiveMemberByIdWithFetchDepartment(memberId).orElseThrow(
+                () -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
         return toMemberProfileResponse(member);
     }
 
     @Override
     @Transactional(readOnly = true)
     public MemberDetailInfoResponse getMemberInfo(Long memberId) {
-        Member member = memberService.findActiveMember(memberId);
+        Member member = loadMemberPort.findActiveMemberByIdWithFetchDepartment(memberId).orElseThrow(
+                () -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
         return toMemberDetailInfoResponse(member);
     }
 }
