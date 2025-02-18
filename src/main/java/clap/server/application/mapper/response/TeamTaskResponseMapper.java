@@ -3,12 +3,16 @@ package clap.server.application.mapper.response;
 import clap.server.adapter.inbound.web.dto.task.response.TeamStatusResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskItemResponse;
 import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
+import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Task;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus.IN_PROGRESS;
+import static clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus.IN_REVIEWING;
 
 public class TeamTaskResponseMapper {
 
@@ -26,16 +30,16 @@ public class TeamTaskResponseMapper {
                 .collect(Collectors.toList());
 
         Task firstTask = entry.getValue().get(0);
-        int inProgressTaskCount = firstTask.getProcessor().getInProgressTaskCount();
-        int inReviewingTaskCount = firstTask.getProcessor().getInReviewingTaskCount();
+        LinkedHashMap<TaskStatus, List<TeamTaskItemResponse>> collect = taskResponses.stream()
+                .collect(Collectors.groupingBy(TeamTaskItemResponse::taskStatus, LinkedHashMap::new, Collectors.toList()));
 
         return new TeamTaskResponse(
                 entry.getKey(),
                 firstTask.getProcessor().getNickname(),
                 firstTask.getProcessor().getImageUrl(),
                 firstTask.getProcessor().getDepartment().getName(),
-                inProgressTaskCount,
-                inReviewingTaskCount,
+                collect.get(IN_PROGRESS) != null ? collect.get(IN_PROGRESS).size() : 0,
+                collect.get(IN_REVIEWING) != null ? collect.get(IN_REVIEWING).size() : 0,
                 entry.getValue().size(),
                 taskResponses
         );
