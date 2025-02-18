@@ -28,4 +28,8 @@ public class TaskService {
     public Task findByIdAndStatus(Long taskId, TaskStatus status) {
         return loadTaskPort.findByIdAndStatus(taskId, status).orElseThrow(() -> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
     }
+
+    public Task findTaskWithProcessorDepartment(Long taskId){
+        return loadTaskPort.findTaskWithProcessorDepartment(taskId).orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
+    }
 }

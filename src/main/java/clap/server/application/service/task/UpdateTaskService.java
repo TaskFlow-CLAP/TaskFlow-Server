@@ -33,7 +33,6 @@ import static clap.server.domain.policy.task.TaskPolicyConstants.TASK_UPDATABLE_
 @Slf4j
 public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskProcessorUsecase {
     private final MemberService memberService;
-    private final LoadTaskPort loadTaskPort;
     private final TaskService taskService;
     private final SendNotificationService sendNotificationService;
     private final UpdateProcessorTaskCountService updateProcessorTaskCountService;
@@ -43,7 +42,7 @@ public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskPro
     @Transactional
     public void updateTaskStatus(Long memberId, Long taskId, TaskStatus targetTaskStatus) {
         memberService.findActiveMember(memberId);
-        Task task = loadTaskPort.findTaskWithProcessorDepartment(taskId).orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
+        Task task = taskService.findTaskWithProcessorDepartment(taskId);
 
         if (!TASK_UPDATABLE_STATUS.contains(targetTaskStatus)) {
             throw new ApplicationException(TaskErrorCode.TASK_STATUS_NOT_ALLOWED);
@@ -70,7 +69,7 @@ public class UpdateTaskService implements UpdateTaskStatusUsecase, UpdateTaskPro
     public void updateTaskProcessor(Long taskId, Long memberId, UpdateTaskProcessorRequest request) {
         memberService.findActiveMember(memberId);
 
-        Task task = loadTaskPort.findTaskWithProcessorDepartment(taskId).orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
+        Task task = taskService.findTaskWithProcessorDepartment(taskId);
 
         Member processor = memberService.findActiveMemberWithDepartment(request.processorId());
         if (REMAINING_TASK_STATUS.contains(task.getTaskStatus())) {

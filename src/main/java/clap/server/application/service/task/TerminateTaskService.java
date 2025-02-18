@@ -22,14 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TerminateTaskService implements TerminateTaskUsecase {
     private final TaskService taskService;
-    private final LoadTaskPort loadTaskPort;
     private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final SendNotificationService sendNotificationService;
     private final UpdateProcessorTaskCountService updateProcessorTaskCountService;
 
     @Override
     public void terminateTask(Long memberId, Long taskId, String reason) {
-        Task task = loadTaskPort.findTaskWithProcessorDepartment(taskId).orElseThrow(()-> new ApplicationException(TaskErrorCode.TASK_NOT_FOUND));
+        Task task = taskService.findTaskWithProcessorDepartment(taskId);
 
         // 작업 종료의 경우. 작업 반려는 count를 업데이트를 하지 않음
         if(task.getProcessor()!=null) {
