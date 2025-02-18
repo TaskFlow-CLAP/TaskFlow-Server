@@ -125,4 +125,9 @@ public class TaskPersistenceAdapter implements CommandTaskPort, LoadTaskPort {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Optional<Task> findTaskWithProcessorDepartment(Long taskId) {
+        return taskRepository.findTaskWithProcessorDepartment(taskId).map(taskPersistenceMapper::toDomain);
+    }
+
 }

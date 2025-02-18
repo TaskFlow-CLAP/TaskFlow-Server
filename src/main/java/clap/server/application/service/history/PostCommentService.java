@@ -37,7 +37,7 @@ public class PostCommentService implements SaveCommentUsecase, SaveCommentAttach
     private final TaskService taskService;
     private final CommandCommentPort commandCommentPort;
     private final S3UploadPort s3UploadPort;
-    private final CommandAttachmentPort commandAttachmentPort;
+
     private final CommandTaskHistoryPort commandTaskHistoryPort;
     private final SendNotificationService sendNotificationService;
     private final TaskCommentPolicy taskCommentPolicy;

@@ -6,23 +6,22 @@ import clap.server.adapter.outbound.persistense.entity.member.constant.MemberRol
 import clap.server.application.mapper.response.MemberResponseMapper;
 import clap.server.application.port.inbound.admin.MemberDetailUsecase;
 import clap.server.application.port.inbound.admin.UpdateMemberUsecase;
+import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadDepartmentPort;
-import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Department;
 import clap.server.domain.model.member.Member;
 import clap.server.domain.policy.member.ManagerInfoUpdatePolicy;
 import clap.server.exception.ApplicationException;
 import clap.server.exception.code.DepartmentErrorCode;
-import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 @ApplicationService
 @RequiredArgsConstructor
 class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
-    private final LoadMemberPort loadMemberPort;
+    private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final LoadDepartmentPort loadDepartmentPort;
     private final ManagerInfoUpdatePolicy managerInfoUpdatePolicy;
@@ -30,8 +29,7 @@ class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
     @Override
     @Transactional
     public void updateMemberInfo(Long adminId, Long memberId, UpdateMemberRequest request) {
-        Member member = loadMemberPort.findByIdWithFetchDepartment(memberId).orElseThrow(
-                () -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
+        Member member = memberService.findMemberWithDepartment(memberId);
         Department department = loadDepartmentPort.findById(request.departmentId()).orElseThrow(() ->
                 new ApplicationException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
         managerInfoUpdatePolicy.validateDepartment(department, request.role());
@@ -48,8 +46,7 @@ class ManageMemberService implements UpdateMemberUsecase, MemberDetailUsecase {
     @Override
     @Transactional(readOnly = true)
     public MemberDetailsResponse getMemberDetail(Long memberId) {
-        Member member = loadMemberPort.findByIdWithFetchDepartment(memberId).orElseThrow(
-                () -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));;
+        Member member = memberService.findMemberWithDepartment(memberId);
         return MemberResponseMapper.toMemberDetailsResponse(member);
     }
 }

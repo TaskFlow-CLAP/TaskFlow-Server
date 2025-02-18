@@ -3,8 +3,6 @@ package clap.server.application.port.outbound.task;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskBoardRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTaskListRequest;
 import clap.server.adapter.inbound.web.dto.task.request.FilterTeamStatusRequest;
-import clap.server.adapter.inbound.web.dto.task.response.TeamTaskResponse;
-import clap.server.adapter.outbound.persistense.entity.task.TaskEntity;
 import clap.server.adapter.outbound.persistense.entity.task.constant.TaskStatus;
 import clap.server.domain.model.task.Task;
 import org.springframework.data.domain.Page;
@@ -42,4 +40,6 @@ public interface LoadTaskPort {
     List<Task> findTeamStatus(Long memberId, FilterTeamStatusRequest filter);
 
     List<Task> findTasksByMemberIdAndStatus(Long memberId, List<TaskStatus> taskStatuses);
+
+    Optional<Task> findTaskWithProcessorDepartment(Long taskId);
 }

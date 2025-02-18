@@ -2,28 +2,18 @@ package clap.server.application.service.history;
 
 import clap.server.adapter.inbound.web.dto.history.request.EditCommentRequest;
 import clap.server.application.port.inbound.domain.CommentService;
+import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.history.DeleteCommentUsecase;
 import clap.server.application.port.inbound.history.EditCommentUsecase;
-import clap.server.application.port.inbound.domain.MemberService;
-import clap.server.application.port.outbound.task.CommandAttachmentPort;
 import clap.server.application.port.outbound.task.CommandCommentPort;
-import clap.server.application.port.outbound.task.LoadAttachmentPort;
-import clap.server.application.port.outbound.task.LoadCommentPort;
-import clap.server.application.port.outbound.taskhistory.CommandTaskHistoryPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
-import clap.server.domain.model.task.Attachment;
 import clap.server.domain.model.task.Comment;
 import clap.server.exception.ApplicationException;
-import clap.server.exception.DomainException;
 import clap.server.exception.code.CommentErrorCode;
-import clap.server.exception.code.MemberErrorCode;
-import clap.server.exception.code.TaskErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 @ApplicationService
 @RequiredArgsConstructor

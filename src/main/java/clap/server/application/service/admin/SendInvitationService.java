@@ -2,13 +2,12 @@ package clap.server.application.service.admin;
 
 import clap.server.adapter.inbound.web.dto.admin.request.SendInvitationRequest;
 import clap.server.application.port.inbound.admin.SendInvitationUsecase;
+import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.outbound.member.CommandMemberPort;
 import clap.server.application.port.outbound.member.LoadMemberPort;
 import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.common.utils.InitialPasswordGenerator;
 import clap.server.domain.model.member.Member;
-import clap.server.exception.ApplicationException;
-import clap.server.exception.code.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SendInvitationService implements SendInvitationUsecase {
     private final LoadMemberPort loadMemberPort;
+    private final MemberService memberService;
     private final CommandMemberPort commandMemberPort;
     private final SendInvitationEmailService sendInvitationEmailService;
     private final InitialPasswordGenerator passwordGenerator;
@@ -25,8 +25,7 @@ public class SendInvitationService implements SendInvitationUsecase {
     @Override
     @Transactional
     public void sendInvitation(SendInvitationRequest request) {
-        Member member = loadMemberPort.findById(request.memberId())
-                .orElseThrow(() -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
+        Member member = memberService.findMemberWithDepartment(request.memberId());
 
         String initialPassword = passwordGenerator.generateRandomPassword();
         String encodedPassword = passwordEncoder.encode(initialPassword);
@@ -36,7 +35,6 @@ public class SendInvitationService implements SendInvitationUsecase {
         member.changeToApproveRequested();
 
         commandMemberPort.save(member);
-
 
         sendInvitationEmailService.sendInvitationEmail(
                 member.getMemberInfo().getEmail(),

@@ -8,6 +8,7 @@ import clap.server.common.annotation.architecture.ApplicationService;
 import clap.server.domain.model.member.Member;
 import lombok.RequiredArgsConstructor;
 
+@Deprecated
 @ApplicationService
 @RequiredArgsConstructor
 public class UpdateNotificationService implements EnableKakaoUsecase, EnableEmailUsecase {

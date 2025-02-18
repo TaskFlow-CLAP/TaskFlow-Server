@@ -2,6 +2,7 @@ package clap.server.application.service.member;
 
 import clap.server.adapter.inbound.web.dto.member.response.MemberDetailInfoResponse;
 import clap.server.adapter.inbound.web.dto.member.response.MemberProfileResponse;
+import clap.server.application.port.inbound.domain.MemberService;
 import clap.server.application.port.inbound.member.MemberDetailInfoUsecase;
 import clap.server.application.port.inbound.member.MemberProfileUsecase;
 import clap.server.application.port.outbound.member.LoadMemberPort;
@@ -18,21 +19,19 @@ import static clap.server.application.mapper.response.MemberResponseMapper.toMem
 @ApplicationService
 @RequiredArgsConstructor
 class MemberInfoService implements MemberProfileUsecase , MemberDetailInfoUsecase {
-    private final LoadMemberPort loadMemberPort;
+    private final MemberService memberService;
 
     @Override
     @Transactional(readOnly = true)
     public MemberProfileResponse getMemberProfile(Long memberId) {
-        Member member = loadMemberPort.findActiveMemberByIdWithFetchDepartment(memberId).orElseThrow(
-                () -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
+        Member member = memberService.findActiveMemberWithDepartment(memberId);
         return toMemberProfileResponse(member);
     }
 
     @Override
     @Transactional(readOnly = true)
     public MemberDetailInfoResponse getMemberInfo(Long memberId) {
-        Member member = loadMemberPort.findActiveMemberByIdWithFetchDepartment(memberId).orElseThrow(
-                () -> new ApplicationException(MemberErrorCode.MEMBER_NOT_FOUND));
+        Member member = memberService.findActiveMemberWithDepartment(memberId);
         return toMemberDetailInfoResponse(member);
     }
 }

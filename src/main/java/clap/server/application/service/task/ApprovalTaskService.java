@@ -48,7 +48,7 @@ public class ApprovalTaskService implements ApprovalTaskUsecase {
     public ApprovalTaskResponse approvalTaskByReviewer(Long reviewerId, Long taskId, ApprovalTaskRequest approvalTaskRequest) {
         Member reviewer = memberService.findReviewer(reviewerId);
         Task task = taskService.findById(taskId);
-        Member processor = memberService.findActiveMember(approvalTaskRequest.processorId());
+        Member processor = memberService.findActiveMemberWithDepartment(approvalTaskRequest.processorId());
         Category category = categoryService.findById(approvalTaskRequest.categoryId());
         Label label = null;
         if (approvalTaskRequest.labelId() != null) {
