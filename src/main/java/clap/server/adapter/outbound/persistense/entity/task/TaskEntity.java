@@ -30,7 +30,7 @@ public class TaskEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column
+    @Column(length = 1000)
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)

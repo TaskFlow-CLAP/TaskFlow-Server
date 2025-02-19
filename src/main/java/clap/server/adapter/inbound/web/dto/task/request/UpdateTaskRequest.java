@@ -19,7 +19,7 @@ public record UpdateTaskRequest(
         String title,
 
         @Schema(description = "작업 설명", example = "업데이트된 설명.")
-        @Length(max = 200)
+        @Length(max = 1000)
         String description,
 
         @Schema(description = "삭제할 파일 ID 목록, 없을 경우 emptylist 전송")
