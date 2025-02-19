@@ -70,7 +70,7 @@ public class KakaoWorkBlockBuilder {
                 ),
                 Map.of(
                         "type", "button",
-                        "text", "확인하기",
+                        "text", "바로가기",
                         "style", "default",
                         "action", Map.of(
                                 "type", "open_system_browser",
@@ -136,7 +136,7 @@ public class KakaoWorkBlockBuilder {
                 ),
                 Map.of(
                         "type", "button",
-                        "text", "확인하기",
+                        "text", "바로가기",
                         "style", "default",
                         "action", Map.of(
                                 "type", "open_system_browser",
@@ -202,7 +202,7 @@ public class KakaoWorkBlockBuilder {
                 ),
                 Map.of(
                         "type", "button",
-                        "text", "확인하기",
+                        "text", "바로가기",
                         "style", "default",
                         "action", Map.of(
                                 "type", "open_system_browser",
@@ -280,7 +280,7 @@ public class KakaoWorkBlockBuilder {
                 ),
                 Map.of(
                         "type", "button",
-                        "text", "확인하기",
+                        "text", "바로가기",
                         "style", "default",
                         "action", Map.of(
                                 "type", "open_system_browser",
@@ -346,7 +346,7 @@ public class KakaoWorkBlockBuilder {
                 ),
                 Map.of(
                         "type", "button",
-                        "text", "확인하기",
+                        "text", "바로가기",
                         "style", "default",
                         "action", Map.of(
                                 "type", "open_system_browser",
@@ -412,7 +412,7 @@ public class KakaoWorkBlockBuilder {
                 ),
                 Map.of(
                         "type", "button",
-                        "text", "확인하기",
+                        "text", "바로가기",
                         "style", "default",
                         "action", Map.of(
                                 "type", "open_system_browser",
