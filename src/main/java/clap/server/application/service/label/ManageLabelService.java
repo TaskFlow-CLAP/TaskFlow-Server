@@ -29,6 +29,8 @@ public class ManageLabelService implements UpdateLabelUsecase, DeleteLabelUsecas
         Label label = loadLabelPort.findById(labelId)
                 .orElseThrow(() -> new ApplicationException(LabelErrorCode.LABEL_NOT_FOUND));
 
+        loadLabelPort.existsByLabelName(request.labelName());
+
         label.updateLabel(request);
         commandLabelPort.save(label);
     }
