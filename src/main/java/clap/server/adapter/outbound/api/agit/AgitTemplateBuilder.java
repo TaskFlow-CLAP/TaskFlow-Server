@@ -46,7 +46,7 @@ public class AgitTemplateBuilder {
             case TASK_REQUESTED -> "📌 *새 작업이 요청되었습니다.*\\n"
                     + "\\t\\t*• 🔖  작업명:*  " + "*" + request.taskName() + "*" + "\\n"
                     + "\\t\\t*• 🙋  요청자:*  " + "*" + request.senderName() + "*" + "\\n\\n"
-                    + "\\t[자세히 보기](" + taskDetailUrl + ")";
+                    + "\\t[바로가기](" + taskDetailUrl + ")";
 
             case STATUS_SWITCHED -> "작업 상태가 " + "*" + request.message() + "*" + "으로 변경되었습니다.";
 
