@@ -17,7 +17,7 @@ public record CreateTaskRequest(
         String title,
 
         @Schema(description = "작업 설명")
-        @Length(max = 200)
+        @Length(max = 1000)
         String description
 ) {
 }

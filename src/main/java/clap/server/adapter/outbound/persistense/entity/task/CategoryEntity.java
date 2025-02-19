@@ -33,7 +33,7 @@ public class CategoryEntity extends BaseTimeEntity {
     @JoinColumn(name = "main_category_id")
     private CategoryEntity mainCategory;
 
-    @Column
+    @Column(length = 1000)
     private String descriptionExample;
 
     @Column(nullable = false)
