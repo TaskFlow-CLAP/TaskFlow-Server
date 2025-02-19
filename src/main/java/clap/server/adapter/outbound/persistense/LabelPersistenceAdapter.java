@@ -37,7 +37,7 @@ public class LabelPersistenceAdapter implements LoadLabelPort, CommandLabelPort 
 
     @Override
     public boolean existsByLabelName(String labelName) {
-        return labelRepository.existsByLabelName(labelName);
+        return labelRepository.existsByLabelNameAndIsDeletedFalse(labelName);
     }
 
     @Override
