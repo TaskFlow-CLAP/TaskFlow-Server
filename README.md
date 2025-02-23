@@ -8,7 +8,10 @@
 # TaskFlow Server
 [<img src="https://img.shields.io/badge/프로젝트 기간-2025.01.06~2025.02.20-green?style=flat&logo=&logoColor=white" />]()
 
+[🔗 기술 문서 보러가기](https://selective-sing-a81.notion.site/TaskFlow-Server-1a367fd8444580208107cd06651e9118)
+
 </div>
+
 
 ## 🔎 TaskFlow
 
