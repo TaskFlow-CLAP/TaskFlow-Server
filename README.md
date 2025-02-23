@@ -49,7 +49,7 @@ Coming Soon...
 
 
 ##  Task Flow 아키텍쳐
-![taskflow-architecture.png](/.github/image/tf-architecture.png)
+![taskflow-architecture.png](/.github/image/tf-server.png)
 
 ### 🔴 Domain
 
@@ -77,6 +77,7 @@ Coming Soon...
 - Port 인터페이스를 통해 영속성 계층과 의존성 역전을 통해서 데이터를 저장, 조회, 목록조회 등 역할을 수행합니다.
 </aside>
 
+<br>
 ---
 
 ### 🔵 Adapter
@@ -108,9 +109,11 @@ Coming Soon...
     - JWT 토큰 생성 및 토큰의 유효성을 검증
 </aside>
 
-
+<br>
 
 ## 🗂️ Package
+
+<img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/tf-folder.png" width="1200px" > 
 
 ```
 ├── 💽 TaskflowApplication
@@ -195,6 +198,10 @@ Coming Soon...
 | Variable | camelCase |
 | DB Table | snake_case |
 | ENUM, Constant | PascalCase |
+
+<img src="https://github.com/TaskFlow-CLAP/TaskFlow-Server/blob/develop/.github/image/tf-convention.png" width="700px" > 
+
+<br>
 
 ### Prefix
 | Prefix | Description |
